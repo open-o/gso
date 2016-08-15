@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- /* * Copyright (c) 2016, Huawei Technologies Co., Ltd. * * Licensed under the Apache License, Version 2.0 (the "License"); 
+    * you may not use this file except in compliance with the License. * You may obtain a copy of the License at * * http://www.apache.org/licenses/LICENSE-2.0 
+    * * Unless required by applicable law or agreed to in writing, software * distributed under the License is distributed on 
+    an "AS IS" BASIS, * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * See the License for the specific 
+    language governing permissions and * limitations under the License. */ -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.openo.gso.servicemgr.mapper.SubServiceMapper">
+    <resultMap type="org.openo.gso.servicemgr.model.servicemo.SubServiceModel" id="SubServiceResultMap">
+        <result property="serviceId" column="serviceId" />
+        <result property="subServiceId" column="subServiceId" />
+        <result property="subServiceName" column="subServiceName" />
+        <result property="templateId" column="templateId" />
+        <result property="nodeType" column="nodeType" />
+        <result property="owner" column="owner" />
+        <result property="topoSeqNumber" column="topoSeqNumber" />
+    </resultMap>
+
+    <insert id="batchInsert" parameterType="org.openo.gso.servicemgr.model.servicemo.SubServiceModel">
+        insert into t_lcm_subService(serviceId,subServiceId,subServiceName,templateId,nodeType,owner,topoSeqNumber)
+        values
+        <foreach collection="SubServiceModel" item="item" index="index" separator=",">
+            (#{item.serviceId},#{item.subServiceId},#{item.subServiceName},#{item.templateId},#{item.nodeType},#{item.owner},#{item.topoSeqNumber})
+        </foreach>
+    </insert>
+
+    <delete id="delete">
+        delete from t_lcm_subService where serviceId = #{serviceId}
+    </delete>
+
+    <select id="querySubServices" resultMap="SubServiceResultMap">
+        select * from t_lcm_subService where serviceId = #{serviceId}
+    </select>
+
+</mapper>

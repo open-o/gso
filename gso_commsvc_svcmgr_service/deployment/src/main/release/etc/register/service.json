@@ -1,0 +1,14 @@
+{
+    "serviceName" : "lifecyclemgr",
+    "version" : "v1",
+    "url" : "openoapi/lifecyclemgr/v1",
+    "protocol" : "REST",
+    "visualRange" : ["1"],
+    "nodes" : [
+        {
+            "ip" : "getInputIP",
+            "port" : "8300",
+            "ttl" : 0
+        }
+    ]
+}
