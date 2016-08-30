@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.openo.baseservice</groupId>
+        <groupId>org.openo.common-services.common-utilities</groupId>
         <artifactId>common-setting</artifactId>
         <version>1.0.1-SNAPSHOT</version>
     </parent>
@@ -19,14 +19,4 @@
     <modules>
         <module>org.openo.gso.commsvc.common</module>
     </modules>
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <url>http://113.200.115.170:4096/nexus/content/repositories/OPEN-O_Release</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <url>http://113.200.115.170:4096/nexus/content/repositories/OPEN-O_SnapShots</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>

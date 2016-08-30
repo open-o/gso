@@ -14,7 +14,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.openo.baseservice</groupId>
+            <groupId>org.openo.common-services.common-utilities</groupId>
             <artifactId>commonlib-cbb</artifactId>
             <version>1.0.1-SNAPSHOT</version>
         </dependency>

@@ -18,7 +18,7 @@ package org.openo.gso.servicemgr.activator;
 import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openo.baseservice.util.inf.SystemEnvVariables;
+import org.openo.baseservice.util.impl.SystemEnvVariablesFactory;
 import org.openo.gso.commsvc.common.constant.Constant;
 import org.openo.gso.commsvc.common.register.RegisterUtil;
 import org.osgi.framework.BundleActivator;
@@ -57,7 +57,7 @@ public class Activator implements BundleActivator {
      */
     private void registerService() {
         // get the jsonString form the service file
-        String root = SystemEnvVariables.getinstance().getAppRoot();
+        String root = SystemEnvVariablesFactory.getInstance().getAppRoot();
         String serviceFilePath = root + File.separator + Constant.FILE_PATH_ETC + File.separator
                 + Constant.FILE_PATH_REGISTER + File.separator + Constant.FILE_PATH_JSON;
         String jsonInfo = RegisterUtil.readFile(serviceFilePath);
