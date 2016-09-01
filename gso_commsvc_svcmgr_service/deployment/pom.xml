@@ -22,22 +22,22 @@
             <type>war</type>
         </dependency>
         <dependency>
-            <groupId>org.openo.baseservice</groupId>
+            <groupId>org.openo.common-services.common-utilities</groupId>
             <artifactId>commonlib-cbb</artifactId>
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <!-- 
         <dependency>
-            <groupId>org.openo.baseservice.biz</groupId>
-            <artifactId>org.openo.baseservice.biz.inittool</artifactId>
+            <groupId>org.openo.common-services.common-utilities.biz</groupId>
+            <artifactId>org.openo.common-services.common-utilities.biz.inittool</artifactId>
             <version>RELEASE</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.openo.baseservice</groupId>
-                    <artifactId>org.openo.baseservice.cloudsop-commonlib-service</artifactId>
+                    <groupId>org.openo.common-services.common-utilities</groupId>
+                    <artifactId>org.openo.common-services.common-utilities.cloudsop-commonlib-service</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.openo.baseservice</groupId>
+                    <groupId>org.openo.common-services.common-utilities</groupId>
                     <artifactId>commonlib-restclient</artifactId>
                 </exclusion>
             </exclusions>

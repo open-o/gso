@@ -18,7 +18,7 @@ package org.openo.gso.commsvc.common.register;
 import java.io.File;
 
 import org.junit.Test;
-import org.openo.baseservice.util.inf.SystemEnvVariables;
+import org.openo.baseservice.util.impl.SystemEnvVariablesFactory;
 import org.openo.gso.commsvc.common.constant.Constant;
 
 /**
@@ -94,7 +94,7 @@ public class RegisterUtilTest {
      */
     @Test
     public void testReadFileWithWarnPath() {
-        String root = SystemEnvVariables.getinstance().getAppRoot();
+        String root = SystemEnvVariablesFactory.getInstance().getAppRoot();
         String path = root + File.separator + Constant.FILE_PATH_ETC + File.separator + Constant.FILE_PATH_REGISTER
                 + File.separator + "test.json";
         RegisterUtil.readFile(path);

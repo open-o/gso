@@ -235,15 +235,15 @@
                                         ant.mkdir(dir: "${unzipdir}/webapps/ROOT/WEB-INF/lib");
                                         ant.copy(todir: "${unzipdir}/webapps/ROOT/WEB-INF/lib") {
                                                 fileset(dir: "${unzipdir}/lib") {
-                                                    include(name: "org.openo.baseservice.commonlib.db-*.jar")
-                                                    include(name: "org.openo.baseservice.commonlib.cbb-*.jar")                                                    
+                                                    include(name: "org.openo.common-services.common-utilities.commonlib.db-*.jar")
+                                                    include(name: "org.openo.common-services.common-utilities.commonlib.cbb-*.jar")                                                    
                                                 }
                                             }
                                         
                                         ant.delete() {
                                                 fileset(dir: "${unzipdir}/lib") {
-                                                    include(name: "org.openo.baseservice.commonlib.db-*.jar")
-                                                    include(name: "org.openo.baseservice.commonlib.cbb-*.jar")                                                    
+                                                    include(name: "org.openo.common-services.common-utilities.commonlib.db-*.jar")
+                                                    include(name: "org.openo.common-services.common-utilities.commonlib.cbb-*.jar")                                                    
                                                 }
                                         }
                                         
