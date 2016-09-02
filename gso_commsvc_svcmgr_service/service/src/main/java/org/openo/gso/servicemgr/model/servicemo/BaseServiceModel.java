@@ -60,7 +60,7 @@ public class BaseServiceModel {
     /**
      * Time that create service instance.
      */
-    private long createAt;
+    private Long createAt;
 
     /**
      * @return Returns the serviceId.
@@ -149,14 +149,14 @@ public class BaseServiceModel {
     /**
      * @return Returns the createAt.
      */
-    public long getCreateAt() {
+    public Long getCreateAt() {
         return createAt;
     }
 
     /**
      * @param createAt The createAt to set.
      */
-    public void setCreateAt(long createAt) {
+    public void setCreateAt(Long createAt) {
         this.createAt = createAt;
     }
 

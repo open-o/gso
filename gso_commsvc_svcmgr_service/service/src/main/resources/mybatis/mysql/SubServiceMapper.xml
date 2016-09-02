@@ -20,9 +20,9 @@
     <insert id="batchInsert" parameterType="org.openo.gso.servicemgr.model.servicemo.SubServiceModel">
         insert into t_lcm_subService(serviceId,subServiceId,subServiceName,templateId,nodeType,owner,topoSeqNumber)
         values
-        <foreach collection="SubServiceModel" item="item" index="index" separator=",">
-            (#{item.serviceId},#{item.subServiceId},#{item.subServiceName},#{item.templateId},#{item.nodeType},#{item.owner},#{item.topoSeqNumber})
-        </foreach>
+         <foreach collection="SubServiceModel" item="item" index="index" separator=",">
+             (#{item.serviceId},#{item.subServiceId},#{item.subServiceName},#{item.templateId},#{item.nodeType},#{item.owner},#{item.topoSeqNumber})
+         </foreach>
     </insert>
 
     <delete id="delete">

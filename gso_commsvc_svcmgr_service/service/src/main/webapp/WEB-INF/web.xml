@@ -16,16 +16,15 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>CXFServlet</servlet-name>
-        <url-pattern>/rest/*</url-pattern>
+        <url-pattern>/openoapi/*</url-pattern>
     </servlet-mapping>
-
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>WEB-INF/classes/spring/*.xml,classpath*:spring/applicationContext.xml</param-value>
+        <param-value>WEB-INF/classes/spring/*.xml,classpath*:spring/applicationContext.xml,classpath*:spring/service.xml</param-value>
     </context-param>
 
     <session-config>

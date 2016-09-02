@@ -22,10 +22,11 @@
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
     <!-- jar rest server registration -->
-    <jaxrs:server id="sampleServer" address="/">
+    <jaxrs:server id="sampleServer" address="/">    
         <!-- registering beans -->
         <jaxrs:serviceBeans>
-            <ref bean="ServicemgrRoaModule"></ref>
+            <ref bean="ServicemgrRoaModuleImpl"></ref>
+            <ref bean="ServicePackageModuleImpl"></ref>
         </jaxrs:serviceBeans>
         <!-- registering providers -->
         <jaxrs:providers>
@@ -33,20 +34,19 @@
         </jaxrs:providers>
     </jaxrs:server>
     
-    <bean id="source" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/mybatistest" />
-        <property name="username" value="root" />
-        <property name="passeord" value="Test@1234" />
+    <bean id="datasource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/mybatistest" />
+        <property name="user" value="root" />
+        <property name="password" value="Test_12345" />
     </bean>
+    
     <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="source" />
+        <property name="dataSource" ref="datasource" />
         <property name="mapperLocations" value="classpath*:mybatis/mappers/*.xml" />
     </bean>
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="source" />
-    </bean>
-    <bean id="seesion" class="org.mybatis.spring.SqlSessionTemplate">
+    
+    <bean id="session" class="org.mybatis.spring.SqlSessionTemplate">
         <constructor-arg index="0" ref="sessionFactory" />
     </bean>
 
@@ -55,13 +55,25 @@
     <bean id="Activator" class="org.openo.gso.servicemgr.activator.Activator" init-method="start" destroy-method="stop">
     </bean>
     
-    <bean id="ServicemgrRoaModule" class="org.openo.gso.servicemgr.roa.ServicemgrRoaModule">
+    <bean id="ServicemgrRoaModuleImpl" class="org.openo.gso.servicemgr.roa.impl.ServicemgrRoaModuleImpl">
         <property name="servicemanager" ref="servicemanager"></property>
-    </bean>
+    </bean>    
     
     <bean id="servicemanager" class="org.openo.gso.servicemgr.service.impl.ServiceManagerImpl">
         <property name="serviceModelDao" ref="serviceModelDao"></property>
         <property name="subServiceDao" ref="subServiceDao"></property>
+        <property name="servicePackageDao" ref="servicePackageDao"></property>
+        <property name="catalogProxy" ref="catalogProxy"></property>
+        <property name="wsoProxy" ref="wsoProxy"></property>
+    </bean>
+    
+    <bean id="ServicePackageModuleImpl" class="org.openo.gso.servicemgr.roa.impl.ServicePackageModuleImpl">
+        <property name="packageMgr" ref="packageMgr"></property>
+    </bean>
+    
+    <bean id="packageMgr" class="org.openo.gso.servicemgr.service.impl.PackageManagerImpl">
+        <property name="servicePackageDao" ref="servicePackageDao"></property>
+        <property name="catalogProxy" ref="catalogProxy"></property>
     </bean>
 
     <bean id="serviceModelDao" class="org.openo.gso.servicemgr.dao.impl.ServiceModelDaoImpl">
@@ -74,5 +86,11 @@
 
     <bean id="subServiceDao" class="org.openo.gso.servicemgr.dao.impl.SubServiceDaoImpl">
         <property name="session" ref="session" />
+    </bean>
+    
+    <bean id="catalogProxy" class="org.openo.gso.servicemgr.restproxy.impl.CatalogProxyImpl">
+    </bean>
+    
+    <bean id="wsoProxy" class="org.openo.gso.servicemgr.restproxy.impl.WsoProxyImpl">
     </bean>
 </beans>

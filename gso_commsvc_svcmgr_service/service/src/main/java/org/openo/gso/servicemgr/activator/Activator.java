@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openo.gso.servicemgr.activator;
 
 import java.io.File;
@@ -21,8 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openo.baseservice.util.impl.SystemEnvVariablesFactory;
 import org.openo.gso.commsvc.common.constant.Constant;
 import org.openo.gso.commsvc.common.register.RegisterUtil;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,9 +29,9 @@ import org.slf4j.LoggerFactory;
  * Service Start <br/>
  * 
  * @author
- * @since GSO 1.0, 2016-8-10
+ * @since GSO 0.5, 2016-8-10
  */
-public class Activator implements BundleActivator {
+public class Activator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Activator.class);
 
@@ -42,9 +41,9 @@ public class Activator implements BundleActivator {
      * @param context
      *            service context
      * @author
-     * @since GSO 1.0, 2016-8-10
+     * @since GSO 0.5, 2016-8-10
      */
-    public void start(BundleContext context) throws Exception {
+    public void start() {
         // register restful to M-Bus when starting service
         registerService();
     }
@@ -53,7 +52,7 @@ public class Activator implements BundleActivator {
      * register the service to M-Bus<br/>
      * 
      * @author
-     * @since GSO 1.0, 2016-8-10
+     * @since GSO 0.5, 2016-8-10
      */
     private void registerService() {
         // get the jsonString form the service file
@@ -63,7 +62,7 @@ public class Activator implements BundleActivator {
         String jsonInfo = RegisterUtil.readFile(serviceFilePath);
 
         // check the jsonInfo
-        if (StringUtils.isEmpty(jsonInfo)) {
+        if(StringUtils.isEmpty(jsonInfo)) {
             LOGGER.error("GSO ReadFile  fail: jsonInfo is null. the serviceFilePath=" + serviceFilePath);
             return;
         }
@@ -78,9 +77,9 @@ public class Activator implements BundleActivator {
      * @param context
      *            service context
      * @author
-     * @since GSO 1.0, 2016-8-10
+     * @since GSO 0.5, 2016-8-10
      */
-    public void stop(BundleContext context) throws Exception {
+    public void stop() {
         // no operation
     }
 }

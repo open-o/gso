@@ -54,4 +54,22 @@ public interface ServicePackageMapper {
      * @since GSO 0.5
      */
     List<ServicePackageMapping> queryAllMappings();
+
+    /**
+     * Query service package by service instance ID.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @return service package
+     * @since GSO 0.5
+     */
+    ServicePackageMapping queryPackageMapping(@Param("serviceId") String serviceId);
+
+    /**
+     * Query service packages by service package ID.<br/>
+     * 
+     * @param serviceDefId service package ID
+     * @return service packages
+     * @since GSO 0.5
+     */
+    List<ServicePackageMapping> queryPackageMappings(@Param("serviceDefId") String serviceDefId);
 }

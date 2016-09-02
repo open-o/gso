@@ -16,6 +16,8 @@
 
 package org.openo.gso.servicemgr.model.servicemo;
 
+import java.util.List;
+
 /**
  * Service model class<br/>
  * <p>
@@ -30,6 +32,11 @@ public class ServiceModel extends BaseServiceModel {
      * Mapping relation object.
      */
     private ServicePackageMapping servicePackage;
+
+    /**
+     * Parameters of service instance.
+     */
+    private List<ServiceParameter> parameters;
 
     /**
      * Constructor<br/>
@@ -56,4 +63,17 @@ public class ServiceModel extends BaseServiceModel {
         this.servicePackage = servicePackage;
     }
 
+    /**
+     * @return Returns the parameters.
+     */
+    public List<ServiceParameter> getParameters() {
+        return parameters;
+    }
+
+    /**
+     * @param parameters The parameters to set.
+     */
+    public void setParameters(List<ServiceParameter> parameters) {
+        this.parameters = parameters;
+    }
 }

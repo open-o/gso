@@ -14,38 +14,21 @@
  * limitations under the License.
  */
 
-package org.openo.gso.servicemgr.exception;
+package org.openo.gso.servicemgr.util.uuid;
+
+import java.util.UUID;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
- * Constant Class.<br/>
+ * Resource identify generation class.<br/>
  * <p>
- * Define constant for recording error.
  * </p>
  * 
  * @author
- * @version GSO 0.5 2016/8/4
+ * @version GSO 0.5 2016/9/1
  */
-public class ErrorCode {
-
-    /**
-     * Fail to operate database.
-     */
-    public static final String SVCMGR_OPER_MYSQL_DB_ERROR = "servicemgr.mysql.oper_mysql_db_error";
-
-    /**
-     * Parameter is wrong.
-     */
-    public static final String SVCMGR_SERVICEMGR_BAD_PARAM = "servicemgr.bad_param";
-
-    /**
-     * Operation is failure.
-     */
-    public static final String SVCMGR_SERVICEMGR_FAIL_OPERATION = "servicemgr.fail.operation";
-
-    /**
-     * Package is being deleted.
-     */
-    public static final String SVCMGR_PACKAGE_BEING_DELETED = "servicemgr.package.beingDelete";
+public class UuidUtils {
 
     /**
      * Constructor<br/>
@@ -54,7 +37,18 @@ public class ErrorCode {
      * 
      * @since GSO 0.5
      */
-    private ErrorCode() {
+    private UuidUtils() {
 
+    }
+
+    /**
+     * Generate UUID by 3rd tools.<br/>
+     * 
+     * @return uuid
+     * @since GSO 0.5
+     */
+    public static String createUuid() {
+        String uuid = UUID.randomUUID().toString();
+        return StringUtils.remove(uuid, '-');
     }
 }

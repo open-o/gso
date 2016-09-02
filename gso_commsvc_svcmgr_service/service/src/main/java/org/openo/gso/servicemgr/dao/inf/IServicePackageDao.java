@@ -57,4 +57,24 @@ public interface IServicePackageDao {
      * @since GSO 0.5
      */
     List<ServicePackageMapping> queryAllMappings() throws ServiceException;
+
+    /**
+     * Query service package by service instance ID.<br/>
+     * 
+     * @param serviceId service instance ID.
+     * @return service package
+     * @throws ServiceException when fail to query.
+     * @since GSO 0.5
+     */
+    ServicePackageMapping queryPackageMapping(String serviceId) throws ServiceException;
+
+    /**
+     * Query service package by package ID.<br/>
+     * 
+     * @param serviceDefId service package ID
+     * @return service packages
+     * @throws ServiceException when fail to query
+     * @since GSO 0.5
+     */
+    List<ServicePackageMapping> queryPackageMappings(String serviceDefId) throws ServiceException;
 }

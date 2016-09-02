@@ -17,15 +17,23 @@
 package org.openo.gso.servicemgr.roa.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.baseservice.util.RestUtils;
+import org.openo.gso.servicemgr.constant.Constant;
+import org.openo.gso.servicemgr.exception.HttpCode;
 import org.openo.gso.servicemgr.model.servicemo.ServiceModel;
 import org.openo.gso.servicemgr.model.servicemo.SubServiceModel;
 import org.openo.gso.servicemgr.roa.inf.IServicemgrRoaModule;
 import org.openo.gso.servicemgr.service.inf.IServiceManager;
+import org.openo.gso.servicemgr.util.http.ResponseUtils;
+import org.openo.gso.servicemgr.util.validate.ValidateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implement class for restful interface.<br/>
@@ -36,6 +44,11 @@ import org.openo.gso.servicemgr.service.inf.IServiceManager;
  * @version GSO 0.5 2016/8/4
  */
 public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
+
+    /**
+     * Log server.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServicemgrRoaModuleImpl.class);
 
     /**
      * Service manager.
@@ -59,16 +72,36 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     /**
      * Create service instance.<br/>
      * 
-     * @param serviceModle content of creating service
      * @param servletReq http request
      * @return response
      * @throws ServiceException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public Response createService(ServiceModel serviceModle, HttpServletRequest servletReq) throws ServiceException {
-        serviceManager.createService(serviceModle, servletReq);
-        return Response.accepted().entity("success").build();
+    public Response createService(HttpServletRequest servletReq) {
+        Map<String, Object> operateStatus = null;
+        Map<String, Object> result = null;
+        ServiceModel serviceModel = null;
+        try {
+            // 1. Check validation
+            String reqContent = RestUtils.getRequestBody(servletReq);
+            ValidateUtil.assertStringNotNull(reqContent);
+
+            // 2. Create service
+            serviceModel = serviceManager.createService(reqContent, servletReq);
+        } catch(ServiceException exception) {
+            LOGGER.error("Fail to create service instance.");
+            operateStatus = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_FAIL, exception,
+                    String.valueOf(exception.getHttpCode()));
+            result = ResponseUtils.setResult(serviceModel, operateStatus);
+            Response.accepted().entity(result).build();
+        }
+
+        operateStatus = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_SUCCESS, null,
+                String.valueOf(HttpCode.RESPOND_OK));
+        result = ResponseUtils.setResult(serviceModel, operateStatus);
+
+        return Response.accepted().entity(result).build();
     }
 
     /**
@@ -81,9 +114,22 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      * @since GSO 0.5
      */
     @Override
-    public Response deleteService(String serviceId, HttpServletRequest servletReq) throws ServiceException {
-        serviceManager.deleteService(serviceId, servletReq);
-        return Response.accepted().entity("success").build();
+    public Response deleteService(String serviceId, HttpServletRequest servletReq) {
+        Map<String, Object> operateStatus = null;
+        try {
+            ValidateUtil.assertStringNotNull(serviceId);
+            serviceManager.deleteService(serviceId, servletReq);
+        } catch(ServiceException exception) {
+            LOGGER.error("Fail to delete service instance.");
+            operateStatus = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_FAIL, exception,
+                    String.valueOf(exception.getHttpCode()));
+            Response.accepted().entity(operateStatus).build();
+        }
+
+        operateStatus = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_SUCCESS, null,
+                String.valueOf(HttpCode.RESPOND_OK));
+
+        return Response.accepted().entity(operateStatus).build();
     }
 
     /**
@@ -110,10 +156,35 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      * @since GSO 0.5
      */
     @Override
-    public Response getTopoSequence(String serviceId, HttpServletRequest servletReq) throws ServiceException {
-        List<SubServiceModel> subServices = serviceManager.getSubServices(serviceId);
+    public Response getTopoSequence(String serviceId, HttpServletRequest servletReq) {
+        List<SubServiceModel> subServices = null;
+        Map<String, Object> operateStatus = null;
+        try {
+            subServices = serviceManager.getSubServices(serviceId);
+        } catch(ServiceException exception) {
+            LOGGER.error("Fail to query the sequence of topology.");
+            operateStatus = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_FAIL, exception,
+                    String.valueOf(exception.getHttpCode()));
+            Response.accepted().entity(operateStatus).build();
+        }
 
-        return Response.accepted(subServices).build();
+        operateStatus = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_SUCCESS, null,
+                String.valueOf(HttpCode.RESPOND_OK));
+
+        return Response.accepted().entity(subServices).build();
+    }
+
+    /**
+     * Storage sub-service instance.<br/>
+     * 
+     * @param servletReq http request
+     * @return response
+     * @throws ServiceException when fail to storage sub-service instance.
+     * @since GSO 0.5
+     */
+    @Override
+    public Response storageSubService(HttpServletRequest servletReq) throws ServiceException {
+        return null;
     }
 
 }

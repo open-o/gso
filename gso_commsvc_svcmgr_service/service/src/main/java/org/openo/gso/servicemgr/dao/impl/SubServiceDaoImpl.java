@@ -82,7 +82,7 @@ public class SubServiceDaoImpl implements ISubServiceDao {
             SubServiceMapper subServiceMapper = getMapper(SubServiceMapper.class);
             subServiceMapper.batchInsert(subServices);
         } catch(Exception e) {
-            LOGGER.error("Fail to insert sub-service instances.", e);
+            LOGGER.error("Fail to insert sub-service instances. {}", e);
             throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
         }
     }
@@ -106,7 +106,7 @@ public class SubServiceDaoImpl implements ISubServiceDao {
             SubServiceMapper subServiceMapper = getMapper(SubServiceMapper.class);
             subServiceMapper.delete(serviceId);
         } catch(Exception e) {
-            LOGGER.error("Fail to delete sub-service instances.", e);
+            LOGGER.error("Fail to delete sub-service instances. {}", e);
             throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
         }
     }
@@ -131,7 +131,7 @@ public class SubServiceDaoImpl implements ISubServiceDao {
             SubServiceMapper subServiceMapper = getMapper(SubServiceMapper.class);
             return subServiceMapper.querySubServices(serviceId);
         } catch(Exception e) {
-            LOGGER.error("Fail to query sub-service instances.", e);
+            LOGGER.error("Fail to query sub-service instances. {}", e);
             throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
         }
     }

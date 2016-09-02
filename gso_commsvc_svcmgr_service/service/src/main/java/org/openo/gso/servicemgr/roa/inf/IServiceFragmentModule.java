@@ -19,7 +19,6 @@ package org.openo.gso.servicemgr.roa.inf;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -30,20 +29,20 @@ import javax.ws.rs.core.Response;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 
 /**
- * API for restful interface.<br/>
+ * Interface to manage database data of service segment.<br/>
  * <p>
  * </p>
  * 
  * @author
- * @version GSO 0.5 2016/8/4
+ * @version GSO 0.5 2016/9/2
  */
 @Path("/lifecyclemgr/v1/services")
 @Consumes({"application/json"})
 @Produces({"application/json"})
-public interface IServicemgrRoaModule {
+public interface IServiceFragmentModule {
 
     /**
-     * Create service instance.<br/>
+     * Create service segment.<br/>
      * 
      * @param servletReq http request
      * @return response
@@ -53,12 +52,14 @@ public interface IServicemgrRoaModule {
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    Response createService(@Context HttpServletRequest servletReq) throws ServiceException;
+    @Path("/service-segment")
+    Response createServiceSegment(@Context HttpServletRequest servletReq) throws ServiceException;
 
     /**
-     * Delete service instance.<br/>
+     * Delete service segment.<br/>
      * 
      * @param serviceId service instance id
+     * @param segmentId service segment id
      * @param servletReq http request
      * @return response
      * @throws ServiceException when operate database or parameter is wrong.
@@ -67,50 +68,25 @@ public interface IServicemgrRoaModule {
     @DELETE
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    @Path("/{serviceId}")
-    Response deleteService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq)
-            throws ServiceException;
+    @Path("/{serviceId}/service-segment/{segmentId}")
+    Response deleteServiceSegment(@PathParam("serviceId") String serviceId, @PathParam("segmentId") String segmentId,
+            @Context HttpServletRequest servletReq) throws ServiceException;
 
     /**
-     * Query all service instances.<br/>
+     * update service segment.<br/>
      * 
-     * @param servletReq http request
-     * @return response
-     * @throws ServiceException when operate database.
-     * @since GSO 0.5
-     */
-    @GET
-    @Produces({"application/json"})
-    @Consumes({"application/json"})
-    Response getAllInstances(@Context HttpServletRequest servletReq) throws ServiceException;
-
-    /**
-     * Query represent sequence in topology.<br/>
-     * 
-     * @param serviceId service instance ID
+     * @param serviceId service instance id
+     * @param segmentId service segment id
      * @param servletReq http request
      * @return response
      * @throws ServiceException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
-    @GET
+    @DELETE
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    @Path("/toposequence/{serviceId}")
-    Response getTopoSequence(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq)
-            throws ServiceException;
+    @Path("/{serviceId}/service-segment/{segmentId}")
+    Response updateServiceSegment(@PathParam("serviceId") String serviceId, @PathParam("segmentId") String segmentId,
+            @Context HttpServletRequest servletReq) throws ServiceException;
 
-    /**
-     * Storage sub-service instance.<br/>
-     * 
-     * @param servletReq http request
-     * @return response
-     * @throws ServiceException when fail to storage sub-service instance.
-     * @since GSO 0.5
-     */
-    @POST
-    @Produces({"application/json"})
-    @Consumes({"application/json"})
-    @Path("/subservices")
-    Response storageSubService(@Context HttpServletRequest servletReq) throws ServiceException;
 }

@@ -81,7 +81,7 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
             ServicePackageMapper packageMapper = getMapper(ServicePackageMapper.class);
             packageMapper.insert(packageMapping);
         } catch(Exception e) {
-            LOGGER.error("Fail to insert mapping relation.", e);
+            LOGGER.error("Fail to insert mapping relation. {}", e);
             throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
         }
     }
@@ -105,7 +105,7 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
             ServicePackageMapper packageMapper = getMapper(ServicePackageMapper.class);
             packageMapper.delete(serviceId);
         } catch(Exception e) {
-            LOGGER.error("Fail to insert mapping relation.", e);
+            LOGGER.error("Fail to insert mapping relation. {}", e);
             throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
         }
     }
@@ -123,7 +123,7 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
             ServicePackageMapper packageMapper = getMapper(ServicePackageMapper.class);
             return packageMapper.queryAllMappings();
         } catch(Exception e) {
-            LOGGER.error("Fail to query all of mapping relations.", e);
+            LOGGER.error("Fail to query all of mapping relations. {}", e);
             throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
         }
     }
@@ -137,5 +137,43 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
      */
     private <T> T getMapper(Class<T> type) {
         return this.session.getMapper(type);
+    }
+
+    /**
+     * Query service package by service instance ID.<br/>
+     * 
+     * @param serviceId service instance ID.
+     * @return service package
+     * @throws ServiceException when fail to query.
+     * @since GSO 0.5
+     */
+    @Override
+    public ServicePackageMapping queryPackageMapping(String serviceId) throws ServiceException {
+        try {
+            ServicePackageMapper packageMapper = getMapper(ServicePackageMapper.class);
+            return packageMapper.queryPackageMapping(serviceId);
+        } catch(Exception e) {
+            LOGGER.error("Fail to query mapping relation. {}", e);
+            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+        }
+    }
+
+    /**
+     * Query service package by package ID.<br/>
+     * 
+     * @param serviceDefId service package ID
+     * @return service packages
+     * @throws ServiceException when fail to query
+     * @since GSO 0.5
+     */
+    @Override
+    public List<ServicePackageMapping> queryPackageMappings(String serviceDefId) throws ServiceException {
+        try {
+            ServicePackageMapper packageMapper = getMapper(ServicePackageMapper.class);
+            return packageMapper.queryPackageMappings(serviceDefId);
+        } catch(Exception e) {
+            LOGGER.error("Fail to query mapping relations. {}", e);
+            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+        }
     }
 }

@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.gso.servicemgr.dao.inf.IServiceModelDao;
@@ -90,7 +89,7 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
             ServicePackageMapper servicePackageMapper = getMapper(ServicePackageMapper.class);
             servicePackageMapper.insert(serviceModel.getServicePackage());
         } catch(Exception e) {
-            LOGGER.error("Fail to insert service instance.", e);
+            LOGGER.error("Fail to insert service instance. {}", e);
             throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
         }
     }
@@ -105,21 +104,16 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
     @Override
     public void delete(String serviceId) throws ServiceException {
         try {
-            // 1. Check data validation.
-            if(StringUtils.isEmpty(serviceId)) {
-                throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Service ID is wrong");
-            }
-
-            // 2. Delete service instance.
+            // 1. Delete service instance.
             ServiceModelMapper serviceModelMapper = getMapper(ServiceModelMapper.class);
             serviceModelMapper.delete(serviceId);
 
-            // 3. Delete mapping relation between service instance and service package.
+            // 2. Delete mapping relation between service instance and service package.
             ServicePackageMapper servicePackageMapper = getMapper(ServicePackageMapper.class);
             servicePackageMapper.delete(serviceId);
 
         } catch(Exception e) {
-            LOGGER.error("Fail to delete service instance.", e);
+            LOGGER.error("Fail to delete service instance. {}", e);
             throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
         }
     }
@@ -147,7 +141,7 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
             return composeData(services, serviceMappings);
 
         } catch(Exception e) {
-            LOGGER.error("Fail to delete service instance.", e);
+            LOGGER.error("Fail to delete service instance. {}", e);
         }
         throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
     }

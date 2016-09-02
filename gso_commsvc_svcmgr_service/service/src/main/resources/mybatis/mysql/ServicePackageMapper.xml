@@ -29,5 +29,13 @@
     <select id="queryAllMappings" resultMap="servicePackageMappingResultMap">
         select * from t_lcm_defPackage_mapping
     </select>
+    
+    <select id="queryPackageMapping" resultMap="servicePackageMappingResultMap">
+        select * from t_lcm_defPackage_mapping where serviceId = #{serviceId}
+    </select>
+    
+    <select id="queryPackageMappings" resultMap="servicePackageMappingResultMap">
+        select * from t_lcm_defPackage_mapping where serviceDefId = #{serviceDefId}
+    </select>
 
 </mapper>

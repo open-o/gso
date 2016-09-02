@@ -25,7 +25,7 @@ package org.openo.gso.servicemgr.exception;
  * @author
  * @version GSO 0.5 2016/8/4
  */
-public class HttpCode {    
+public class HttpCode {
 
     /**
      * Fail to request.
@@ -56,7 +56,12 @@ public class HttpCode {
      * Http response is ok.
      */
     public static final int RESPOND_OK = 200;
-    
+
+    /**
+     * Conflict
+     */
+    public static final int RESPOND_CONFLICT = 409;
+
     /**
      * Constructor<br/>
      * <p>

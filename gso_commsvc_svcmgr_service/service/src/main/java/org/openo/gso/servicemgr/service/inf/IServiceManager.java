@@ -37,12 +37,13 @@ public interface IServiceManager {
     /**
      * Create service instance.<br/>
      * 
-     * @param serviceModel service instance
+     * @param reqContent content of request
      * @param httpRequest http request
+     * @return service instance
      * @throws ServiceException when operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    void createService(ServiceModel serviceModel, HttpServletRequest httpRequest) throws ServiceException;
+    ServiceModel createService(String reqContent, HttpServletRequest httpRequest) throws ServiceException;
 
     /**
      * Delete service instances.<br/>
