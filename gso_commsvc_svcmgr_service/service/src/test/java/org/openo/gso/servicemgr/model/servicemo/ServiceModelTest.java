@@ -40,7 +40,7 @@ public class ServiceModelTest {
         serviceModel.setActiveStatus("active");
         serviceModel.setStatus("createdSucceed");
         serviceModel.setCreator("tester");
-        serviceModel.setCreateAt(123456);
+        serviceModel.setCreateAt(Long.valueOf(123456));
 
         ServicePackageMapping servicePackage = new ServicePackageMapping();
         servicePackage.setServiceDefId("12345");

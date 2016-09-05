@@ -40,7 +40,7 @@ public class BaseServiceModelTest {
         serviceModel.setActiveStatus("active");
         serviceModel.setStatus("createdSucceed");
         serviceModel.setCreator("tester");
-        serviceModel.setCreateAt(123456);
+        serviceModel.setCreateAt(Long.valueOf(123456));
 
         assertEquals("2", serviceModel.getServiceId());
         assertEquals("testSucceed", serviceModel.getName());

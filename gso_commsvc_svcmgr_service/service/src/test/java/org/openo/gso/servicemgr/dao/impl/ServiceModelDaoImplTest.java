@@ -183,7 +183,7 @@ public class ServiceModelDaoImplTest {
         serviceModel.setActiveStatus("active");
         serviceModel.setStatus("createdSucceed");
         serviceModel.setCreator("tester");
-        serviceModel.setCreateAt(1234567890);
+        serviceModel.setCreateAt(Long.valueOf(1234567890));
         serviceModelDao.insert(serviceModel);
     }
 
@@ -202,7 +202,7 @@ public class ServiceModelDaoImplTest {
         serviceModel.setActiveStatus("active");
         serviceModel.setStatus("createdSucceed");
         serviceModel.setCreator("tester");
-        serviceModel.setCreateAt(1234567890);
+        serviceModel.setCreateAt(Long.valueOf(1234567890));
 
         ServicePackageMapping servicePackage = new ServicePackageMapping();
         servicePackage.setServiceDefId("12345");
