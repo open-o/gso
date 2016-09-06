@@ -40,6 +40,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
@@ -55,6 +56,7 @@ import org.openo.gso.servicemgr.util.http.ResponseUtils;
 
 import mockit.Mock;
 import mockit.MockUp;
+import mockit.integration.junit4.JMockit;
 
 /**
  * Test ServicemgrRoaModuleImpl class.<br/>
@@ -64,6 +66,7 @@ import mockit.MockUp;
  * @author
  * @version GSO 0.5 2016/8/3
  */
+@RunWith(JMockit.class)
 public class ServicemgrRoaModuleImplTest {
 
     /**
@@ -191,13 +194,7 @@ public class ServicemgrRoaModuleImplTest {
     @Test
     public void testCreateServiceSuccess() throws ServiceException {
         // mock request body
-        new MockUp<RestUtils>() {
-
-            @Mock
-            public String getRequestBody(HttpServletRequest request) {
-                return getJsonString(FILE_PATH + "createServiceInstance.json");
-            }
-        };
+        mockGetRequestBody(FILE_PATH + "createServiceInstance.json");
 
         // mock get catalog parameters
         new MockUp<CatalogProxyImpl>() {
@@ -321,5 +318,21 @@ public class ServicemgrRoaModuleImplTest {
         }
 
         return json;
+    }
+    
+    /**
+     * Mock getRequestBody.<br/>
+     * 
+     * @param file json file path.
+     * @since GSO 0.5
+     */
+    private void mockGetRequestBody(final String file) {
+        new MockUp<RestUtils>() {
+
+            @Mock
+            public String getRequestBody(HttpServletRequest request) {
+                return getJsonString(file);
+            }
+        };
     }
 }
