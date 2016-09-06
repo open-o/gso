@@ -3,9 +3,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.openo.gso.commonsvc.servicemanagerservice</groupId>
+        <groupId>org.openo.gso</groupId>
         <artifactId>servicemanagerservice-root</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>servicemanagerservice-client</artifactId>
     <name>ServiceManagerServiceClient</name>
