@@ -25,6 +25,6 @@
     <mappers>
         <mapper resource="ServiceModelMapper.xml" />
         <mapper resource="ServicePackageMapper.xml" />
-        <mapper resource="SubServiceMapper.xml" />
+        <mapper resource="ServiceSegmentMapper.xml" />
     </mappers>
 </configuration>

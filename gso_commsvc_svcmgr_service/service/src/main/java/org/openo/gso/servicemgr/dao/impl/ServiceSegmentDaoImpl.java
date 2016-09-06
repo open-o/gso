@@ -22,10 +22,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.gso.servicemgr.dao.inf.ISubServiceDao;
+import org.openo.gso.servicemgr.dao.inf.IServiceSegmentDao;
 import org.openo.gso.servicemgr.exception.ErrorCode;
-import org.openo.gso.servicemgr.mapper.SubServiceMapper;
-import org.openo.gso.servicemgr.model.servicemo.SubServiceModel;
+import org.openo.gso.servicemgr.mapper.ServiceSegmentMapper;
+import org.openo.gso.servicemgr.model.servicemo.ServiceSegmentModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author
  * @version GSO 0.5 2016/8/4
  */
-public class SubServiceDaoImpl implements ISubServiceDao {
+public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
 
     /**
      * Log service.
@@ -64,31 +64,31 @@ public class SubServiceDaoImpl implements ISubServiceDao {
     }
 
     /**
-     * Insert sub-service instances in batch.<br/>
+     * Insert service segment instances in batch.<br/>
      * 
-     * @param subServices sub-service instances
+     * @param serviceSegments service segment instances
      * @throws ServiceException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void batchInsert(List<SubServiceModel> subServices) throws ServiceException {
+    public void batchInsert(List<ServiceSegmentModel> serviceSegments) throws ServiceException {
         try {
             // 1. Check data validation.
-            if(CollectionUtils.isEmpty(subServices)) {
+            if(CollectionUtils.isEmpty(serviceSegments)) {
                 throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Data is wrong");
             }
 
             // 2. Insert instances in batch.
-            SubServiceMapper subServiceMapper = getMapper(SubServiceMapper.class);
-            subServiceMapper.batchInsert(subServices);
+            ServiceSegmentMapper serviceSegment = getMapper(ServiceSegmentMapper.class);
+            serviceSegment.batchInsert(serviceSegments);
         } catch(Exception e) {
-            LOGGER.error("Fail to insert sub-service instances. {}", e);
+            LOGGER.error("Fail to insert service segment instances. {}", e);
             throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
         }
     }
 
     /**
-     * Delete sub-service instance by service ID.<br/>
+     * Delete service segment instance by service ID.<br/>
      * 
      * @param serviceId service instance ID
      * @throws ServiceException when database exception or parameter is wrong
@@ -102,36 +102,36 @@ public class SubServiceDaoImpl implements ISubServiceDao {
                 throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Data is wrong");
             }
 
-            // 2.Delete sub-service instances.
-            SubServiceMapper subServiceMapper = getMapper(SubServiceMapper.class);
-            subServiceMapper.delete(serviceId);
+            // 2.Delete service segment instances.
+            ServiceSegmentMapper serviceSegment = getMapper(ServiceSegmentMapper.class);
+            serviceSegment.delete(serviceId);
         } catch(Exception e) {
-            LOGGER.error("Fail to delete sub-service instances. {}", e);
+            LOGGER.error("Fail to delete service segment instances. {}", e);
             throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
         }
     }
 
     /**
-     * Query sub-service instances by service ID.<br/>
+     * Query service segment instances by service ID.<br/>
      * 
      * @param serviceId service instance ID
-     * @return sub-service instances.
+     * @return service segment instances.
      * @throws ServiceException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public List<SubServiceModel> querySubServices(String serviceId) throws ServiceException {
+    public List<ServiceSegmentModel> queryServiceSegments(String serviceId) throws ServiceException {
         try {
             // 1. Check data validation.
             if(StringUtils.isEmpty(serviceId)) {
                 throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Data is wrong");
             }
 
-            // 2. Query sub-service instances.
-            SubServiceMapper subServiceMapper = getMapper(SubServiceMapper.class);
-            return subServiceMapper.querySubServices(serviceId);
+            // 2. Query service segment instances.
+            ServiceSegmentMapper serviceSegment = getMapper(ServiceSegmentMapper.class);
+            return serviceSegment.queryServiceSegments(serviceId);
         } catch(Exception e) {
-            LOGGER.error("Fail to query sub-service instances. {}", e);
+            LOGGER.error("Fail to query service segment instances. {}", e);
             throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
         }
     }

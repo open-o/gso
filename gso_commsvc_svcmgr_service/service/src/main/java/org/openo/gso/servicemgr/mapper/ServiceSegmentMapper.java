@@ -14,48 +14,45 @@
  * limitations under the License.
  */
 
-package org.openo.gso.servicemgr.dao.inf;
+package org.openo.gso.servicemgr.mapper;
 
 import java.util.List;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.gso.servicemgr.model.servicemo.SubServiceModel;
+import org.apache.ibatis.annotations.Param;
+import org.openo.gso.servicemgr.model.servicemo.ServiceSegmentModel;
 
 /**
- * Interface to operate database.<br/>
+ * Mapping Class of data operation.<br/>
  * <p>
  * </p>
  * 
  * @author
  * @version GSO 0.5 2016/8/4
  */
-public interface ISubServiceDao {
+public interface ServiceSegmentMapper {
 
     /**
-     * Insert sub-service instances in batch.<br/>
+     * Insert service segment instances in batch.<br/>
      * 
-     * @param subServices sub-service instances
-     * @throws ServiceException when database exception or parameter is wrong
+     * @param serviceSegments service segment instances
      * @since GSO 0.5
      */
-    void batchInsert(List<SubServiceModel> subServices) throws ServiceException;
+    void batchInsert(@Param("serviceSegments") List<ServiceSegmentModel> serviceSegments);
 
     /**
-     * Delete sub-service instance by service ID.<br/>
-     * 
-     * @param serviceId service instance ID
-     * @throws ServiceException when database exception or parameter is wrong
-     * @since GSO 0.5
-     */
-    void delete(String serviceId) throws ServiceException;
-
-    /**
-     * Query sub-service instances by service ID.<br/>
+     * Delete service segment instance by service ID.<br/>
      * 
      * @param serviceId service instance ID
-     * @return sub-service instances.
-     * @throws ServiceException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    List<SubServiceModel> querySubServices(String serviceId) throws ServiceException;
+    void delete(@Param("serviceId") String serviceId);
+
+    /**
+     * Query service segment instances by service ID.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @return service segment instances.
+     * @since GSO 0.5
+     */
+    List<ServiceSegmentModel> queryServiceSegments(@Param("serviceId") String serviceId);
 }

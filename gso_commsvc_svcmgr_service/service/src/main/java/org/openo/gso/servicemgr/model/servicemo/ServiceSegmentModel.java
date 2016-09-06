@@ -17,14 +17,14 @@
 package org.openo.gso.servicemgr.model.servicemo;
 
 /**
- * Sub-Service model class.<br/>
+ * Service segment model class.<br/>
  * <p>
  * </p>
  * 
  * @author
  * @version GSO 0.5 2016/8/4
  */
-public class SubServiceModel {
+public class ServiceSegmentModel {
 
     /**
      * Service instance ID.
@@ -32,32 +32,32 @@ public class SubServiceModel {
     private String serviceId;
 
     /**
-     * Sub-service instance ID.
+     * Service segment instance ID.
      */
-    private String subServiceId;
+    private String serviceSegmentId;
 
     /**
-     * Sub-service instance name.
+     * Service segment instance name.
      */
-    private String subServiceName;
+    private String serviceSegmentName;
 
     /**
-     * Sub-service definition template ID.
+     * Service segment definition template ID.
      */
     private String templateId;
 
     /**
-     * Node type of sub-service. For example tosca.vfv.node.POP
+     * Node type of Service segment. For example tosca.vfv.node.POP
      */
     private String nodeType;
 
     /**
-     * Owner that sub-service instance belongs to.
+     * Owner that Service segment instance belongs to.
      */
     private String owner;
 
     /**
-     * The sequence number that sub-service instance in topology.
+     * The sequence number that Service segment instance in topology.
      */
     private int topoSeqNumber;
 
@@ -76,31 +76,31 @@ public class SubServiceModel {
     }
 
     /**
-     * @return Returns the subServiceId.
+     * @return Returns the serviceSegmentId.
      */
-    public String getSubServiceId() {
-        return subServiceId;
+    public String getServiceSegmentId() {
+        return serviceSegmentId;
     }
 
     /**
-     * @param subServiceId The subServiceId to set.
+     * @param serviceSegmentId The serviceSegmentId to set.
      */
-    public void setSubServiceId(String subServiceId) {
-        this.subServiceId = subServiceId;
+    public void setServiceSegmentId(String serviceSegmentId) {
+        this.serviceSegmentId = serviceSegmentId;
     }
 
     /**
-     * @return Returns the subServiceName.
+     * @return Returns the serviceSegmentName.
      */
-    public String getSubServiceName() {
-        return subServiceName;
+    public String getServiceSegmentName() {
+        return serviceSegmentName;
     }
 
     /**
-     * @param subServiceName The subServiceName to set.
+     * @param serviceSegmentName The serviceSegmentName to set.
      */
-    public void setSubServiceName(String subServiceName) {
-        this.subServiceName = subServiceName;
+    public void setServiceSegmentName(String serviceSegmentName) {
+        this.serviceSegmentName = serviceSegmentName;
     }
 
     /**
@@ -158,5 +158,4 @@ public class SubServiceModel {
     public void setTopoSeqNumber(int topoSeqNumber) {
         this.topoSeqNumber = topoSeqNumber;
     }
-
 }

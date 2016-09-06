@@ -6,31 +6,30 @@
     language governing permissions and * limitations under the License. */ -->
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.openo.gso.servicemgr.mapper.SubServiceMapper">
-    <resultMap type="org.openo.gso.servicemgr.model.servicemo.SubServiceModel" id="SubServiceResultMap">
+<mapper namespace="org.openo.gso.servicemgr.mapper.ServiceSegmentMapper">
+    <resultMap type="org.openo.gso.servicemgr.model.servicemo.ServiceSegmentModel" id="ServiceSegmentResultMap">
         <result property="serviceId" column="serviceId" />
-        <result property="subServiceId" column="subServiceId" />
-        <result property="subServiceName" column="subServiceName" />
+        <result property="serviceSegmentId" column="serviceSegmentId" />
+        <result property="serviceSegmentName" column="serviceSegmentName" />
         <result property="templateId" column="templateId" />
         <result property="nodeType" column="nodeType" />
         <result property="owner" column="owner" />
         <result property="topoSeqNumber" column="topoSeqNumber" />
     </resultMap>
 
-    <insert id="batchInsert" parameterType="org.openo.gso.servicemgr.model.servicemo.SubServiceModel">
-        insert into t_lcm_subService(serviceId,subServiceId,subServiceName,templateId,nodeType,owner,topoSeqNumber)
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into t_lcm_service_segment(serviceId,serviceSegmentId,serviceSegmentName,templateId,nodeType,owner,topoSeqNumber)
         values
-         <foreach collection="SubServiceModel" item="item" index="index" separator=",">
-             (#{item.serviceId},#{item.subServiceId},#{item.subServiceName},#{item.templateId},#{item.nodeType},#{item.owner},#{item.topoSeqNumber})
-         </foreach>
+        <foreach collection="serviceSegments" item="item" index="index" separator=",">(#{item.serviceId},#{item.serviceSegmentId},#{item.serviceSegmentName},#{item.templateId},#{item.nodeType},#{item.owner},#{item.topoSeqNumber})
+        </foreach>
     </insert>
 
     <delete id="delete">
-        delete from t_lcm_subService where serviceId = #{serviceId}
+        delete from t_lcm_service_segment where serviceId = #{serviceId}
     </delete>
 
-    <select id="querySubServices" resultMap="SubServiceResultMap">
-        select * from t_lcm_subService where serviceId = #{serviceId}
+    <select id="queryServiceSegments" resultMap="ServiceSegmentResultMap">
+        select * from t_lcm_service_segment where serviceId = #{serviceId}
     </select>
 
 </mapper>

@@ -19,6 +19,10 @@ package org.openo.gso.servicemgr.model.servicemo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -41,6 +45,10 @@ public class ServiceModelTest {
         serviceModel.setStatus("createdSucceed");
         serviceModel.setCreator("tester");
         serviceModel.setCreateAt(Long.valueOf(123456));
+        ServiceParameter parameter = new ServiceParameter();
+        List<ServiceParameter> lstParam = new LinkedList<ServiceParameter>();
+        lstParam.add(parameter);
+        serviceModel.setParameters(lstParam);
 
         ServicePackageMapping servicePackage = new ServicePackageMapping();
         servicePackage.setServiceDefId("12345");
@@ -58,6 +66,7 @@ public class ServiceModelTest {
         assertEquals(String.valueOf(123456), String.valueOf(serviceModel.getCreateAt()));
 
         assertTrue(serviceModel.getServicePackage().equals(servicePackage));
+        Assert.assertNotNull(serviceModel.getParameters());
     }
 
 }

@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.gso.servicemgr.model.servicemo.ServiceModel;
-import org.openo.gso.servicemgr.model.servicemo.SubServiceModel;
+import org.openo.gso.servicemgr.model.servicemo.ServiceSegmentModel;
 
 /**
  * Interface to operate service.<br/>
@@ -65,12 +65,12 @@ public interface IServiceManager {
     List<ServiceModel> getAllInstances() throws ServiceException;
 
     /**
-     * Query all sub-service instances.<br/>
+     * Query all service segments instances.<br/>
      * 
      * @param serviceId service instance ID
      * @return sub-service instances
      * @throws ServiceException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    List<SubServiceModel> getSubServices(String serviceId) throws ServiceException;
+    List<ServiceSegmentModel> getServiceSegments(String serviceId) throws ServiceException;
 }

@@ -26,13 +26,13 @@ import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.gso.servicemgr.constant.Constant;
 import org.openo.gso.servicemgr.dao.inf.IServiceModelDao;
 import org.openo.gso.servicemgr.dao.inf.IServicePackageDao;
-import org.openo.gso.servicemgr.dao.inf.ISubServiceDao;
+import org.openo.gso.servicemgr.dao.inf.IServiceSegmentDao;
 import org.openo.gso.servicemgr.exception.ErrorCode;
 import org.openo.gso.servicemgr.model.catalogmo.OperationModel;
 import org.openo.gso.servicemgr.model.catalogmo.ParameterModel;
 import org.openo.gso.servicemgr.model.servicemo.ServiceModel;
 import org.openo.gso.servicemgr.model.servicemo.ServicePackageMapping;
-import org.openo.gso.servicemgr.model.servicemo.SubServiceModel;
+import org.openo.gso.servicemgr.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.servicemgr.restproxy.inf.ICatalogProxy;
 import org.openo.gso.servicemgr.restproxy.inf.IWsoProxy;
 import org.openo.gso.servicemgr.service.inf.IServiceManager;
@@ -65,9 +65,9 @@ public class ServiceManagerImpl implements IServiceManager {
     private IServiceModelDao serviceModelDao;
 
     /**
-     * DAO to operate sub-service instance.
+     * DAO to operate service segment instance.
      */
-    private ISubServiceDao subServiceDao;
+    private IServiceSegmentDao serviceSegmentDao;
 
     /**
      * DAO to operate service package.
@@ -168,16 +168,16 @@ public class ServiceManagerImpl implements IServiceManager {
     }
 
     /**
-     * Query all sub-service instances.<br/>
+     * Query all service segment instances.<br/>
      * 
      * @param serviceId service instance ID
-     * @return sub-service instances
+     * @return service segment instances
      * @throws ServiceException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public List<SubServiceModel> getSubServices(String serviceId) throws ServiceException {
-        return subServiceDao.querySubServices(serviceId);
+    public List<ServiceSegmentModel> getServiceSegments(String serviceId) throws ServiceException {
+        return serviceSegmentDao.queryServiceSegments(serviceId);
     }
 
     /**
@@ -195,17 +195,17 @@ public class ServiceManagerImpl implements IServiceManager {
     }
 
     /**
-     * @return Returns the subServiceDao.
+     * @return Returns the serviceSegmentDao.
      */
-    public ISubServiceDao getSubServiceDao() {
-        return subServiceDao;
+    public IServiceSegmentDao getServiceSegmentDao() {
+        return serviceSegmentDao;
     }
 
     /**
-     * @param subServiceDao The subServiceDao to set.
+     * @param serviceSegmentDao The serviceSegmentDao to set.
      */
-    public void setSubServiceDao(ISubServiceDao subServiceDao) {
-        this.subServiceDao = subServiceDao;
+    public void setServiceSegmentDao(IServiceSegmentDao serviceSegmentDao) {
+        this.serviceSegmentDao = serviceSegmentDao;
     }
 
     /**

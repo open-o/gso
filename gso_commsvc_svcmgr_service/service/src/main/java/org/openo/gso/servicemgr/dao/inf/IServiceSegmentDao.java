@@ -14,45 +14,48 @@
  * limitations under the License.
  */
 
-package org.openo.gso.servicemgr.mapper;
+package org.openo.gso.servicemgr.dao.inf;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-import org.openo.gso.servicemgr.model.servicemo.SubServiceModel;
+import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.servicemgr.model.servicemo.ServiceSegmentModel;
 
 /**
- * Mapping Class of data operation.<br/>
+ * Interface to operate database.<br/>
  * <p>
  * </p>
  * 
  * @author
  * @version GSO 0.5 2016/8/4
  */
-public interface SubServiceMapper {
+public interface IServiceSegmentDao {
 
     /**
-     * Insert sub-service instances in batch.<br/>
+     * Insert service segment instances in batch.<br/>
      * 
-     * @param subServices sub-service instances
+     * @param serviceSegments service segment instances
+     * @throws ServiceException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void batchInsert(@Param("subServices") List<SubServiceModel> subServices);
+    void batchInsert(List<ServiceSegmentModel> serviceSegments) throws ServiceException;
 
     /**
-     * Delete sub-service instance by service ID.<br/>
+     * Delete service segment instance by service ID.<br/>
      * 
      * @param serviceId service instance ID
+     * @throws ServiceException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void delete(@Param("serviceId") String serviceId);
+    void delete(String serviceId) throws ServiceException;
 
     /**
-     * Query sub-service instances by service ID.<br/>
+     * Query service segment instances by service ID.<br/>
      * 
      * @param serviceId service instance ID
      * @return sub-service instances.
+     * @throws ServiceException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    List<SubServiceModel> querySubServices(@Param("serviceId") String serviceId);
+    List<ServiceSegmentModel> queryServiceSegments(String serviceId) throws ServiceException;
 }

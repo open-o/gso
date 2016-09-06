@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.gso.servicemgr.dao.impl.ServiceModelDaoImpl;
-import org.openo.gso.servicemgr.dao.impl.SubServiceDaoImpl;
+import org.openo.gso.servicemgr.dao.impl.ServiceSegmentDaoImpl;
 
 /**
  * Test ServiceManagerImpl Class.<br/>
@@ -49,7 +49,7 @@ public class ServiceManagerImplTest {
     /**
      * Sub-Service DAO.
      */
-    SubServiceDaoImpl subServiceDao = new SubServiceDaoImpl();
+    ServiceSegmentDaoImpl serviceSegmentDao = new ServiceSegmentDaoImpl();
 
     /**
      * Http request.
@@ -59,29 +59,7 @@ public class ServiceManagerImplTest {
     @Before
     public void start() {
         serviceManager.setServiceModelDao(serviceDao);
-        serviceManager.setSubServiceDao(subServiceDao);
-    }
-
-    /**
-     * Invalid parameter.<br/>
-     * 
-     * @throws ServiceException when parameter is wrong.
-     * @since GSO 0.5
-     */
-    @Test(expected = ServiceException.class)
-    public void testCreateServiceFail() throws ServiceException {
-        serviceManager.createService(null, httpRequest);
-    }
-
-    /**
-     * Invalid parameter.<br/>
-     * 
-     * @throws ServiceException when parameter is wrong.
-     * @since GSO 0.5
-     */
-    @Test(expected = ServiceException.class)
-    public void testDeleteServiceFail() throws ServiceException {
-        serviceManager.deleteService(null, httpRequest);
+        serviceManager.setServiceSegmentDao(serviceSegmentDao);
     }
 
     /**
@@ -102,9 +80,9 @@ public class ServiceManagerImplTest {
      * @since GSO 0.5
      */
     @Test(expected = ServiceException.class)
-    public void testGetSubServicesFail() throws ServiceException {
+    public void testGetServiceSegmentssFail() throws ServiceException {
         serviceManager.setServiceModelDao(serviceDao);
-        serviceManager.getSubServices("1");
+        serviceManager.getServiceSegments("1");
     }
 
     /**
@@ -115,6 +93,6 @@ public class ServiceManagerImplTest {
     @Test
     public void testDAO() {
         assertNotNull(serviceManager.getServiceModelDao());
-        assertNotNull(serviceManager.getSubServiceDao());
+        assertNotNull(serviceManager.getServiceSegmentDao());
     }
 }

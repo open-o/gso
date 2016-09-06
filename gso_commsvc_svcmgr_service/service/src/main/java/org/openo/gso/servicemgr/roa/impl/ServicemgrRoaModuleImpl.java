@@ -27,7 +27,7 @@ import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.servicemgr.constant.Constant;
 import org.openo.gso.servicemgr.exception.HttpCode;
 import org.openo.gso.servicemgr.model.servicemo.ServiceModel;
-import org.openo.gso.servicemgr.model.servicemo.SubServiceModel;
+import org.openo.gso.servicemgr.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.servicemgr.roa.inf.IServicemgrRoaModule;
 import org.openo.gso.servicemgr.service.inf.IServiceManager;
 import org.openo.gso.servicemgr.util.http.ResponseUtils;
@@ -157,10 +157,10 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      */
     @Override
     public Response getTopoSequence(String serviceId, HttpServletRequest servletReq) {
-        List<SubServiceModel> subServices = null;
+        List<ServiceSegmentModel> serviceSegments = null;
         Map<String, Object> operateStatus = null;
         try {
-            subServices = serviceManager.getSubServices(serviceId);
+            serviceSegments = serviceManager.getServiceSegments(serviceId);
         } catch(ServiceException exception) {
             LOGGER.error("Fail to query the sequence of topology.");
             operateStatus = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_FAIL, exception,
@@ -171,11 +171,11 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
         operateStatus = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_SUCCESS, null,
                 String.valueOf(HttpCode.RESPOND_OK));
 
-        return Response.accepted().entity(subServices).build();
+        return Response.accepted().entity(serviceSegments).build();
     }
 
     /**
-     * Storage sub-service instance.<br/>
+     * Storage service segment instance.<br/>
      * 
      * @param servletReq http request
      * @return response
@@ -183,7 +183,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      * @since GSO 0.5
      */
     @Override
-    public Response storageSubService(HttpServletRequest servletReq) throws ServiceException {
+    public Response storageServiceSegment(HttpServletRequest servletReq) throws ServiceException {
         return null;
     }
 

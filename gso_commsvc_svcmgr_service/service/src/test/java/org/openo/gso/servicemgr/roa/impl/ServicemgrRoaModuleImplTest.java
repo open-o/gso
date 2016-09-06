@@ -18,28 +18,43 @@ package org.openo.gso.servicemgr.roa.impl;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.servicemgr.dao.impl.ServiceModelDaoImpl;
 import org.openo.gso.servicemgr.dao.impl.ServicePackageDaoImpl;
-import org.openo.gso.servicemgr.dao.impl.SubServiceDaoImpl;
-import org.openo.gso.servicemgr.model.servicemo.ServiceModel;
-import org.openo.gso.servicemgr.model.servicemo.ServicePackageMapping;
+import org.openo.gso.servicemgr.dao.impl.ServiceSegmentDaoImpl;
+import org.openo.gso.servicemgr.exception.HttpCode;
+import org.openo.gso.servicemgr.model.catalogmo.ParameterModel;
+import org.openo.gso.servicemgr.restproxy.impl.CatalogProxyImpl;
 import org.openo.gso.servicemgr.service.impl.ServiceManagerImpl;
+import org.openo.gso.servicemgr.util.http.HttpUtil;
+import org.openo.gso.servicemgr.util.http.ResponseUtils;
+
+import mockit.Mock;
+import mockit.MockUp;
 
 /**
  * Test ServicemgrRoaModuleImpl class.<br/>
@@ -52,29 +67,39 @@ import org.openo.gso.servicemgr.service.impl.ServiceManagerImpl;
 public class ServicemgrRoaModuleImplTest {
 
     /**
+     * File path
+     */
+    private static final String FILE_PATH = "src/test/resources/json/";
+
+    /**
      * Service ROA.
      */
-    ServicemgrRoaModuleImpl serviceRoa = new ServicemgrRoaModuleImpl();
+    ServicemgrRoaModuleImpl serviceRoa;
 
     /**
      * Service manager.
      */
-    ServiceManagerImpl serviceManager = new ServiceManagerImpl();
+    ServiceManagerImpl serviceManager;
 
     /**
      * Service model DAO.
      */
-    ServiceModelDaoImpl serviceDao = new ServiceModelDaoImpl();
+    ServiceModelDaoImpl serviceDao;
 
     /**
-     * Sub-Service DAO.
+     * Service segment DAO.
      */
-    SubServiceDaoImpl subServiceDao = new SubServiceDaoImpl();
+    ServiceSegmentDaoImpl serviceSegmentDao;
 
     /**
      * Package DAO.
      */
-    ServicePackageDaoImpl packageDao = new ServicePackageDaoImpl();
+    ServicePackageDaoImpl packageDao;
+
+    /**
+     * Catalog proxy.
+     */
+    CatalogProxyImpl catalogProxy;
 
     /**
      * SQL session.
@@ -87,19 +112,36 @@ public class ServicemgrRoaModuleImplTest {
     HttpServletRequest httpRequest;
 
     /**
+     * Rest response.
+     */
+    RestfulResponse responseSuccess;
+
+    /**
      * Before executing UT, start sql.<br/>
      * 
      * @since GSO 0.5
      */
     @Before
     public void start() throws IOException, SQLException {
+        serviceRoa = new ServicemgrRoaModuleImpl();
+        serviceManager = new ServiceManagerImpl();
+        serviceDao = new ServiceModelDaoImpl();
+        serviceSegmentDao = new ServiceSegmentDaoImpl();
+        packageDao = new ServicePackageDaoImpl();
+        catalogProxy = new CatalogProxyImpl();
+        responseSuccess = new RestfulResponse();
+
         prepareSQL();
+
         serviceDao.setSession(session);
-        subServiceDao.setSession(session);
+        serviceSegmentDao.setSession(session);
         packageDao.setSession(session);
         serviceManager.setServiceModelDao(serviceDao);
-        serviceManager.setSubServiceDao(subServiceDao);
+        serviceManager.setServiceSegmentDao(serviceSegmentDao);
+        serviceManager.setServicePackageDao(packageDao);
+        serviceManager.setCatalogProxy(catalogProxy);
         serviceRoa.setServicemanager(serviceManager);
+        responseSuccess.setStatus(HttpCode.RESPOND_OK);
     }
 
     /**
@@ -124,7 +166,7 @@ public class ServicemgrRoaModuleImplTest {
         reader = Resources.getResourceAsReader("ServicePackage.sql");
         runner.runScript(reader);
 
-        reader = Resources.getResourceAsReader("SubService.sql");
+        reader = Resources.getResourceAsReader("ServiceSegment.sql");
         runner.runScript(reader);
 
         reader.close();
@@ -141,30 +183,38 @@ public class ServicemgrRoaModuleImplTest {
     }
 
     /**
-     * Test create service.<br/>
+     * Test to create service successfully.<br/>
      * 
      * @throws ServiceException when fail to operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @Test
-    public void testCreateService() throws ServiceException {
-        ServiceModel serviceModel = new ServiceModel();
-        serviceModel.setServiceId("2");
-        serviceModel.setName("testSucceed");
-        serviceModel.setDescription("des");
-        serviceModel.setActiveStatus("active");
-        serviceModel.setStatus("createdSucceed");
-        serviceModel.setCreator("tester");
-        serviceModel.setCreateAt(Long.valueOf(1234567890));
+    public void testCreateServiceSuccess() throws ServiceException {
+        // mock request body
+        mockGetRequestBody(FILE_PATH + "createServiceInstance.json");
 
-        ServicePackageMapping servicePackage = new ServicePackageMapping();
-        servicePackage.setServiceDefId("12345");
-        servicePackage.setServiceId("2");
-        servicePackage.setTemplateId("123456");
-        servicePackage.setTemplateName("gso");
+        // mock get catalog parameters
+        new MockUp<CatalogProxyImpl>() {
 
-        serviceModel.setServicePackage(servicePackage);
-        //serviceRoa.createService(serviceModel, httpRequest);
+            @Mock
+            public List<ParameterModel> getParamsByTemplateId(String templateId, HttpServletRequest request)
+                    throws ServiceException {
+                return ResponseUtils.getDataModelFromRsp(getJsonString(FILE_PATH + "getTemplateParamters.json"),
+                        "inputs", ParameterModel.class);
+            }
+
+        };
+
+        // mock get catalog plans
+        RestfulResponse responsePlan = new RestfulResponse();
+        responsePlan.setResponseJson(getJsonString(FILE_PATH + "getPlans.json"));
+        responsePlan.setStatus(HttpCode.RESPOND_OK);
+        mockGet(responsePlan);
+
+        // mock start wso2 bpel workflow
+        mockPost(responseSuccess);
+
+        serviceRoa.createService(httpRequest);
     }
 
     /**
@@ -208,5 +258,78 @@ public class ServicemgrRoaModuleImplTest {
     @Test
     public void testGetServiceManager() {
         assertNotNull(serviceRoa.getServiceManager());
+    }
+
+    /**
+     * Mock to get request body.<br/>
+     * 
+     * @param file json file path.
+     * @since GSO 0.5
+     */
+    private void mockGetRequestBody(final String file) {
+        new MockUp<RestUtils>() {
+
+            @Mock
+            public String getRequestBody(HttpServletRequest request) {
+                return getJsonString(file);
+            }
+        };
+    }
+
+    /**
+     * Mock rest request for get.<br/>
+     * 
+     * @param response rest response
+     * @since GSO 0.5
+     */
+    private void mockGet(final RestfulResponse response) {
+        new MockUp<HttpUtil>() {
+
+            @Mock
+            public RestfulResponse get(final String url, final Map<String, String> httpHeaders,
+                    HttpServletRequest httpRequest) throws ServiceException {
+                return response;
+            }
+        };
+    }
+
+    /**
+     * Mock rest request for post.<br/>
+     * 
+     * @param response rest response
+     * @since GSO 0.5
+     */
+    private void mockPost(final RestfulResponse response) {
+        new MockUp<HttpUtil>() {
+
+            @Mock
+            public RestfulResponse post(final String url, Object sendObj, HttpServletRequest httpRequest) {
+                return response;
+            }
+        };
+    }
+
+    /**
+     * Get json string from file.<br/>
+     * 
+     * @param file the path of file
+     * @return json string
+     * @throws IOException when fail to read
+     * @since GSO 0.5
+     */
+    private String getJsonString(final String file) {
+        if(StringUtils.isEmpty(file)) {
+            return "";
+        }
+
+        String json = null;
+        try {
+            FileInputStream fileStream = new FileInputStream(new File(file));
+            json = IOUtils.toString(fileStream);
+        } catch(Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        return json;
     }
 }

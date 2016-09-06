@@ -20,7 +20,7 @@
     <!-- these are included in the dependency jar -->
     <import resource="classpath:META-INF/cxf/cxf.xml" />
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
-
+    
     <!-- jar rest server registration -->
     <jaxrs:server id="sampleServer" address="/">    
         <!-- registering beans -->
@@ -61,7 +61,7 @@
     
     <bean id="servicemanager" class="org.openo.gso.servicemgr.service.impl.ServiceManagerImpl">
         <property name="serviceModelDao" ref="serviceModelDao"></property>
-        <property name="subServiceDao" ref="subServiceDao"></property>
+        <property name="serviceSegmentDao" ref="serviceSegmentDao"></property>
         <property name="servicePackageDao" ref="servicePackageDao"></property>
         <property name="catalogProxy" ref="catalogProxy"></property>
         <property name="wsoProxy" ref="wsoProxy"></property>
@@ -84,7 +84,7 @@
         <property name="session" ref="session" />
     </bean>
 
-    <bean id="subServiceDao" class="org.openo.gso.servicemgr.dao.impl.SubServiceDaoImpl">
+    <bean id="serviceSegmentDao" class="org.openo.gso.servicemgr.dao.impl.ServiceSegmentDaoImpl">
         <property name="session" ref="session" />
     </bean>
     

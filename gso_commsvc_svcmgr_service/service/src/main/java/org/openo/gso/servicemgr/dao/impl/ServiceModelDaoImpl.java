@@ -29,6 +29,7 @@ import org.openo.gso.servicemgr.mapper.ServiceModelMapper;
 import org.openo.gso.servicemgr.mapper.ServicePackageMapper;
 import org.openo.gso.servicemgr.model.servicemo.ServiceModel;
 import org.openo.gso.servicemgr.model.servicemo.ServicePackageMapping;
+import org.openo.gso.servicemgr.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,6 +105,8 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
     @Override
     public void delete(String serviceId) throws ServiceException {
         try {
+            ValidateUtil.assertStringNotNull(serviceId);
+
             // 1. Delete service instance.
             ServiceModelMapper serviceModelMapper = getMapper(ServiceModelMapper.class);
             serviceModelMapper.delete(serviceId);

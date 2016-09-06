@@ -101,16 +101,16 @@ public interface IServicemgrRoaModule {
             throws ServiceException;
 
     /**
-     * Storage sub-service instance.<br/>
+     * Storage service segment instance.<br/>
      * 
      * @param servletReq http request
      * @return response
-     * @throws ServiceException when fail to storage sub-service instance.
+     * @throws ServiceException when fail to storage service segment instance.
      * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    @Path("/subservices")
-    Response storageSubService(@Context HttpServletRequest servletReq) throws ServiceException;
+    @Path("/service-segments")
+    Response storageServiceSegment(@Context HttpServletRequest servletReq) throws ServiceException;
 }
