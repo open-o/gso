@@ -148,11 +148,5 @@
             <version>1.4.190</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.openo.sdno</groupId>
-            <artifactId>org.openo.sdno.testframework</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>
