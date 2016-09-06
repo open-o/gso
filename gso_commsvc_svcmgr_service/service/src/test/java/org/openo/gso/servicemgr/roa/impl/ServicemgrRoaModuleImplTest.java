@@ -191,7 +191,13 @@ public class ServicemgrRoaModuleImplTest {
     @Test
     public void testCreateServiceSuccess() throws ServiceException {
         // mock request body
-        mockGetRequestBody(FILE_PATH + "createServiceInstance.json");
+        new MockUp<RestUtils>() {
+
+            @Mock
+            public String getRequestBody(HttpServletRequest request) {
+                return getJsonString(FILE_PATH + "createServiceInstance.json");
+            }
+        };
 
         // mock get catalog parameters
         new MockUp<CatalogProxyImpl>() {
@@ -258,22 +264,6 @@ public class ServicemgrRoaModuleImplTest {
     @Test
     public void testGetServiceManager() {
         assertNotNull(serviceRoa.getServiceManager());
-    }
-
-    /**
-     * Mock to get request body.<br/>
-     * 
-     * @param file json file path.
-     * @since GSO 0.5
-     */
-    private void mockGetRequestBody(final String file) {
-        new MockUp<RestUtils>() {
-
-            @Mock
-            public String getRequestBody(HttpServletRequest request) {
-                return getJsonString(file);
-            }
-        };
     }
 
     /**
