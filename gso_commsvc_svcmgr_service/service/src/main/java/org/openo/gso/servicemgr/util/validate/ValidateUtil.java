@@ -54,7 +54,7 @@ public class ValidateUtil {
     }
 
     /**
-     * Assert String parameter.<br/>
+     * Assert String parameter is not null or empty.<br/>
      * 
      * @param param parameter data
      * @throws ServiceException when parameter is null or empty.
@@ -70,7 +70,7 @@ public class ValidateUtil {
     }
 
     /**
-     * Assert object is null.<br/>
+     * Assert object is not null.<br/>
      * 
      * @param object data object
      * @throws ServiceException when object is null.
