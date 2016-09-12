@@ -150,7 +150,7 @@ public class DriverServiceImplTest {
             getImpl.getNsProgress("jobId");
         } catch(ServiceException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+
         }
         
         DriverServiceImpl getImplExp = new DriverServiceImpl();
@@ -181,7 +181,7 @@ public class DriverServiceImplTest {
             getImplExp.getNsProgress("jobId");
         } catch(ServiceException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+
         }
         
     }
@@ -210,7 +210,7 @@ public class DriverServiceImplTest {
             instImpl.instantiateNS("instanceId", mapParams);
         } catch(ServiceException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+
         }
         
         DriverServiceImpl instImplExp = new DriverServiceImpl();
