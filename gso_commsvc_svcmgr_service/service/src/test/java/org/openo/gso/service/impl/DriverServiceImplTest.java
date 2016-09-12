@@ -21,13 +21,13 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.baseservice.roa.util.clientsdk.JsonUtil;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.model.drivermo.NsProgressStatus;
 import org.openo.gso.model.drivermo.ResponseDescriptor;
 import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.util.RestfulUtil;
+import org.openo.gso.util.json.JsonUtil;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -132,9 +132,8 @@ public class DriverServiceImplTest {
         String body = "";
         try {
             body = JsonUtil.marshal(progress);
-        } catch(IOException e1) {
+        } catch(ServiceException e2) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
         }
         final RestfulResponse rsp = new RestfulResponse();
         rsp.setResponseJson(body);
@@ -165,9 +164,8 @@ public class DriverServiceImplTest {
         String bodyExp = "";
         try {
             bodyExp = JsonUtil.marshal(progressExp);
-        } catch(IOException e1) {
+        } catch(ServiceException e1) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
         }
         final RestfulResponse rspExp = new RestfulResponse();
         rspExp.setResponseJson(bodyExp);
