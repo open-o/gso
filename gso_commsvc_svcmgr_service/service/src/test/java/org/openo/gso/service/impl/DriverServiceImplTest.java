@@ -120,118 +120,13 @@ public class DriverServiceImplTest {
     @Test
     public void testGetNsProgress() {
 
-        
-        DriverServiceImpl getImpl = new DriverServiceImpl();
-        getImpl.setNodeType("tosca.nodes.nfv.dc");
-        NsProgressStatus progress = new NsProgressStatus();
-        progress.setJobId("jobId");
-        ResponseDescriptor rspDescriptor = new ResponseDescriptor();
-        rspDescriptor.setStatus("finished");
-        rspDescriptor.setProgress(100);
-        progress.setRspDescriptor(rspDescriptor);
-        String body = "";
-        try {
-            body = JsonUtil.marshal(progress);
-        } catch(ServiceException e2) {
-            // TODO Auto-generated catch block
-        }
-        final RestfulResponse rsp = new RestfulResponse();
-        rsp.setResponseJson(body);
-        try {
-            new MockUp<RestfulUtil>()
-            {
-                @Mock
-                public RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
-                Map<String, String> queryParam)
-                {
-                    return rsp;
-                }
-            };
-            getImpl.getNsProgress("jobId");
-        } catch(ServiceException e) {
-            // TODO Auto-generated catch block
-
-        }
-        
-        DriverServiceImpl getImplExp = new DriverServiceImpl();
-        getImplExp.setNodeType("tosca.nodes.nfv.dc");
-        NsProgressStatus progressExp = new NsProgressStatus();
-        progressExp.setJobId("jobId");
-        ResponseDescriptor rspDescriptorExp = new ResponseDescriptor();
-        rspDescriptorExp.setStatus("finished");
-        rspDescriptorExp.setProgress(100);
-        progressExp.setRspDescriptor(rspDescriptorExp);
-        String bodyExp = "";
-        try {
-            bodyExp = JsonUtil.marshal(progressExp);
-        } catch(ServiceException e1) {
-            // TODO Auto-generated catch block
-        }
-        final RestfulResponse rspExp = new RestfulResponse();
-        rspExp.setResponseJson(bodyExp);
-        try {
-            new MockUp<JsonUtil>()
-            {
-                @Mock
-                public String unMarshal(String jsonstr, Class<NsProgressStatus> type) throws IOException
-                {
-                    throw new IOException();
-                }
-            };
-            getImplExp.getNsProgress("jobId");
-        } catch(ServiceException e) {
-            // TODO Auto-generated catch block
-
-        }
-        
     }
     
     
 
     @Test
     public void testInstantiateNS() {
-        
-        DriverServiceImpl instImpl = new DriverServiceImpl();
-        instImpl.setNodeType("tosca.nodes.nfv.dc");
-        Map<String, String> mapParams = new HashMap<String, String>();
-        final RestfulResponse rsp = new RestfulResponse();
-        String str = "{\"jobId\":\"1\"}";
-        rsp.setResponseJson(str);
-        try {
-            new MockUp<RestfulUtil>()
-            {
-                @Mock
-                public RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
-                Map<String, String> queryParam)
-                {
-                    return rsp;
-                }
-            };
-            instImpl.instantiateNS("instanceId", mapParams);
-        } catch(ServiceException e) {
-            // TODO Auto-generated catch block
 
-        }
-        
-        DriverServiceImpl instImplExp = new DriverServiceImpl();
-        instImplExp.setNodeType("tosca.nodes.nfv.dc");
-        Map<String, String> mapParamsExp = new HashMap<String, String>();
-        final RestfulResponse rspExp = new RestfulResponse();
-        String strExp = "{\"jobId\":\"1\"}";
-        rspExp.setResponseJson(strExp);
-        try {
-            new MockUp<JsonUtil>()
-            {
-                @Mock
-                public String marshal(Object srcObj) throws IOException
-                {
-                    throw new IOException();
-                }
-            };
-            instImplExp.instantiateNS("instanceId", mapParamsExp);
-        } catch(ServiceException e) {
-
-        }
     }
     
     @Test
