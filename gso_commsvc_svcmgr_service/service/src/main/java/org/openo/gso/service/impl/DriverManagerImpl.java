@@ -34,7 +34,6 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.jetty.http.HttpStatus;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.baseservice.roa.util.clientsdk.JsonUtil;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.constant.CommonConstant;
@@ -48,6 +47,7 @@ import org.openo.gso.model.drivermo.TerminateParams;
 import org.openo.gso.service.inf.IDriverManager;
 import org.openo.gso.service.inf.IDriverService;
 import org.openo.gso.util.RestfulUtil;
+import org.openo.gso.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,12 +98,7 @@ public class DriverManagerImpl implements IDriverManager {
 
         // transfer the input into input parameters model
         TerminateParams inputs = null;
-        try {
-            inputs = JsonUtil.unMarshal(body, TerminateParams.class);
-        } catch(IOException e) {
-            LOGGER.error("fail to unMarshal the input json string", e);
-            throw new ServiceException(DriverExceptionID.INVALID_PARAM, HttpCode.INTERNAL_SERVER_ERROR);
-        }
+        inputs = JsonUtil.unMarshal(body, TerminateParams.class);
 
         // get nodeType from the request body
         String nodeType = inputs.getNodeType();
@@ -176,12 +171,7 @@ public class DriverManagerImpl implements IDriverManager {
 
         // Step 0: Transfer the input into input parameters model
         ServiceNode serviceNode = null;
-        try {
-            serviceNode = JsonUtil.unMarshal(body, ServiceNode.class);
-        } catch(IOException e) {
-            LOGGER.error("fail to unMarshal the input json string", e);
-            throw new ServiceException(DriverExceptionID.INVALID_PARAM, HttpCode.INTERNAL_SERVER_ERROR);
-        }
+        serviceNode = JsonUtil.unMarshal(body, ServiceNode.class);
 
         // Step 1:Validate input parameters
         String nodeType = serviceNode.getNodeType();
@@ -283,26 +273,13 @@ public class DriverManagerImpl implements IDriverManager {
 
         String params = null;
         Map<String, String> mapParams = new HashMap<String, String>();
-        try {
-            params = JsonUtil.marshal(lstNodeTypeIds);
-        } catch(IOException e) {
-            LOGGER.error("Converting to json failed", e);
-            throw new ServiceException(DriverExceptionID.INVALID_PARAM, HttpCode.INTERNAL_SERVER_ERROR);
-        }
+        params = JsonUtil.marshal(lstNodeTypeIds);
         mapParams.put("nodeTypeIds", params);
 
         // Step 3:Send the request and get response
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, params, mapParams);
 
-        // Step 4: Process response and send service template id
-        try {
-
-            return JsonUtil.unMarshal(rsp.getResponseContent(), ServiceTemplate.class);
-
-        } catch(IOException e) {
-            LOGGER.error("Converting  response from catalogue to service template failed", e);
-            throw new ServiceException(DriverExceptionID.INVALID_PARAM, HttpCode.INTERNAL_SERVER_ERROR);
-        }
+        return JsonUtil.unMarshal(rsp.getResponseContent(), ServiceTemplate.class);
 
     }
 
@@ -348,12 +325,7 @@ public class DriverManagerImpl implements IDriverManager {
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
 
         String response = null;
-        try {
-            response = JsonUtil.marshal(rsp);
-        } catch(IOException e) {
-            LOGGER.error("Converting to json failed", e);
-            throw new ServiceException(DriverExceptionID.INVALID_PARAM, HttpCode.INTERNAL_SERVER_ERROR);
-        }
+        response = JsonUtil.marshal(rsp);
 
         // Step 2:Send the request and get response
         return RestfulUtil.getRemoteResponse(paramsMap, response, null);

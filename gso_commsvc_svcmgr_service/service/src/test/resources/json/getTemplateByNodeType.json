@@ -1,0 +1,16 @@
+[{
+	"serviceTemplateId": "38a6c01-66cc-46ab-b748-38a6c010d272",
+	"templateName": "NanocellGateway",
+	"vendor": "ZTE",
+	"version": "0.0.1",
+	"csarId": "78ede6f3-66cc-46ab-b748-38a6c010d272",
+	"type": "NS",
+	"downloadUri": "http://msb_ip:msb_port/files/catalog/NSAR/ZTE/NanocellGW/v1.0/Definitions/segw.yml",
+	"inputs": [{
+		"name": "param1",
+		"type": "String",
+		"description": "param1 description",
+		"defaultValue": "test",
+		"required": false
+	}]
+}]

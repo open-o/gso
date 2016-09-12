@@ -1,0 +1,26 @@
+[{
+	"id": "tosca.nodes.nfv.ext.NS.ns_pop",
+	"name": "pop",
+	"type": "tosca.nodes.nfv.ext.NS.ns_pop",
+	"properties": {
+		"cidr": "",
+		"gateWay": "",
+		"dhcp": ""
+	},
+	"relationShips": [{
+		"sourceNodeName": "endpoint.vlan2",
+		"targetNodeName": "VLAN",
+		"sourceNodeId": "tosca_nodes_nfv_CP_4",
+		"targetNodeId": "tosca_nodes_nfv_VL_1",
+		"type": "tosca.relationships.nfv.VirtualLinksTo"
+	}]
+},
+{
+	"id": "tosca.nodes.gso.ns_sequence",
+	"name": "sequence",
+	"type": "tosca.nodes.gso.ns_sequence",
+	"properties": {
+		"nssequence": ["pop",
+		"dc"]
+	}
+}]

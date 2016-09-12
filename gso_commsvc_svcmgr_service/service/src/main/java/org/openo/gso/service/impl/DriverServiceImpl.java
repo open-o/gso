@@ -16,13 +16,11 @@
 
 package org.openo.gso.service.impl;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.baseservice.roa.util.clientsdk.JsonUtil;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.DriverExceptionID;
@@ -32,6 +30,7 @@ import org.openo.gso.model.drivermo.NsInstantiateReq;
 import org.openo.gso.model.drivermo.NsProgressStatus;
 import org.openo.gso.service.inf.IDriverService;
 import org.openo.gso.util.RestfulUtil;
+import org.openo.gso.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -272,12 +271,7 @@ public class DriverServiceImpl implements IDriverService {
 
         // Step 2: Send Network Service Request
         String req = "";
-        try {
-            req = JsonUtil.marshal(oRequest);
-        } catch(IOException e) {
-            LOGGER.error("Converting to json failed while create Network Service request", e);
-            throw new ServiceException(DriverExceptionID.INVALID_VALUE_FROM_WORKFLOW, HttpCode.INTERNAL_SERVER_ERROR);
-        }
+        req = JsonUtil.marshal(oRequest);
 
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, req, null);
 
@@ -314,12 +308,7 @@ public class DriverServiceImpl implements IDriverService {
 
         // Step 2: Send Network Service Instantiate Request
         String networkSvcReq = "";
-        try {
-            networkSvcReq = JsonUtil.marshal(oRequest);
-        } catch(IOException e) {
-            LOGGER.error("Converting to json failed while create Network Service  Instantiate request", e);
-            throw new ServiceException(DriverExceptionID.INVALID_VALUE_FROM_WORKFLOW, HttpCode.INTERNAL_SERVER_ERROR);
-        }
+        networkSvcReq = JsonUtil.marshal(oRequest);
 
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, networkSvcReq, null);
 
@@ -349,11 +338,7 @@ public class DriverServiceImpl implements IDriverService {
 
         // Process Network Service Instantiate Response
         NsProgressStatus nsProgress = null;
-        try {
-            nsProgress = JsonUtil.unMarshal(rsp.getResponseContent(), NsProgressStatus.class);
-        } catch(IOException e) {
-            LOGGER.error("Failed to get jobId from instantiate Network Service Instantiate response", e);
-        }
+        nsProgress = JsonUtil.unMarshal(rsp.getResponseContent(), NsProgressStatus.class);
 
         return nsProgress;
     }

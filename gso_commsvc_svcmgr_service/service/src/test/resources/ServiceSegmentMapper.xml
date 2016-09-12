@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- /* * Copyright 2016 Huawei Technologies Co., Ltd. * * Licensed under the Apache License, Version 2.0 (the "License"); 
+    * you may not use this file except in compliance with the License. * You may obtain a copy of the License at * * http://www.apache.org/licenses/LICENSE-2.0 
+    * * Unless required by applicable law or agreed to in writing, software * distributed under the License is distributed on 
+    an "AS IS" BASIS, * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * See the License for the specific 
+    language governing permissions and * limitations under the License. */ -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.openo.gso.mapper.ServiceSegmentMapper">
+    <resultMap type="org.openo.gso.model.servicemo.ServiceSegmentModel" id="ServiceSegmentResultMap">
+        <result property="serviceId" column="serviceId" />
+        <result property="serviceSegmentId" column="serviceSegmentId" />
+        <result property="serviceSegmentName" column="serviceSegmentName" />
+        <result property="templateId" column="templateId" />
+        <result property="nodeType" column="nodeType" />
+        <result property="topoSeqNumber" column="topoSeqNumber" />
+        <result property="status" column="status" />
+    </resultMap>
+
+    <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServiceSegmentModel">
+        insert into
+        t_lcm_service_segment
+        (serviceId,serviceSegmentId,serviceSegmentName,templateId,nodeType,topoSeqNumber,status)
+        values(#{serviceId},#{serviceSegmentId},#{serviceSegmentName},#{templateId},#{nodeType},#{topoSeqNumber},#{status})
+    </insert>
+
+    <insert id="batchInsert" parameterType="org.openo.gso.model.servicemo.ServiceSegmentModel">
+        insert into
+        t_lcm_service_segment(serviceId,serviceSegmentId,serviceSegmentName,templateId,nodeType,topoSeqNumber,status)
+        values
+        <foreach collection="serviceSegments" item="item" index="index" separator=",">
+            (#{item.serviceId},#{item.serviceSegmentId},#{item.serviceSegmentName},#{item.templateId},#{item.nodeType},#{item.topoSeqNumber},#{item.status})
+        </foreach>
+    </insert>
+
+    <delete id="delete">
+        delete from t_lcm_service_segment where serviceId = #{serviceId}
+    </delete>
+
+    <select id="queryServiceSegments" resultMap="ServiceSegmentResultMap">
+        select * from t_lcm_service_segment where serviceId =
+        #{serviceId}
+    </select>
+
+</mapper>
