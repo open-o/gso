@@ -84,8 +84,8 @@
         }
     },
     "redis": {
-        "servicemanagerrdb": {
-            "serviceName": "servicemanagerrdb",
+        "gsodb": {
+            "serviceName": "gsodb",
             "type": "cache",
             "memory": 1024,
             "dataSize": 1024,

@@ -1,51 +1,69 @@
-DROP TABLE IF EXISTS SERVICEINFO
+--Copyright 2016 Huawei Technologies Co., Ltd.
+
+--Licensed under the Apache License, Version 2.0 (the "License");
+--you may not use this file except in compliance with the License.
+--You may obtain a copy of the License at
+
+----http://www.apache.org/licenses/LICENSE-2.0
+
+--Unless required by applicable law or agreed to in writing, software
+--distributed under the License is distributed on an "AS IS" BASIS,
+--WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+--See the License for the specific language governing permissions and
+--limitations under the License.
+drop table if exists t_lcm_service
 /
-CREATE TABLE SERVICEINFO
+create table t_lcm_service
 (
-    SERVICENAME VARCHAR(128) NOT NULL,
-    SERVICEVERSION VARCHAR(128),
-    SERVICEOWNER VARCHAR(128),	
-    PRIMARY KEY (SERVICENAME),
-    UNIQUE KEY (SERVICENAME)
+    serviceId    varchar(255) not null,
+	name         varchar(255) not null,
+	description  varchar(255) ,
+	activeStatus varchar(255) ,
+	status       varchar(255) ,
+	creator      varchar(255) ,
+	createAt     bigint(13)   not null,
+	primary key(serviceId)
 )
-ENGINE = INNODB
+engine=innodb
 /
-drop table if exists SD_ACTIVE_JOBS
+drop table if exists t_lcm_defPackage_mapping
 /
-create table SD_ACTIVE_JOBS 
-( 
-   ID                   VARCHAR(36) NOT NULL,
-   VERSION              INT(11) NULL,
-   TYPE                 VARCHAR(36) NULL,
-   CONTEXT_TAG          BOOLEAN NULL,
-   CREATED_AT           BIGINT(20) NULL,
-   LAST_SCHEDULED_AT    BIGINT(20) NULL,
-   SCHEDULER_ID         VARCHAR(36) NULL,
-   ATTRIBUTE            LONGTEXT NULL,
-   PRIMARY KEY (ID)
+create table t_lcm_defPackage_mapping 
+create table t_lcm_defPackage_mapping
+(
+    serviceId    varchar(255) not null,
+	serviceDefId varchar(255) not null,
+	templateId  varchar(255)  not null,
+	templateName varchar(255) not null,
+	primary key(serviceId)
 )
 engine=innodb
 /
 
-drop table if exists SD_INSTANCES
+drop table if exists t_lcm_service_parameter
 /
-create table SD_INSTANCES
+create table t_lcm_service_parameter
 (
-   INSTANCE_ID           VARCHAR(36) NOT NULL,
-   REFRESHED_AT          BIGINT(20) NULL,
-   PRIMARY KEY (INSTANCE_ID)
+    serviceId    varchar(255) not null,
+	paramName varchar(255) not null,
+	paramValue  varchar(255) not null,	
+	constraint pk_t_parameters primary key(serviceId, paramName)
 )
 engine=innodb
 /
 
-drop table if exists SD_JOB_CONTEXTS
+drop table if exists t_lcm_service_segment
 /
-create table SD_JOB_CONTEXTS 
-( 
-   JOB_ID                   VARCHAR(36) NOT NULL,
-   CONTEXT_SEGMENT          VARCHAR(1024) NULL,
-   POSITION                 INT NULL,
-   primary key (JOB_ID, POSITION)
+create table t_lcm_service_segment
+(
+    serviceId    varchar(255) not null,
+	serviceSegmentId varchar(255) not null,
+	serviceSegmentName  varchar(255) ,
+	templateId varchar(255) not null,
+	nodeType varchar(255) not null,	
+	topoSeqNumber int not null,
+	status varchar(20) ,
+	constraint pk_t_segments primary key(serviceId, serviceSegmentId)
 )
 engine=innodb
 /
