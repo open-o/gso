@@ -49,7 +49,7 @@ public class ServiceSegmentDaoImplTest {
     /**
      * DAO object.
      */
-    ServiceSegmentDaoImpl serviceSegmentDao = new ServiceSegmentDaoImpl();;
+    ServiceSegmentDaoImpl serviceSegmentDao = new ServiceSegmentDaoImpl();
 
     /**
      * Sql session.

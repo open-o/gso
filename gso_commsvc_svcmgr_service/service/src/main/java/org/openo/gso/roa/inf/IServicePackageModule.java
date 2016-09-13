@@ -50,7 +50,7 @@ public interface IServicePackageModule {
      * @since GSO 0.5
      */
     @POST
-    @Path("/nspackage")
+    @Path("/nspackages")
     @Produces({"application/json"})
     @Consumes({"application/json"})
     Response onBoardingPackage(@Context HttpServletRequest httpRequest);
@@ -67,7 +67,7 @@ public interface IServicePackageModule {
     @DELETE
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    @Path("/nspackage/{csarId}")
+    @Path("/nspackages/{csarId}")
     Response deleteGsarPackage(@PathParam("csarId") String serviceDefId, @Context HttpServletRequest httpRequest);
 
 }

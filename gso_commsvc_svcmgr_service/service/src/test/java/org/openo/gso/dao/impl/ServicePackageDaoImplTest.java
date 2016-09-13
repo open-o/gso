@@ -49,7 +49,7 @@ public class ServicePackageDaoImplTest {
     /**
      * DAO object.
      */
-    ServicePackageDaoImpl servicePackageDao = new ServicePackageDaoImpl();;
+    ServicePackageDaoImpl servicePackageDao = new ServicePackageDaoImpl();
 
     /**
      * Sql session.
