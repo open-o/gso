@@ -41,22 +41,5 @@
             <artifactId>commonlib-cbb</artifactId>
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
-        <!-- 
-        <dependency>
-            <groupId>org.openo.common-services.common-utilities.biz</groupId>
-            <artifactId>org.openo.common-services.common-utilities.biz.inittool</artifactId>
-            <version>RELEASE</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.openo.common-services.common-utilities</groupId>
-                    <artifactId>org.openo.common-services.common-utilities.cloudsop-commonlib-service</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.openo.common-services.common-utilities</groupId>
-                    <artifactId>commonlib-restclient</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-         -->
     </dependencies>
 </project>
