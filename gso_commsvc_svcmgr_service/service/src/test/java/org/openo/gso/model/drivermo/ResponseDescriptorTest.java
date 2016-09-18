@@ -38,7 +38,7 @@ public class ResponseDescriptorTest {
 
     @Test
     public void testSetProgress() {
-        desc.setProgress(100);
+        desc.setProgress("100");
     }
 
     @Test

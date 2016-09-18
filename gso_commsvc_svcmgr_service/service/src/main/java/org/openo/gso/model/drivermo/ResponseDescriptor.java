@@ -28,7 +28,7 @@ public class ResponseDescriptor {
 
     String status;
 
-    Integer progress;
+    String progress;
 
     String statusDescription;
 
@@ -56,7 +56,7 @@ public class ResponseDescriptor {
     /**
      * @return Returns the progress.
      */
-    public Integer getProgress() {
+    public String getProgress() {
         return progress;
     }
 
@@ -64,7 +64,7 @@ public class ResponseDescriptor {
     /**
      * @param progress The progress to set.
      */
-    public void setProgress(Integer progress) {
+    public void setProgress(String progress) {
         this.progress = progress;
     }
 

@@ -16,7 +16,6 @@
 
 package org.openo.gso.model.drivermo;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +30,7 @@ public class ServiceNode {
 
     private String nodeType;
 
-    List<Map<String, String>> stNodeParam;
+    Map<String, String> inputParameters;
 
     
     /**
@@ -49,21 +48,25 @@ public class ServiceNode {
         this.nodeType = nodeType;
     }
 
-    
-    /**
-     * @return Returns the stNodeParam.
-     */
-    public List<Map<String, String>> getStNodeParam() {
-        return stNodeParam;
-    }
 
     
     /**
-     * @param stNodeParam The stNodeParam to set.
+     * @return Returns the inputParameters.
      */
-    public void setStNodeParam(List<Map<String, String>> stNodeParam) {
-        this.stNodeParam = stNodeParam;
+    public Map<String, String> getInputParameters() {
+        return inputParameters;
     }
+
+
+    
+    /**
+     * @param inputParameters The inputParameters to set.
+     */
+    public void setInputParameters(Map<String, String> inputParameters) {
+        this.inputParameters = inputParameters;
+    }
+
+    
 
 
 

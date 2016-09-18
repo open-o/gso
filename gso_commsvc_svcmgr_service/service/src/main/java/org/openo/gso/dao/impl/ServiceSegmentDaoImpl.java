@@ -85,21 +85,21 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
     /**
      * Delete service segment instance by service ID.<br/>
      * 
-     * @param serviceId service instance ID
+     * @param serviceSegment service segment information
      * @throws ServiceException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void delete(String serviceId) throws ServiceException {
+    public void delete(ServiceSegmentModel serviceSegment) throws ServiceException {
         try {
             // Check data validation.
-            if(StringUtils.isEmpty(serviceId)) {
+            if(StringUtils.isEmpty(serviceSegment.getServiceId()) || StringUtils.isEmpty(serviceSegment.getServiceSegmentId())) {
                 throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Data is wrong");
             }
 
             // Delete service segment instances.
-            ServiceSegmentMapper serviceSegment = getMapper(ServiceSegmentMapper.class);
-            serviceSegment.delete(serviceId);
+            ServiceSegmentMapper mapper = getMapper(ServiceSegmentMapper.class);
+            mapper.delete(serviceSegment);
         } catch(Exception e) {
             LOGGER.error("Fail to delete service segment instances. {}", e);
             throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");

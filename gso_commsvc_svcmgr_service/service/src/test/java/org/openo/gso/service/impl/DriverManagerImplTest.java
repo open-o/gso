@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
+import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.model.drivermo.TerminateParams;
 import org.openo.gso.service.inf.IDriverService;
 import org.openo.gso.util.RestfulUtil;
@@ -46,10 +47,14 @@ import mockit.Mocked;
 public class DriverManagerImplTest {
     @Mocked
     IDriverService serviceInf;
+    
+    @Mocked
+    IServiceSegmentDao serviceSegmentDao;
 
     @Test
     public void testTerminateService() {
         DriverManagerImpl impl = new DriverManagerImpl();
+        impl.setServiceSegmentDao(serviceSegmentDao);
         HttpServletRequest httpRequest = new HttpServletRequest() {
             
             @Override

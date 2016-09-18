@@ -43,8 +43,8 @@
         </foreach>
     </insert>
 
-    <delete id="delete">
-        delete from t_lcm_service_segment where serviceId = #{serviceId}
+    <delete id="delete" parameterType="org.openo.gso.model.servicemo.ServiceSegmentModel">
+        delete from t_lcm_service_segment where serviceId = #{serviceId} and serviceSegmentId = #{serviceSegmentId}
     </delete>
 
     <select id="queryServiceSegments" resultMap="ServiceSegmentResultMap">

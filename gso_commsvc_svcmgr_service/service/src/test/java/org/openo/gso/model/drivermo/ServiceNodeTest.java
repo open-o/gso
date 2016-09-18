@@ -15,9 +15,7 @@
  */
 package org.openo.gso.model.drivermo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -38,15 +36,13 @@ public class ServiceNodeTest {
 
     @Test
     public void testGetStNodeParam() {
-        node.getStNodeParam();
+        node.getInputParameters();
     }
 
     @Test
     public void testSetStNodeParam() {
         Map<String, String> map = new HashMap<String, String>();
-        List<Map<String, String>> stNodeParam = new ArrayList<Map<String, String>>();
-        stNodeParam.add(map);
-        node.setStNodeParam(stNodeParam);
+        node.setInputParameters(map);
     }
 
 }

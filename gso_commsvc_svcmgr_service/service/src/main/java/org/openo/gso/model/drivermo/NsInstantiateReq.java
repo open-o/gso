@@ -27,27 +27,28 @@ import java.util.Map;
  */
 public class NsInstantiateReq {
 
-    String strInstanceId;
+    String nsInstanceId;
 
     Map<String, String> additionalParamForNs;
+    
+    
+    /**
+     * @return Returns the nsInstanceId.
+     */
+    public String getNsInstanceId() {
+        return nsInstanceId;
+    }
+
 
     
     /**
-     * @return Returns the strInstanceId.
+     * @param nsInstanceId The nsInstanceId to set.
      */
-    public String getStrInstanceId() {
-        return strInstanceId;
+    public void setNsInstanceId(String nsInstanceId) {
+        this.nsInstanceId = nsInstanceId;
     }
 
-    
-    /**
-     * @param strInstanceId The strInstanceId to set.
-     */
-    public void setStrInstanceId(String strInstanceId) {
-        this.strInstanceId = strInstanceId;
-    }
 
-    
     /**
      * @return Returns the additionalParamForNs.
      */

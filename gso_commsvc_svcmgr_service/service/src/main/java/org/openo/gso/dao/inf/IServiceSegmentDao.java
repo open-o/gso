@@ -43,11 +43,11 @@ public interface IServiceSegmentDao {
     /**
      * Delete service segment instance by service ID.<br/>
      * 
-     * @param serviceId service instance ID
+     * @param serviceSegment service segment information
      * @throws ServiceException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void delete(String serviceId) throws ServiceException;
+    void delete(ServiceSegmentModel serviceSegment) throws ServiceException;
 
     /**
      * Query service segment instances by service ID.<br/>

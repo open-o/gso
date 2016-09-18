@@ -16,7 +16,6 @@
 
 package org.openo.gso.service.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,27 +28,34 @@ import java.util.concurrent.ThreadPoolExecutor;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.eclipse.jetty.http.HttpStatus;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.constant.CommonConstant;
+import org.openo.gso.constant.Constant;
 import org.openo.gso.constant.DriverExceptionID;
+import org.openo.gso.dao.inf.IServicePackageDao;
+import org.openo.gso.dao.inf.IServiceSegmentDao;
+import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.exception.HttpCode;
+import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.model.drivermo.NsProgressStatus;
-import org.openo.gso.model.drivermo.NsResponse;
 import org.openo.gso.model.drivermo.ServiceNode;
 import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.model.drivermo.TerminateParams;
+import org.openo.gso.model.servicemo.ServicePackageMapping;
+import org.openo.gso.model.servicemo.ServiceSegmentModel;
+import org.openo.gso.restproxy.inf.ICatalogProxy;
 import org.openo.gso.service.inf.IDriverManager;
 import org.openo.gso.service.inf.IDriverService;
 import org.openo.gso.util.RestfulUtil;
 import org.openo.gso.util.json.JsonUtil;
+import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
+
+import net.sf.json.JSONArray;
 
 /**
  * Service management class.<br/>
@@ -65,9 +71,22 @@ public class DriverManagerImpl implements IDriverManager {
 
     private static String CATALOGUE_QUERY_SVC_TMPL_NODETYPE_URL = "/openoapi/catalog/v1/servicetemplate/nesting";
 
-    private static final String LCM_STORE_SUBSERVICE_URL = "/openoapi/lifecyclemgr/v1/services/subservices";
-
     private IDriverService serviceInf;
+    
+    /**
+     * DAO to operate service segment instance.
+     */
+    private IServiceSegmentDao serviceSegmentDao;
+    
+    /**
+     * DAO to operate service package.
+     */
+    private IServicePackageDao servicePackageDao;
+
+    /**
+     * Proxy of interface with catalog.
+     */
+    private ICatalogProxy catalogProxy;
     
     /**
      * @return Returns the serviceInf.
@@ -83,6 +102,59 @@ public class DriverManagerImpl implements IDriverManager {
     public void setServiceInf(IDriverService serviceInf) {
         this.serviceInf = serviceInf;
     }
+    
+
+    /**
+     * @return Returns the serviceSegmentDao.
+     */
+    public IServiceSegmentDao getServiceSegmentDao() {
+        return serviceSegmentDao;
+    }
+
+
+    
+    /**
+     * @param serviceSegmentDao The serviceSegmentDao to set.
+     */
+    public void setServiceSegmentDao(IServiceSegmentDao serviceSegmentDao) {
+        this.serviceSegmentDao = serviceSegmentDao;
+    }
+    
+    
+    /**
+     * @return Returns the servicePackageDao.
+     */
+    public IServicePackageDao getServicePackageDao() {
+        return servicePackageDao;
+    }
+
+
+    
+    /**
+     * @param servicePackageDao The servicePackageDao to set.
+     */
+    public void setServicePackageDao(IServicePackageDao servicePackageDao) {
+        this.servicePackageDao = servicePackageDao;
+    }
+
+
+    
+    /**
+     * @return Returns the catalogProxy.
+     */
+    public ICatalogProxy getCatalogProxy() {
+        return catalogProxy;
+    }
+
+
+    
+    /**
+     * @param catalogProxy The catalogProxy to set.
+     */
+    public void setCatalogProxy(ICatalogProxy catalogProxy) {
+        this.catalogProxy = catalogProxy;
+    }
+
 
     /**
      * Create service instance.<br/>
@@ -94,6 +166,7 @@ public class DriverManagerImpl implements IDriverManager {
      */
     @Override
     public RestfulResponse terminateService(HttpServletRequest httpRequest) throws ServiceException {
+         
         String body = RestUtils.getRequestBody(httpRequest);
 
         // transfer the input into input parameters model
@@ -120,40 +193,77 @@ public class DriverManagerImpl implements IDriverManager {
             LOGGER.error("fail to delete the sub-service", e);
         }
 
-        // construct the URL and the method type
-        Map<String, String> paramsMap = new HashMap<String, String>();
-        paramsMap.put(CommonConstant.HttpContext.URL, LCM_STORE_SUBSERVICE_URL);
-        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
+        // save the segment information into the database
+        ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
+        serviceSegment.setServiceId(serviceId);
+        serviceSegment.setServiceSegmentId(instanceId);
+        
+        serviceSegmentDao.delete(serviceSegment);
 
-        // construct the request body to store the sub-service
-        Map<String, String> reqBodyMap = new HashMap<String, String>();
-        reqBodyMap.put("serviceId", serviceId);
-        reqBodyMap.put("subServiceId", instanceId);
-        reqBodyMap.put("subServiceTempalteId", "");
-        reqBodyMap.put("operationType", "delete");
-        reqBodyMap.put("status", status);
-
-        ObjectMapper mapper = new ObjectMapper();
-        String params = StringUtils.EMPTY;
-        try {
-            params = mapper.writeValueAsString(reqBodyMap);
-        } catch(JsonGenerationException e) {
-            LOGGER.error("fail to write value as string", e);
-        } catch(JsonMappingException e) {
-            LOGGER.error("fail to write value as string", e);
-        } catch(IOException e) {
-            LOGGER.error("fail to write value as string", e);
-        }
-
-        RestfulResponse lcmRsp = RestfulUtil.getRemoteResponse(paramsMap, params, null);
 
         RestfulResponse rsp = new RestfulResponse();
-        if(!HttpStatus.isSuccess(lcmRsp.getStatus())) {
+        if("fail".equals(status)) {
             rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
             LOGGER.error("fail to store the sub-service to LCM");
         }
         return rsp;
 
+    }
+    
+    /**
+     * <br/>
+     * 
+     * @param nodes
+     * @param seviceSegment
+     * @return
+     * @throws ServiceException
+     * @since GSO 0.5
+     */
+    @SuppressWarnings("unchecked")
+    private int getSequenceOfNode(List<NodeTemplateModel> nodes, ServiceSegmentModel seviceSegment)
+            throws ServiceException {
+
+        // Check data
+        if(CollectionUtils.isEmpty(nodes)) {
+            LOGGER.error("There is no nodes in template. The type of node is ", seviceSegment.getNodeType());
+            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Fail to get node from catalog.");
+        }
+        String type = seviceSegment.getNodeType();
+        ValidateUtil.assertStringNotNull(type);
+
+        // visit node
+        String nodeName = null;
+        List<String> nodeSequence = null;
+        for(NodeTemplateModel node : nodes) {
+
+            // get node name
+            if(node.getType().equals(seviceSegment.getNodeType())) {
+                nodeName = node.getName();
+            }
+
+            // get node sequence
+            if(node.getName().equals(Constant.NODE_SEQUENCE)) {
+                Map<String, Object> properties = node.getProperties();
+                if(!CollectionUtils.isEmpty(properties)) {
+                    Object sequence = properties.get(Constant.SEQUENCE_PROPERTY);
+                    if(sequence instanceof List) {
+                        nodeSequence = (List<String>)sequence;
+                        break;
+                    }
+                } else {
+                    LOGGER.error("There is no sequence for node. The service instance is {}",
+                            seviceSegment.getServiceId());
+                }
+            }
+        }
+
+        // validate
+        if((null == nodeSequence) || StringUtils.isEmpty(nodeName)) {
+            LOGGER.error("There is no sequence for node. The service instance is {}", seviceSegment.getServiceId());
+            return 0;
+        }
+
+        return nodeSequence.indexOf(nodeName) + 1;
     }
 
     /**
@@ -176,7 +286,7 @@ public class DriverManagerImpl implements IDriverManager {
         // Step 1:Validate input parameters
         String nodeType = serviceNode.getNodeType();
 
-        if((null == nodeType) || (null == serviceNode.getStNodeParam())) {
+        if((null == nodeType) || (null == serviceNode.getInputParameters())) {
             LOGGER.error("Input parameters from lcm/workflow are empty");
             throw new ServiceException(DriverExceptionID.INVALID_PARAM, HttpCode.INTERNAL_SERVER_ERROR);
         }
@@ -187,11 +297,6 @@ public class DriverManagerImpl implements IDriverManager {
         }
         serviceInf.setNodeType(serviceNode.getNodeType());
 
-        // Step 2:Make a list of parameters for the node Type
-        Map<String, String> mapParam = getParamsByNodeType(serviceNode);
-        
-        String serviceId = mapParam.get("serviceId");
-
         // Step 3: Call the Catalogue service to get service template id
         ServiceTemplate svcTmpl = getSvcTmplByNodeType(serviceNode);
         if(null == svcTmpl) {
@@ -199,12 +304,16 @@ public class DriverManagerImpl implements IDriverManager {
             throw new ServiceException(DriverExceptionID.FAILED_TO_SVCTMPL_CATALOGUE, HttpCode.INTERNAL_SERVER_ERROR);
         }
 
-        return createNetworkSubService(serviceId, svcTmpl.getServiceTemplateId(), mapParam);
+        return createNetworkSubService(serviceNode, svcTmpl.getServiceTemplateId(), httpRequest);
     }
 
-    private RestfulResponse createNetworkSubService(String serviceId, String templateId, Map<String, String> mapParam)
+    private RestfulResponse createNetworkSubService(ServiceNode serviceNode, String templateId, HttpServletRequest httpRequest)
             throws ServiceException {
 
+        // Step 2:Make a list of parameters for the node Type
+        Map<String, String> mapParam = getParamsByNodeType(serviceNode);
+        
+        String serviceId = mapParam.get("serviceId");
         // Step 1: Create Network service
         String nsInstanceId = serviceInf.createNS(templateId, mapParam);
         if(StringUtils.isEmpty(nsInstanceId)) {
@@ -228,33 +337,40 @@ public class DriverManagerImpl implements IDriverManager {
             status = "fail";
         }
 
-        NsResponse oResponse = new NsResponse();
-        oResponse.setServiceId(serviceId);
-        oResponse.setSubServiceId(nsInstanceId);
+        ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
+        serviceSegment.setServiceId(serviceId);
+        serviceSegment.setServiceSegmentId(nsInstanceId);
+        serviceSegment.setNodeType(serviceNode.getNodeType());
+        serviceSegment.setStatus(status);
+        serviceSegment.setTemplateId(templateId);
+        
+        ServicePackageMapping pacakageInfo = servicePackageDao.queryPackageMapping(serviceId);
+        if(null == pacakageInfo) {
+            LOGGER.error("There is no package in DB. The service is ", serviceId);
+            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "There is no package in DB.");
+        }
 
-        oResponse.setSubServiceTmplId(templateId);
-        oResponse.setOperationType("create");
-        oResponse.setStatus(status);
+        // Query nodes of template
+        List<NodeTemplateModel> nodes = catalogProxy.getNodeTemplate(pacakageInfo.getTemplateId(), httpRequest);
+        int sequence = getSequenceOfNode(nodes, serviceSegment);
+        serviceSegment.setTopoSeqNumber(sequence);
 
-        // Step 4: Send the response to LCM
-        return sendResponse(oResponse);
+        // insert database
+        serviceSegmentDao.insert(serviceSegment);
+        
+        // Step 4: return the response
+        RestfulResponse rsp = new RestfulResponse();
+        if("fail".equals(status)) {
+            rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
+            LOGGER.error("fail to store the sub-service to LCM");
+        }
+        return rsp;
     }
 
     private Map<String, String> getParamsByNodeType(ServiceNode serviceNode) {
 
         // Make a list of parameters for the node Type
-        Map<String, String> mapParam = new HashMap<String, String>();
-        for(Map<String, String> mapNodeparam : serviceNode.getStNodeParam()) {
-
-            for(Map.Entry<String, String> param : mapNodeparam.entrySet()) {
-
-                // The Parameter name will start with node type as prefix
-                String paramValue = param.getValue();
-                if(paramValue.startsWith(serviceNode.getNodeType())) {
-                    mapParam.put(param.getKey(), paramValue);
-                }
-            }
-        }
+        Map<String, String> mapParam = serviceNode.getInputParameters();
 
         return mapParam;
     }
@@ -279,7 +395,8 @@ public class DriverManagerImpl implements IDriverManager {
         // Step 3:Send the request and get response
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, params, mapParams);
 
-        return JsonUtil.unMarshal(rsp.getResponseContent(), ServiceTemplate.class);
+        JSONArray array = JSONArray.fromObject(rsp.getResponseContent());
+        return JsonUtil.unMarshal(array.getString(0), ServiceTemplate.class);
 
     }
 
@@ -303,7 +420,7 @@ public class DriverManagerImpl implements IDriverManager {
                 throw new ServiceException(DriverExceptionID.INTERNAL_ERROR, HttpCode.INTERNAL_SERVER_ERROR);
             }
 
-            if(progress.getRspDescriptor().getProgress().equals(100)
+            if("100".equals(progress.getRspDescriptor().getProgress())
                     && "finished".equals(progress.getRspDescriptor().getStatus())) {
                 LOGGER.info("Success to create the sub-service");
                 queryFlag = false;
@@ -317,20 +434,6 @@ public class DriverManagerImpl implements IDriverManager {
 
     }
 
-    private RestfulResponse sendResponse(NsResponse rsp) throws ServiceException {
-        Map<String, String> paramsMap = new HashMap<String, String>();
-
-        // Step 1: Prepare url and method type
-        paramsMap.put(CommonConstant.HttpContext.URL, LCM_STORE_SUBSERVICE_URL);
-        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
-
-        String response = null;
-        response = JsonUtil.marshal(rsp);
-
-        // Step 2:Send the request and get response
-        return RestfulUtil.getRemoteResponse(paramsMap, response, null);
-
-    }
 
     class QueryProgress implements Callable<NsProgressStatus> {
 

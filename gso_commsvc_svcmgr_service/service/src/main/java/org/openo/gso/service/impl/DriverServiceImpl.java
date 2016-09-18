@@ -296,7 +296,7 @@ public class DriverServiceImpl implements IDriverService {
         // Step 1: Prepare Network Service Instantiate Request
         NsInstantiateReq oRequest = new NsInstantiateReq();
 
-        oRequest.setStrInstanceId(instanceId);
+        oRequest.setNsInstanceId(instanceId);
         oRequest.setAdditionalParamForNs(mapParams);
 
         // Get url based on node type

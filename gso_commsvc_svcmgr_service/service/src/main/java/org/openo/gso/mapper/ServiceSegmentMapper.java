@@ -45,7 +45,7 @@ public interface ServiceSegmentMapper {
      * @param serviceId service instance ID
      * @since GSO 0.5
      */
-    void delete(@Param("serviceId") String serviceId);
+    void delete(ServiceSegmentModel serviceSegment);
 
     /**
      * Query service segment instances by service ID.<br/>

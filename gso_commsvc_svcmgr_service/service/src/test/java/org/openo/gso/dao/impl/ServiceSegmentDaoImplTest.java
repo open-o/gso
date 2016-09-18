@@ -33,7 +33,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.gso.dao.impl.ServiceSegmentDaoImpl;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 
 /**
@@ -166,9 +165,11 @@ public class ServiceSegmentDaoImplTest {
      */
     @Test
     public void testDeleteOk() throws ServiceException {
-        String serviceId = "1";
+        ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
+        serviceSegment.setServiceId("1");
+        serviceSegment.setServiceSegmentId("12345");
         serviceSegmentDao.setSession(session);
-        serviceSegmentDao.delete(serviceId);
+        serviceSegmentDao.delete(serviceSegment);
     }
 
     /**
@@ -179,8 +180,8 @@ public class ServiceSegmentDaoImplTest {
      */
     @Test(expected = ServiceException.class)
     public void testDeleteFail() throws ServiceException {
-        String serviceId = null;
-        serviceSegmentDao.delete(serviceId);
+        ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
+        serviceSegmentDao.delete(serviceSegment);
     }
 
     /**

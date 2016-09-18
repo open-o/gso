@@ -26,12 +26,12 @@ public class NsInstantiateReqTest {
     NsInstantiateReq req = new NsInstantiateReq();
     @Test
     public void testGetStrInstanceId() {
-        req.getStrInstanceId();
+        req.getNsInstanceId();
     }
 
     @Test
     public void testSetStrInstanceId() {
-        req.setStrInstanceId("id");
+        req.setNsInstanceId("id");
     }
 
     @Test
