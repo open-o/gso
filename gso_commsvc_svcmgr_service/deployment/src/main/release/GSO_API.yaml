@@ -157,10 +157,78 @@ paths:
         default: 
           description: Unexpected error 
           schema: 
-            $ref: "#/definitions/result"            
+            $ref: "#/definitions/result"
+            
+  /drivers/instantiate:
+    post:
+      summary: create the network service segment
+      description: create the network service segment
+      operationId: createNsSegment
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Parameters needed to create service segment.
+          required: true
+          schema: 
+            $ref: "#/definitions/driver"
+      responses:   
+        "200": 
+          description: Service segment is created successfully.
+          schema: 
+            $ref: "#/definitions/segmentId"
+        default: 
+          description: Unexpected error 
+          schema: 
+            $ref: "#/definitions/result"
+            
+  /drivers/terminate:
+    post:
+      summary: delete the network service segment
+      description: delete the network service segment
+      operationId: deleteNsSegment
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Parameters needed to delete service segment.
+          required: true
+          schema: 
+            $ref: "#/definitions/driver"
+      responses:   
+        "200": 
+          description: Service segment is deleted successfully.
+          schema: 
+            $ref: "#/definitions/segmentId"
+        default: 
+          description: Unexpected error 
+          schema: 
+            $ref: "#/definitions/result"
+      
             
 definitions:
-          
+  
+  driver:
+    type: object
+    description: service segment structure
+    properties:
+      nodeType:
+        type: string
+        description: the type of service segment
+      inputParameters:
+        type: string
+        description: Parameters needed for service segment.
+        
+  segmentId:
+    type: string
+    description: service segment id
+        
   service:
     type: object
     description: service instance structure
