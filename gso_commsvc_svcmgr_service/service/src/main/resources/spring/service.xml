@@ -37,6 +37,7 @@
         <jaxrs:serviceBeans>
             <ref bean="ServicemgrRoaModuleImpl"></ref>
             <ref bean="ServicePackageModuleImpl"></ref>
+            <ref bean="DrivermgrRoaModuleImpl"></ref>
         </jaxrs:serviceBeans>
         <!-- registering providers -->
         <jaxrs:providers>
@@ -85,6 +86,17 @@
         <property name="servicePackageDao" ref="servicePackageDao"></property>
         <property name="catalogProxy" ref="catalogProxy"></property>
     </bean>
+    
+    <bean id="DrivermgrRoaModuleImpl" class="org.openo.gso.roa.impl.DrivermgrRoaModuleImpl">
+        <property name="driverMgr" ref="driverMgr"></property>
+    </bean>
+    
+    <bean id="driverMgr" class="org.openo.gso.service.impl.DriverManagerImpl">
+        <property name="serviceInf" ref="serviceInf"></property>
+        <property name="serviceSegmentDao" ref="serviceSegmentDao"></property>
+        <property name="servicePackageDao" ref="servicePackageDao"></property>
+        <property name="catalogProxy" ref="catalogProxy"></property>
+    </bean>
 
     <bean id="serviceModelDao" class="org.openo.gso.dao.impl.ServiceModelDaoImpl">
         <property name="session" ref="session" />
@@ -102,5 +114,8 @@
     </bean>
     
     <bean id="wsoProxy" class="org.openo.gso.restproxy.impl.WsoProxyImpl">
+    </bean>
+    
+    <bean id="serviceInf" class="org.openo.gso.service.impl.DriverServiceImpl">
     </bean>
 </beans>
