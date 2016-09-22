@@ -63,6 +63,9 @@ public class DataConverter {
         model.setServiceId(uuid);
         model.setName((String)data.get(Constant.SERVICE_NAME));
         model.setDescription((String)data.get(Constant.SERVICE_DESCRIPTION));
+        model.setActiveStatus(Constant.DEFAULT_STRING);
+        model.setStatus(Constant.DEFAULT_STRING);
+        model.setCreator(Constant.DEFAULT_STRING);
 
         // Service template data
         ServicePackageMapping packageMapping = new ServicePackageMapping();

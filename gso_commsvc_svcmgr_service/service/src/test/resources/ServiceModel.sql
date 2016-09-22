@@ -17,10 +17,10 @@ create table t_lcm_service
 (
     serviceId    varchar(255) not null,
 	name         varchar(255) not null,
-	description  varchar(255) ,
-	activeStatus varchar(255) ,
-	status       varchar(255) ,
-	creator      varchar(255) ,
+	description  varchar(255) null,
+	activeStatus varchar(255) not null,
+	status       varchar(255) not null,
+	creator      varchar(255) not null,
 	createAt     bigint(13)   not null,
 	primary key(serviceId)
 );

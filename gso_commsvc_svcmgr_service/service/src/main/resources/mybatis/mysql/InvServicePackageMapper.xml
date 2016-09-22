@@ -16,7 +16,7 @@
 -->
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.openo.gso.mapper.ServicePackageMapper">
+<mapper namespace="org.openo.gso.mapper.InvServicePackageMapper">
 
     <resultMap type="org.openo.gso.model.servicemo.ServicePackageMapping" id="servicePackageMappingResultMap">
         <result property="serviceId" column="serviceId" />
@@ -27,25 +27,13 @@
 
     <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServicePackageMapping">
         insert into
-        t_lcm_defPackage_mapping
+        gso_lcm_defPackage_mapping
         (serviceId,serviceDefId,templateId,templateName)
         values(#{serviceId},#{serviceDefId},#{templateId},#{templateName})
     </insert>
 
     <delete id="delete">
-        delete from t_lcm_defPackage_mapping where serviceId = #{serviceId}
+        delete from gso_lcm_defPackage_mapping where serviceId = #{serviceId}
     </delete>
-
-    <select id="queryAllMappings" resultMap="servicePackageMappingResultMap">
-        select serviceId,serviceDefId,templateId,templateName from t_lcm_defPackage_mapping
-    </select>
-    
-    <select id="queryPackageMapping" resultMap="servicePackageMappingResultMap">
-        select serviceId,serviceDefId,templateId,templateName from t_lcm_defPackage_mapping where serviceId = #{serviceId}
-    </select>
-    
-    <select id="queryPackageMappings" resultMap="servicePackageMappingResultMap">
-        select serviceId,serviceDefId,templateId,templateName from t_lcm_defPackage_mapping where serviceDefId = #{serviceDefId}
-    </select>
 
 </mapper>

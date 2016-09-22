@@ -142,6 +142,11 @@ public class Constant {
     public static final String SERVICE_SEGMENT_INSTANCE_ID = "instanceId";
 
     /**
+     * Default value.
+     */
+    public static final String DEFAULT_STRING = "--";
+
+    /**
      * Constructor<br/>
      * <p>
      * </p>

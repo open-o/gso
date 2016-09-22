@@ -48,7 +48,7 @@
     </delete>
 
     <select id="queryServiceSegments" resultMap="ServiceSegmentResultMap">
-        select * from t_lcm_service_segment where serviceId =
+        select serviceId,serviceSegmentId,serviceSegmentName,templateId,nodeType,topoSeqNumber,status from t_lcm_service_segment where serviceId =
         #{serviceId}
     </select>
 

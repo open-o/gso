@@ -11,16 +11,18 @@
 --WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 --See the License for the specific language governing permissions and
 --limitations under the License.
+use gsodb
+/
 drop table if exists t_lcm_service
 /
 create table t_lcm_service
 (
     serviceId    varchar(255) not null,
 	name         varchar(255) not null,
-	description  varchar(255) ,
-	activeStatus varchar(255) ,
-	status       varchar(255) ,
-	creator      varchar(255) ,
+	description  varchar(255) null,
+	activeStatus varchar(255) not null,
+	status       varchar(255) not null,
+	creator      varchar(255) not null,
 	createAt     bigint(13)   not null,
 	primary key(serviceId)
 )

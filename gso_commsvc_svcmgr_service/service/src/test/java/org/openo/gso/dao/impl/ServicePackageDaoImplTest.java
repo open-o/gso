@@ -33,8 +33,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.gso.dao.impl.ServicePackageDaoImpl;
+import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
+
+import mockit.Mock;
+import mockit.MockUp;
 
 /**
  * Test ServicePackageDaoImpl Class<br/>
@@ -52,12 +55,19 @@ public class ServicePackageDaoImplTest {
     ServicePackageDaoImpl servicePackageDao = new ServicePackageDaoImpl();
 
     /**
+     * Database session handler.
+     */
+    DatabaseSessionHandler dbSessionHandler = new DatabaseSessionHandler();
+
+    /**
      * Sql session.
      */
     SqlSession session;
 
     @Before
     public void setup() throws IOException, SQLException {
+        servicePackageDao.setDbSessionHandler(dbSessionHandler);
+
         String resource = "mybatis-config.xml";
         Reader reader = Resources.getResourceAsReader(resource);
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
@@ -68,7 +78,8 @@ public class ServicePackageDaoImplTest {
         runner.runScript(reader);
         reader.close();
 
-        servicePackageDao.setSession(session);
+        // mock session
+        mockSession();
     }
 
     /**
@@ -101,7 +112,7 @@ public class ServicePackageDaoImplTest {
      */
     @Test(expected = ServiceException.class)
     public void testQueryAllMappingsFail() throws ServiceException {
-        servicePackageDao.getSession().close();
+        servicePackageDao.getDbSessionHandler().getSqlSession().close();
         servicePackageDao.queryAllMappings();
     }
 
@@ -157,12 +168,17 @@ public class ServicePackageDaoImplTest {
     }
 
     /**
-     * Test getSession().<br/>
+     * Mock database session.<br/>
      * 
      * @since GSO 0.5
      */
-    @Test
-    public void testGetSession() {
-        assertNotNull(servicePackageDao.getSession());
+    private void mockSession() {
+        new MockUp<DatabaseSessionHandler>() {
+
+            @Mock
+            public SqlSession getSqlSession() {
+                return session;
+            }
+        };
     }
 }

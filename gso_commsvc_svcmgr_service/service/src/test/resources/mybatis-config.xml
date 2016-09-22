@@ -37,5 +37,8 @@
         <mapper resource="ServicePackageMapper.xml" />
         <mapper resource="ServiceSegmentMapper.xml" />
         <mapper resource="ServiceParameterMapper.xml" />
+        <mapper resource="InvServiceModelMapper.xml" />
+        <mapper resource="InvServicePackageMapper.xml" />
+        <mapper resource="InvServiceParameterMapper.xml" />
     </mappers>
 </configuration>

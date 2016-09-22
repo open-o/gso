@@ -25,13 +25,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.gso.constant.Constant;
+import org.openo.gso.dao.inf.IInventoryDao;
 import org.openo.gso.dao.inf.IServiceModelDao;
 import org.openo.gso.dao.inf.IServicePackageDao;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.exception.ErrorCode;
+import org.openo.gso.mapper.InvServiceModelMapper;
+import org.openo.gso.mapper.InvServicePackageMapper;
+import org.openo.gso.mapper.InvServiceParameterMapper;
 import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.model.catalogmo.OperationModel;
+import org.openo.gso.model.servicemo.InvServiceModel;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 import org.openo.gso.model.servicemo.ServiceParameter;
@@ -89,6 +94,11 @@ public class ServiceManagerImpl implements IServiceManager {
     private IWsoProxy wsoProxy;
 
     /**
+     * DAO to operate inventory database.
+     */
+    private IInventoryDao inventoryDao;
+
+    /**
      * Create service instance.<br/>
      * 
      * @param reqContent content of request
@@ -125,7 +135,7 @@ public class ServiceManagerImpl implements IServiceManager {
 
         try {
             // Insert data into DB
-            insertDB(model);
+            insertDB(model, JsonUtil.marshal(instanceParam));
 
             // Start to create workflow
             paramsMap.put(Constant.PREDEFINE_GSO_ID, model.getServiceId());
@@ -170,8 +180,8 @@ public class ServiceManagerImpl implements IServiceManager {
             LOGGER.error("There is no service segment. The service ID is {}", serviceId);
         }
 
-        // Delete data from database
-        serviceModelDao.delete(serviceId);
+        // Delete data from DB
+        deleteDataFromDb(serviceId);
     }
 
     /**
@@ -270,12 +280,28 @@ public class ServiceManagerImpl implements IServiceManager {
     }
 
     /**
-     * Insert data into database.<br/>
+     * Insert data into DB.<br/>
      * 
+     * @param model service instance data
+     * @param parameters which are used to create service instance
+     * @throws ServiceException when fail to operate database.
      * @since GSO 0.5
      */
-    private void insertDB(ServiceModel model) throws ServiceException {
+    private void insertDB(ServiceModel model, String parameters) throws ServiceException {
+
+        // insert gso data
         serviceModelDao.insert(model);
+
+        // insert inventory data
+        inventoryDao.insert(convertToInvData(model), InvServiceModelMapper.class);
+        inventoryDao.insert(model.getServicePackage(), InvServicePackageMapper.class);
+        if(StringUtils.hasLength(parameters)) {
+            ServiceParameter serviceParam = new ServiceParameter();
+            serviceParam.setServiceId(model.getServiceId());
+            serviceParam.setParamName(Constant.SERVICE_PARAMETERS);
+            serviceParam.setParamValue(parameters);
+            inventoryDao.insert(serviceParam, InvServiceParameterMapper.class);
+        }
     }
 
     /**
@@ -290,6 +316,20 @@ public class ServiceManagerImpl implements IServiceManager {
         DataConverter.addDynamicData(model);
 
         return model;
+    }
+
+    /**
+     * @return Returns the inventoryDao.
+     */
+    public IInventoryDao getInventoryDao() {
+        return inventoryDao;
+    }
+
+    /**
+     * @param inventoryDao The inventoryDao to set.
+     */
+    public void setInventoryDao(IInventoryDao inventoryDao) {
+        this.inventoryDao = inventoryDao;
     }
 
     /**
@@ -390,12 +430,12 @@ public class ServiceManagerImpl implements IServiceManager {
     }
 
     /**
-     * <br/>
+     * Get the sequence of node in topology.<br/>
      * 
-     * @param nodes
-     * @param seviceSegment
-     * @return
-     * @throws ServiceException
+     * @param nodes which are defined in template
+     * @param seviceSegment service segment of some service instance
+     * @return sequence
+     * @throws ServiceException when there is something wrong with data.
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
@@ -458,5 +498,44 @@ public class ServiceManagerImpl implements IServiceManager {
             segmentId = segment.getNodeType() + Constant.SERVICE_SEGMENT_INSTANCE_ID;
             inputParam.put(segmentId, segment.getServiceSegmentId());
         }
+    }
+
+    /**
+     * Convert gso data to inventory data.<br/>
+     * 
+     * @param service gso instance
+     * @return inventory instance
+     * @since GSO 0.5
+     */
+    private InvServiceModel convertToInvData(ServiceModel service) {
+        InvServiceModel invService = new InvServiceModel();
+        invService.setServiceId(service.getServiceId());
+        invService.setName(service.getName());
+        invService.setServiceType("GSO");
+        invService.setDescription(service.getDescription());
+        invService.setActiveStatus(service.getActiveStatus());
+        invService.setStatus(service.getStatus());
+        invService.setCreator(service.getCreator());
+        invService.setCreateAt(service.getCreateAt());
+
+        return invService;
+    }
+
+    /**
+     * Delete data from database.<br/>
+     * 
+     * @param key delete key
+     * @throws ServiceException when fail to operate database
+     * @since GSO 0.5
+     */
+    private void deleteDataFromDb(String key) throws ServiceException {
+
+        // Delete data from gso DB
+        serviceModelDao.delete(key);
+
+        // Delete data from inventory DB
+        inventoryDao.delete(key, InvServiceModelMapper.class);
+        inventoryDao.delete(key, InvServicePackageMapper.class);
+        inventoryDao.delete(key, InvServiceParameterMapper.class);
     }
 }

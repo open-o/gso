@@ -32,7 +32,7 @@
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
     
     <!-- jar rest server registration -->
-    <jaxrs:server id="sampleServer" address="/">    
+    <jaxrs:server id="gsoServer" address="/">    
         <!-- registering beans -->
         <jaxrs:serviceBeans>
             <ref bean="ServicemgrRoaModuleImpl"></ref>
@@ -44,44 +44,75 @@
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
         </jaxrs:providers>
     </jaxrs:server>
-    
-    <bean id="datasource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+
+    <bean id="gsodb" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="com.mysql.jdbc.Driver" />
-        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/mybatistest" />
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/gsodb" />
         <property name="user" value="root" />
-        <property name="password" value="Test_12345" />
+        <property name="password" value="" />
+        <property name="acquireIncrement" value="10" />
+        <property name="idleConnectionTestPeriod" value="120" />
+        <property name="maxPoolSize" value="50" />
+        <property name="maxStatements" value="30" />
+        <property name="minPoolSize" value="10" />
+        <property name="maxIdleTime" value="600" />
     </bean>
-    
-    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+
+    <bean id="inventory" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/inventory" />
+        <property name="user" value="root" />
+        <property name="password" value="" />
+        <property name="acquireIncrement" value="10" />
+        <property name="idleConnectionTestPeriod" value="120" />
+        <property name="maxPoolSize" value="50" />
+        <property name="maxStatements" value="30" />
+        <property name="minPoolSize" value="10" />
+        <property name="maxIdleTime" value="600" />
+    </bean>
+
+    <bean id="datasource" class="org.openo.gso.dao.multi.MultiDataSource">
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry value-ref="gsodb" key="gsodb"></entry>
+                <entry value-ref="inventory" key="inventory"></entry>
+            </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="gsodb"></property>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="datasource" />
-        <property name="mapperLocations" value="classpath*:mybatis/mappers/*.xml" />
+        <property name="mapperLocations" value="classpath:mybatis/mysql/*.xml" />
     </bean>
-    
-    <bean id="session" class="org.mybatis.spring.SqlSessionTemplate">
-        <constructor-arg index="0" ref="sessionFactory" />
+
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory" />
+        <constructor-arg index="1" value="SIMPLE" />
     </bean>
 
     <bean class="org.openo.gso.activator.Activator"></bean>
-    
+
     <bean id="Activator" class="org.openo.gso.activator.Activator" init-method="start" destroy-method="stop">
     </bean>
-    
+
     <bean id="ServicemgrRoaModuleImpl" class="org.openo.gso.roa.impl.ServicemgrRoaModuleImpl">
         <property name="servicemanager" ref="servicemanager"></property>
-    </bean>    
-    
+    </bean>
+
     <bean id="servicemanager" class="org.openo.gso.service.impl.ServiceManagerImpl">
         <property name="serviceModelDao" ref="serviceModelDao"></property>
         <property name="serviceSegmentDao" ref="serviceSegmentDao"></property>
         <property name="servicePackageDao" ref="servicePackageDao"></property>
         <property name="catalogProxy" ref="catalogProxy"></property>
         <property name="wsoProxy" ref="wsoProxy"></property>
+        <property name="inventoryDao" ref="inventoryDao"></property>
     </bean>
-    
+
     <bean id="ServicePackageModuleImpl" class="org.openo.gso.roa.impl.ServicePackageModuleImpl">
         <property name="packageMgr" ref="packageMgr"></property>
     </bean>
-    
+
     <bean id="packageMgr" class="org.openo.gso.service.impl.PackageManagerImpl">
         <property name="servicePackageDao" ref="servicePackageDao"></property>
         <property name="catalogProxy" ref="catalogProxy"></property>
@@ -90,7 +121,7 @@
     <bean id="DrivermgrRoaModuleImpl" class="org.openo.gso.roa.impl.DrivermgrRoaModuleImpl">
         <property name="driverMgr" ref="driverMgr"></property>
     </bean>
-    
+
     <bean id="driverMgr" class="org.openo.gso.service.impl.DriverManagerImpl">
         <property name="serviceInf" ref="serviceInf"></property>
         <property name="serviceSegmentDao" ref="serviceSegmentDao"></property>
@@ -99,23 +130,37 @@
     </bean>
 
     <bean id="serviceModelDao" class="org.openo.gso.dao.impl.ServiceModelDaoImpl">
-        <property name="session" ref="session" />
+        <property name="dbSessionHandler" ref="dbSessionHandler" />
     </bean>
-    
+
     <bean id="servicePackageDao" class="org.openo.gso.dao.impl.ServicePackageDaoImpl">
-        <property name="session" ref="session" />
+        <property name="dbSessionHandler" ref="dbSessionHandler" />
     </bean>
 
     <bean id="serviceSegmentDao" class="org.openo.gso.dao.impl.ServiceSegmentDaoImpl">
-        <property name="session" ref="session" />
+        <property name="dbSessionHandler" ref="dbSessionHandler" />
     </bean>
-    
+
+    <bean id="inventoryDao" class="org.openo.gso.dao.impl.InventoryDaoImpl">
+        <property name="invSessionHandler" ref="invSessionHandler" />
+    </bean>
+
+    <bean id="dbSessionHandler" class="org.openo.gso.dao.multi.DatabaseSessionHandler">
+        <property name="dataBaseName" value="gsodb" />
+        <property name="sqlSessionTemplate" ref="sqlSessionTemplate" />
+    </bean>
+
+    <bean id="invSessionHandler" class="org.openo.gso.dao.multi.DatabaseSessionHandler">
+        <property name="dataBaseName" value="inventory" />
+        <property name="sqlSessionTemplate" ref="sqlSessionTemplate" />
+    </bean>
+
     <bean id="catalogProxy" class="org.openo.gso.restproxy.impl.CatalogProxyImpl">
     </bean>
-    
+
     <bean id="wsoProxy" class="org.openo.gso.restproxy.impl.WsoProxyImpl">
     </bean>
-    
+
     <bean id="serviceInf" class="org.openo.gso.service.impl.DriverServiceImpl">
     </bean>
 </beans>

@@ -33,7 +33,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
+
+import mockit.Mock;
+import mockit.MockUp;
 
 /**
  * Test ServiceSegmentDaoImpl Class.<br/>
@@ -51,12 +55,19 @@ public class ServiceSegmentDaoImplTest {
     ServiceSegmentDaoImpl serviceSegmentDao = new ServiceSegmentDaoImpl();
 
     /**
+     * Database session handler.
+     */
+    DatabaseSessionHandler dbSessionHandler = new DatabaseSessionHandler();
+
+    /**
      * Sql session.
      */
     SqlSession session;
 
     @Before
     public void setup() throws IOException, SQLException {
+        serviceSegmentDao.setDbSessionHandler(dbSessionHandler);
+
         String resource = "mybatis-config.xml";
         Reader reader = Resources.getResourceAsReader(resource);
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
@@ -66,6 +77,9 @@ public class ServiceSegmentDaoImplTest {
         ScriptRunner runner = new ScriptRunner(conn);
         runner.runScript(reader);
         reader.close();
+
+        // mock session
+        mockSession();
     }
 
     /**
@@ -86,7 +100,6 @@ public class ServiceSegmentDaoImplTest {
      */
     @Test
     public void testQueryServiceSegments() throws ServiceException {
-        serviceSegmentDao.setSession(session);
         List<ServiceSegmentModel> serviceSegments = serviceSegmentDao.queryServiceSegments("1");
         assertNotNull(serviceSegments);
     }
@@ -110,6 +123,7 @@ public class ServiceSegmentDaoImplTest {
      */
     @Test(expected = ServiceException.class)
     public void testQueryServiceSegmentsFail2() throws ServiceException {
+        serviceSegmentDao.getDbSessionHandler().getSqlSession().close();
         serviceSegmentDao.queryServiceSegments("1");
     }
 
@@ -153,7 +167,6 @@ public class ServiceSegmentDaoImplTest {
         serviceSegment.setTopoSeqNumber(1);
         serviceSegment.setStatus("createSucceed");
 
-        serviceSegmentDao.setSession(session);
         serviceSegmentDao.insert(serviceSegment);
     }
 
@@ -168,7 +181,6 @@ public class ServiceSegmentDaoImplTest {
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         serviceSegment.setServiceId("1");
         serviceSegment.setServiceSegmentId("12345");
-        serviceSegmentDao.setSession(session);
         serviceSegmentDao.delete(serviceSegment);
     }
 
@@ -185,13 +197,17 @@ public class ServiceSegmentDaoImplTest {
     }
 
     /**
-     * Test getSession().<br/>
+     * Mock database session.<br/>
      * 
      * @since GSO 0.5
      */
-    @Test
-    public void testGetSession() {
-        serviceSegmentDao.setSession(session);
-        assertNotNull(serviceSegmentDao.getSession());
+    private void mockSession() {
+        new MockUp<DatabaseSessionHandler>() {
+
+            @Mock
+            public SqlSession getSqlSession() {
+                return session;
+            }
+        };
     }
 }

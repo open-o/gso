@@ -16,32 +16,33 @@
 -->
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.openo.gso.mapper.ServiceModelMapper">
+<mapper namespace="org.openo.gso.mapper.InvServiceModelMapper">
 
-    <resultMap type="org.openo.gso.model.servicemo.ServiceModel" id="serviceModelResultMap">
+    <resultMap type="org.openo.gso.model.servicemo.InvServiceModel" id="invServiceModelResultMap">
         <result property="serviceId" column="serviceId" />
-        <result property="name" column="name" />
+        <result property="name" column="serviceName" />
+        <result property="serviceType" column="serviceType" />
         <result property="description" column="description" />
         <result property="activeStatus" column="activeStatus" />
         <result property="status" column="status" />
         <result property="creator" column="creator" />
-        <result property="createAt" column="createAt" />
+        <result property="createAt" column="createdTime" />
     </resultMap>
 
-    <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServiceModel">
+    <insert id="insert" parameterType="org.openo.gso.model.servicemo.InvServiceModel">
         insert into
-        t_lcm_service
-        (serviceId,name,description,activeStatus,status,creator,createAt)
-        values(#{serviceId},#{name},#{description},#{activeStatus},#{status},#{creator},#{createAt})
+        gso_lcm_servicebaseinfo
+        (serviceId,serviceName,serviceType, description,activeStatus,status,creator,createdTime)
+        values(#{serviceId},#{name},#{serviceType},#{description},#{activeStatus},#{status},#{creator},#{createAt})
     </insert>
 
     <delete id="delete">
-        delete from t_lcm_service where serviceId = #{serviceId}
+        delete from gso_lcm_servicebaseinfo where serviceId = #{serviceId}
     </delete>
 
 
-    <select id="queryAllServices" resultMap="serviceModelResultMap">
-        select serviceId,name,description,activeStatus,status,creator,createAt from t_lcm_service
+    <select id="queryAllServices" resultMap="invServiceModelResultMap">
+        select serviceId,serviceName,serviceType, description,activeStatus,status,creator,createdTime from gso_lcm_servicebaseinfo
     </select>
 
 </mapper>

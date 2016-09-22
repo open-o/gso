@@ -40,9 +40,9 @@ public interface ServiceSegmentMapper {
     void batchInsert(@Param("serviceSegments") List<ServiceSegmentModel> serviceSegments);
 
     /**
-     * Delete service segment instance by service ID.<br/>
+     * Delete service segment instance by service instance ID and segment ID.<br/>
      * 
-     * @param serviceId service instance ID
+     * @param serviceSegment service segment object
      * @since GSO 0.5
      */
     void delete(ServiceSegmentModel serviceSegment);

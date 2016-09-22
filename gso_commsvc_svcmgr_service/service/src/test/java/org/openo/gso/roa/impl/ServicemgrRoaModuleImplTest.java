@@ -16,6 +16,7 @@
 
 package org.openo.gso.roa.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -44,15 +46,16 @@ import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
+import org.openo.gso.dao.impl.InventoryDaoImpl;
 import org.openo.gso.dao.impl.ServiceModelDaoImpl;
 import org.openo.gso.dao.impl.ServicePackageDaoImpl;
 import org.openo.gso.dao.impl.ServiceSegmentDaoImpl;
+import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.restproxy.impl.CatalogProxyImpl;
 import org.openo.gso.restproxy.impl.WsoProxyImpl;
-import org.openo.gso.roa.impl.ServicemgrRoaModuleImpl;
 import org.openo.gso.service.impl.ServiceManagerImpl;
 import org.openo.gso.util.http.HttpUtil;
 import org.openo.gso.util.http.ResponseUtils;
@@ -78,32 +81,32 @@ public class ServicemgrRoaModuleImplTest {
     /**
      * Service ROA.
      */
-    ServicemgrRoaModuleImpl serviceRoa;
+    ServicemgrRoaModuleImpl serviceRoa = new ServicemgrRoaModuleImpl();
 
     /**
      * Service manager.
      */
-    ServiceManagerImpl serviceManager;
+    ServiceManagerImpl serviceManager = new ServiceManagerImpl();
 
     /**
      * Service model DAO.
      */
-    ServiceModelDaoImpl serviceDao;
+    ServiceModelDaoImpl serviceDao = new ServiceModelDaoImpl();
 
     /**
      * Service segment DAO.
      */
-    ServiceSegmentDaoImpl serviceSegmentDao;
+    ServiceSegmentDaoImpl serviceSegmentDao = new ServiceSegmentDaoImpl();
 
     /**
      * Package DAO.
      */
-    ServicePackageDaoImpl packageDao;
+    ServicePackageDaoImpl packageDao = new ServicePackageDaoImpl();
 
     /**
      * Catalog proxy.
      */
-    CatalogProxyImpl catalogProxy;
+    CatalogProxyImpl catalogProxy = new CatalogProxyImpl();
 
     /**
      * SQL session.
@@ -118,12 +121,22 @@ public class ServicemgrRoaModuleImplTest {
     /**
      * Rest response.
      */
-    RestfulResponse responseSuccess;
+    RestfulResponse responseSuccess = new RestfulResponse();
 
     /**
      * WSO2 proxy.
      */
-    WsoProxyImpl wsoProxy;
+    WsoProxyImpl wsoProxy = new WsoProxyImpl();
+
+    /**
+     * Inventory DAO.
+     */
+    InventoryDaoImpl inventoryDao = new InventoryDaoImpl();
+
+    /**
+     * Database session handler.
+     */
+    DatabaseSessionHandler dbSessionHandler = new DatabaseSessionHandler();
 
     /**
      * Before executing UT, start sql.<br/>
@@ -132,25 +145,21 @@ public class ServicemgrRoaModuleImplTest {
      */
     @Before
     public void start() throws IOException, SQLException {
-        serviceRoa = new ServicemgrRoaModuleImpl();
-        serviceManager = new ServiceManagerImpl();
-        serviceDao = new ServiceModelDaoImpl();
-        serviceSegmentDao = new ServiceSegmentDaoImpl();
-        packageDao = new ServicePackageDaoImpl();
-        catalogProxy = new CatalogProxyImpl();
-        responseSuccess = new RestfulResponse();
-        wsoProxy = new WsoProxyImpl();
+
+        // set session handler
+        serviceDao.setDbSessionHandler(dbSessionHandler);
+        serviceSegmentDao.setDbSessionHandler(dbSessionHandler);
+        packageDao.setDbSessionHandler(dbSessionHandler);
+        inventoryDao.setInvSessionHandler(dbSessionHandler);
 
         prepareSQL();
 
-        serviceDao.setSession(session);
-        serviceSegmentDao.setSession(session);
-        packageDao.setSession(session);
         serviceManager.setServiceModelDao(serviceDao);
         serviceManager.setServiceSegmentDao(serviceSegmentDao);
         serviceManager.setServicePackageDao(packageDao);
         serviceManager.setCatalogProxy(catalogProxy);
         serviceManager.setWsoProxy(wsoProxy);
+        serviceManager.setInventoryDao(inventoryDao);
         serviceRoa.setServicemanager(serviceManager);
         responseSuccess.setStatus(HttpCode.RESPOND_OK);
     }
@@ -183,7 +192,13 @@ public class ServicemgrRoaModuleImplTest {
         reader = Resources.getResourceAsReader("ServiceParameter.sql");
         runner.runScript(reader);
 
+        reader = Resources.getResourceAsReader("inventory.sql");
+        runner.runScript(reader);
+
         reader.close();
+
+        // mock session
+        mockSession();
     }
 
     /**
@@ -228,7 +243,8 @@ public class ServicemgrRoaModuleImplTest {
         // mock start wso2 bpel workflow
         mockPost(responseSuccess);
 
-        serviceRoa.createService(httpRequest);
+        Response response = serviceRoa.createService(httpRequest);
+        assertEquals(HttpCode.RESPOND_ACCEPTED, response.getStatus());
     }
 
     /**
@@ -264,7 +280,15 @@ public class ServicemgrRoaModuleImplTest {
      * @since GSO 0.5
      */
     @Test
-    public void testTeleteService() throws ServiceException {
+    public void testDeleteService() throws ServiceException {
+        // mock get catalog plans
+        RestfulResponse responsePlan = new RestfulResponse();
+        responsePlan.setResponseJson(getJsonString(FILE_PATH + "getPlans.json"));
+        responsePlan.setStatus(HttpCode.RESPOND_OK);
+        mockGet(responsePlan);
+
+        // mock start wso2 bpel workflow
+        mockPost(responseSuccess);
         serviceRoa.deleteService("1", httpRequest);
     }
 
@@ -371,5 +395,20 @@ public class ServicemgrRoaModuleImplTest {
         }
 
         return json;
+    }
+
+    /**
+     * Mock database session.<br/>
+     * 
+     * @since GSO 0.5
+     */
+    private void mockSession() {
+        new MockUp<DatabaseSessionHandler>() {
+
+            @Mock
+            public SqlSession getSqlSession() {
+                return session;
+            }
+        };
     }
 }

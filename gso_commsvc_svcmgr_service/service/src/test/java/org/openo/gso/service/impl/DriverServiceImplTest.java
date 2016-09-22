@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openo.gso.service.impl;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,33 +23,29 @@ import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.constant.CommonConstant;
-import org.openo.gso.model.drivermo.NsProgressStatus;
-import org.openo.gso.model.drivermo.ResponseDescriptor;
 import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.util.RestfulUtil;
-import org.openo.gso.util.json.JsonUtil;
 
 import mockit.Mock;
 import mockit.MockUp;
 
-
 public class DriverServiceImplTest {
 
     DriverServiceImpl svcImpl = new DriverServiceImpl();
+
     @Test
     public void testDelete() {
-        
+
         final RestfulResponse rspErr = new RestfulResponse();
         rspErr.setStatus(202);
         String strErr = "{\"jobId\":\"1\",\"responseDescriptor\":{\"status\":\"error\",\"progress\":\"100\"}}";
         rspErr.setResponseJson(strErr);
         try {
-            new MockUp<RestfulUtil>()
-            {
+            new MockUp<RestfulUtil>() {
+
                 @Mock
                 public RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
-                Map<String, String> queryParam)
-                {
+                        Map<String, String> queryParam) {
                     return rspErr;
                 }
             };
@@ -60,18 +56,17 @@ public class DriverServiceImplTest {
         } catch(ServiceException e) {
 
         }
-        
+
         final RestfulResponse rsp = new RestfulResponse();
         rsp.setStatus(202);
         String str = "{\"jobId\":\"1\",\"responseDescriptor\":{\"status\":\"finished\",\"progress\":\"100\"}}";
         rsp.setResponseJson(str);
         try {
-            new MockUp<RestfulUtil>()
-            {
+            new MockUp<RestfulUtil>() {
+
                 @Mock
                 public RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
-                Map<String, String> queryParam)
-                {
+                        Map<String, String> queryParam) {
                     return rsp;
                 }
             };
@@ -83,20 +78,17 @@ public class DriverServiceImplTest {
         } catch(ServiceException e) {
 
         }
-        
 
-        
         final RestfulResponse rspExp = new RestfulResponse();
         rsp.setStatus(500);
         String strExp = "{\"jobId\":\"1\",\"responseDescriptor\":{\"status\":\"error\",\"progress\":\"100\"}}";
         rsp.setResponseJson(strExp);
         try {
-            new MockUp<RestfulUtil>()
-            {
+            new MockUp<RestfulUtil>() {
+
                 @Mock
                 public RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
-                Map<String, String> queryParam)
-                {
+                        Map<String, String> queryParam) {
                     return rspExp;
                 }
             };
@@ -105,7 +97,6 @@ public class DriverServiceImplTest {
         } catch(ServiceException e) {
 
         }
-        
 
         try {
             svcImpl.delete("", "instanceId");
@@ -115,23 +106,19 @@ public class DriverServiceImplTest {
         }
     }
 
-
-
     @Test
     public void testGetNsProgress() {
 
     }
-    
-    
 
     @Test
     public void testInstantiateNS() {
 
     }
-    
+
     @Test
     public void testCreateNS() {
-        
+
         DriverServiceImpl nsImpl = new DriverServiceImpl();
         nsImpl.setNodeType("tosca.nodes.nfv.dc");
         ServiceTemplate svcTmpl = new ServiceTemplate();
@@ -142,12 +129,11 @@ public class DriverServiceImplTest {
         String responseString = "{\"nsInstanceId\":\"1\"}";
         rsp.setResponseJson(responseString);
         try {
-            new MockUp<RestfulUtil>()
-            {
+            new MockUp<RestfulUtil>() {
+
                 @Mock
                 public RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
-                Map<String, String> queryParam)
-                {
+                        Map<String, String> queryParam) {
                     return rsp;
                 }
             };

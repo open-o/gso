@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
+import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.mapper.ServiceSegmentMapper;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
@@ -45,22 +46,22 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServicePackageDaoImpl.class);
 
     /**
-     * Sql session.
+     * Session handler.
      */
-    private SqlSession session;
+    private DatabaseSessionHandler dbSessionHandler;
 
     /**
-     * @return Returns the session.
+     * @return Returns the dbSessionHandler.
      */
-    public SqlSession getSession() {
-        return session;
+    public DatabaseSessionHandler getDbSessionHandler() {
+        return dbSessionHandler;
     }
 
     /**
-     * @param session The session to set.
+     * @param dbSessionHandler The dbSessionHandler to set.
      */
-    public void setSession(SqlSession session) {
-        this.session = session;
+    public void setDbSessionHandler(DatabaseSessionHandler dbSessionHandler) {
+        this.dbSessionHandler = dbSessionHandler;
     }
 
     /**
@@ -93,7 +94,8 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
     public void delete(ServiceSegmentModel serviceSegment) throws ServiceException {
         try {
             // Check data validation.
-            if(StringUtils.isEmpty(serviceSegment.getServiceId()) || StringUtils.isEmpty(serviceSegment.getServiceSegmentId())) {
+            if(StringUtils.isEmpty(serviceSegment.getServiceId())
+                    || StringUtils.isEmpty(serviceSegment.getServiceSegmentId())) {
                 throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Data is wrong");
             }
 
@@ -139,6 +141,7 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * @since GSO 0.5
      */
     private <T> T getMapper(Class<T> type) {
-        return this.session.getMapper(type);
+        SqlSession session = dbSessionHandler.getSqlSession();
+        return session.getMapper(type);
     }
 }

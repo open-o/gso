@@ -41,16 +41,16 @@ public class DrivermgrRoaModuleImpl implements IDrivermgrRoaModule {
     private IDriverManager driverMgr;
 
     /**
-     * @return Returns the DriverManager.
+     * @return Returns the driverMgr.
      */
-    public IDriverManager getDriverManager() {
+    public IDriverManager getDriverMgr() {
         return driverMgr;
     }
 
     /**
-     * @param DriverManager The DriverManager to set.
+     * @param driverMgr The driverMgr to set.
      */
-    public void setDriverManager(IDriverManager driverMgr) {
+    public void setDriverMgr(IDriverManager driverMgr) {
         this.driverMgr = driverMgr;
     }
 

@@ -34,10 +34,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.gso.dao.impl.ServiceModelDaoImpl;
-import org.openo.gso.dao.impl.ServicePackageDaoImpl;
+import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
+
+import mockit.Mock;
+import mockit.MockUp;
 
 /**
  * Test ServiceModelDaoImpl Class.<br/>
@@ -65,6 +67,11 @@ public class ServiceModelDaoImplTest {
     SqlSession session;
 
     /**
+     * Database session handler.
+     */
+    DatabaseSessionHandler dbSessionHandler = new DatabaseSessionHandler();
+
+    /**
      * Before starting to test UT, prepare database data.<br/>
      * 
      * @throws IOException
@@ -73,6 +80,9 @@ public class ServiceModelDaoImplTest {
      */
     @Before
     public void setup() throws IOException, SQLException {
+        serviceModelDao.setDbSessionHandler(dbSessionHandler);
+        packageDao.setDbSessionHandler(dbSessionHandler);
+
         String resource = "mybatis-config.xml";
         Reader reader = Resources.getResourceAsReader(resource);
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
@@ -91,8 +101,8 @@ public class ServiceModelDaoImplTest {
 
         reader.close();
 
-        serviceModelDao.setSession(session);
-        packageDao.setSession(session);
+        // mock session
+        mockSession();
     }
 
     /**
@@ -158,7 +168,7 @@ public class ServiceModelDaoImplTest {
      */
     @Test(expected = ServiceException.class)
     public void testQueryAllServicesFail() throws ServiceException {
-        serviceModelDao.getSession().close();
+        serviceModelDao.getDbSessionHandler().getSqlSession().close();
         serviceModelDao.queryAllServices();
     }
 
@@ -227,7 +237,6 @@ public class ServiceModelDaoImplTest {
      */
     @Test
     public void testDeleteOk() throws ServiceException {
-        serviceModelDao.setSession(session);
         serviceModelDao.delete("1");
     }
 
@@ -243,12 +252,17 @@ public class ServiceModelDaoImplTest {
     }
 
     /**
-     * Test getSession().<br/>
+     * Mock database session.<br/>
      * 
      * @since GSO 0.5
      */
-    @Test
-    public void testGetSession() {
-        assertNotNull(serviceModelDao.getSession());
+    private void mockSession() {
+        new MockUp<DatabaseSessionHandler>() {
+
+            @Mock
+            public SqlSession getSqlSession() {
+                return session;
+            }
+        };
     }
 }
