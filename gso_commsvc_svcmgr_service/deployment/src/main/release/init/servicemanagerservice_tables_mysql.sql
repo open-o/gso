@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-use gsodb
-/
-drop table if exists t_lcm_service
-/
+create database if not exists gsodb default charset utf8 collate utf8_general_ci;
+use gsodb;
+
+drop table if exists t_lcm_service;
+
 create table t_lcm_service
 (
     serviceId    varchar(255) not null,
-	name         varchar(255) not null,
+    name         varchar(255) not null,
 	description  varchar(255) null,
 	activeStatus varchar(255) not null,
 	status       varchar(255) not null,
@@ -28,11 +29,11 @@ create table t_lcm_service
 	createAt     bigint(13)   not null,
 	primary key(serviceId)
 )
-engine=innodb
-/
-drop table if exists t_lcm_defPackage_mapping
-/
-create table t_lcm_defPackage_mapping 
+engine=innodb;
+
+drop table if exists t_lcm_defPackage_mapping;
+
+ 
 create table t_lcm_defPackage_mapping
 (
     serviceId    varchar(255) not null,
@@ -41,11 +42,11 @@ create table t_lcm_defPackage_mapping
 	templateName varchar(255) not null,
 	primary key(serviceId)
 )
-engine=innodb
-/
+engine=innodb;
 
-drop table if exists t_lcm_service_parameter
-/
+
+drop table if exists t_lcm_service_parameter;
+
 create table t_lcm_service_parameter
 (
     serviceId    varchar(255) not null,
@@ -53,11 +54,11 @@ create table t_lcm_service_parameter
 	paramValue  varchar(255) not null,	
 	constraint pk_t_parameters primary key(serviceId, paramName)
 )
-engine=innodb
-/
+engine=innodb;
 
-drop table if exists t_lcm_service_segment
-/
+
+drop table if exists t_lcm_service_segment;
+
 create table t_lcm_service_segment
 (
     serviceId    varchar(255) not null,
@@ -69,7 +70,7 @@ create table t_lcm_service_segment
 	status varchar(20) ,
 	constraint pk_t_segments primary key(serviceId, serviceSegmentId)
 )
-engine=innodb
-/
-commit
-/
+engine=innodb;
+
+commit;
+
