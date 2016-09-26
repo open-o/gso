@@ -15,8 +15,8 @@
 #*******************************************************************************
 #!/bin/bash
 #check user
+cd ..
 mkdir logs
 mkdir temp
-cd ..
 export CATALINA_BASE=$(cd `dirname $0`; pwd)
 $CATALINA_HOME/bin/catalina.sh start
