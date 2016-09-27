@@ -1,6 +1,6 @@
 {
 	"serviceId": "1",
-	"serviceSegmentId": "12345",
+	"serviceSegmentId": "12345_2",
 	"nodeType": "tosca.nodes.nfv.ext.NS.ns_pop",
 	"templateId": "1234567890",
 	"status": "success"

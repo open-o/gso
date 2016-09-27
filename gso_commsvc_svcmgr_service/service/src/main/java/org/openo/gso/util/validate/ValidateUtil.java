@@ -19,8 +19,7 @@ package org.openo.gso.util.validate;
 import java.util.List;
 import java.util.Map;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.gso.exception.ErrorCode;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.slf4j.Logger;
@@ -57,29 +56,29 @@ public class ValidateUtil {
      * Assert String parameter.<br/>
      * 
      * @param param parameter data
-     * @throws ServiceException when parameter is null or empty.
+     * @throws ApplicationException when parameter is null or empty.
      * @since GSO 0.5
      */
-    public static void assertStringNotNull(String param) throws ServiceException {
+    public static void assertStringNotNull(String param) throws ApplicationException {
         if(StringUtils.hasLength(param)) {
             return;
         }
 
         LOGGER.error("Parameter is null or empty.");
-        throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, HttpCode.BAD_REQUEST);
+        throw new ApplicationException(HttpCode.BAD_REQUEST, "Invalid parameter.");
     }
 
     /**
      * Assert object is null.<br/>
      * 
      * @param object data object
-     * @throws ServiceException when object is null.
+     * @throws ApplicationException when object is null.
      * @since GSO 0.5
      */
-    public static void assertObjectNotNull(Object object) throws ServiceException {
+    public static void assertObjectNotNull(Object object) throws ApplicationException {
         if(null == object) {
             LOGGER.error("Object is null.");
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Object is null.");
+            throw new ApplicationException(HttpCode.BAD_REQUEST, "Object is null.");
         }
 
     }
@@ -89,14 +88,13 @@ public class ValidateUtil {
      * 
      * @param defineParams parameters which are defined in catalog
      * @param inputParams parameters which are from GUI
-     * @throws ServiceException when parameter is not fit with definition
+     * @throws ApplicationException when parameter is not fit with definition
      * @since GSO 0.5
      */
-    public static void validate(List<CatalogParameterModel> defineParams, Object inputParams) throws ServiceException {
+    public static void validate(List<CatalogParameterModel> defineParams, Object inputParams) throws ApplicationException {
         if(!(inputParams instanceof Map)) {
             LOGGER.error("The format of input parameters is wrong.");
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM,
-                    "The format of input parameters is wrong.");
+            throw new ApplicationException(HttpCode.BAD_REQUEST, "The format of input parameters is wrong.");
         }
         // todo
     }

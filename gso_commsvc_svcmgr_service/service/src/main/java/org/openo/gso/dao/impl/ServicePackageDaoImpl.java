@@ -20,10 +20,11 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.inf.IServicePackageDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;
+import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.ServicePackageMapper;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 import org.slf4j.Logger;
@@ -67,23 +68,23 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
      * Insert relation instance.<br/>
      * 
      * @param packageMapping service package mapping data
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void insert(ServicePackageMapping packageMapping) throws ServiceException {
+    public void insert(ServicePackageMapping packageMapping) throws ApplicationException {
         try {
             // 1. Check data validation.
             if(null == packageMapping) {
-                throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Data is wrong");
+                throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.DATA_IS_WRONG);
             }
 
             // 2. Insert mapping relation between service instance and service package.
             ServicePackageMapper packageMapper = getMapper(ServicePackageMapper.class);
             packageMapper.insert(packageMapping);
-        } catch(Exception e) {
-            LOGGER.error("Fail to insert mapping relation. {}", e);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+        } catch(Exception exception) {
+            LOGGER.error("Fail to insert mapping relation. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 
@@ -91,23 +92,23 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
      * Delete relation instance by service ID.<br/>
      * 
      * @param serviceId service ID
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void delete(String serviceId) throws ServiceException {
+    public void delete(String serviceId) throws ApplicationException {
         try {
             // 1. Check data validation.
             if(StringUtils.isEmpty(serviceId)) {
-                throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Data is wrong");
+                throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.DATA_IS_WRONG);
             }
 
             // 2. Delete relation instance.
             ServicePackageMapper packageMapper = getMapper(ServicePackageMapper.class);
             packageMapper.delete(serviceId);
-        } catch(Exception e) {
-            LOGGER.error("Fail to insert mapping relation. {}", e);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+        } catch(Exception exception) {
+            LOGGER.error("Fail to insert mapping relation. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 
@@ -115,17 +116,17 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
      * Query all relation instances.<br/>
      * 
      * @return service instances
-     * @throws ServiceException when database exception
+     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public List<ServicePackageMapping> queryAllMappings() throws ServiceException {
+    public List<ServicePackageMapping> queryAllMappings() throws ApplicationException {
         try {
             ServicePackageMapper packageMapper = getMapper(ServicePackageMapper.class);
             return packageMapper.queryAllMappings();
-        } catch(Exception e) {
-            LOGGER.error("Fail to query all of mapping relations. {}", e);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+        } catch(Exception exception) {
+            LOGGER.error("Fail to query all of mapping relations. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 
@@ -146,17 +147,17 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
      * 
      * @param serviceId service instance ID.
      * @return service package
-     * @throws ServiceException when fail to query.
+     * @throws ApplicationException when fail to query.
      * @since GSO 0.5
      */
     @Override
-    public ServicePackageMapping queryPackageMapping(String serviceId) throws ServiceException {
+    public ServicePackageMapping queryPackageMapping(String serviceId) throws ApplicationException {
         try {
             ServicePackageMapper packageMapper = getMapper(ServicePackageMapper.class);
             return packageMapper.queryPackageMapping(serviceId);
-        } catch(Exception e) {
-            LOGGER.error("Fail to query mapping relation. {}", e);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+        } catch(Exception exception) {
+            LOGGER.error("Fail to query mapping relation. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 
@@ -165,17 +166,17 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
      * 
      * @param serviceDefId service package ID
      * @return service packages
-     * @throws ServiceException when fail to query
+     * @throws ApplicationException when fail to query
      * @since GSO 0.5
      */
     @Override
-    public List<ServicePackageMapping> queryPackageMappings(String serviceDefId) throws ServiceException {
+    public List<ServicePackageMapping> queryPackageMappings(String serviceDefId) throws ApplicationException {
         try {
             ServicePackageMapper packageMapper = getMapper(ServicePackageMapper.class);
             return packageMapper.queryPackageMappings(serviceDefId);
-        } catch(Exception e) {
-            LOGGER.error("Fail to query mapping relations. {}", e);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+        } catch(Exception exception) {
+            LOGGER.error("Fail to query mapping relations. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 }

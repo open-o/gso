@@ -32,7 +32,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 
@@ -95,11 +95,11 @@ public class ServicePackageDaoImplTest {
     /**
      * Query successfully.<br/>
      * 
-     * @throws ServiceException
+     * @throws ApplicationException
      * @since GSO 0.5
      */
     @Test
-    public void testQueryAllMappings() throws ServiceException {
+    public void testQueryAllMappings() throws ApplicationException {
         List<ServicePackageMapping> serviceMappings = servicePackageDao.queryAllMappings();
         assertNotNull(serviceMappings);
     }
@@ -107,11 +107,11 @@ public class ServicePackageDaoImplTest {
     /**
      * Fail to query when session is close.<br/>
      * 
-     * @throws ServiceException session is null
+     * @throws ApplicationException session is null
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testQueryAllMappingsFail() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testQueryAllMappingsFail() throws ApplicationException {
         servicePackageDao.getDbSessionHandler().getSqlSession().close();
         servicePackageDao.queryAllMappings();
     }
@@ -119,22 +119,22 @@ public class ServicePackageDaoImplTest {
     /**
      * Test case: object of ServicePackageMapping is null.<br/>
      * 
-     * @throws ServiceException parameter wrong exception
+     * @throws ApplicationException parameter wrong exception
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testInsertServicePackageMappingIsNull() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testInsertServicePackageMappingIsNull() throws ApplicationException {
         servicePackageDao.insert(null);
     }
 
     /**
      * Test Succeed scene.<br/>
      * 
-     * @throws ServiceException IO or parameter wrong exception
+     * @throws ApplicationException IO or parameter wrong exception
      * @since GSO 0.5
      */
     @Test
-    public void testInsert() throws ServiceException {
+    public void testInsert() throws ApplicationException {
         ServicePackageMapping servicePackage = new ServicePackageMapping();
         servicePackage.setServiceDefId("12345");
         servicePackage.setServiceId("2");
@@ -148,22 +148,22 @@ public class ServicePackageDaoImplTest {
     /**
      * Delete successfully.<br/>
      * 
-     * @throws ServiceException IO or parameter wrong exception
+     * @throws ApplicationException IO or parameter wrong exception
      * @since GSO 0.5
      */
     @Test
-    public void testDeleteOk() throws ServiceException {
+    public void testDeleteOk() throws ApplicationException {
         servicePackageDao.delete("1");
     }
 
     /**
      * The Service ID is null.<br/>
      * 
-     * @throws ServiceException parameter wrong exception
+     * @throws ApplicationException parameter wrong exception
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testDeleteFail() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testDeleteFail() throws ApplicationException {
         servicePackageDao.delete(null);
     }
 

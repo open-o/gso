@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openo.gso.util;
 
 import static org.junit.Assert.assertEquals;
@@ -24,13 +25,12 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.util.json.JsonUtil;
 
 import mockit.Mock;
 import mockit.MockUp;
 import net.sf.json.JSONObject;
-
 
 public class JsonUtilTest {
 
@@ -41,34 +41,34 @@ public class JsonUtilTest {
         p1.setAddress("Beijing");
         p1.setAge(10);
         p1.setComment("good boy");
-        
+
         String jsonStr = null;
         Person p2 = null;
         try {
             jsonStr = JsonUtil.marshal(p1);
             p2 = JsonUtil.unMarshal(jsonStr, Person.class);
             assertEquals(p1, p2);
-            
-        } catch(ServiceException e) {
-            
+
+        } catch(ApplicationException e) {
+
         }
-        
-        
+
         String str = null;
-        try{
+        try {
             str = JsonUtil.marshal(p1);
-            new MockUp<ObjectMapper>(){
+            new MockUp<ObjectMapper>() {
+
                 @Mock
                 public <T> T readValue(String content, Class<T> valueType)
-                        throws IOException, JsonParseException, JsonMappingException{
+                        throws IOException, JsonParseException, JsonMappingException {
                     throw new IOException();
                 }
             };
             p2 = JsonUtil.unMarshal(str, Person.class);
-        } catch(ServiceException e) {
-            
+        } catch(ApplicationException e) {
+
         }
-        
+
     }
 
     @Test
@@ -78,23 +78,23 @@ public class JsonUtilTest {
         person.setAddress("Beijing");
         person.setAge(10);
         person.setComment("good boy");
-        
+
         String jsonStr = null;
         try {
             jsonStr = JsonUtil.marshal(person);
             assertNotNull(jsonStr);
-        } catch(ServiceException e) {
-            
+        } catch(ApplicationException e) {
+
         }
         String result = null;
         JSONObject obj = JSONObject.fromObject(person);
         try {
             result = JsonUtil.marshal(obj);
-        } catch(ServiceException e) {
+        } catch(ApplicationException e) {
 
         }
         assertNotNull(result);
-        
+
     }
 
 }

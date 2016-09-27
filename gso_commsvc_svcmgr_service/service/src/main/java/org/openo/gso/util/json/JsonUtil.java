@@ -22,7 +22,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.codehaus.jackson.type.TypeReference;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.gso.exception.ErrorCode;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.exception.HttpCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,12 +75,12 @@ public class JsonUtil {
      * @throws ServiceException
      * @since GSO 0.5
      */
-    public static <T> T unMarshal(String jsonstr, Class<T> type) throws ServiceException {
+    public static <T> T unMarshal(String jsonstr, Class<T> type) throws ApplicationException {
         try {
             return MAPPER.readValue(jsonstr, type);
         } catch(IOException e) {
             LOGGER.error("jsonstr unMarshal failed!", e);
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "jsonstr unMarshal failed!");
+            throw new ApplicationException(HttpCode.BAD_REQUEST, "jsonstr unMarshal failed!");
         }
     }
 
@@ -92,12 +93,12 @@ public class JsonUtil {
      * @throws ServiceException
      * @since GSO 0.5
      */
-    public static <T> T unMarshal(String jsonstr, TypeReference<T> type) throws ServiceException {
+    public static <T> T unMarshal(String jsonstr, TypeReference<T> type) throws ApplicationException {
         try {
             return MAPPER.readValue(jsonstr, type);
         } catch(IOException e) {
             LOGGER.error("jsonstr unMarshal failed!", e);
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "jsonstr unMarshal failed!");
+            throw new ApplicationException(HttpCode.BAD_REQUEST, "jsonstr unMarshal failed!");
         }
     }
 
@@ -109,7 +110,7 @@ public class JsonUtil {
      * @throws ServiceException when fail to convert.
      * @since GSO 0.5
      */
-    public static String marshal(Object srcObj) throws ServiceException {
+    public static String marshal(Object srcObj) throws ApplicationException {
         if(srcObj instanceof JSON) {
             return srcObj.toString();
         }
@@ -117,7 +118,7 @@ public class JsonUtil {
             return MAPPER.writeValueAsString(srcObj);
         } catch(IOException e) {
             LOGGER.error("srcObj marshal failed!", e);
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "srcObj marshal failed!");
+            throw new ApplicationException(HttpCode.BAD_REQUEST, "srcObj marshal failed!");
         }
     }
 

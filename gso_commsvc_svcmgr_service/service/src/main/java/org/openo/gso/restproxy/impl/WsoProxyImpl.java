@@ -18,8 +18,8 @@ package org.openo.gso.restproxy.impl;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.restproxy.inf.IWsoProxy;
 import org.openo.gso.util.http.HttpUtil;
 import org.openo.gso.util.http.ResponseUtils;
@@ -52,11 +52,11 @@ public class WsoProxyImpl implements IWsoProxy {
      * @param sendBody content of request
      * @param request http request
      * @return response content
-     * @throws ServiceException when wso2 fails to start work flow.
+     * @throws ApplicationException when wso2 fails to start work flow.
      * @since GSO 0.5
      */
     @Override
-    public String startWorkFlow(Object sendBody, HttpServletRequest request) throws ServiceException {
+    public String startWorkFlow(Object sendBody, HttpServletRequest request) throws ApplicationException {
         LOGGER.info("Start to bpel workflow.");
         RestfulResponse response = HttpUtil.post(WSO_URI, sendBody, request);
         ResponseUtils.checkResonseAndThrowException(response, "start to bpel workflow.");

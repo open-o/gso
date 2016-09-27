@@ -27,7 +27,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 
 /**
  * API for restful interface.<br/>
@@ -47,14 +47,14 @@ public interface IServicemgrRoaModule {
      * 
      * @param servletReq http request
      * @return response
-     * @throws ServiceException when operate database or parameter is wrong.
+     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @POST
     @Path("/services")
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    Response createService(@Context HttpServletRequest servletReq) throws ServiceException;
+    Response createService(@Context HttpServletRequest servletReq) throws ApplicationException;
 
     /**
      * Delete service instance.<br/>
@@ -62,7 +62,7 @@ public interface IServicemgrRoaModule {
      * @param serviceId service instance id
      * @param servletReq http request
      * @return response
-     * @throws ServiceException when operate database or parameter is wrong.
+     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @DELETE
@@ -70,21 +70,21 @@ public interface IServicemgrRoaModule {
     @Consumes({"application/json"})
     @Path("/services/{serviceId}")
     Response deleteService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq)
-            throws ServiceException;
+            throws ApplicationException;
 
     /**
      * Query all service instances.<br/>
      * 
      * @param servletReq http request
      * @return response
-     * @throws ServiceException when operate database.
+     * @throws ApplicationException when operate database.
      * @since GSO 0.5
      */
     @GET
     @Path("/services")
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    Response getAllInstances(@Context HttpServletRequest servletReq) throws ServiceException;
+    Response getAllInstances(@Context HttpServletRequest servletReq) throws ApplicationException;
 
     /**
      * Query represent sequence in topology.<br/>
@@ -92,7 +92,7 @@ public interface IServicemgrRoaModule {
      * @param serviceId service instance ID
      * @param servletReq http request
      * @return response
-     * @throws ServiceException when operate database or parameter is wrong.
+     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @GET
@@ -100,19 +100,19 @@ public interface IServicemgrRoaModule {
     @Consumes({"application/json"})
     @Path("/services/toposequence/{serviceId}")
     Response getTopoSequence(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq)
-            throws ServiceException;
+            throws ApplicationException;
 
     /**
      * Create service segment instance.<br/>
      * 
      * @param servletReq http request
      * @return response
-     * @throws ServiceException when fail to storage service segment instance.
+     * @throws ApplicationException when fail to storage service segment instance.
      * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/services/service-segments")
-    Response createServiceSegment(@Context HttpServletRequest servletReq) throws ServiceException;
+    Response createServiceSegment(@Context HttpServletRequest servletReq) throws ApplicationException;
 }

@@ -33,25 +33,27 @@ import org.slf4j.LoggerFactory;
  * <p>
  * </p>
  * utility to invoke restclient
+ * 
  * @author
- * @version     GSO 0.5  2016/9/3
+ * @version GSO 0.5 2016/9/3
  */
 public class RestfulUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RestfulUtil.class);
 
-    private RestfulUtil(){
-        
+    private RestfulUtil() {
+
     }
-    
+
     /**
      * <br>
      * invoke the restclient and return the response
+     * 
      * @param paramsMap input header map
      * @param params input body (raw data)
      * @param queryParam query condition
      * @return restful response
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     public static RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
             Map<String, String> queryParam) {
@@ -96,7 +98,5 @@ public class RestfulUtil {
         }
         return rsp;
     }
-    
-
 
 }

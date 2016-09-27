@@ -43,9 +43,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.impl.InventoryDaoImpl;
 import org.openo.gso.dao.impl.ServiceModelDaoImpl;
 import org.openo.gso.dao.impl.ServicePackageDaoImpl;
@@ -214,11 +214,11 @@ public class ServicemgrRoaModuleImplTest {
     /**
      * Test to create service successfully.<br/>
      * 
-     * @throws ServiceException when fail to operate database or parameter is wrong.
+     * @throws ApplicationException when fail to operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @Test
-    public void testCreateServiceSuccess() throws ServiceException {
+    public void testCreateServiceSuccess() throws ApplicationException {
         // mock request body
         mockGetRequestBody(FILE_PATH + "createServiceInstance.json");
 
@@ -227,7 +227,7 @@ public class ServicemgrRoaModuleImplTest {
 
             @Mock
             public List<CatalogParameterModel> getParamsByTemplateId(String templateId, HttpServletRequest request)
-                    throws ServiceException {
+                    throws ApplicationException {
                 return ResponseUtils.getDataModelFromRsp(getJsonString(FILE_PATH + "getTemplateParamters.json"),
                         "inputs", CatalogParameterModel.class);
             }
@@ -250,11 +250,11 @@ public class ServicemgrRoaModuleImplTest {
     /**
      * Test to create service successfully.<br/>
      * 
-     * @throws ServiceException when fail to operate database or parameter is wrong.
+     * @throws ApplicationException when fail to operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @Test
-    public void testCreateServiceSegmentSuccess() throws ServiceException {
+    public void testCreateServiceSegmentSuccess() throws ApplicationException {
         // mock request body
         mockGetRequestBody(FILE_PATH + "createServiceSegment.json");
 
@@ -263,7 +263,7 @@ public class ServicemgrRoaModuleImplTest {
 
             @Mock
             List<NodeTemplateModel> getNodeTemplate(String templateId, HttpServletRequest request)
-                    throws ServiceException {
+                    throws ApplicationException {
                 return ResponseUtils.getDataModelFromRspList(getJsonString(FILE_PATH + "getTemplateNodes.json"),
                         new TypeReference<List<NodeTemplateModel>>() {});
             }
@@ -276,11 +276,11 @@ public class ServicemgrRoaModuleImplTest {
     /**
      * Test delete service.<br/>
      * 
-     * @throws ServiceException when fail to operate database or parameter is wrong.
+     * @throws ApplicationException when fail to operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @Test
-    public void testDeleteService() throws ServiceException {
+    public void testDeleteService() throws ApplicationException {
         // mock get catalog plans
         RestfulResponse responsePlan = new RestfulResponse();
         responsePlan.setResponseJson(getJsonString(FILE_PATH + "getPlans.json"));
@@ -295,22 +295,22 @@ public class ServicemgrRoaModuleImplTest {
     /**
      * Test method getAllInstances.<br/>
      * 
-     * @throws ServiceException when fail to operate database or parameter is wrong.
+     * @throws ApplicationException when fail to operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @Test
-    public void testGetAllInstances() throws ServiceException {
+    public void testGetAllInstances() throws ApplicationException {
         serviceRoa.getAllInstances(httpRequest);
     }
 
     /**
      * Test method getTopoSequence().<br/>
      * 
-     * @throws ServiceException when fail to operate database or parameter is wrong.
+     * @throws ApplicationException when fail to operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @Test
-    public void testGetTopoSequence() throws ServiceException {
+    public void testGetTopoSequence() throws ApplicationException {
         serviceRoa.getTopoSequence("1", httpRequest);
     }
 
@@ -351,7 +351,7 @@ public class ServicemgrRoaModuleImplTest {
 
             @Mock
             public RestfulResponse get(final String url, final Map<String, String> httpHeaders,
-                    HttpServletRequest httpRequest) throws ServiceException {
+                    HttpServletRequest httpRequest) throws ApplicationException {
                 return response;
             }
         };

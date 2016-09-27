@@ -16,10 +16,11 @@
 
 package org.openo.gso.dao.impl;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.inf.IInventoryDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;
+import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.InventoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,17 +66,17 @@ public class InventoryDaoImpl implements IInventoryDao {
      * @param <M> mapper type
      * @param data which is insert into database table.
      * @param mapperType class type
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public <T, M> void insert(T data, Class<M> mapperType) throws ServiceException {
+    public <T, M> void insert(T data, Class<M> mapperType) throws ApplicationException {
         try {
             InventoryMapper mapper = (InventoryMapper)getMapper(mapperType);
             mapper.insert(data);
         } catch(Exception exception) {
             LOGGER.error("Fail to insert data. {}", exception);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 
@@ -85,17 +86,17 @@ public class InventoryDaoImpl implements IInventoryDao {
      * @param <M> mapper type
      * @param key delete key
      * @param mapperType class type
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public <M> void delete(String key, Class<M> mapperType) throws ServiceException {
+    public <M> void delete(String key, Class<M> mapperType) throws ApplicationException {
         try {
             InventoryMapper mapper = (InventoryMapper)getMapper(mapperType);
             mapper.delete(key);
         } catch(Exception exception) {
             LOGGER.error("Fail to delete data. {}", exception);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 

@@ -18,7 +18,7 @@ package org.openo.gso.dao.inf;
 
 import java.util.List;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServiceModel;
 
 /**
@@ -35,36 +35,36 @@ public interface IServiceModelDao {
      * Insert service instance.<br/>
      * 
      * @param serviceModel service package mapping data
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void insert(ServiceModel serviceModel) throws ServiceException;
+    void insert(ServiceModel serviceModel) throws ApplicationException;
 
     /**
      * Delete service instance by service ID.<br/>
      * 
      * @param serviceId service ID
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void delete(String serviceId) throws ServiceException;
+    void delete(String serviceId) throws ApplicationException;
 
     /**
      * Query all service instances.<br/>
      * 
      * @return service instances
-     * @throws ServiceException when database exception
+     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    List<ServiceModel> queryAllServices() throws ServiceException;
+    List<ServiceModel> queryAllServices() throws ApplicationException;
 
     /**
      * Query some service instance.<br/>
      * 
      * @param serviceId service instance ID
      * @return service instance
-     * @throws ServiceException when database exception
+     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    ServiceModel queryServiceById(String serviceId) throws ServiceException;
+    ServiceModel queryServiceById(String serviceId) throws ApplicationException;
 }

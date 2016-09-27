@@ -19,7 +19,7 @@ package org.openo.gso.util.convertor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.model.catalogmo.OperationModel;
 import org.openo.gso.model.servicemo.ServiceModel;
@@ -95,11 +95,11 @@ public class DataConverter {
      * @param operation operation object
      * @param parameter which in body
      * @return request body
-     * @throws ServiceException
+     * @throws ApplicationException
      * @since GSO 0.5
      */
     public static Map<String, Object> constructWsoBody(OperationModel operation, Object parameter)
-            throws ServiceException {
+            throws ApplicationException {
         Map<String, Object> body = new HashMap<String, Object>();
         body.put(Constant.WSO_PROCESSID, operation.getProcessId());
         if(null != parameter) {

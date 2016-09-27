@@ -16,17 +16,14 @@
 
 package org.openo.gso.util.http;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.type.TypeReference;
-import org.openo.baseservice.remoteservice.exception.ExceptionArgs;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.gso.constant.Constant;
-import org.openo.gso.exception.ErrorCode;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.commsvc.common.Exception.ExceptionArgs;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.util.json.JsonUtil;
 import org.openo.gso.util.validate.ValidateUtil;
@@ -66,25 +63,26 @@ public class ResponseUtils {
      * 
      * @param response rest response
      * @param function function name
-     * @throws ServiceException when the result of rest request is failure.
+     * @throws ApplicationException when the result of rest request is failure.
      * @since GSO 0.5
      */
     public static void checkResonseAndThrowException(RestfulResponse response, String function)
-            throws ServiceException {
+            throws ApplicationException {
         if(!HttpCode.isSucess(response.getStatus())) {
-            ServiceException roaExceptionInfo = null;
+            ApplicationException appException = null;
             try {
-                roaExceptionInfo = JsonUtil.unMarshal(response.getResponseContent(), ServiceException.class);
-            } catch(ServiceException e) {
-                LOGGER.error("transfer the response json string has some error: {}", e);
+                appException = JsonUtil.unMarshal(response.getResponseContent(), ApplicationException.class);
+            } catch(ApplicationException exception) {
+                LOGGER.error("transfer the response json string has some error: {}", exception);
 
                 ExceptionArgs args = new ExceptionArgs();
-                args.setDescArgs(new String[] {"Fail to " + function});
+                args.setDescription("Fail to " + function);
+                args.setReason(exception.getResponse().getEntity());
 
-                throw new ServiceException(ServiceException.DEFAULT_ID, response.getStatus(), args);
+                throw new ApplicationException(exception.getResponse().getStatus(), args);
             }
 
-            throw roaExceptionInfo;
+            throw appException;
         }
     }
 
@@ -95,11 +93,12 @@ public class ResponseUtils {
      * @param key key
      * @param type type
      * @return model data
-     * @throws ServiceException when transfer failed
+     * @throws ApplicationException when transfer failed
      * @since SDNO 0.5
      */
     @SuppressWarnings("unchecked")
-    public static <T> List<T> getDataModelFromRsp(String request, String key, Class<T> type) throws ServiceException {
+    public static <T> List<T> getDataModelFromRsp(String request, String key, Class<T> type)
+            throws ApplicationException {
         ValidateUtil.assertStringNotNull(request);
         Map<String, Object> requestMap = JsonUtil.unMarshal(request, Map.class);
         Object data = requestMap.get(key);
@@ -108,8 +107,7 @@ public class ResponseUtils {
             for(Object model : (List<T>)data) {
                 if(!(model instanceof Map)) {
                     LOGGER.error("The format of response content is wrong! Not Map.");
-                    throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM,
-                            "The format of response content is wrong.");
+                    throw new ApplicationException(HttpCode.BAD_REQUEST, "The format of response content is wrong.");
                 }
 
                 dataModelList.add(JsonUtil.unMarshal(JsonUtil.marshal(model), type));
@@ -125,52 +123,34 @@ public class ResponseUtils {
      * @param request restful request
      * @param type type
      * @return model data
-     * @throws ServiceException when transfer failed
+     * @throws ApplicationException when transfer failed
      * @since SDNO 0.5
      */
-    public static <T> T getDataModelFromRspList(String request, TypeReference<T> type) throws ServiceException {
+    public static <T> T getDataModelFromRspList(String request, TypeReference<T> type) throws ApplicationException {
         ValidateUtil.assertStringNotNull(request);
         return JsonUtil.unMarshal(request, type);
     }
 
     /**
-     * Set operation result.<br/>
+     * Get exception information.<br/>
      * 
-     * @param status status fail or success
-     * @param exception operation exception information
-     * @param errorCode error code
-     * @return result in form of map
+     * @param exception operation exception
+     * @param description
+     * @return exception object
      * @since GSO 0.5
      */
-    public static Map<String, Object> setOperateStatus(String status, ServiceException exception, String errorCode) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put(Constant.RESPONSE_STATUS, status);
-        if(null == exception) {
-            result.put(Constant.RESPONSE_STATUS_DESCRIPTION, status);
+    public static ApplicationException getException(ApplicationException exception, String description) {
+        ExceptionArgs args = null;
+        Object exceptionObject = exception.getResponse().getEntity();
+        if(exceptionObject instanceof ExceptionArgs) {
+            args = (ExceptionArgs)exceptionObject;
         } else {
-            if((null != exception.getExceptionArgs()) && (null != exception.getExceptionArgs().getDescArgs())) {
-                result.put(Constant.RESPONSE_STATUS_DESCRIPTION, exception.getExceptionArgs().getDescArgs().toString());
-            }
+            args = new ExceptionArgs();
+            args.setDescription(description);
+            args.setReason(exception.getResponse().getEntity());
         }
-        result.put(Constant.RESPONSE_ERRORCODE, errorCode);
+        ApplicationException appException = new ApplicationException(exception.getResponse().getStatus(), args);
 
-        return result;
-    }
-
-    /**
-     * Assemble operation result.<br/>
-     * 
-     * @param objectId instance ID
-     * @param operateCode operation result
-     * @return Response result
-     * @since GSO 0.5
-     */
-    public static Map<String, Object> setResult(String objectId, Object operateCode) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put(Constant.RESPONSE_RESULT, operateCode);
-        String serviceId = (null != objectId) ? objectId : null;
-        result.put(Constant.SERVICE_INSTANCE_ID, serviceId);
-
-        return result;
+        return appException;
     }
 }

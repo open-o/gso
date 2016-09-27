@@ -48,6 +48,16 @@ public class ErrorCode {
     public static final String SVCMGR_PACKAGE_BEING_DELETED = "servicemgr.package.beingDelete";
 
     /**
+     * Fail to operate database.
+     */
+    public static final String OPER_DB_FAIL = "Fail to operate database!";
+
+    /**
+     * Data is wrong.
+     */
+    public static final String DATA_IS_WRONG = "Data is wrong";
+
+    /**
      * Constructor<br/>
      * <p>
      * </p>

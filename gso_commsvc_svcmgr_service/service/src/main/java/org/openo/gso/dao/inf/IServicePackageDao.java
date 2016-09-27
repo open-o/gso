@@ -18,7 +18,7 @@ package org.openo.gso.dao.inf;
 
 import java.util.List;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 
 /**
@@ -35,46 +35,46 @@ public interface IServicePackageDao {
      * Insert relation instance.<br/>
      * 
      * @param packageMapping service package mapping data
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void insert(ServicePackageMapping packageMapping) throws ServiceException;
+    void insert(ServicePackageMapping packageMapping) throws ApplicationException;
 
     /**
      * Delete relation instance by service ID.<br/>
      * 
      * @param serviceId service ID
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void delete(String serviceId) throws ServiceException;
+    void delete(String serviceId) throws ApplicationException;
 
     /**
      * Query all relation instances.<br/>
      * 
      * @return service instances
-     * @throws ServiceException when database exception
+     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    List<ServicePackageMapping> queryAllMappings() throws ServiceException;
+    List<ServicePackageMapping> queryAllMappings() throws ApplicationException;
 
     /**
      * Query service package by service instance ID.<br/>
      * 
      * @param serviceId service instance ID.
      * @return service package
-     * @throws ServiceException when fail to query.
+     * @throws ApplicationException when fail to query.
      * @since GSO 0.5
      */
-    ServicePackageMapping queryPackageMapping(String serviceId) throws ServiceException;
+    ServicePackageMapping queryPackageMapping(String serviceId) throws ApplicationException;
 
     /**
      * Query service package by package ID.<br/>
      * 
      * @param serviceDefId service package ID
      * @return service packages
-     * @throws ServiceException when fail to query
+     * @throws ApplicationException when fail to query
      * @since GSO 0.5
      */
-    List<ServicePackageMapping> queryPackageMappings(String serviceDefId) throws ServiceException;
+    List<ServicePackageMapping> queryPackageMappings(String serviceDefId) throws ApplicationException;
 }

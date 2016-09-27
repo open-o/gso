@@ -32,7 +32,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 
@@ -95,11 +95,11 @@ public class ServiceSegmentDaoImplTest {
     /**
      * Query successfully.<br/>
      * 
-     * @throws ServiceException
+     * @throws ApplicationException
      * @since GSO 0.5
      */
     @Test
-    public void testQueryServiceSegments() throws ServiceException {
+    public void testQueryServiceSegments() throws ApplicationException {
         List<ServiceSegmentModel> serviceSegments = serviceSegmentDao.queryServiceSegments("1");
         assertNotNull(serviceSegments);
     }
@@ -107,22 +107,22 @@ public class ServiceSegmentDaoImplTest {
     /**
      * Fail to query when service ID is null.<br/>
      * 
-     * @throws ServiceException
+     * @throws ApplicationException
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testQueryServiceSegmentsFail1() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testQueryServiceSegmentsFail1() throws ApplicationException {
         serviceSegmentDao.queryServiceSegments(null);
     }
 
     /**
      * Fail to query when session is null.<br/>
      * 
-     * @throws ServiceException
+     * @throws ApplicationException
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testQueryServiceSegmentsFail2() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testQueryServiceSegmentsFail2() throws ApplicationException {
         serviceSegmentDao.getDbSessionHandler().getSqlSession().close();
         serviceSegmentDao.queryServiceSegments("1");
     }
@@ -130,22 +130,20 @@ public class ServiceSegmentDaoImplTest {
     /**
      * Test case: ServiceSegmentModel is null.<br/>
      * 
-     * @throws ServiceException parameter wrong exception
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testInsertIsNull1() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testInsertIsNull1() {
         serviceSegmentDao.insert(null);
     }
 
     /**
      * Test case: session is null.<br/>
      * 
-     * @throws ServiceException parameter wrong exception
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testInsertIsNull2() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testInsertIsNull2() {
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         serviceSegmentDao.insert(serviceSegment);
     }
@@ -153,11 +151,10 @@ public class ServiceSegmentDaoImplTest {
     /**
      * Test Succeed scene.<br/>
      * 
-     * @throws ServiceException IO or parameter wrong exception
      * @since GSO 0.5
      */
     @Test
-    public void testInsert() throws ServiceException {
+    public void testInsert() {
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         serviceSegment.setNodeType("tosaca.nfv.node.POP");
         serviceSegment.setServiceId("2");
@@ -173,11 +170,10 @@ public class ServiceSegmentDaoImplTest {
     /**
      * Delete successfully.<br/>
      * 
-     * @throws ServiceException IO or parameter wrong exception
      * @since GSO 0.5
      */
     @Test
-    public void testDeleteOk() throws ServiceException {
+    public void testDeleteOk() {
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         serviceSegment.setServiceId("1");
         serviceSegment.setServiceSegmentId("12345");
@@ -187,11 +183,10 @@ public class ServiceSegmentDaoImplTest {
     /**
      * The Service ID is null.<br/>
      * 
-     * @throws ServiceException parameter wrong exception
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testDeleteFail() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testDeleteFail() {
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         serviceSegmentDao.delete(serviceSegment);
     }

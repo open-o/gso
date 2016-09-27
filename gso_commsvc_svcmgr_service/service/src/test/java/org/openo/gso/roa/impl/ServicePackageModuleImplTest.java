@@ -33,15 +33,13 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
-import org.openo.gso.constant.Constant;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.impl.ServicePackageDaoImpl;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 import org.openo.gso.restproxy.impl.CatalogProxyImpl;
-import org.openo.gso.roa.impl.ServicePackageModuleImpl;
 import org.openo.gso.service.impl.PackageManagerImpl;
 import org.openo.gso.synchronization.PackageOperationSingleton;
 import org.openo.gso.util.http.HttpUtil;
@@ -163,29 +161,23 @@ public class ServicePackageModuleImplTest {
     /**
      * Test that csarId is invalid when updating package state.<br/>
      * 
-     * @throws ServiceException
      * @since GSO 0.5
      */
-    @SuppressWarnings("unchecked")
-    @Test
+    @Test(expected = ApplicationException.class)
     public void testOnBoardingPackageCsarIdInvalid() {
         mockMethod((FILE_PATH + "csarIdInvalid.json"), responseFail);
-        Response response = servicePackageImpl.onBoardingPackage(request);
-        assertResultFail((Map<String, Object>)response.getEntity());
+        servicePackageImpl.onBoardingPackage(request);
     }
 
     /**
      * Test that catalog fails to update package state.<br/>
      * 
-     * @throws ServiceException
      * @since GSO 0.5
      */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testOnBoardingPackageCatalogFail() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testOnBoardingPackageCatalogFail() {
         mockMethod((FILE_PATH + "updateState.json"), responseFail);
-        Response response = servicePackageImpl.onBoardingPackage(request);
-        assertResultFail((Map<String, Object>)response.getEntity());
+        servicePackageImpl.onBoardingPackage(request);
     }
 
     /**
@@ -193,23 +185,21 @@ public class ServicePackageModuleImplTest {
      * 
      * @since GSO 0.5
      */
-    @SuppressWarnings("unchecked")
-    @Test
+    @Test(expected = ApplicationException.class)
     public void testOnBoardingPackageWhenDeleteCsar() {
         PackageOperationSingleton.getInstance().addBeingDeletedCsarIds(CSAR_ID);
         mockMethod((FILE_PATH + "updateState.json"), responseSuccess);
-        Response response = servicePackageImpl.onBoardingPackage(request);
-        assertResultFail((Map<String, Object>)response.getEntity());
+        servicePackageImpl.onBoardingPackage(request);
     }
 
     /**
      * Succeed to delete Gsar package.<br/>
      * 
-     * @throws ServiceException when fail to execute database.
+     * @throws ApplicationException when fail to execute database.
      * @since GSO 0.5
      */
     @Test
-    public void testDeleteGsarPackageSuccess() throws ServiceException {
+    public void testDeleteGsarPackageSuccess() throws ApplicationException {
         mocDao(null);
         mockMethod("", responseSuccess);
         Response response = servicePackageImpl.deleteGsarPackage(CSAR_ID, request);
@@ -219,67 +209,56 @@ public class ServicePackageModuleImplTest {
     /**
      * Delete csar package when instances exist.<br/>
      * 
-     * @throws ServiceException when fail to execute database
+     * @throws ApplicationException when fail to execute database
      * @since GSO 0.5
      */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDeleteGsarPackageExistInstance() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testDeleteGsarPackageExistInstance() {
         List<ServicePackageMapping> serviceMappings = new LinkedList<ServicePackageMapping>();
         ServicePackageMapping mapping = new ServicePackageMapping();
         serviceMappings.add(mapping);
 
         mocDao(serviceMappings);
         mockMethod("", responseSuccess);
-        Response response = servicePackageImpl.deleteGsarPackage(CSAR_ID, request);
-        assertResultFail((Map<String, Object>)response.getEntity());
+        servicePackageImpl.deleteGsarPackage(CSAR_ID, request);
     }
 
     /**
      * Delete csar package when using package to create instance.<br/>
      * 
-     * @throws ServiceException when fail to execute database
      * @since GSO 0.5
      */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDeleteGsarPackageUsingCreate() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testDeleteGsarPackageUsingCreate() throws ApplicationException {
         mocDao(null);
         mockMethod("", responseSuccess);
         PackageOperationSingleton.getInstance().addBeingUsedCsarIds(CSAR_ID);
-        Response response = servicePackageImpl.deleteGsarPackage(CSAR_ID, request);
-        assertResultFail((Map<String, Object>)response.getEntity());
+        servicePackageImpl.deleteGsarPackage(CSAR_ID, request);
     }
 
     /**
      * Delete csar package when deleting package.<br/>
      * 
-     * @throws ServiceException when fail to execute database
      * @since GSO 0.5
      */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDeleteGsarPackageBeingDeleted() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testDeleteGsarPackageBeingDeleted() throws ApplicationException {
         mocDao(null);
         mockMethod("", responseSuccess);
         PackageOperationSingleton.getInstance().addBeingDeletedCsarIds(CSAR_ID);
-        Response response = servicePackageImpl.deleteGsarPackage(CSAR_ID, request);
-        assertResultFail((Map<String, Object>)response.getEntity());
+        servicePackageImpl.deleteGsarPackage(CSAR_ID, request);
     }
 
     /**
      * Catalog fail to delete csar package.<br/>
      * 
-     * @throws ServiceException when fail to execute database
      * @since GSO 0.5
      */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDeleteGsarPackageCatalogFail() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testDeleteGsarPackageCatalogFail() throws ApplicationException {
         mocDao(null);
         mockMethod("", responseFail);
-        Response response = servicePackageImpl.deleteGsarPackage(CSAR_ID, request);
-        assertResultFail((Map<String, Object>)response.getEntity());
+        servicePackageImpl.deleteGsarPackage(CSAR_ID, request);
     }
 
     /**
@@ -290,16 +269,6 @@ public class ServicePackageModuleImplTest {
     @Test
     public void testGetPackageMgr() {
         Assert.assertNotNull(servicePackageImpl.getPackageMgr());
-    }
-
-    /**
-     * Check result<br/>
-     * 
-     * @param result
-     * @since GSO 0.5
-     */
-    private void assertResultFail(Map<String, Object> result) {
-        Assert.assertEquals(Constant.RESPONSE_STATUS_FAIL, result.get(Constant.RESPONSE_STATUS));
     }
 
     /**
@@ -339,10 +308,10 @@ public class ServicePackageModuleImplTest {
      * Mock database operation.<br/>
      * 
      * @param object operation result
-     * @throws ServiceException when fail to operate DB.
+     * @throws ApplicationException when fail to operate DB.
      * @since GSO 0.5
      */
-    private void mocDao(final Object object) throws ServiceException {
+    private void mocDao(final Object object) throws ApplicationException {
         new NonStrictExpectations() {
 
             {

@@ -18,7 +18,7 @@ package org.openo.gso.restproxy.inf;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 
 /**
  * Interface for interaction with wso2.<br/>
@@ -36,8 +36,8 @@ public interface IWsoProxy {
      * @param sendBody content of request
      * @param request http request
      * @return response content
-     * @throws ServiceException when wso2 fails to start work flow.
+     * @throws ApplicationException when wso2 fails to start work flow.
      * @since GSO 0.5
      */
-    String startWorkFlow(Object sendBody, HttpServletRequest request) throws ServiceException;
+    String startWorkFlow(Object sendBody, HttpServletRequest request) throws ApplicationException;
 }

@@ -23,13 +23,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.dao.inf.IInventoryDao;
 import org.openo.gso.dao.inf.IServiceModelDao;
 import org.openo.gso.dao.inf.IServicePackageDao;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
-import org.openo.gso.exception.ErrorCode;
+import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.InvServiceModelMapper;
 import org.openo.gso.mapper.InvServicePackageMapper;
 import org.openo.gso.mapper.InvServiceParameterMapper;
@@ -103,12 +103,12 @@ public class ServiceManagerImpl implements IServiceManager {
      * 
      * @param reqContent content of request
      * @param httpRequest http request
-     * @throws ServiceException when operate DB or parameter is wrong.
+     * @throws ApplicationException when operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
     @Override
-    public ServiceModel createService(String reqContent, HttpServletRequest httpRequest) throws ServiceException {
+    public ServiceModel createService(String reqContent, HttpServletRequest httpRequest) throws ApplicationException {
 
         // Parse request
         Map<String, Object> requestBody = JsonUtil.unMarshal(reqContent, Map.class);
@@ -140,7 +140,7 @@ public class ServiceManagerImpl implements IServiceManager {
             // Start to create workflow
             paramsMap.put(Constant.PREDEFINE_GSO_ID, model.getServiceId());
             startWorkFlow(templateId, Constant.WORK_FLOW_PLAN_CREATE, httpRequest, paramsMap);
-        } catch(ServiceException e) {
+        } catch(ApplicationException e) {
             throw e;
         } finally {
             // Delete csar ID from cache
@@ -155,11 +155,11 @@ public class ServiceManagerImpl implements IServiceManager {
      * 
      * @param serviceId service instance ID
      * @param httpRequest http request
-     * @throws ServiceException operate DB or parameter is wrong.
+     * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public void deleteService(String serviceId, HttpServletRequest httpRequest) throws ServiceException {
+    public void deleteService(String serviceId, HttpServletRequest httpRequest) throws ApplicationException {
         List<ServiceSegmentModel> serviceSegments = serviceSegmentDao.queryServiceSegments(serviceId);
         if(!CollectionUtils.isEmpty(serviceSegments)) {
 
@@ -188,11 +188,11 @@ public class ServiceManagerImpl implements IServiceManager {
      * Query all service instances.<br/>
      * 
      * @return service instances
-     * @throws ServiceException operate DB or parameter is wrong.
+     * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public List<ServiceModel> getAllInstances() throws ServiceException {
+    public List<ServiceModel> getAllInstances() throws ApplicationException {
         return this.serviceModelDao.queryAllServices();
     }
 
@@ -201,11 +201,11 @@ public class ServiceManagerImpl implements IServiceManager {
      * 
      * @param serviceId service instance ID
      * @return service segment instances
-     * @throws ServiceException operate DB or parameter is wrong.
+     * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public List<ServiceSegmentModel> getServiceSegments(String serviceId) throws ServiceException {
+    public List<ServiceSegmentModel> getServiceSegments(String serviceId) throws ApplicationException {
         return serviceSegmentDao.queryServiceSegments(serviceId);
     }
 
@@ -284,10 +284,10 @@ public class ServiceManagerImpl implements IServiceManager {
      * 
      * @param model service instance data
      * @param parameters which are used to create service instance
-     * @throws ServiceException when fail to operate database.
+     * @throws ApplicationException when fail to operate database.
      * @since GSO 0.5
      */
-    private void insertDB(ServiceModel model, String parameters) throws ServiceException {
+    private void insertDB(ServiceModel model, String parameters) throws ApplicationException {
 
         // insert gso data
         serviceModelDao.insert(model);
@@ -339,15 +339,15 @@ public class ServiceManagerImpl implements IServiceManager {
      * @param key operation name
      * @param request http request
      * @return operation object
-     * @throws ServiceException when operations is invalid.
+     * @throws ApplicationException when operations is invalid.
      * @since GSO 0.5
      */
     private OperationModel getOperation(String templateId, String key, HttpServletRequest request)
-            throws ServiceException {
+            throws ApplicationException {
         List<OperationModel> operations = catalogProxy.getOperationsByTemplateId(templateId, request);
         if(CollectionUtils.isEmpty(operations)) {
             LOGGER.error("There is no execution plan.");
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "There is no execution plan.");
+            throw new ApplicationException(HttpCode.RESPOND_CONFLICT, "There is no execution plan.");
         }
 
         for(OperationModel keyOperation : operations) {
@@ -366,11 +366,11 @@ public class ServiceManagerImpl implements IServiceManager {
      * @param key name of work flow
      * @param request http request
      * @param parameters request parameters
-     * @throws ServiceException when fail to execute.
+     * @throws ApplicationException when fail to execute.
      * @since GSO 0.5
      */
     private void startWorkFlow(String templateId, String key, HttpServletRequest request, Object parameters)
-            throws ServiceException {
+            throws ApplicationException {
         OperationModel operation = getOperation(templateId, key, request);
         ValidateUtil.assertObjectNotNull(operation);
         Map<String, Object> wsoBody = DataConverter.constructWsoBody(operation, parameters);
@@ -383,10 +383,11 @@ public class ServiceManagerImpl implements IServiceManager {
      * @param serviceId service instance ID
      * @param params service parameter
      * @return parameters in the form of list
-     * @throws ServiceException when type of inputParams are wrong
+     * @throws ApplicationException when type of inputParams are wrong
      * @since GSO 0.5
      */
-    private List<ServiceParameter> convertParam(String serviceId, Map<String, Object> params) throws ServiceException {
+    private List<ServiceParameter> convertParam(String serviceId, Map<String, Object> params)
+            throws ApplicationException {
         List<ServiceParameter> paramsList = new LinkedList<ServiceParameter>();
         for(Map.Entry<String, Object> entry : params.entrySet()) {
             ServiceParameter param = new ServiceParameter();
@@ -404,11 +405,11 @@ public class ServiceManagerImpl implements IServiceManager {
      * 
      * @param reqContent content of request
      * @param httpRequest http request
-     * @throws ServiceException when operate DB or parameter is wrong.
+     * @throws ApplicationException when operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public void createServiceSegment(String reqContent, HttpServletRequest httpRequest) throws ServiceException {
+    public void createServiceSegment(String reqContent, HttpServletRequest httpRequest) throws ApplicationException {
         ServiceSegmentModel serviceSegment = JsonUtil.unMarshal(reqContent, ServiceSegmentModel.class);
         String serviceId = serviceSegment.getServiceId();
         ValidateUtil.assertStringNotNull(serviceId);
@@ -417,7 +418,7 @@ public class ServiceManagerImpl implements IServiceManager {
         ServicePackageMapping pacakageInfo = servicePackageDao.queryPackageMapping(serviceId);
         if(null == pacakageInfo) {
             LOGGER.error("There is no package in DB. The service is ", serviceId);
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "There is no package in DB.");
+            throw new ApplicationException(HttpCode.BAD_REQUEST, "There is no package in DB.");
         }
 
         // Query nodes of template
@@ -435,17 +436,17 @@ public class ServiceManagerImpl implements IServiceManager {
      * @param nodes which are defined in template
      * @param seviceSegment service segment of some service instance
      * @return sequence
-     * @throws ServiceException when there is something wrong with data.
+     * @throws ApplicationException when there is something wrong with data.
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
     private int getSequenceOfNode(List<NodeTemplateModel> nodes, ServiceSegmentModel seviceSegment)
-            throws ServiceException {
+            throws ApplicationException {
 
         // Check data
         if(CollectionUtils.isEmpty(nodes)) {
             LOGGER.error("There is no nodes in template. The type of node is ", seviceSegment.getNodeType());
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Fail to get node from catalog.");
+            throw new ApplicationException(HttpCode.BAD_REQUEST, "Fail to get node from catalog.");
         }
         String type = seviceSegment.getNodeType();
         ValidateUtil.assertStringNotNull(type);
@@ -525,10 +526,10 @@ public class ServiceManagerImpl implements IServiceManager {
      * Delete data from database.<br/>
      * 
      * @param key delete key
-     * @throws ServiceException when fail to operate database
+     * @throws ApplicationException when fail to operate database
      * @since GSO 0.5
      */
-    private void deleteDataFromDb(String key) throws ServiceException {
+    private void deleteDataFromDb(String key) throws ApplicationException {
 
         // Delete data from gso DB
         serviceModelDao.delete(key);

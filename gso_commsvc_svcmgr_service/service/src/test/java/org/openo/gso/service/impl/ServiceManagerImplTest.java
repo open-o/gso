@@ -22,10 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.impl.ServiceModelDaoImpl;
 import org.openo.gso.dao.impl.ServiceSegmentDaoImpl;
-import org.openo.gso.service.impl.ServiceManagerImpl;
 
 /**
  * Test ServiceManagerImpl Class.<br/>
@@ -40,17 +39,17 @@ public class ServiceManagerImplTest {
     /**
      * Service manager.
      */
-    ServiceManagerImpl serviceManager = new ServiceManagerImpl();
+    ServiceManagerImpl serviceManager;
 
     /**
      * Service model DAO.
      */
-    ServiceModelDaoImpl serviceDao = new ServiceModelDaoImpl();
+    ServiceModelDaoImpl serviceDao;
 
     /**
      * Sub-Service DAO.
      */
-    ServiceSegmentDaoImpl serviceSegmentDao = new ServiceSegmentDaoImpl();
+    ServiceSegmentDaoImpl serviceSegmentDao;
 
     /**
      * Http request.
@@ -59,6 +58,9 @@ public class ServiceManagerImplTest {
 
     @Before
     public void start() {
+        serviceManager = new ServiceManagerImpl();
+        serviceDao = new ServiceModelDaoImpl();
+        serviceSegmentDao = new ServiceSegmentDaoImpl();
         serviceManager.setServiceModelDao(serviceDao);
         serviceManager.setServiceSegmentDao(serviceSegmentDao);
     }
@@ -66,22 +68,20 @@ public class ServiceManagerImplTest {
     /**
      * Invalid parameter.<br/>
      * 
-     * @throws ServiceException when operating database.
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testGetAllInstancesFail() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testGetAllInstancesFail() {
         serviceManager.getAllInstances();
     }
 
     /**
      * Invalid parameter.<br/>
      * 
-     * @throws ServiceException when operating database.
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testGetServiceSegmentssFail() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testGetServiceSegmentssFail() {
         serviceManager.setServiceModelDao(serviceDao);
         serviceManager.getServiceSegments("1");
     }

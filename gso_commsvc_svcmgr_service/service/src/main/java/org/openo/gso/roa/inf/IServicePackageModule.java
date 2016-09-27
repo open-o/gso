@@ -26,8 +26,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
-
 /**
  * Interface for operating service package.<br/>
  * <p>
@@ -46,7 +44,7 @@ public interface IServicePackageModule {
      * 
      * @param httpRequest http request
      * @return response
-     * @throws ServiceException when fail to set
+     * @throws ApplicationException when fail to set
      * @since GSO 0.5
      */
     @POST
@@ -61,7 +59,7 @@ public interface IServicePackageModule {
      * @param serviceDefId GSAR ID
      * @param httpRequest http request
      * @return response
-     * @throws ServiceException when fail to delete GSAR package.
+     * @throws ApplicationException when fail to delete GSAR package.
      * @since GSO 0.5
      */
     @DELETE

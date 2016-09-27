@@ -19,8 +19,8 @@ package org.openo.gso.roa.impl;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.drivermo.ServiceNode;
 import org.openo.gso.roa.inf.IDrivermgrRoaModule;
 import org.openo.gso.service.inf.IDriverManager;
@@ -59,11 +59,11 @@ public class DrivermgrRoaModuleImpl implements IDrivermgrRoaModule {
      * 
      * @param servletReq http request
      * @return response
-     * @throws ServiceException when operate database or parameter is wrong.
+     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public Response terminateNetworkService(HttpServletRequest servletReq) throws ServiceException {
+    public Response terminateNetworkService(HttpServletRequest servletReq) throws ApplicationException {
         RestfulResponse rsp = driverMgr.terminateService(servletReq);
         if(rsp.getStatus() / 200 == 0) {
             return Response.status(200).build();
@@ -74,7 +74,7 @@ public class DrivermgrRoaModuleImpl implements IDrivermgrRoaModule {
 
     @Override
     public Response instantiateNetworkService(ServiceNode serviceNode, HttpServletRequest servletReq)
-            throws ServiceException {
+            throws ApplicationException {
 
         RestfulResponse rsp = driverMgr.instantiateService(servletReq);
         if(rsp.getStatus() / 200 == 0) {

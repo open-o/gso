@@ -22,10 +22,11 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.ibatis.session.SqlSession;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.inf.IServiceModelDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;
+import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.ServiceModelMapper;
 import org.openo.gso.mapper.ServicePackageMapper;
 import org.openo.gso.mapper.ServiceParameterMapper;
@@ -74,15 +75,15 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * Insert service stances.<br/>
      * 
      * @param serviceModel service instance
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void insert(ServiceModel serviceModel) throws ServiceException {
+    public void insert(ServiceModel serviceModel) throws ApplicationException {
         try {
             // 1. Check data validation.
             if((null == serviceModel) || (null == serviceModel.getServicePackage())) {
-                throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Data is wrong");
+                throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.DATA_IS_WRONG);
             }
 
             // 2. Insert basic information of service instance.
@@ -99,9 +100,9 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
                 ServiceParameterMapper paramMapper = getMapper(ServiceParameterMapper.class);
                 paramMapper.batchInsert(parameters);
             }
-        } catch(Exception e) {
-            LOGGER.error("Fail to insert service instance. {}", e);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+        } catch(Exception exception) {
+            LOGGER.error("Fail to insert service instance. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 
@@ -109,11 +110,11 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * Delete service instance.<br/>
      * 
      * @param serviceId service instance ID
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void delete(String serviceId) throws ServiceException {
+    public void delete(String serviceId) throws ApplicationException {
         try {
             ValidateUtil.assertStringNotNull(serviceId);
 
@@ -129,9 +130,9 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
             ServiceParameterMapper parameterMapper = getMapper(ServiceParameterMapper.class);
             parameterMapper.delete(serviceId);
 
-        } catch(Exception e) {
-            LOGGER.error("Fail to delete service instance. {}", e);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+        } catch(Exception exception) {
+            LOGGER.error("Fail to delete service instance. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 
@@ -139,11 +140,11 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * Query all service instances.<br/>
      * 
      * @return service instance
-     * @throws ServiceException when database exception
+     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public List<ServiceModel> queryAllServices() throws ServiceException {
+    public List<ServiceModel> queryAllServices() throws ApplicationException {
         try {
             // 1. Query basic information of service instance.
             List<ServiceModel> services = getMapper(ServiceModelMapper.class).queryAllServices();
@@ -157,9 +158,9 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
             // 3. Compose data.
             return composeData(services, serviceMappings);
 
-        } catch(Exception e) {
-            LOGGER.error("Fail to delete service instance. {}", e);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+        } catch(Exception exception) {
+            LOGGER.error("Fail to delete service instance. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 
@@ -208,16 +209,16 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * 
      * @param serviceId service instance ID
      * @return service instance
-     * @throws ServiceException when database exception
+     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public ServiceModel queryServiceById(String serviceId) throws ServiceException {
+    public ServiceModel queryServiceById(String serviceId) throws ApplicationException {
         try {
             return getMapper(ServicePackageMapper.class).queryServiceById(serviceId);
         } catch(Exception e) {
             LOGGER.error("Fail to delete service instance. {}", e);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 }

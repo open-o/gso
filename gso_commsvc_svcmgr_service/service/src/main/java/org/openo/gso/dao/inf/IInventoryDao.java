@@ -16,7 +16,7 @@
 
 package org.openo.gso.dao.inf;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 
 /**
  * Interface to operate inventory DB.<br/>
@@ -35,10 +35,10 @@ public interface IInventoryDao {
      * @param <M> mapper type
      * @param data which is insert into database table.
      * @param mapperType class type
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    <T, M> void insert(T data, Class<M> mapperType) throws ServiceException;
+    <T, M> void insert(T data, Class<M> mapperType) throws ApplicationException;
 
     /**
      * Delete data by key.<br/>
@@ -46,8 +46,8 @@ public interface IInventoryDao {
      * @param <M> mapper type
      * @param key delete key
      * @param mapperType class type
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    <M> void delete(String key, Class<M> mapperType) throws ServiceException;
+    <M> void delete(String key, Class<M> mapperType) throws ApplicationException;
 }

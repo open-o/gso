@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openo.gso.util;
 
 import static org.junit.Assert.assertNotNull;
@@ -30,7 +31,6 @@ import org.openo.gso.constant.CommonConstant;
 import mockit.Mock;
 import mockit.MockUp;
 
-
 public class RestfulUtilTest {
 
     @Test
@@ -40,28 +40,29 @@ public class RestfulUtilTest {
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
         String params = "";
         final RestfulResponse rsp = new RestfulResponse();
-        new MockUp<HttpRest>(){
+        new MockUp<HttpRest>() {
+
             @Mock
-            public RestfulResponse get(String servicePath, RestfulParametes restParametes) throws ServiceException{
+            public RestfulResponse get(String servicePath, RestfulParametes restParametes) throws ServiceException {
                 return rsp;
             }
-            
+
             @Mock
             public RestfulResponse put(String servicePath, RestfulParametes restParametes) throws ServiceException {
                 return rsp;
             }
-            
+
             @Mock
             public RestfulResponse post(String servicePath, RestfulParametes restParametes) throws ServiceException {
                 return rsp;
             }
-            
+
             @Mock
             public RestfulResponse delete(String servicePath, RestfulParametes restParametes) throws ServiceException {
                 return rsp;
             }
         };
-        
+
         RestfulResponse postRsp = RestfulUtil.getRemoteResponse(paramsMap, params, paramsMap);
         assertNotNull(postRsp);
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);

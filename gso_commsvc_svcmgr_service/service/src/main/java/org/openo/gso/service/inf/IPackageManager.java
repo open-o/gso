@@ -18,7 +18,7 @@ package org.openo.gso.service.inf;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 
 /**
  * Interface of managing service package.<br/>
@@ -35,18 +35,18 @@ public interface IPackageManager {
      * 
      * @param serviceDefId ID of service package
      * @param request http request
-     * @throws ServiceException when fail to set status
+     * @throws ApplicationException when fail to set status
      * @since GSO 0.5
      */
-    void updateOnBoardStatus(String serviceDefId, HttpServletRequest request) throws ServiceException;
+    void updateOnBoardStatus(String serviceDefId, HttpServletRequest request) throws ApplicationException;
 
     /**
      * Delete service package.<br/>
      * 
      * @param serviceDefId ID of service package
      * @param request http request
-     * @throws ServiceException when fail to delete service package
+     * @throws ApplicationException when fail to delete service package
      * @since GSO 0.5
      */
-    void deletePackage(String serviceDefId, HttpServletRequest request) throws ServiceException;
+    void deletePackage(String serviceDefId, HttpServletRequest request) throws ApplicationException;
 }

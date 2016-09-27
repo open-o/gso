@@ -28,4 +28,4 @@ create table t_lcm_service_segment
 );
 
 insert into t_lcm_service_segment (serviceId,serviceSegmentId,serviceSegmentName,templateId,nodeType,topoSeqNumber,status) 
-VALUES('1', '12345', 'pop service', '12345', 'tosaca.nfv.node.POP', 1, 'createSucceed');
+VALUES('1', '12345_1', 'pop service', '12345', 'tosaca.nfv.node.POP', 1, 'createSucceed');

@@ -31,12 +31,12 @@ import org.apache.commons.lang.StringUtils;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.constant.DriverExceptionID;
 import org.openo.gso.dao.inf.IServicePackageDao;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
-import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.model.drivermo.NsProgressStatus;
@@ -72,12 +72,12 @@ public class DriverManagerImpl implements IDriverManager {
     private static String CATALOGUE_QUERY_SVC_TMPL_NODETYPE_URL = "/openoapi/catalog/v1/servicetemplate/nesting";
 
     private IDriverService serviceInf;
-    
+
     /**
      * DAO to operate service segment instance.
      */
     private IServiceSegmentDao serviceSegmentDao;
-    
+
     /**
      * DAO to operate service package.
      */
@@ -87,7 +87,7 @@ public class DriverManagerImpl implements IDriverManager {
      * Proxy of interface with catalog.
      */
     private ICatalogProxy catalogProxy;
-    
+
     /**
      * @return Returns the serviceInf.
      */
@@ -95,14 +95,12 @@ public class DriverManagerImpl implements IDriverManager {
         return serviceInf;
     }
 
-    
     /**
      * @param serviceInf The serviceInf to set.
      */
     public void setServiceInf(IDriverService serviceInf) {
         this.serviceInf = serviceInf;
     }
-    
 
     /**
      * @return Returns the serviceSegmentDao.
@@ -111,16 +109,13 @@ public class DriverManagerImpl implements IDriverManager {
         return serviceSegmentDao;
     }
 
-
-    
     /**
      * @param serviceSegmentDao The serviceSegmentDao to set.
      */
     public void setServiceSegmentDao(IServiceSegmentDao serviceSegmentDao) {
         this.serviceSegmentDao = serviceSegmentDao;
     }
-    
-    
+
     /**
      * @return Returns the servicePackageDao.
      */
@@ -128,8 +123,6 @@ public class DriverManagerImpl implements IDriverManager {
         return servicePackageDao;
     }
 
-
-    
     /**
      * @param servicePackageDao The servicePackageDao to set.
      */
@@ -137,8 +130,6 @@ public class DriverManagerImpl implements IDriverManager {
         this.servicePackageDao = servicePackageDao;
     }
 
-
-    
     /**
      * @return Returns the catalogProxy.
      */
@@ -146,8 +137,6 @@ public class DriverManagerImpl implements IDriverManager {
         return catalogProxy;
     }
 
-
-    
     /**
      * @param catalogProxy The catalogProxy to set.
      */
@@ -155,18 +144,16 @@ public class DriverManagerImpl implements IDriverManager {
         this.catalogProxy = catalogProxy;
     }
 
-
     /**
      * Create service instance.<br/>
      * 
      * @param serviceModel service instance
      * @param httpRequest http request
-     * @throws ServiceException when operate DB or parameter is wrong.
+     * @throws ApplicationException when operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public RestfulResponse terminateService(HttpServletRequest httpRequest) throws ServiceException {
-         
+    public RestfulResponse terminateService(HttpServletRequest httpRequest) throws ApplicationException {
         String body = RestUtils.getRequestBody(httpRequest);
 
         // transfer the input into input parameters model
@@ -197,9 +184,8 @@ public class DriverManagerImpl implements IDriverManager {
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         serviceSegment.setServiceId(serviceId);
         serviceSegment.setServiceSegmentId(instanceId);
-        
-        serviceSegmentDao.delete(serviceSegment);
 
+        serviceSegmentDao.delete(serviceSegment);
 
         RestfulResponse rsp = new RestfulResponse();
         if("fail".equals(status)) {
@@ -209,7 +195,7 @@ public class DriverManagerImpl implements IDriverManager {
         return rsp;
 
     }
-    
+
     /**
      * <br/>
      * 
@@ -221,12 +207,12 @@ public class DriverManagerImpl implements IDriverManager {
      */
     @SuppressWarnings("unchecked")
     private int getSequenceOfNode(List<NodeTemplateModel> nodes, ServiceSegmentModel seviceSegment)
-            throws ServiceException {
+            throws ApplicationException {
 
         // Check data
         if(CollectionUtils.isEmpty(nodes)) {
             LOGGER.error("There is no nodes in template. The type of node is ", seviceSegment.getNodeType());
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Fail to get node from catalog.");
+            throw new ApplicationException(HttpCode.BAD_REQUEST, "Fail to get node from catalog.");
         }
         String type = seviceSegment.getNodeType();
         ValidateUtil.assertStringNotNull(type);
@@ -271,11 +257,11 @@ public class DriverManagerImpl implements IDriverManager {
      * 
      * @param serviceNode service instance
      * @param httpRequest http request
-     * @throws ServiceException when parameter is wrong.
+     * @throws ApplicationException when parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public RestfulResponse instantiateService(HttpServletRequest httpRequest) throws ServiceException {
+    public RestfulResponse instantiateService(HttpServletRequest httpRequest) throws ApplicationException {
 
         String body = RestUtils.getRequestBody(httpRequest);
 
@@ -288,12 +274,12 @@ public class DriverManagerImpl implements IDriverManager {
 
         if((null == nodeType) || (null == serviceNode.getInputParameters())) {
             LOGGER.error("Input parameters from lcm/workflow are empty");
-            throw new ServiceException(DriverExceptionID.INVALID_PARAM, HttpCode.INTERNAL_SERVER_ERROR);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
         }
 
         if(null == serviceInf) {
             LOGGER.error("Service interface not initialised");
-            throw new ServiceException(DriverExceptionID.INVALID_PARAM, HttpCode.INTERNAL_SERVER_ERROR);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
         }
         serviceInf.setNodeType(serviceNode.getNodeType());
 
@@ -301,38 +287,41 @@ public class DriverManagerImpl implements IDriverManager {
         ServiceTemplate svcTmpl = getSvcTmplByNodeType(serviceNode);
         if(null == svcTmpl) {
             LOGGER.error("Failed to get service template from catalogue module");
-            throw new ServiceException(DriverExceptionID.FAILED_TO_SVCTMPL_CATALOGUE, HttpCode.INTERNAL_SERVER_ERROR);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+                    DriverExceptionID.FAILED_TO_SVCTMPL_CATALOGUE);
         }
 
         return createNetworkSubService(serviceNode, svcTmpl.getServiceTemplateId(), httpRequest);
     }
 
-    private RestfulResponse createNetworkSubService(ServiceNode serviceNode, String templateId, HttpServletRequest httpRequest)
-            throws ServiceException {
+    private RestfulResponse createNetworkSubService(ServiceNode serviceNode, String templateId,
+            HttpServletRequest httpRequest) throws ApplicationException {
 
         // Step 2:Make a list of parameters for the node Type
         Map<String, String> mapParam = getParamsByNodeType(serviceNode);
-        
+
         String serviceId = mapParam.get("serviceId");
         // Step 1: Create Network service
         String nsInstanceId = serviceInf.createNS(templateId, mapParam);
         if(StringUtils.isEmpty(nsInstanceId)) {
             LOGGER.error("Invalid instanceId from workflow");
-            throw new ServiceException(DriverExceptionID.INVALID_VALUE_FROM_WORKFLOW, HttpCode.INTERNAL_SERVER_ERROR);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+                    DriverExceptionID.INVALID_VALUE_FROM_WORKFLOW);
         }
 
         // Step 2: Instantiate Network service
         String jobId = serviceInf.instantiateNS(nsInstanceId, mapParam);
         if(StringUtils.isEmpty(jobId)) {
             LOGGER.error("Invalid jobId from workflow");
-            throw new ServiceException(DriverExceptionID.INVALID_VALUE_FROM_WORKFLOW, HttpCode.INTERNAL_SERVER_ERROR);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+                    DriverExceptionID.INVALID_VALUE_FROM_WORKFLOW);
         }
 
         // Step 3: Wait for Job to complete
         String status = "success";
         try {
             waitForJobToComplete(jobId);
-        } catch(ServiceException e) {
+        } catch(ApplicationException e) {
             LOGGER.error("fail to complete the job", e);
             status = "fail";
         }
@@ -343,11 +332,11 @@ public class DriverManagerImpl implements IDriverManager {
         serviceSegment.setNodeType(serviceNode.getNodeType());
         serviceSegment.setStatus(status);
         serviceSegment.setTemplateId(templateId);
-        
+
         ServicePackageMapping pacakageInfo = servicePackageDao.queryPackageMapping(serviceId);
         if(null == pacakageInfo) {
             LOGGER.error("There is no package in DB. The service is ", serviceId);
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "There is no package in DB.");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "There is no package in DB.");
         }
 
         // Query nodes of template
@@ -357,7 +346,7 @@ public class DriverManagerImpl implements IDriverManager {
 
         // insert database
         serviceSegmentDao.insert(serviceSegment);
-        
+
         // Step 4: return the response
         RestfulResponse rsp = new RestfulResponse();
         if("fail".equals(status)) {
@@ -375,7 +364,7 @@ public class DriverManagerImpl implements IDriverManager {
         return mapParam;
     }
 
-    private ServiceTemplate getSvcTmplByNodeType(ServiceNode serviceNode) throws ServiceException {
+    private ServiceTemplate getSvcTmplByNodeType(ServiceNode serviceNode) throws ApplicationException {
 
         Map<String, String> paramsMap = new HashMap<String, String>();
 
@@ -400,7 +389,7 @@ public class DriverManagerImpl implements IDriverManager {
 
     }
 
-    private void waitForJobToComplete(String jobId) throws ServiceException {
+    private void waitForJobToComplete(String jobId) throws ApplicationException {
 
         ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(1);
         boolean queryFlag = true;
@@ -417,7 +406,7 @@ public class DriverManagerImpl implements IDriverManager {
 
                 queryFlag = false;
                 LOGGER.error("error in the result when query the operation status", e);
-                throw new ServiceException(DriverExceptionID.INTERNAL_ERROR, HttpCode.INTERNAL_SERVER_ERROR);
+                throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
             }
 
             if("100".equals(progress.getRspDescriptor().getProgress())
@@ -426,14 +415,13 @@ public class DriverManagerImpl implements IDriverManager {
                 queryFlag = false;
             } else if("error".equals(progress.getRspDescriptor().getStatus())) {
                 LOGGER.error("Failed to create the sub service");
-                throw new ServiceException(DriverExceptionID.INTERNAL_ERROR, HttpCode.INTERNAL_SERVER_ERROR);
+                throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
             } else {
                 // do nothing
             }
         }
 
     }
-
 
     class QueryProgress implements Callable<NsProgressStatus> {
 

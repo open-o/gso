@@ -24,7 +24,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.drivermo.ServiceNode;
 
 /**
@@ -42,28 +42,30 @@ public interface IDrivermgrRoaModule {
      * 
      * @param servletReq http request
      * @return response
-     * @throws ServiceException when operate database or parameter is wrong.
+     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/drivers/terminate")
-    Response terminateNetworkService(@Context HttpServletRequest servletReq) throws ServiceException;
+    Response terminateNetworkService(@Context HttpServletRequest servletReq) throws ApplicationException;
 
     /**
      * <br>
      * Instantiate the NFVO or SDNO instance
+     * 
      * @param serviceNode node of sub-service
      * @param servletReq http request
      * @return Response
-     * @throws ServiceException when fail to instantiate network service
-     * @since  GSO 0.5
+     * @throws ApplicationException when fail to instantiate network service
+     * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/drivers/instantiate")
-    Response instantiateNetworkService(ServiceNode serviceNode, HttpServletRequest servletReq) throws ServiceException;
+    Response instantiateNetworkService(ServiceNode serviceNode, HttpServletRequest servletReq)
+            throws ApplicationException;
 
 }

@@ -20,10 +20,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.openo.baseservice.remoteservice.exception.ExceptionArgs;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.inf.IServicePackageDao;
-import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 import org.openo.gso.restproxy.inf.ICatalogProxy;
@@ -63,16 +61,14 @@ public class PackageManagerImpl implements IPackageManager {
      * 
      * @param serviceDefId ID of service package
      * @param request http request
-     * @throws ServiceException when fail to set status
+     * @throws ApplicationException when fail to set status
      * @since GSO 0.5
      */
     @Override
-    public void updateOnBoardStatus(String serviceDefId, HttpServletRequest request) throws ServiceException {
+    public void updateOnBoardStatus(String serviceDefId, HttpServletRequest request) throws ApplicationException {
         if(PackageOperationSingleton.getInstance().isCsarBeingDeleted(serviceDefId)) {
             LOGGER.info("CSAR package is being deleted.");
-            ExceptionArgs args = new ExceptionArgs();
-            args.setDescArgs(new String[] {"CSAR package is being deleted."});
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_FAIL_OPERATION, HttpCode.RESPOND_CONFLICT, args);
+            throw new ApplicationException(HttpCode.RESPOND_CONFLICT, "CSAR package is being deleted.");
         }
         catalogProxy.updateGsarStatus(serviceDefId, request);
     }
@@ -82,47 +78,39 @@ public class PackageManagerImpl implements IPackageManager {
      * 
      * @param serviceDefId ID of service package
      * @param request http request
-     * @throws ServiceException when fail to delete service package
+     * @throws ApplicationException when fail to delete service package
      * @since GSO 0.5
      */
     @Override
-    public void deletePackage(String serviceDefId, HttpServletRequest request) throws ServiceException {
-        ExceptionArgs args = null;
+    public void deletePackage(String serviceDefId, HttpServletRequest request) throws ApplicationException {
 
         // 1. Check whether service instance exists.
         List<ServicePackageMapping> mappings = servicePackageDao.queryPackageMappings(serviceDefId);
         if(!(CollectionUtils.isEmpty(mappings))) {
             LOGGER.error("There are service instances related to this package. Pacakge is {}", serviceDefId);
-
-            args = new ExceptionArgs();
-            args.setDescArgs(new String[] {"There are service instances related with service template."});
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_FAIL_OPERATION, HttpCode.BAD_REQUEST, args);
+            throw new ApplicationException(HttpCode.BAD_REQUEST,
+                    "There are service instances related with service template.");
         }
 
         // 2. Check whether it is creating service instance with this csar.
         if(PackageOperationSingleton.getInstance().isCsarBeingUsed(serviceDefId)) {
             LOGGER.error("The service instance related with this package is being created. Pacakge is {}",
                     serviceDefId);
-
-            args = new ExceptionArgs();
-            args.setDescArgs(new String[] {"The service instance related with this package is being created."});
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_FAIL_OPERATION, HttpCode.BAD_REQUEST, args);
+            throw new ApplicationException(HttpCode.BAD_REQUEST,
+                    "The service instance related with this package is being created.");
         }
 
         // 3. Check whether csar is being deleted.
         if(PackageOperationSingleton.getInstance().isCsarBeingDeleted(serviceDefId)) {
             LOGGER.error("The package is being deleted. Pacakge is {}", serviceDefId);
-
-            args = new ExceptionArgs();
-            args.setDescArgs(new String[] {"The package is being deleted."});
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_FAIL_OPERATION, HttpCode.BAD_REQUEST, args);
+            throw new ApplicationException(HttpCode.BAD_REQUEST, "The package is being deleted.");
         }
 
         // 4. Notify catalog to delete csar package
         PackageOperationSingleton.getInstance().addBeingDeletedCsarIds(serviceDefId);
         try {
             catalogProxy.deleteGsarPackage(serviceDefId, request);
-        } catch(ServiceException exception) {
+        } catch(ApplicationException exception) {
             throw exception;
         } finally {
             PackageOperationSingleton.getInstance().removeDeletedCsarIds(serviceDefId);

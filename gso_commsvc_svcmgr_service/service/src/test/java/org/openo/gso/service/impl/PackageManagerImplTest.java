@@ -18,7 +18,6 @@ package org.openo.gso.service.impl;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openo.gso.service.impl.PackageManagerImpl;
 
 /**
  * Test PackageManagerImpl class<br/>
@@ -32,15 +31,17 @@ import org.openo.gso.service.impl.PackageManagerImpl;
  */
 public class PackageManagerImplTest {
 
+    PackageManagerImpl packagemgr = new PackageManagerImpl();
+
     /**
      * Test getter method.<br/>
      * 
      * @since GSO 0.5
      */
     @Test
-    public void testGetter() {
-        PackageManagerImpl packageMgr = new PackageManagerImpl();
-        Assert.assertNull(packageMgr.getCatalogProxy());
-        Assert.assertNull(packageMgr.getServicePackageDao());
+    public void testGetCatalogProxy() {
+
+        Assert.assertNull(packagemgr.getCatalogProxy());
+        Assert.assertNull(packagemgr.getServicePackageDao());
     }
 }

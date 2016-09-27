@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.util.RestfulUtil;
@@ -53,7 +53,7 @@ public class DriverServiceImplTest {
             svcImpl.delete("tosca.nodes.sdn.overlayvpn", "instanceId");
             svcImpl.delete("tosca.nodes.nfv.pop", "");
 
-        } catch(ServiceException e) {
+        } catch(ApplicationException e) {
 
         }
 
@@ -75,7 +75,7 @@ public class DriverServiceImplTest {
             svcImpl.delete("tosca.nodes.nfv.pop", "");
             svcImpl.delete("", "instanceId");
 
-        } catch(ServiceException e) {
+        } catch(ApplicationException e) {
 
         }
 
@@ -94,14 +94,14 @@ public class DriverServiceImplTest {
             };
             svcImpl.delete("tosca.nodes.nfv.dc", "instanceId");
 
-        } catch(ServiceException e) {
+        } catch(ApplicationException e) {
 
         }
 
         try {
             svcImpl.delete("", "instanceId");
 
-        } catch(ServiceException e) {
+        } catch(ApplicationException e) {
 
         }
     }
@@ -138,7 +138,7 @@ public class DriverServiceImplTest {
                 }
             };
             nsImpl.createNS(svcTmpl.getServiceTemplateId(), paramMap);
-        } catch(ServiceException e) {
+        } catch(ApplicationException e) {
 
         }
     }

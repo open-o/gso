@@ -21,8 +21,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.util.RestUtils;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.exception.HttpCode;
@@ -59,13 +59,12 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
      * 
      * @param httpRequest http request
      * @return response
-     * @throws ServiceException when fail to set
+     * @throws ApplicationException when fail to set
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
     @Override
     public Response onBoardingPackage(HttpServletRequest httpRequest) {
-        Map<String, Object> result = null;
         try {
             // 1. Get request body
             String body = RestUtils.getRequestBody(httpRequest);
@@ -74,23 +73,17 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
             Map<String, Object> bodyMap = JsonUtil.unMarshal(body, Map.class);
             Object serviceDefId = bodyMap.get(Constant.CSAR_ID);
             if(!(serviceDefId instanceof String)) {
-                throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, HttpCode.BAD_REQUEST);
+                throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.DATA_IS_WRONG);
             }
             ValidateUtil.assertStringNotNull((String)serviceDefId);
             // 3. Update state
             packageMgr.updateOnBoardStatus((String)serviceDefId, httpRequest);
-        } catch(ServiceException exception) {
+        } catch(ApplicationException exception) {
             LOGGER.error("Faile to on board package, {}", exception);
-            result = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_FAIL, exception,
-                    String.valueOf(exception.getHttpCode()));
-
-            return Response.accepted(result).build();
+            throw ResponseUtils.getException(exception, "Faile to on board package.");
         }
 
-        result = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_SUCCESS, null,
-                String.valueOf(HttpCode.RESPOND_OK));
-
-        return Response.accepted(result).build();
+        return Response.accepted(Constant.RESPONSE_STATUS_SUCCESS).build();
     }
 
     /**
@@ -99,25 +92,19 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
      * @param serviceDefId GSAR ID
      * @param httpRequest http request
      * @return response
-     * @throws ServiceException when fail to delete GSAR package.
+     * @throws ApplicationException when fail to delete GSAR package.
      * @since GSO 0.5
      */
     @Override
     public Response deleteGsarPackage(String serviceDefId, HttpServletRequest httpRequest) {
-        Map<String, Object> result = null;
         try {
             packageMgr.deletePackage(serviceDefId, httpRequest);
-        } catch(ServiceException exception) {
+        } catch(ApplicationException exception) {
             LOGGER.error("Faile to delete csar package, {}", exception);
-            result = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_FAIL, exception,
-                    String.valueOf(exception.getHttpCode()));
-            return Response.accepted(result).build();
+            throw ResponseUtils.getException(exception, "Faile to delete csar package.");
         }
 
-        result = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_SUCCESS, null,
-                String.valueOf(HttpCode.RESPOND_OK));
-
-        return Response.accepted(result).build();
+        return Response.accepted(Constant.RESPONSE_STATUS_SUCCESS).build();
     }
 
     /**

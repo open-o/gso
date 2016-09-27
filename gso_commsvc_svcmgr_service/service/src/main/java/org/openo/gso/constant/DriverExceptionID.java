@@ -21,20 +21,22 @@ package org.openo.gso.constant;
  * <p>
  * </p>
  * identification of adapter exception
+ * 
  * @author
- * @version     GSO 0.5  2016/9/3
+ * @version GSO 0.5 2016/9/3
  */
 public class DriverExceptionID {
 
-    public static final String INVALID_PARAM = "org.openo.gso.adapter.invalid.param";
-    public static final String INTERNAL_ERROR = "org.openo.gso.adapter.internal.error";
+    public static final String INVALID_PARAM = "Invalid parameter";
+
+    public static final String INTERNAL_ERROR = "Internal error";
+
     public static final String FAILED_TO_SVCTMPL_CATALOGUE = "Failed to get service template from catalogue";
 
     public static final String INVALID_VALUE_FROM_WORKFLOW = "Invalid value from Work flow engine";
-    
-    
-    private DriverExceptionID(){
-        
+
+    private DriverExceptionID() {
+
     }
 
 }

@@ -20,10 +20,11 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;
+import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.ServiceSegmentMapper;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.util.validate.ValidateUtil;
@@ -68,18 +69,18 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * Insert service segment instances.<br/>
      * 
      * @param serviceSegments service segment instances
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void insert(ServiceSegmentModel serviceSegment) throws ServiceException {
+    public void insert(ServiceSegmentModel serviceSegment) throws ApplicationException {
         try {
             ValidateUtil.assertObjectNotNull(serviceSegment);
             ServiceSegmentMapper serviceSegmentMapper = getMapper(ServiceSegmentMapper.class);
             serviceSegmentMapper.insert(serviceSegment);
-        } catch(Exception e) {
-            LOGGER.error("Fail to insert service segment instance. {}", e);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+        } catch(Exception exception) {
+            LOGGER.error("Fail to insert service segment instance. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 
@@ -87,16 +88,16 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * Delete service segment instance by service ID.<br/>
      * 
      * @param serviceSegment service segment information
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void delete(ServiceSegmentModel serviceSegment) throws ServiceException {
+    public void delete(ServiceSegmentModel serviceSegment) throws ApplicationException {
         try {
             // Check data validation.
             if(StringUtils.isEmpty(serviceSegment.getServiceId())
                     || StringUtils.isEmpty(serviceSegment.getServiceSegmentId())) {
-                throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Data is wrong");
+                throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.DATA_IS_WRONG);
             }
 
             // Delete service segment instances.
@@ -104,7 +105,7 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
             mapper.delete(serviceSegment);
         } catch(Exception e) {
             LOGGER.error("Fail to delete service segment instances. {}", e);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 
@@ -113,15 +114,15 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * 
      * @param serviceId service instance ID
      * @return service segment instances.
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public List<ServiceSegmentModel> queryServiceSegments(String serviceId) throws ServiceException {
+    public List<ServiceSegmentModel> queryServiceSegments(String serviceId) throws ApplicationException {
         try {
             // 1. Check data validation.
             if(StringUtils.isEmpty(serviceId)) {
-                throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Data is wrong");
+                throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.DATA_IS_WRONG);
             }
 
             // 2. Query service segment instances.
@@ -129,7 +130,7 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
             return serviceSegment.queryServiceSegments(serviceId);
         } catch(Exception e) {
             LOGGER.error("Fail to query service segment instances. {}", e);
-            throw new ServiceException(ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR, "Fail to operate database!");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
 

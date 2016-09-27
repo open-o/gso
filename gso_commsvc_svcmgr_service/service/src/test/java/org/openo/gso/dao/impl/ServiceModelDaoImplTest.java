@@ -33,7 +33,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
@@ -118,11 +118,11 @@ public class ServiceModelDaoImplTest {
     /**
      * Query service successfully.<br/>
      * 
-     * @throws ServiceException database exception
+     * @throws ApplicationException database exception
      * @since GSO 0.5
      */
     @Test
-    public void testQueryAllServices() throws ServiceException {
+    public void testQueryAllServices() throws ApplicationException {
         List<ServiceModel> services = serviceModelDao.queryAllServices();
         assertNotNull(services);
     }
@@ -133,11 +133,11 @@ public class ServiceModelDaoImplTest {
      * There is no service instance.
      * </p>
      * 
-     * @throws ServiceException database exception
+     * @throws ApplicationException database exception
      * @since GSO 0.5
      */
     @Test
-    public void testQueryAllServicesNull1() throws ServiceException {
+    public void testQueryAllServicesNull1() throws ApplicationException {
         serviceModelDao.delete("1");
         serviceModelDao.delete("3");
         List<ServiceModel> services = serviceModelDao.queryAllServices();
@@ -150,11 +150,11 @@ public class ServiceModelDaoImplTest {
      * There is no mapping relation.
      * </p>
      * 
-     * @throws ServiceException database exception
+     * @throws ApplicationException database exception
      * @since GSO 0.5
      */
     @Test
-    public void testQueryAllServicesNull2() throws ServiceException {
+    public void testQueryAllServicesNull2() throws ApplicationException {
         packageDao.delete("1");
         List<ServiceModel> services = serviceModelDao.queryAllServices();
         assertNotNull(services);
@@ -163,11 +163,11 @@ public class ServiceModelDaoImplTest {
     /**
      * Fail to query service when session is close.<br/>
      * 
-     * @throws ServiceException session is null
+     * @throws ApplicationException session is null
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testQueryAllServicesFail() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testQueryAllServicesFail() throws ApplicationException {
         serviceModelDao.getDbSessionHandler().getSqlSession().close();
         serviceModelDao.queryAllServices();
     }
@@ -175,22 +175,21 @@ public class ServiceModelDaoImplTest {
     /**
      * Test case: object of ServiceModel is null.<br/>
      * 
-     * @throws ServiceException parameter wrong exception
+     * @throws ApplicationException parameter wrong exception
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testInsertServiceModelIsNull() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testInsertServiceModelIsNull() throws ApplicationException {
         serviceModelDao.insert(null);
     }
 
     /**
      * Test case: object of ServicePackageMapping is null.<br/>
      * 
-     * @throws ServiceException ServiceException parameter wrong exception
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testInsertPackageIsNull() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testInsertPackageIsNull() {
         ServiceModel serviceModel = new ServiceModel();
         serviceModel.setServiceId("2");
         serviceModel.setName("testSucceed");
@@ -205,11 +204,11 @@ public class ServiceModelDaoImplTest {
     /**
      * Test Succeed scene.<br/>
      * 
-     * @throws ServiceException IO or parameter wrong exception
+     * @throws ApplicationException IO or parameter wrong exception
      * @since GSO 0.5
      */
     @Test
-    public void testInsert() throws ServiceException {
+    public void testInsert() throws ApplicationException {
         ServiceModel serviceModel = new ServiceModel();
         serviceModel.setServiceId("2");
         serviceModel.setName("testSucceed");
@@ -232,22 +231,22 @@ public class ServiceModelDaoImplTest {
     /**
      * Delete successfully.<br/>
      * 
-     * @throws ServiceException IO or parameter wrong exception
+     * @throws ApplicationException IO or parameter wrong exception
      * @since GSO 0.5
      */
     @Test
-    public void testDeleteOk() throws ServiceException {
+    public void testDeleteOk() throws ApplicationException {
         serviceModelDao.delete("1");
     }
 
     /**
      * The Service ID is null.<br/>
      * 
-     * @throws ServiceException parameter wrong exception
+     * @throws ApplicationException parameter wrong exception
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testDeleteFail() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testDeleteFail() throws ApplicationException {
         serviceModelDao.delete(null);
     }
 

@@ -28,10 +28,9 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.exception.HttpCode;
-import org.openo.gso.restproxy.impl.CatalogProxyImpl;
 import org.openo.gso.util.http.HttpUtil;
 
 import mockit.Mock;
@@ -81,11 +80,11 @@ public class CatalogProxyImplTest {
     /**
      * Test getParamsByTemplateId method.<br/>
      * 
-     * @throws ServiceException
+     * @throws ApplicationException
      * @since GSO 0.5
      */
     @Test
-    public void testGetParamsByTemplateId() throws ServiceException {
+    public void testGetParamsByTemplateId() throws ApplicationException {
         response.setStatus(HttpCode.RESPOND_OK);
         response.setResponseJson(getJsonString(FILE_PATH + "getTemplateParamters.json"));
         mockGet(response);
@@ -95,11 +94,11 @@ public class CatalogProxyImplTest {
     /**
      * Test getOperationsByTemplateId method.<br/>
      * 
-     * @throws ServiceException
+     * @throws ApplicationException
      * @since GSO 0.5
      */
     @Test
-    public void testGetOperationsByTemplateId() throws ServiceException {
+    public void testGetOperationsByTemplateId() throws ApplicationException {
         response.setStatus(HttpCode.RESPOND_OK);
         response.setResponseJson(getJsonString(FILE_PATH + "getPlans.json"));
         mockGet(response);
@@ -109,11 +108,11 @@ public class CatalogProxyImplTest {
     /**
      * Test getTemplateByNodeTypeId method.<br/>
      * 
-     * @throws ServiceException
+     * @throws ApplicationException
      * @since GSO 0.5
      */
     @Test
-    public void testGetTemplateByNodeTypeId() throws ServiceException {
+    public void testGetTemplateByNodeTypeId() throws ApplicationException {
         response.setStatus(HttpCode.RESPOND_OK);
         response.setResponseJson(getJsonString(FILE_PATH + "getTemplateByNodeType.json"));
         mockGet(response);
@@ -123,11 +122,11 @@ public class CatalogProxyImplTest {
     /**
      * Test getOperationsByTemplateId method.<br/>
      * 
-     * @throws ServiceException
+     * @throws ApplicationException
      * @since GSO 0.5
      */
     @Test
-    public void testGetNodeTemplate() throws ServiceException {
+    public void testGetNodeTemplate() throws ApplicationException {
         response.setStatus(HttpCode.RESPOND_OK);
         response.setResponseJson(getJsonString(FILE_PATH + "getTemplateNodes.json"));
         mockGet(response);
@@ -145,7 +144,7 @@ public class CatalogProxyImplTest {
 
             @Mock
             public RestfulResponse get(final String url, final Map<String, String> httpHeaders,
-                    HttpServletRequest httpRequest) throws ServiceException {
+                    HttpServletRequest httpRequest) throws ApplicationException {
                 return response;
             }
         };

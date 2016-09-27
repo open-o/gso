@@ -24,7 +24,10 @@ import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulFactory;
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.util.json.JsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Method class that provides interface to do http request.<br/>
@@ -35,6 +38,11 @@ import org.openo.gso.util.json.JsonUtil;
  * @version GSO 0.5 2016/9/1
  */
 public class HttpUtil {
+
+    /**
+     * Log service.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtil.class);
 
     /**
      * Constructor<br/>
@@ -54,17 +62,25 @@ public class HttpUtil {
      * @param httpHeaders request headers
      * @param httpRequest http request
      * @return response
-     * @throws ServiceException when request is failure.
+     * @throws ApplicationException when request is failure.
      * @since GSO 0.5
      */
     public static RestfulResponse get(final String url, final Map<String, String> httpHeaders,
-            HttpServletRequest httpRequest) throws ServiceException {
+            HttpServletRequest httpRequest) throws ApplicationException {
         final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
         for(Map.Entry<String, String> entry : httpHeaders.entrySet()) {
             restfulParametes.putHttpContextHeader(entry.getKey(), entry.getValue());
         }
 
-        return RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP).get(url, restfulParametes);
+        RestfulResponse response = null;
+        try {
+            response = RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP).get(url, restfulParametes);
+        } catch(ServiceException exception) {
+            LOGGER.error("Fail to do get request, {}", exception);
+            throw new ApplicationException(exception.getHttpCode(), exception.getMessage());
+        }
+
+        return response;
     }
 
     /**
@@ -74,11 +90,11 @@ public class HttpUtil {
      * @param sendObj request body
      * @param httpRequest http request
      * @return response
-     * @throws ServiceException when request is failure.
+     * @throws ApplicationException when request is failure.
      * @since GSO 0.5
      */
     public static RestfulResponse post(final String url, Object sendObj, HttpServletRequest httpRequest)
-            throws ServiceException {
+            throws ApplicationException {
 
         final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
         if(sendObj != null) {
@@ -86,7 +102,16 @@ public class HttpUtil {
             restfulParametes.setRawData(strJsonReq);
         }
 
-        return RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP).post(url, restfulParametes);
+        RestfulResponse response = null;
+        try {
+            response = RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP).post(url, restfulParametes);
+        } catch(ServiceException exception) {
+            LOGGER.error("Fail to do post request, {}", exception);
+            throw new ApplicationException(exception.getHttpCode(), exception.getMessage());
+        }
+
+        return response;
+
     }
 
     /**
@@ -95,12 +120,20 @@ public class HttpUtil {
      * @param url request location
      * @param httpRequest http request
      * @return response
-     * @throws ServiceException when request is failure.
+     * @throws ApplicationException when request is failure.
      * @since GSO 0.5
      */
-    public static RestfulResponse delete(final String url, HttpServletRequest httpRequest) throws ServiceException {
+    public static RestfulResponse delete(final String url, HttpServletRequest httpRequest) throws ApplicationException {
         final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
-        return RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP).delete(url, restfulParametes);
+        RestfulResponse response = null;
+        try {
+            response = RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP).delete(url, restfulParametes);
+        } catch(ServiceException exception) {
+            LOGGER.error("Fail to do delete request, {}", exception);
+            throw new ApplicationException(exception.getHttpCode(), exception.getMessage());
+        }
+
+        return response;
     }
 
     /**
@@ -110,17 +143,25 @@ public class HttpUtil {
      * @param httpHeaders request headers
      * @param httpRequest http request
      * @return response
-     * @throws ServiceException when request is failure.
+     * @throws ApplicationException when request is failure.
      * @since GSO 0.5
      */
     public static RestfulResponse put(final String url, final Map<String, String> httpHeaders,
-            HttpServletRequest httpRequest) throws ServiceException {
+            HttpServletRequest httpRequest) throws ApplicationException {
         final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
         for(Map.Entry<String, String> entry : httpHeaders.entrySet()) {
             restfulParametes.putHttpContextHeader(entry.getKey(), entry.getValue());
         }
 
-        return RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP).put(url, restfulParametes);
+        RestfulResponse response = null;
+        try {
+            response = RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP).put(url, restfulParametes);
+        } catch(ServiceException exception) {
+            LOGGER.error("Fail to do put request, {}", exception);
+            throw new ApplicationException(exception.getHttpCode(), exception.getMessage());
+        }
+
+        return response;
     }
 
     /**

@@ -18,8 +18,8 @@ package org.openo.gso.service.inf;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 
 /**
  * Interface to operate service.<br/>
@@ -31,26 +31,24 @@ import org.openo.baseservice.roa.util.restclient.RestfulResponse;
  */
 public interface IDriverManager {
 
-
-
     /**
      * terminate service instance.<br/>
      * 
      * @param httpRequest http request
      * @return restful response
-     * @throws ServiceException when operate DB or parameter is wrong.
+     * @throws ApplicationException when operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    RestfulResponse terminateService(HttpServletRequest httpRequest) throws ServiceException;
+    RestfulResponse terminateService(HttpServletRequest httpRequest) throws ApplicationException;
 
     /**
      * instantiate service <br/>
      * 
      * @param httpRequest - http request
      * @return restful response
-     * @throws ServiceException when input parameter is wrong
+     * @throws ApplicationException when input parameter is wrong
      * @since GSO 0.5
      */
-    RestfulResponse instantiateService(HttpServletRequest httpRequest) throws ServiceException;
+    RestfulResponse instantiateService(HttpServletRequest httpRequest) throws ApplicationException;
 
 }

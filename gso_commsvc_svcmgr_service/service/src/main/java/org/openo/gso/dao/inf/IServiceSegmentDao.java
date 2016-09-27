@@ -18,7 +18,7 @@ package org.openo.gso.dao.inf;
 
 import java.util.List;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 
 /**
@@ -35,27 +35,27 @@ public interface IServiceSegmentDao {
      * Insert service segment instance.<br/>
      * 
      * @param serviceSegment service segment instance
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void insert(ServiceSegmentModel serviceSegment) throws ServiceException;
+    void insert(ServiceSegmentModel serviceSegment) throws ApplicationException;
 
     /**
      * Delete service segment instance by service ID.<br/>
      * 
      * @param serviceSegment service segment information
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void delete(ServiceSegmentModel serviceSegment) throws ServiceException;
+    void delete(ServiceSegmentModel serviceSegment) throws ApplicationException;
 
     /**
      * Query service segment instances by service ID.<br/>
      * 
      * @param serviceId service instance ID
      * @return sub-service instances.
-     * @throws ServiceException when database exception or parameter is wrong
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    List<ServiceSegmentModel> queryServiceSegments(String serviceId) throws ServiceException;
+    List<ServiceSegmentModel> queryServiceSegments(String serviceId) throws ApplicationException;
 }

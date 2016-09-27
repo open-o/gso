@@ -17,7 +17,6 @@
 package org.openo.gso.activator;
 
 import org.junit.Test;
-import org.openo.gso.activator.Activator;
 
 /**
  * Test Activator.<br/>
@@ -30,7 +29,7 @@ import org.openo.gso.activator.Activator;
 public class ActivatorTest {
 
     @Test
-    public void test() throws Exception {
+    public void testStart() throws Exception {
         Activator activator = new Activator();
         activator.start();
         activator.stop();

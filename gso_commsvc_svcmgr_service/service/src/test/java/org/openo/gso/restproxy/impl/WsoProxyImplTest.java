@@ -19,10 +19,9 @@ package org.openo.gso.restproxy.impl;
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.exception.HttpCode;
-import org.openo.gso.restproxy.impl.WsoProxyImpl;
 import org.openo.gso.util.http.HttpUtil;
 
 import mockit.Mock;
@@ -39,13 +38,13 @@ import mockit.MockUp;
 public class WsoProxyImplTest {
 
     @Test
-    public void test() throws ServiceException {
+    public void test() throws ApplicationException {
         WsoProxyImpl proxy = new WsoProxyImpl();
         new MockUp<HttpUtil>() {
 
             @Mock
             public RestfulResponse post(final String url, Object sendObj, HttpServletRequest httpRequest)
-                    throws ServiceException {
+                    throws ApplicationException {
                 RestfulResponse response = new RestfulResponse();
                 response.setStatus(HttpCode.RESPOND_OK);
                 response.setResponseJson("responseString");

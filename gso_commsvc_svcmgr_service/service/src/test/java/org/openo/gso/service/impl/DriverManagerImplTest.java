@@ -22,9 +22,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.model.drivermo.TerminateParams;
 import org.openo.gso.service.inf.IDriverService;
@@ -77,7 +77,7 @@ public class DriverManagerImplTest {
             };
 
             impl.terminateService(httpRequest);
-        } catch(ServiceException e) {
+        } catch(ApplicationException e) {
             e.printStackTrace();
         }
     }
@@ -109,7 +109,7 @@ public class DriverManagerImplTest {
             };
             DriverManagerImpl impl = new DriverManagerImpl();
             impl.instantiateService(httpRequest);
-        } catch(ServiceException e) {
+        } catch(ApplicationException e) {
 
         }
     }
