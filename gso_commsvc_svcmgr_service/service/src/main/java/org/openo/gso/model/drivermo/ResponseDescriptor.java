@@ -22,7 +22,7 @@ package org.openo.gso.model.drivermo;
  * </p>
  * response model of query operation status 
  * @author
- * @version     SDNO 0.5  2016年9月3日
+ * @version     SDNO 0.5  September 3, 2016
  */
 public class ResponseDescriptor {
 
