@@ -7,7 +7,7 @@
     "nodes" : [
         {
             "ip" : "getInputIP",
-            "port" : "8300",
+            "port" : "8301",
             "ttl" : 0
         }
     ]
