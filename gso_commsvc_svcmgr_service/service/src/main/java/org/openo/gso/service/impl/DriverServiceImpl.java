@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
@@ -41,8 +42,9 @@ import net.sf.json.JSONObject;
  * <p>
  * </p>
  * Service implementation
+ * 
  * @author
- * @version     GSO 0.5  2016/9/3
+ * @version GSO 0.5 2016/9/3
  */
 public class DriverServiceImpl implements IDriverService {
 
@@ -116,7 +118,7 @@ public class DriverServiceImpl implements IDriverService {
 
         while(true) {
             boolean finished = finishedQuerying(nodeType, queryUrl);
-            if(finished){
+            if(finished) {
                 break;
             }
         }
@@ -138,6 +140,7 @@ public class DriverServiceImpl implements IDriverService {
     /**
      * <br>
      * query operation
+     * 
      * @param nodeType type of the node instance
      * @param queryUrl url for query operation
      * @param queryFlag flag to do the query if true
@@ -196,7 +199,7 @@ public class DriverServiceImpl implements IDriverService {
      * 
      * @param nodeType type of the node instance
      * @param variable variable should be put in the url
-     * @param step step of the opeartion (terminate,query,delete)
+     * @param step step of the operation (terminate,query,delete)
      * @return url can be used to invoke corresponding service
      * @since GSO 0.5
      */
@@ -209,32 +212,31 @@ public class DriverServiceImpl implements IDriverService {
         if(CommonConstant.Step.CREATE.equals(step)) {
             nfvoUrl = NFVO_CREATE_URL;
             sdnoUrl = SDNO_CREATE_URL;
-        } else if(CommonConstant.Step.INSTANTIATE.equals(step)){
+        } else if(CommonConstant.Step.INSTANTIATE.equals(step)) {
             nfvoUrl = NFVO_INSTANTIATE_URL;
             sdnoUrl = SDNO_INSTANTIATE_URL;
-        } else if(CommonConstant.Step.TERMINATE.equals(step)){
+        } else if(CommonConstant.Step.TERMINATE.equals(step)) {
             nfvoUrl = NFVO_TERMINATE_URL;
             sdnoUrl = SDNO_TERMINATE_URL;
-        } else if(CommonConstant.Step.QUERY.equals(step)){
+        } else if(CommonConstant.Step.QUERY.equals(step)) {
             nfvoUrl = NFVO_QUERY_RUL;
             sdnoUrl = SDNO_QUERY_URL;
-        } else if(CommonConstant.Step.DELETE.equals(step)){
+        } else if(CommonConstant.Step.DELETE.equals(step)) {
             nfvoUrl = NFVO_DELETE_URL;
             sdnoUrl = SDNO_DELETE_URL;
         } else {
-            //do nothing
+            // do nothing
         }
-
 
         if(CommonConstant.NodeType.NFV_DC_TYPE.equals(nodeType)
                 || CommonConstant.NodeType.NFV_POP_TYPE.equals(nodeType)) {
-            url =  String.format(nfvoUrl, variable);
+            url = String.format(nfvoUrl, variable);
         } else if(CommonConstant.NodeType.SDN_OVERLAYVPN_TYPE.equals(nodeType)) {
             url = String.format(sdnoUrl, variable);
         } else {
-            //do nothing
+            // do nothing
         }
-        
+
         return url;
 
     }
@@ -252,7 +254,7 @@ public class DriverServiceImpl implements IDriverService {
 
         // Step 1: Prepare Network Service Request
         NSRequest oRequest = new NSRequest();
-        
+
         StringBuilder nameBuilder = new StringBuilder(this.nodeType);
         nameBuilder.append(".nsName");
         String nsNameKey = nameBuilder.toString();
@@ -304,7 +306,6 @@ public class DriverServiceImpl implements IDriverService {
         Map<String, String> paramsMap = new HashMap<String, String>();
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
         paramsMap.put(CommonConstant.HttpContext.URL, getUrl(nodeType, instanceId, CommonConstant.Step.INSTANTIATE));
-        
 
         // Step 2: Send Network Service Instantiate Request
         String networkSvcReq = "";
