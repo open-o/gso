@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.openo.gso</groupId>
         <artifactId>servicemanagerservice-root</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>servicemanagerservice</artifactId>
@@ -35,13 +35,13 @@
         <dependency>
             <groupId>org.openo.common-services.common-utilities</groupId>
             <artifactId>commonlib-cbb</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.1.0-SNAPSHOT</version>
         </dependency>
         <!-- roa -->
         <dependency>
             <groupId>org.openo.common-services.common-utilities</groupId>
             <artifactId>commonlib-restclient</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
@@ -56,7 +56,7 @@
         <dependency>
             <groupId>org.openo.gso</groupId>
             <artifactId>org.openo.gso.commsvc.common</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
