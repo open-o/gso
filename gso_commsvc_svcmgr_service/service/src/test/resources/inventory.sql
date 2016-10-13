@@ -32,7 +32,7 @@ create table gso_lcm_defPackage_mapping
     serviceId     varchar(255)  not null,
 	serviceDefId  varchar(255)  not null,
 	templateId    varchar(255)   not null,
-	templateName  varchar(20)  not null,
+	templateName  varchar(255)  not null,
 	constraint gso_p_defPackage_mapping primary key(serviceId),
 	constraint gso_f_defPackage_mapping foreign key(serviceId) references gso_lcm_servicebaseinfo (serviceId)
 );
