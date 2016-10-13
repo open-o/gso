@@ -25,7 +25,7 @@ produces:
   - "application/json"
 
 paths: 
-  /services:
+  /service:
     post:
       summary: Create service instance
       description: It creates a service instance based on request body.
@@ -63,13 +63,13 @@ paths:
         "200": 
           description: query successfully 
           schema: 
-            $ref: "#/definitions/services"
+            $ref: "#/definitions/service"
         default: 
           description: Unexpected error 
           schema: 
             $ref: "#/definitions/result"
             
-  /services/toposequence/{serviceId}:
+  /service/toposequence/{serviceId}:
     get:
       summary: get topology sequence of service segment
       description: show service segment by sequnece number which is defined in service template 
@@ -95,7 +95,7 @@ paths:
           schema: 
             $ref: "#/definitions/result"
 
-  /services/{serviceId}:
+  /service/{serviceId}:
     delete:
       summary: delete service instance
       description: delete service instance

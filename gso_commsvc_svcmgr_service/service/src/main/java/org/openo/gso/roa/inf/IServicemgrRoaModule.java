@@ -51,7 +51,7 @@ public interface IServicemgrRoaModule {
      * @since GSO 0.5
      */
     @POST
-    @Path("/services")
+    @Path("/service")
     @Produces({"application/json"})
     @Consumes({"application/json"})
     Response createService(@Context HttpServletRequest servletReq) throws ApplicationException;
@@ -68,7 +68,7 @@ public interface IServicemgrRoaModule {
     @DELETE
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    @Path("/services/{serviceId}")
+    @Path("/service/{serviceId}")
     Response deleteService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq)
             throws ApplicationException;
 
@@ -81,7 +81,7 @@ public interface IServicemgrRoaModule {
      * @since GSO 0.5
      */
     @GET
-    @Path("/services")
+    @Path("/service")
     @Produces({"application/json"})
     @Consumes({"application/json"})
     Response getAllInstances(@Context HttpServletRequest servletReq) throws ApplicationException;
@@ -98,7 +98,7 @@ public interface IServicemgrRoaModule {
     @GET
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    @Path("/services/toposequence/{serviceId}")
+    @Path("/service/toposequence/{serviceId}")
     Response getTopoSequence(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq)
             throws ApplicationException;
 
@@ -113,6 +113,6 @@ public interface IServicemgrRoaModule {
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    @Path("/services/service-segments")
+    @Path("/service/service-segments")
     Response createServiceSegment(@Context HttpServletRequest servletReq) throws ApplicationException;
 }
