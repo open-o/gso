@@ -25,7 +25,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
-import org.openo.gso.model.drivermo.ServiceNode;
 
 /**
  * API for restful interface.<br/>
@@ -65,7 +64,7 @@ public interface IDrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/drivers/instantiate")
-    Response instantiateNetworkService(ServiceNode serviceNode, HttpServletRequest servletReq)
+    Response instantiateNetworkService(@Context HttpServletRequest servletReq)
             throws ApplicationException;
 
 }
