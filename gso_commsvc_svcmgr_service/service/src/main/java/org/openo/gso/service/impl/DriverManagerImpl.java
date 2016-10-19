@@ -16,7 +16,6 @@
 
 package org.openo.gso.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -163,6 +162,7 @@ public class DriverManagerImpl implements IDriverManager {
         // get nodeType from the request body
         String nodeType = inputs.getNodeType();
 
+        LOGGER.info("nodeType is {}", nodeType);
         // get instaceId & serviceId value from the map
         Map<String, String> instIdMap = inputs.getInputParameters();
 
@@ -171,6 +171,7 @@ public class DriverManagerImpl implements IDriverManager {
         builder.append(".instanceId");
         String instKey = builder.toString();
         String instanceId = instIdMap.get(instKey);
+        LOGGER.info("id of instance to be deleted is {}", instanceId);
 
         // invoke the SDNO or NFVO to delete the instance
         String status = "fail";
@@ -373,16 +374,11 @@ public class DriverManagerImpl implements IDriverManager {
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
 
         // Step 2: Prepare the query param
-        List<String> lstNodeTypeIds = new ArrayList<String>();
-        lstNodeTypeIds.add(serviceNode.getNodeType());
-
-        String params = null;
         Map<String, String> mapParams = new HashMap<String, String>();
-        params = JsonUtil.marshal(lstNodeTypeIds);
-        mapParams.put("nodeTypeIds", params);
+        mapParams.put("nodeTypeIds", serviceNode.getNodeType());
 
         // Step 3:Send the request and get response
-        RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, params, mapParams);
+        RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, null, mapParams);
 
         JSONArray array = JSONArray.fromObject(rsp.getResponseContent());
         return JsonUtil.unMarshal(array.getString(0), ServiceTemplate.class);

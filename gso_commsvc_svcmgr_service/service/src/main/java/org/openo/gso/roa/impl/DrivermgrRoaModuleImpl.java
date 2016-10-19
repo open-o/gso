@@ -21,7 +21,6 @@ import javax.ws.rs.core.Response;
 
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
-import org.openo.gso.model.drivermo.ServiceNode;
 import org.openo.gso.roa.inf.IDrivermgrRoaModule;
 import org.openo.gso.service.inf.IDriverManager;
 
@@ -73,7 +72,7 @@ public class DrivermgrRoaModuleImpl implements IDrivermgrRoaModule {
     }
 
     @Override
-    public Response instantiateNetworkService(ServiceNode serviceNode, HttpServletRequest servletReq)
+    public Response instantiateNetworkService(HttpServletRequest servletReq)
             throws ApplicationException {
 
         RestfulResponse rsp = driverMgr.instantiateService(servletReq);
