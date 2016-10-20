@@ -1,5 +1,5 @@
 {
-    "serviceName" : "lifecyclemgr",
+    "serviceName" : "gso",
     "version" : "v1",
     "url" : "/openoapi/gso/v1",
     "protocol" : "REST",
