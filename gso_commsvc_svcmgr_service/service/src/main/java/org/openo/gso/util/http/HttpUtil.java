@@ -69,7 +69,7 @@ public class HttpUtil {
             HttpServletRequest httpRequest) throws ApplicationException {
         final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
         for(Map.Entry<String, String> entry : httpHeaders.entrySet()) {
-            restfulParametes.putHttpContextHeader(entry.getKey(), entry.getValue());
+            restfulParametes.put(entry.getKey(), entry.getValue());
         }
 
         RestfulResponse response = null;
@@ -150,7 +150,7 @@ public class HttpUtil {
             HttpServletRequest httpRequest) throws ApplicationException {
         final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
         for(Map.Entry<String, String> entry : httpHeaders.entrySet()) {
-            restfulParametes.putHttpContextHeader(entry.getKey(), entry.getValue());
+            restfulParametes.put(entry.getKey(), entry.getValue());
         }
 
         RestfulResponse response = null;
