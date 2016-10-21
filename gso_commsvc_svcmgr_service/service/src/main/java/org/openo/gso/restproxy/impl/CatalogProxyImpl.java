@@ -171,7 +171,7 @@ public class CatalogProxyImpl implements ICatalogProxy {
     @Override
     public List<ServiceTemplateModel> getTemplateByNodeTypeId(String nodeTypeId, HttpServletRequest request)
             throws ApplicationException {
-        LOGGER.info("Get basic information of template by node type ID.");
+        LOGGER.info("Get basic information of template by node type ID from catalog.");
         String url = new StringBuilder().append(CATALOG_REST_URI_SERVICETEMPALTE).append(URI_PATH_NESTING).toString();
         Map<String, String> httpHeaders = new HashMap<String, String>();
         httpHeaders.put(URI_PATH_QUERYING_NODETYPEDS, nodeTypeId);
@@ -192,7 +192,7 @@ public class CatalogProxyImpl implements ICatalogProxy {
      */
     @Override
     public void deleteGsarPackage(String csarId, HttpServletRequest request) throws ApplicationException {
-        LOGGER.info("Delete GSAR package.");
+        LOGGER.info("Notify catalog to delete GSAR package.");
         String url = new StringBuilder().append(CATALOG_REST_URI_CSAR).append(csarId).toString();
         RestfulResponse response = HttpUtil.delete(url, request);
         ResponseUtils.checkResonseAndThrowException(response, "delete csar pacakge.");
@@ -208,7 +208,7 @@ public class CatalogProxyImpl implements ICatalogProxy {
      */
     @Override
     public void updateGsarStatus(String csarId, HttpServletRequest request) throws ApplicationException {
-        LOGGER.info("Set GSAR status.");
+        LOGGER.info("Notify catalog to set GSAR status.");
         String url = new StringBuilder().append(CATALOG_REST_URI_CSAR).append(csarId).append("?")
                 .append(URI_PATH_QUERY_ONBOARDSTATE).append("=").append(PACKAGE_STATE_ONBOARDED).toString();
         Map<String, String> httpHeaders = new HashMap<String, String>();
@@ -229,7 +229,7 @@ public class CatalogProxyImpl implements ICatalogProxy {
     @Override
     public List<NodeTemplateModel> getNodeTemplate(String templateId, HttpServletRequest request)
             throws ApplicationException {
-        LOGGER.info("Get nodes of template. Template id is {}", templateId);
+        LOGGER.info("Get nodes of template from catalog. Template id is {}", templateId);
         String url = new StringBuilder().append(CATALOG_REST_URI_SERVICETEMPALTE).append(templateId)
                 .append(URI_PATH_NODETEMPLATES).toString();
         Map<String, String> httpHeaders = new HashMap<String, String>();

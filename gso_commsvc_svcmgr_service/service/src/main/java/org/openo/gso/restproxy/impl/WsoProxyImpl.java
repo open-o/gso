@@ -57,7 +57,7 @@ public class WsoProxyImpl implements IWsoProxy {
      */
     @Override
     public String startWorkFlow(Object sendBody, HttpServletRequest request) throws ApplicationException {
-        LOGGER.info("Start to bpel workflow.");
+        LOGGER.info("Notify wso2 to startup bpel workflow.");
         RestfulResponse response = HttpUtil.post(WSO_URI, sendBody, request);
         ResponseUtils.checkResonseAndThrowException(response, "start to bpel workflow.");
 

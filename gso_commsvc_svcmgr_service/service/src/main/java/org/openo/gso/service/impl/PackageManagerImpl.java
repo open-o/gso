@@ -67,7 +67,7 @@ public class PackageManagerImpl implements IPackageManager {
     @Override
     public void updateOnBoardStatus(String serviceDefId, HttpServletRequest request) throws ApplicationException {
         if(PackageOperationSingleton.getInstance().isCsarBeingDeleted(serviceDefId)) {
-            LOGGER.info("CSAR package is being deleted.");
+            LOGGER.error("CSAR package is being deleted.");
             throw new ApplicationException(HttpCode.RESPOND_CONFLICT, "CSAR package is being deleted.");
         }
         catalogProxy.updateGsarStatus(serviceDefId, request);
