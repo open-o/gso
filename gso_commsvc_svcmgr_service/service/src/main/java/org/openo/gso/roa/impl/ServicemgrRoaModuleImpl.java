@@ -78,6 +78,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      */
     @Override
     public Response createService(HttpServletRequest servletReq) {
+        LOGGER.error("Start to create service instance.");
         ServiceModel serviceModel = null;
         try {
             // 1. Check validation
@@ -107,6 +108,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      */
     @Override
     public Response deleteService(String serviceId, HttpServletRequest servletReq) {
+        LOGGER.error("Start to delete service instance.");
         try {
             ValidateUtil.assertStringNotNull(serviceId);
             serviceManager.deleteService(serviceId, servletReq);
@@ -128,6 +130,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      */
     @Override
     public Response getAllInstances(HttpServletRequest servletReq) throws ApplicationException {
+        LOGGER.error("Start to get all service instances.");
         List<ServiceModel> services = serviceManager.getAllInstances();
         return Response.accepted(services).build();
     }
@@ -143,6 +146,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      */
     @Override
     public Response getTopoSequence(String serviceId, HttpServletRequest servletReq) {
+        LOGGER.error("Start to get top sequence number of service.");
         List<ServiceSegmentModel> serviceSegments = null;
         try {
             serviceSegments = serviceManager.getServiceSegments(serviceId);
@@ -164,6 +168,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      */
     @Override
     public Response createServiceSegment(HttpServletRequest servletReq) throws ApplicationException {
+        LOGGER.error("Start to create service segment.");
         Map<String, Object> result = null;
         try {
             // 1. Check validation

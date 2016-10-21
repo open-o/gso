@@ -65,6 +65,7 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
     @SuppressWarnings("unchecked")
     @Override
     public Response onBoardingPackage(HttpServletRequest httpRequest) {
+        LOGGER.error("Start to upload package status.");
         try {
             // 1. Get request body
             String body = RestUtils.getRequestBody(httpRequest);
@@ -97,6 +98,7 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
      */
     @Override
     public Response deleteGsarPackage(String serviceDefId, HttpServletRequest httpRequest) {
+        LOGGER.error("Start to delete package.");
         try {
             packageMgr.deletePackage(serviceDefId, httpRequest);
         } catch(ApplicationException exception) {
