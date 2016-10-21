@@ -209,9 +209,10 @@ public class CatalogProxyImpl implements ICatalogProxy {
     @Override
     public void updateGsarStatus(String csarId, HttpServletRequest request) throws ApplicationException {
         LOGGER.info("Set GSAR status.");
-        String url = new StringBuilder().append(CATALOG_REST_URI_CSAR).append(csarId).toString();
+        String url = new StringBuilder().append(CATALOG_REST_URI_CSAR).append(csarId).append("?")
+                .append(URI_PATH_QUERY_ONBOARDSTATE).append("=").append(PACKAGE_STATE_ONBOARDED).toString();
         Map<String, String> httpHeaders = new HashMap<String, String>();
-        httpHeaders.put(URI_PATH_QUERY_ONBOARDSTATE, PACKAGE_STATE_ONBOARDED);
+        // httpHeaders.put(URI_PATH_QUERY_ONBOARDSTATE, PACKAGE_STATE_ONBOARDED);
         RestfulResponse response = HttpUtil.put(url, httpHeaders, request);
         ResponseUtils.checkResonseAndThrowException(response, "update csar package state.");
     }
