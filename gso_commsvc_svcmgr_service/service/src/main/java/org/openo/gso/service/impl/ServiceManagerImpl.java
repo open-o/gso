@@ -165,6 +165,7 @@ public class ServiceManagerImpl implements IServiceManager {
 
             // Get template id of service instance
             ServicePackageMapping servicePackage = servicePackageDao.queryPackageMapping(serviceId);
+            ValidateUtil.assertObjectNotNull(servicePackage);
             String templateId = servicePackage.getTemplateId();
             ValidateUtil.assertStringNotNull(templateId);
 
