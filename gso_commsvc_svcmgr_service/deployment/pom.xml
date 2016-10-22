@@ -77,6 +77,11 @@
                                 ant.copy(todir: "${deployUnzip}/webapps/ROOT") {
                                 fileset(dir: "${project.build.directory}/../../service/target/ROOT")
                                 }
+                                
+                                ant.copy(todir:"${deployUnzip}/webapps/ROOT") {
+                                fileset(file: "${basedir}/src/main/release/swagger.json")
+                                }
+
 
                                 ant.zip(destfile: "${deployFolder}/${outfileName}") {
                                 fileset(dir: "${deployUnzip}")
