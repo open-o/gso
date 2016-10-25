@@ -61,6 +61,7 @@ public class RestfulUtil {
             return null;
         }
         String url = paramsMap.get(CommonConstant.HttpContext.URL);
+        LOGGER.warn("url is {}", url);
         String methodType = paramsMap.get(CommonConstant.HttpContext.METHOD_TYPE);
 
         RestfulResponse rsp = null;
@@ -79,6 +80,7 @@ public class RestfulUtil {
             if(null != queryParam) {
                 for(Map.Entry<String, String> curEntity : queryParam.entrySet()) {
                     restfulParametes.putHttpContextHeader(curEntity.getKey(), curEntity.getValue());
+                    LOGGER.warn("{} is {}", curEntity.getKey(), curEntity.getValue());
                 }
             }
 

@@ -376,9 +376,12 @@ public class DriverManagerImpl implements IDriverManager {
         // Step 2: Prepare the query param
         Map<String, String> mapParams = new HashMap<String, String>();
         mapParams.put("nodeTypeIds", serviceNode.getNodeType());
+        LOGGER.warn("node Type is {}", serviceNode.getNodeType());
 
         // Step 3:Send the request and get response
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, null, mapParams);
+
+        LOGGER.error("response content is {}", rsp.getResponseContent());
 
         JSONArray array = JSONArray.fromObject(rsp.getResponseContent());
         return JsonUtil.unMarshal(array.getString(0), ServiceTemplate.class);
