@@ -87,7 +87,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
             // 2. Create service
             serviceModel = serviceManager.createService(reqContent, servletReq);
         } catch(ApplicationException exception) {
-            LOGGER.error("Fail to create service instance.");
+            LOGGER.error("Fail to create service instance.", exception);
             throw ResponseUtils.getException(exception, "Fail to create service instance.");
         }
 
