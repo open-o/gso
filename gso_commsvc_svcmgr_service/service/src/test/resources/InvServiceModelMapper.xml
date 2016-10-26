@@ -31,18 +31,18 @@
 
     <insert id="insert" parameterType="org.openo.gso.model.servicemo.InvServiceModel">
         insert into
-        gso_lcm_servicebaseinfo
+        t_lcm_servicebaseinfo
         (serviceId,serviceName,serviceType, description,activeStatus,status,creator,createdTime)
         values(#{serviceId},#{name},#{serviceType},#{description},#{activeStatus},#{status},#{creator},#{createAt})
     </insert>
 
     <delete id="delete">
-        delete from gso_lcm_servicebaseinfo where serviceId = #{serviceId}
+        delete from t_lcm_servicebaseinfo where serviceId = #{serviceId}
     </delete>
 
 
     <select id="queryAllServices" resultMap="invServiceModelResultMap">
-        select serviceId,serviceName,serviceType, description,activeStatus,status,creator,createdTime from gso_lcm_servicebaseinfo
+        select serviceId,serviceName,serviceType, description,activeStatus,status,creator,createdTime from t_lcm_servicebaseinfo
     </select>
 
 </mapper>

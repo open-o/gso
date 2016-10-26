@@ -349,7 +349,7 @@ public class ServiceManagerImpl implements IServiceManager {
         }
 
         for(OperationModel keyOperation : operations) {
-            if(keyOperation.getName().equals(key)) {
+            if(keyOperation.getName().endsWith(key)) {
                 return keyOperation;
             }
         }

@@ -27,13 +27,13 @@
 
     <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServicePackageMapping">
         insert into
-        gso_lcm_defPackage_mapping
+        t_lcm_defPackage_mapping
         (serviceId,serviceDefId,templateId,templateName)
         values(#{serviceId},#{serviceDefId},#{templateId},#{templateName})
     </insert>
 
     <delete id="delete">
-        delete from gso_lcm_defPackage_mapping where serviceId = #{serviceId}
+        delete from t_lcm_defPackage_mapping where serviceId = #{serviceId}
     </delete>
 
 </mapper>
