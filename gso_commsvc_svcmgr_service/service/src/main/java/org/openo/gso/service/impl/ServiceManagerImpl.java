@@ -135,7 +135,7 @@ public class ServiceManagerImpl implements IServiceManager {
 
         try {
             // Insert data into DB
-            insertDB(model, JsonUtil.marshal(instanceParam));
+            insertDB(model, paramList);
 
             // Start to create workflow
             paramsMap.put(Constant.PREDEFINE_GSO_ID, model.getServiceId());
@@ -287,7 +287,7 @@ public class ServiceManagerImpl implements IServiceManager {
      * @throws ApplicationException when fail to operate database.
      * @since GSO 0.5
      */
-    private void insertDB(ServiceModel model, String parameters) throws ApplicationException {
+    private void insertDB(ServiceModel model, List<ServiceParameter> parameters) throws ApplicationException {
 
         // insert gso data
         serviceModelDao.insert(model);
@@ -295,12 +295,9 @@ public class ServiceManagerImpl implements IServiceManager {
         // insert inventory data
         inventoryDao.insert(convertToInvData(model), InvServiceModelMapper.class);
         inventoryDao.insert(model.getServicePackage(), InvServicePackageMapper.class);
-        if(StringUtils.hasLength(parameters)) {
-            ServiceParameter serviceParam = new ServiceParameter();
-            serviceParam.setServiceId(model.getServiceId());
-            serviceParam.setParamName(Constant.SERVICE_PARAMETERS);
-            serviceParam.setParamValue(parameters);
-            inventoryDao.insert(serviceParam, InvServiceParameterMapper.class);
+        for(ServiceParameter param : parameters)
+        {
+            inventoryDao.insert(param, InvServiceParameterMapper.class);
         }
     }
 
