@@ -55,23 +55,23 @@ public class DriverServiceImpl implements IDriverService {
 
     private static final String SDNO_TERMINATE_URL = "/openoapi/sdnonslcm/v1/sss/%s/terminate";
 
-    private static final String NFVO_TERMINATE_URL = "/openoapi/nslcm/v1.0/ns/%s/Terminate";
+    private static final String NFVO_TERMINATE_URL = "/openoapi/nslcm/v1/ns/%s/Terminate";
 
     private static final String SDNO_QUERY_URL = "/openoapi/sdnonslcm/v1/jobs/%s";
 
-    private static final String NFVO_QUERY_RUL = "/openoapi/nslcm/v1.0/jobs/%s";
+    private static final String NFVO_QUERY_RUL = "/openoapi/nslcm/v1/jobs/%s";
 
     private static final String SDNO_DELETE_URL = "/openoapi/sdnonslcm/v1/sss/%s";
 
-    private static final String NFVO_DELETE_URL = "/openoapi/nslcm/v1.0/ns/%s";
+    private static final String NFVO_DELETE_URL = "/openoapi/nslcm/v1/ns/%s";
 
     private static final String SDNO_CREATE_URL = "/openoapi/sdnonslcm/v1/ns";
 
-    private static final String NFVO_CREATE_URL = "/openoapi/nslcm/v1.0/ns";
+    private static final String NFVO_CREATE_URL = "/openoapi/nslcm/v1/ns";
 
     private static final String SDNO_INSTANTIATE_URL = "/openoapi/sdnonslcm/v1/ns/%s/instantiate";
 
-    private static final String NFVO_INSTANTIATE_URL = "/openoapi/nslcm/v1.0/ns/%s/instantiate";
+    private static final String NFVO_INSTANTIATE_URL = "/openoapi/nslcm/v1/ns/%s/instantiate";
 
     private String nodeType;
 
