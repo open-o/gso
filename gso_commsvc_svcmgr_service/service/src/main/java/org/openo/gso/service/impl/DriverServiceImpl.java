@@ -229,9 +229,11 @@ public class DriverServiceImpl implements IDriverService {
         }
 
         if(CommonConstant.NodeType.NFV_DC_TYPE.equals(nodeType)
-                || CommonConstant.NodeType.NFV_POP_TYPE.equals(nodeType)) {
+                || CommonConstant.NodeType.NFV_POP_TYPE.equals(nodeType)
+                || CommonConstant.NodeType.NFV_VBRAS_TYPE.equals(nodeType)) {
             url = String.format(nfvoUrl, variable);
-        } else if(CommonConstant.NodeType.SDN_OVERLAYVPN_TYPE.equals(nodeType)) {
+        } else if(CommonConstant.NodeType.SDN_OVERLAYVPN_TYPE.equals(nodeType)
+                || CommonConstant.NodeType.SDN_UNDERLAYVPN_TYPE.equals(nodeType)) {
             url = String.format(sdnoUrl, variable);
         } else {
             // do nothing

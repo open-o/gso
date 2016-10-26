@@ -57,11 +57,20 @@ public class CommonConstant {
      */
     public static class NodeType {
 
-        public static final String NFV_DC_TYPE = "tosca.nodes.nfv.dc";
+        //dc
+        public static final String NFV_DC_TYPE = "tosca.nodes.nfv.NS.DC_NS";
 
-        public static final String NFV_POP_TYPE = "tosca.nodes.nfv.pop";
+        //pop
+        public static final String NFV_POP_TYPE = "tosca.nodes.nfv.NS.POP_NS";
+        
+        //tic core
+        public static final String NFV_VBRAS_TYPE = "tosca.nodes.nfv.NS.VBRAS_NS";
 
-        public static final String SDN_OVERLAYVPN_TYPE = "tosca.nodes.sdn.overlayvpn";
+        //overlay vpn
+        public static final String SDN_OVERLAYVPN_TYPE = "tosca.nodes.sdn.ext.NS.enterprise2DC";
+        
+        //underlay vpn
+        public static final String SDN_UNDERLAYVPN_TYPE = "tosca.nodes.sdn.ext.NS.ns_underlayvpn";
         
         private NodeType(){
             
