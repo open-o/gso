@@ -71,7 +71,7 @@ public class DataConverter {
         ServicePackageMapping packageMapping = new ServicePackageMapping();
         packageMapping.setServiceId(uuid);
         packageMapping.setTemplateId((String)data.get(Constant.SERVICE_TEMPLATE_ID));
-        packageMapping.setTemplateName((String)data.get(Constant.SERVICE_NAME));
+        packageMapping.setTemplateName((String)data.get(Constant.SERVICE_TEMPLATE_NAME));
         packageMapping.setServiceDefId((String)data.get(Constant.SERVICE_DEF_ID));
         model.setServicePackage(packageMapping);
 
