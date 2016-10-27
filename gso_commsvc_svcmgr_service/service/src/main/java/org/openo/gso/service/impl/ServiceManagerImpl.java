@@ -391,7 +391,7 @@ public class ServiceManagerImpl implements IServiceManager {
             ServiceParameter param = new ServiceParameter();
             param.setServiceId(serviceId);
             param.setParamName(entry.getKey());
-            param.setParamValue(JsonUtil.marshal(entry.getValue()));
+            param.setParamValue(entry.getValue());
             paramsList.add(param);
         }
 
