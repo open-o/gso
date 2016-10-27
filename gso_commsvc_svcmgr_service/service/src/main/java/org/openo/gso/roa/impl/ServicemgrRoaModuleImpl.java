@@ -16,6 +16,7 @@
 
 package org.openo.gso.roa.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -94,7 +95,9 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
 
         String serviceId =
                 ((null != serviceModel) && (null != serviceModel.getServiceId())) ? serviceModel.getServiceId() : null;
-        return Response.accepted().entity("serviceId:" + serviceId).build();
+        Map<String, String> map = new HashMap<String,String>();
+        map.put("serviceId", serviceId);
+        return Response.accepted().entity(map).build();
     }
 
     /**
