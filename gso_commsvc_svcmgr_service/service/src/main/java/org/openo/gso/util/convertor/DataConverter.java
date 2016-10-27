@@ -16,9 +16,7 @@
 
 package org.openo.gso.util.convertor;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
@@ -109,14 +107,13 @@ public class DataConverter {
         Map<String, Object> body = new HashMap<String, Object>();
         body.put(Constant.WSO_PROCESSID, operation.getProcessId());
         if(null != parameter) {
-            List<Map<String,String>> paramList = new ArrayList<Map<String, String>>();
-            Map<String, String> inputParam = new HashMap<String, String>();
-            inputParam.put("inputParam", JsonUtil.marshal(parameter));
-            paramList.add(inputParam);
-            body.put(Constant.WSO_PARAMS, paramList);
+            Map<String, String> inputMap = new HashMap<String, String>();
+            inputMap.put("inputParam", JsonUtil.marshal(parameter));
+            body.put(Constant.WSO_PARAMS, inputMap);
         }
         LOGGER.warn(JsonUtil.marshal(body));
 
         return body;
     }
+
 }
