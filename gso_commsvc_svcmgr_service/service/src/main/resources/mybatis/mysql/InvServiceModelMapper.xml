@@ -26,13 +26,13 @@
         <result property="activeStatus" column="activeStatus" />
         <result property="status" column="status" />
         <result property="creator" column="creator" />
-        <result property="createAt" column="createdTime" />
+        <result property="createAt" column="createTime" />
     </resultMap>
 
     <insert id="insert" parameterType="org.openo.gso.model.servicemo.InvServiceModel">
         insert into
         t_lcm_servicebaseinfo
-        (serviceId,serviceName,serviceType, description,activeStatus,status,creator,createdTime)
+        (serviceId,serviceName,serviceType, description,activeStatus,status,creator,createTime)
         values(#{serviceId},#{name},#{serviceType},#{description},#{activeStatus},#{status},#{creator},#{createAt})
     </insert>
 
@@ -42,7 +42,7 @@
 
 
     <select id="queryAllServices" resultMap="invServiceModelResultMap">
-        select serviceId,serviceName,serviceType, description,activeStatus,status,creator,createdTime from t_lcm_servicebaseinfo
+        select serviceId,serviceName,serviceType, description,activeStatus,status,creator,createTime from t_lcm_servicebaseinfo
     </select>
 
 </mapper>

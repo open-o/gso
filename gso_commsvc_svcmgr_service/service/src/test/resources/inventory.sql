@@ -23,7 +23,7 @@ create table t_lcm_servicebaseinfo
 	activeStatus varchar(20)  not null,
 	status       varchar(20)  not null,	
 	creator      varchar(50)  not null,
-	createdTime  bigint       not null,
+	createTime  bigint       not null,
 	constraint t_lcm_servicebaseinfo primary key(serviceId)
 );
 drop table t_lcm_defPackage_mapping if exists;
