@@ -533,8 +533,8 @@ public class ServiceManagerImpl implements IServiceManager {
         serviceModelDao.delete(key);
 
         // Delete data from inventory DB
-        inventoryDao.delete(key, InvServiceModelMapper.class);
         inventoryDao.delete(key, InvServicePackageMapper.class);
         inventoryDao.delete(key, InvServiceParameterMapper.class);
+        inventoryDao.delete(key, InvServiceModelMapper.class);
     }
 }
