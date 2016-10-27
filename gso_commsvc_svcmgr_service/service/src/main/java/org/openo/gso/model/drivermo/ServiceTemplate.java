@@ -29,6 +29,8 @@ import java.util.List;
 public class ServiceTemplate {
 
     String serviceTemplateId;
+    
+    String id;
 
     String serviceTemplateName;
 
@@ -73,8 +75,22 @@ public class ServiceTemplate {
     public void setServiceTemplateId(String serviceTemplateId) {
         this.serviceTemplateId = serviceTemplateId;
     }
-
     
+    /**
+     * @return Returns the id.
+     */
+    public String getId() {
+        return id;
+    }
+    
+    /**
+     * @param id The id to set.
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
     /**
      * @return Returns the serviceTemplateName.
      */
