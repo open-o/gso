@@ -16,7 +16,9 @@
 
 package org.openo.gso.util.convertor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
@@ -26,6 +28,8 @@ import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 import org.openo.gso.util.json.JsonUtil;
 import org.openo.gso.util.uuid.UuidUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Data converter.<br/>
@@ -36,6 +40,8 @@ import org.openo.gso.util.uuid.UuidUtils;
  * @version GSO 0.5 2016/8/22
  */
 public class DataConverter {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataConverter.class);
 
     /**
      * Constructor<br/>
@@ -103,9 +109,15 @@ public class DataConverter {
         Map<String, Object> body = new HashMap<String, Object>();
         body.put(Constant.WSO_PROCESSID, operation.getProcessId());
         if(null != parameter) {
-            body.put(Constant.WSO_PARAMS, JsonUtil.marshal(parameter));
+            List<Map<String,String>> paramList = new ArrayList<Map<String, String>>();
+            Map<String, String> inputParam = new HashMap<String, String>();
+            inputParam.put("inputParam", JsonUtil.marshal(parameter));
+            paramList.add(inputParam);
+            body.put(Constant.WSO_PARAMS, paramList);
         }
+        LOGGER.warn(JsonUtil.marshal(body));
 
         return body;
     }
+
 }
