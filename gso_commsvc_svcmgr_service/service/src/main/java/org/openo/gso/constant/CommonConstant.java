@@ -70,7 +70,7 @@ public class CommonConstant {
         public static final String SDN_OVERLAYVPN_TYPE = "tosca.nodes.sdn.ext.NS.enterprise2DC";
         
         //underlay vpn
-        public static final String SDN_UNDERLAYVPN_TYPE = "tosca.nodes.sdn.ext.NS.ns_underlayvpn";
+        public static final String SDN_UNDERLAYVPN_TYPE = "tosca.nodes.sdn.ext.NS.ns_underlayervpn";
         
         private NodeType(){
             

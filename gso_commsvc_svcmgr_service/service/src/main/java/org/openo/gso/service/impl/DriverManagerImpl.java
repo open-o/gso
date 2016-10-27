@@ -292,7 +292,19 @@ public class DriverManagerImpl implements IDriverManager {
                     DriverExceptionID.FAILED_TO_SVCTMPL_CATALOGUE);
         }
 
-        return createNetworkSubService(serviceNode, svcTmpl.getServiceTemplateId(), httpRequest);
+        //nsdId of the nfvo is "id" in the response, not the "servcice template id"
+        String nsdId = StringUtils.EMPTY;
+        if(serviceNode.getNodeType().contains("nfv")){
+            nsdId = svcTmpl.getId();
+        }else if(serviceNode.getNodeType().contains("sdn")){
+            nsdId = svcTmpl.getServiceTemplateId();
+        }else{
+            LOGGER.error("invalid nodeType : {}", serviceNode.getNodeType());
+        }
+            
+        
+        
+        return createNetworkSubService(serviceNode, nsdId, httpRequest);
     }
 
     private RestfulResponse createNetworkSubService(ServiceNode serviceNode, String templateId,
