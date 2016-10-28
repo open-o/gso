@@ -154,10 +154,14 @@ public class DriverManagerImpl implements IDriverManager {
     @Override
     public RestfulResponse terminateService(HttpServletRequest httpRequest) throws ApplicationException {
         String body = RestUtils.getRequestBody(httpRequest);
-
+        LOGGER.warn("terminate request body is {}", body);
+        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}");
+        
+        LOGGER.warn("terminate json body is {}", jsonBody);
+        
         // transfer the input into input parameters model
         TerminateParams inputs = null;
-        inputs = JsonUtil.unMarshal(body, TerminateParams.class);
+        inputs = JsonUtil.unMarshal(jsonBody, TerminateParams.class);
 
         // get nodeType from the request body
         String nodeType = inputs.getNodeType();
@@ -265,11 +269,14 @@ public class DriverManagerImpl implements IDriverManager {
     public RestfulResponse instantiateService(HttpServletRequest httpRequest) throws ApplicationException {
 
         String body = RestUtils.getRequestBody(httpRequest);
-        LOGGER.warn("requset body from wso2bpel is {}", body);
 
+        LOGGER.warn("instantiate request body is {}", body);
+        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}");
+        
+        LOGGER.warn("instantiate json body is {}", jsonBody);
         // Step 0: Transfer the input into input parameters model
         ServiceNode serviceNode = null;
-        serviceNode = JsonUtil.unMarshal(body, ServiceNode.class);
+        serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
 
         // Step 1:Validate input parameters
         String nodeType = serviceNode.getNodeType();
