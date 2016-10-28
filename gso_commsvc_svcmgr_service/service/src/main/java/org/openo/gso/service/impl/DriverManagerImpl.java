@@ -265,6 +265,7 @@ public class DriverManagerImpl implements IDriverManager {
     public RestfulResponse instantiateService(HttpServletRequest httpRequest) throws ApplicationException {
 
         String body = RestUtils.getRequestBody(httpRequest);
+        LOGGER.warn("requset body from wso2bpel is {}", body);
 
         // Step 0: Transfer the input into input parameters model
         ServiceNode serviceNode = null;
