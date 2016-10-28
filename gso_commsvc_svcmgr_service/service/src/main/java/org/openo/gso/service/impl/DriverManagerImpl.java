@@ -68,7 +68,7 @@ public class DriverManagerImpl implements IDriverManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DriverManagerImpl.class);
 
-    private static String CATALOGUE_QUERY_SVC_TMPL_NODETYPE_URL = "/openoapi/catalog/v1/servicetemplate/nesting";
+    private static String CATALOGUE_QUERY_SVC_TMPL_NODETYPE_URL = "/openoapi/catalog/v1/servicetemplates/nesting";
 
     private IDriverService serviceInf;
 
