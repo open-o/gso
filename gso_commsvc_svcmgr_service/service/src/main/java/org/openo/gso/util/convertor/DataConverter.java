@@ -107,9 +107,11 @@ public class DataConverter {
         Map<String, Object> body = new HashMap<String, Object>();
         body.put(Constant.WSO_PROCESSID, operation.getProcessId());
         if(null != parameter) {
-            Map<String, String> inputMap = new HashMap<String, String>();
-            inputMap.put("inputParam", JsonUtil.marshal(parameter));
-            body.put(Constant.WSO_PARAMS, inputMap);
+            Map<String, Object> planInput = new HashMap<String, Object>();
+            Map<String, String> inputParam = new HashMap<String, String>();
+            inputParam.put("inputParam", JsonUtil.marshal(parameter));
+            planInput.put("planInput", inputParam);
+            body.put(Constant.WSO_PARAMS, planInput);
         }
         LOGGER.warn(JsonUtil.marshal(body));
 
