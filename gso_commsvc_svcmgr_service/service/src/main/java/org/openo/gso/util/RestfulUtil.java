@@ -79,9 +79,9 @@ public class RestfulUtil {
 
             if(null != queryParam) {
                 for(Map.Entry<String, String> curEntity : queryParam.entrySet()) {
-                    restfulParametes.putHttpContextHeader(curEntity.getKey(), curEntity.getValue());
-                    LOGGER.warn("{} is {}", curEntity.getKey(), curEntity.getValue());
+                    LOGGER.warn("query condition: {} is {}", curEntity.getKey(), curEntity.getValue());
                 }
+                restfulParametes.setParamMap(queryParam);
             }
 
             if(rest != null) {
