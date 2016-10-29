@@ -125,6 +125,9 @@ public class ServiceManagerImpl implements IServiceManager {
         // Convert service data
         Map<String, Object> paramsMap = (Map<String, Object>)instanceParam;
         ServiceModel model = convertData(service);
+        model.setName((String) service.get(Constant.SERVICE_NAME));
+        model.setDescription((String) service.get(Constant.SERVICE_DESCRIPTION));
+        
         List<ServiceParameter> paramList = convertParam(model.getServiceId(), paramsMap);
         model.setParameters(paramList);
 
@@ -138,7 +141,12 @@ public class ServiceManagerImpl implements IServiceManager {
             insertDB(model, paramList);
 
             // Start to create workflow
-            paramsMap.put(Constant.PREDEFINE_GSO_ID, model.getServiceId());
+            paramsMap.put(Constant.SERVICE_ID, model.getServiceId());
+            LOGGER.warn("serviceId is {}", model.getServiceId());
+            paramsMap.put("serviceName", model.getName());
+            LOGGER.warn("serviceName is {}", model.getName());
+            paramsMap.put("serviceDescription", model.getDescription());
+            LOGGER.warn("serviceDescription is {}", model.getDescription());
             startWorkFlow(templateId, Constant.WORK_FLOW_PLAN_CREATE, httpRequest, paramsMap);
         } catch(ApplicationException e) {
             throw e;
@@ -171,7 +179,7 @@ public class ServiceManagerImpl implements IServiceManager {
 
             // Fill in input parameters
             Map<String, String> inputParam = new HashMap<String, String>();
-            inputParam.put(Constant.PREDEFINE_GSO_ID, serviceId);
+            inputParam.put(Constant.SERVICE_ID, serviceId);
             addServiceSegment(inputParam, serviceSegments);
 
             // Start delete workflow

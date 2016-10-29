@@ -124,7 +124,7 @@ public class Constant {
     /**
      * Predefine parameter for service design.
      */
-    public static final String PREDEFINE_GSO_ID = "serviceId";
+    public static final String SERVICE_ID = "serviceId";
 
     /**
      * Node sequence.
