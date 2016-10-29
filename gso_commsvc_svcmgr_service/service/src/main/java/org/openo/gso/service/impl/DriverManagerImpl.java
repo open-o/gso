@@ -383,6 +383,9 @@ public class DriverManagerImpl implements IDriverManager {
         // Make a list of parameters for the node Type
         Map<String, String> mapParam = serviceNode.getInputParameters();
         Map<String, String> resultMapParam = new HashMap<String, String>();
+        resultMapParam.put("serviceId", mapParam.get("serviceId"));
+        resultMapParam.put("serviceName", mapParam.get("serviceName"));
+        resultMapParam.put("serviceDescription", mapParam.get("serviceDescription"));
         for(Map.Entry<String, String> map : mapParam.entrySet())
         {
             String nodeType = serviceNode.getNodeType();
