@@ -324,18 +324,19 @@ public class DriverManagerImpl implements IDriverManager {
         String serviceId = mapParam.get("serviceId");
         // Step 1: Create Network service
         String nsInstanceId = serviceInf.createNS(templateId, mapParam);
+        LOGGER.warn("nsInstanceId is {}", nsInstanceId);
         if(StringUtils.isEmpty(nsInstanceId)) {
-            LOGGER.error("Invalid instanceId from workflow");
+            LOGGER.error("Invalid instanceId from create");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
-                    DriverExceptionID.INVALID_VALUE_FROM_WORKFLOW);
+                    DriverExceptionID.INVALID_VALUE_FROM_CREATE);
         }
 
         // Step 2: Instantiate Network service
         String jobId = serviceInf.instantiateNS(nsInstanceId, mapParam);
         if(StringUtils.isEmpty(jobId)) {
-            LOGGER.error("Invalid jobId from workflow");
+            LOGGER.error("Invalid jobId from instantiate");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
-                    DriverExceptionID.INVALID_VALUE_FROM_WORKFLOW);
+                    DriverExceptionID.INVALID_VALUE_FROM_INSTANTIATE);
         }
 
         // Step 3: Wait for Job to complete
@@ -381,8 +382,21 @@ public class DriverManagerImpl implements IDriverManager {
 
         // Make a list of parameters for the node Type
         Map<String, String> mapParam = serviceNode.getInputParameters();
+        Map<String, String> resultMapParam = new HashMap<String, String>();
+        for(Map.Entry<String, String> map : mapParam.entrySet())
+        {
+            String nodeType = serviceNode.getNodeType();
+            //filter not necessary parameters
+            if(!map.getKey().contains(nodeType)){
+                continue;
+            }
+            //replace the nodeType
+            String key = map.getKey().substring(map.getKey().lastIndexOf(".")+1);
+            resultMapParam.put(key, map.getValue());
+            
+        }
 
-        return mapParam;
+        return resultMapParam;
     }
 
     private ServiceTemplate getSvcTmplByNodeType(ServiceNode serviceNode) throws ApplicationException {
