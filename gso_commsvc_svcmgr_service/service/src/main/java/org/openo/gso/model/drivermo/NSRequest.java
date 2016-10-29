@@ -30,7 +30,7 @@ public class NSRequest {
 
     String nsName;
 
-    String nsDescription;
+    String description;
 
     
     /**
@@ -67,20 +67,19 @@ public class NSRequest {
 
     
     /**
-     * @return Returns the nsDescription.
+     * @return Returns the description.
      */
-    public String getNsDescription() {
-        return nsDescription;
+    public String getDescription() {
+        return description;
     }
 
     
     /**
-     * @param nsDescription The nsDescription to set.
+     * @param description The description to set.
      */
-    public void setNsDescription(String nsDescription) {
-        this.nsDescription = nsDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-
-
+    
 }

@@ -42,13 +42,13 @@ public class NSRequestTest {
     }
 
     @Test
-    public void testGetNsDescription() {
-        request.getNsDescription();
+    public void testGetDescription() {
+        request.getDescription();
     }
 
     @Test
-    public void testSetNsDescription() {
-        request.setNsDescription("nsDesc");
+    public void testSetDescription() {
+        request.setDescription("nsDesc");
     }
 
 }
