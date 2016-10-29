@@ -263,7 +263,7 @@ public class DriverServiceImpl implements IDriverService {
 
         oRequest.setNsdId(templateId);
         oRequest.setNsName(inputMap.get(nsNameKey));
-        oRequest.setNsDescription(inputMap.get(descKey));
+        oRequest.setDescription(inputMap.get(descKey));
 
         Map<String, String> paramsMap = new HashMap<String, String>();
         paramsMap.put(CommonConstant.HttpContext.URL, getUrl(nodeType, null, CommonConstant.Step.CREATE));
