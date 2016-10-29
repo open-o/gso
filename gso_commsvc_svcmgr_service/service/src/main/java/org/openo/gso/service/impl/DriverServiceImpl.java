@@ -55,7 +55,7 @@ public class DriverServiceImpl implements IDriverService {
 
     private static final String SDNO_TERMINATE_URL = "/openoapi/sdnonslcm/v1/sss/%s/terminate";
 
-    private static final String NFVO_TERMINATE_URL = "/openoapi/nslcm/v1/ns/%s/Terminate";
+    private static final String NFVO_TERMINATE_URL = "/openoapi/nslcm/v1/ns/%s/terminate";
 
     private static final String SDNO_QUERY_URL = "/openoapi/sdnonslcm/v1/jobs/%s";
 
@@ -257,13 +257,9 @@ public class DriverServiceImpl implements IDriverService {
         // Step 1: Prepare Network Service Request
         NSRequest oRequest = new NSRequest();
 
-        StringBuilder nameBuilder = new StringBuilder(this.nodeType);
-        nameBuilder.append(".nsName");
-        String nsNameKey = nameBuilder.toString();
+        String nsNameKey = "serviceName";
 
-        StringBuilder descBuilder = new StringBuilder(this.nodeType);
-        descBuilder.append(".description");
-        String descKey = descBuilder.toString();
+        String descKey = "serviceDescription";
 
         oRequest.setNsdId(templateId);
         oRequest.setNsName(inputMap.get(nsNameKey));
