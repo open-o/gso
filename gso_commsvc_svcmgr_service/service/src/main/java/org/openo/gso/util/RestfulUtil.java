@@ -63,7 +63,7 @@ public class RestfulUtil {
         String url = paramsMap.get(CommonConstant.HttpContext.URL);
         LOGGER.warn("url is {}", url);
         String methodType = paramsMap.get(CommonConstant.HttpContext.METHOD_TYPE);
-
+        LOGGER.warn("method type is {}", methodType);
         RestfulResponse rsp = null;
         Restful rest = RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP);
         try {
@@ -75,6 +75,7 @@ public class RestfulUtil {
 
             if(null != params) {
                 restfulParametes.setRawData(params);
+                LOGGER.warn("raw data is {}", params);
             }
 
             if(null != queryParam) {

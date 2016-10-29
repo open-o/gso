@@ -257,13 +257,9 @@ public class DriverServiceImpl implements IDriverService {
         // Step 1: Prepare Network Service Request
         NSRequest oRequest = new NSRequest();
 
-        StringBuilder nameBuilder = new StringBuilder(this.nodeType);
-        nameBuilder.append(".nsName");
-        String nsNameKey = nameBuilder.toString();
+        String nsNameKey = "serviceName";
 
-        StringBuilder descBuilder = new StringBuilder(this.nodeType);
-        descBuilder.append(".description");
-        String descKey = descBuilder.toString();
+        String descKey = "serviceDescription";
 
         oRequest.setNsdId(templateId);
         oRequest.setNsName(inputMap.get(nsNameKey));
