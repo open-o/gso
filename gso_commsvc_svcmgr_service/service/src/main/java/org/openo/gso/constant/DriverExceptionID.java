@@ -33,7 +33,9 @@ public class DriverExceptionID {
 
     public static final String FAILED_TO_SVCTMPL_CATALOGUE = "Failed to get service template from catalogue";
 
-    public static final String INVALID_VALUE_FROM_WORKFLOW = "Invalid value from Work flow engine";
+    public static final String INVALID_VALUE_FROM_INSTANTIATE = "Invalid value from instantiate";
+
+    public static final String INVALID_VALUE_FROM_CREATE = "Invalid value from create";
 
     private DriverExceptionID() {
 
