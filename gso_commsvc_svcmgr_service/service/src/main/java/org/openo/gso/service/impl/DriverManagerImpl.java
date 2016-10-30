@@ -359,8 +359,12 @@ public class DriverManagerImpl implements IDriverManager {
 
         String serviceId = serviceNode.getInputParameters().get("serviceId");
         LOGGER.warn("serviceId is {}", serviceId);
+        String serviceName = serviceNode.getInputParameters().get("serviceName");
+        LOGGER.warn("serviceName is {}", serviceName);
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
+        
         serviceSegment.setServiceId(serviceId);
+        serviceSegment.setServiceSegmentName(serviceName);
         serviceSegment.setServiceSegmentId(nsInstanceId);
         serviceSegment.setNodeType(serviceNode.getNodeType());
         serviceSegment.setStatus(status);
@@ -377,9 +381,11 @@ public class DriverManagerImpl implements IDriverManager {
         int sequence = getSequenceOfNode(nodes, serviceSegment);
         serviceSegment.setTopoSeqNumber(sequence);
 
-        LOGGER.warn("store segment");
+        LOGGER.warn("store segment : begin");
         // insert database
         serviceSegmentDao.insert(serviceSegment);
+        
+        LOGGER.warn("store segment : end");
 
         // Step 4: return the response
         RestfulResponse rsp = new RestfulResponse();
