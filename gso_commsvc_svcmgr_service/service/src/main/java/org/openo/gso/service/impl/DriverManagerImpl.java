@@ -319,20 +319,21 @@ public class DriverManagerImpl implements IDriverManager {
             HttpServletRequest httpRequest) throws ApplicationException {
 
         // Step 2:Make a list of parameters for the node Type
-        Map<String, String> mapParam = getParamsByNodeType(serviceNode);
-
-        String serviceId = mapParam.get("serviceId");
+        Map<String, String> createParamMap = getCreateParamsByNodeType(serviceNode);
+        
         // Step 1: Create Network service
-        String nsInstanceId = serviceInf.createNS(templateId, mapParam);
+        String nsInstanceId = serviceInf.createNS(templateId, createParamMap);
         LOGGER.warn("nsInstanceId is {}", nsInstanceId);
         if(StringUtils.isEmpty(nsInstanceId)) {
             LOGGER.error("Invalid instanceId from create");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
                     DriverExceptionID.INVALID_VALUE_FROM_CREATE);
         }
+        
+        Map<String, String> instParamMap = getInstParamsByNodeType(serviceNode);
 
         // Step 2: Instantiate Network service
-        String jobId = serviceInf.instantiateNS(nsInstanceId, mapParam);
+        String jobId = serviceInf.instantiateNS(nsInstanceId, instParamMap);
         if(StringUtils.isEmpty(jobId)) {
             LOGGER.error("Invalid jobId from instantiate");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
@@ -348,6 +349,7 @@ public class DriverManagerImpl implements IDriverManager {
             status = "fail";
         }
 
+        String serviceId = createParamMap.get("serviceId");
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         serviceSegment.setServiceId(serviceId);
         serviceSegment.setServiceSegmentId(nsInstanceId);
@@ -378,14 +380,11 @@ public class DriverManagerImpl implements IDriverManager {
         return rsp;
     }
 
-    private Map<String, String> getParamsByNodeType(ServiceNode serviceNode) {
-
+    private Map<String, String> getInstParamsByNodeType(ServiceNode serviceNode) {
         // Make a list of parameters for the node Type
         Map<String, String> mapParam = serviceNode.getInputParameters();
-        Map<String, String> resultMapParam = new HashMap<String, String>();
-        resultMapParam.put("serviceId", mapParam.get("serviceId"));
-        resultMapParam.put("serviceName", mapParam.get("serviceName"));
-        resultMapParam.put("serviceDescription", mapParam.get("serviceDescription"));
+        Map<String, String> instMapParam = new HashMap<String, String>();
+
         for(Map.Entry<String, String> map : mapParam.entrySet())
         {
             String nodeType = serviceNode.getNodeType();
@@ -395,11 +394,22 @@ public class DriverManagerImpl implements IDriverManager {
             }
             //replace the nodeType
             String key = map.getKey().substring(map.getKey().lastIndexOf(".")+1);
-            resultMapParam.put(key, map.getValue());
+            instMapParam.put(key, map.getValue());
             
         }
 
-        return resultMapParam;
+        return instMapParam;
+    }
+
+    private Map<String, String> getCreateParamsByNodeType(ServiceNode serviceNode) {
+
+        // Make a list of parameters for the node Type
+        Map<String, String> mapParam = serviceNode.getInputParameters();
+        Map<String, String> createMapParam = new HashMap<String, String>();
+        createMapParam.put("serviceName", mapParam.get("serviceName"));
+        createMapParam.put("serviceDescription", mapParam.get("serviceDescription"));
+
+        return createMapParam;
     }
 
     private ServiceTemplate getSvcTmplByNodeType(ServiceNode serviceNode) throws ApplicationException {
