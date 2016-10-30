@@ -357,7 +357,8 @@ public class DriverManagerImpl implements IDriverManager {
         }
         LOGGER.warn("query job : end");
 
-        String serviceId = createParamMap.get("serviceId");
+        String serviceId = serviceNode.getInputParameters().get("serviceId");
+        LOGGER.warn("serviceId is {}", serviceId);
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         serviceSegment.setServiceId(serviceId);
         serviceSegment.setServiceSegmentId(nsInstanceId);
@@ -367,7 +368,7 @@ public class DriverManagerImpl implements IDriverManager {
 
         ServicePackageMapping pacakageInfo = servicePackageDao.queryPackageMapping(serviceId);
         if(null == pacakageInfo) {
-            LOGGER.error("There is no package in DB. The service is ", serviceId);
+            LOGGER.error("There is no package in DB. The service Id is {}", serviceId);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "There is no package in DB.");
         }
 
