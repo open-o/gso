@@ -99,6 +99,7 @@ public class RestfulUtil {
         } catch(ServiceException e) {
             LOGGER.error("function=getRemoteResponse, get restful response catch exception {}", e);
         }
+        LOGGER.warn("responseContent is {}", rsp.getResponseContent());
         return rsp;
     }
 
