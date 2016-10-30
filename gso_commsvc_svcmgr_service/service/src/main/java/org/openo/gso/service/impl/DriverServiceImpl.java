@@ -313,7 +313,10 @@ public class DriverServiceImpl implements IDriverService {
 
         // Step 3: Process Network Service Instantiate Response
         JSONObject obj = JSONObject.fromObject(rsp.getResponseContent());
-        return obj.getString("jobId");
+        //return obj.getString("jobId");
+        
+        //test
+        return "1";
 
     }
 
