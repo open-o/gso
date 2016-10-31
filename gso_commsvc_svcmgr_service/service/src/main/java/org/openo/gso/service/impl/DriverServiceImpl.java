@@ -274,6 +274,7 @@ public class DriverServiceImpl implements IDriverService {
         req = JsonUtil.marshal(oRequest);
 
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, req, null);
+        LOGGER.warn("create ns response content is {}", rsp.getResponseContent());
 
         // Step 3: Process Network Service Response
         JSONObject obj = JSONObject.fromObject(rsp.getResponseContent());
@@ -310,13 +311,11 @@ public class DriverServiceImpl implements IDriverService {
         networkSvcReq = JsonUtil.marshal(oRequest);
 
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, networkSvcReq, null);
+        LOGGER.warn("instantiate ns response content is {}", rsp.getResponseContent());
 
         // Step 3: Process Network Service Instantiate Response
         JSONObject obj = JSONObject.fromObject(rsp.getResponseContent());
-        //return obj.getString("jobId");
-        
-        //test
-        return "1";
+        return obj.getString("jobId");
 
     }
 

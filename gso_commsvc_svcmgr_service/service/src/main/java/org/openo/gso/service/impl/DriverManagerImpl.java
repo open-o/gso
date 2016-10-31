@@ -39,7 +39,6 @@ import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.model.drivermo.NsProgressStatus;
-import org.openo.gso.model.drivermo.ResponseDescriptor;
 import org.openo.gso.model.drivermo.ServiceNode;
 import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.model.drivermo.TerminateParams;
@@ -498,15 +497,7 @@ public class DriverManagerImpl implements IDriverManager {
 
             // For every 5 seconds query progress
             Thread.sleep(5000);
-            
-            NsProgressStatus progress = new NsProgressStatus();
-            progress.setJobId("1");
-            ResponseDescriptor rspDescriptor = new ResponseDescriptor();
-            rspDescriptor.setProgress("100");
-            rspDescriptor.setStatus("finished");
-            progress.setRspDescriptor(rspDescriptor);
-            return progress;
-            //return serviceInf.getNsProgress(jobId);
+            return serviceInf.getNsProgress(jobId);
         }
 
     }
