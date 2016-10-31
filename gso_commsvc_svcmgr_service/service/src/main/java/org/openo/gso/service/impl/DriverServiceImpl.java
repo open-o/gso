@@ -333,7 +333,7 @@ public class DriverServiceImpl implements IDriverService {
         // Get url based on node type
         Map<String, String> paramsMap = new HashMap<String, String>();
         paramsMap.put(CommonConstant.HttpContext.URL, getUrl(nodeType, jobId, CommonConstant.Step.QUERY));
-        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
+        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
 
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, null, null);
 
