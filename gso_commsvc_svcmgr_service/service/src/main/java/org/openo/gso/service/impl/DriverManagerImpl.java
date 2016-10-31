@@ -188,16 +188,18 @@ public class DriverManagerImpl implements IDriverManager {
         }
 
         LOGGER.info("end to delete the service instance");
-        // save the segment information into the database
-        ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
-        serviceSegment.setServiceId(serviceId);
-        serviceSegment.setServiceSegmentId(instanceId);
-
-        serviceSegmentDao.delete(serviceSegment);
-        LOGGER.warn("succeed to delete the servcie segment from t_lcm_service_segment");
+        
 
         RestfulResponse rsp = new RestfulResponse();
-        if("fail".equals(status)) {
+        if("success".equals(status)) {
+            // save the segment information into the database
+            ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
+            serviceSegment.setServiceId(serviceId);
+            serviceSegment.setServiceSegmentId(instanceId);
+
+            serviceSegmentDao.delete(serviceSegment);
+            LOGGER.warn("succeed to delete the servcie segment from t_lcm_service_segment");
+        }else{
             rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
         }
         return rsp;
