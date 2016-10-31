@@ -502,10 +502,12 @@ public class ServiceManagerImpl implements IServiceManager {
     private void addServiceSegment(Map<String, String> inputParam, List<ServiceSegmentModel> segments) {
         String segmentId = null;
         for(ServiceSegmentModel segment : segments) {
-            segmentId = segment.getNodeType() + Constant.SERVICE_SEGMENT_INSTANCE_ID;
+            StringBuilder builder = new StringBuilder(segment.getNodeType()).append(".").append(Constant.SERVICE_SEGMENT_INSTANCE_ID);
+            segmentId = builder.toString();
             inputParam.put(segmentId, segment.getServiceSegmentId());
         }
     }
+
 
     /**
      * Convert gso data to inventory data.<br/>
