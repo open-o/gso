@@ -178,24 +178,27 @@ public class DriverManagerImpl implements IDriverManager {
         LOGGER.info("id of instance to be deleted is {}", instanceId);
 
         // invoke the SDNO or NFVO to delete the instance
+        LOGGER.info("start to delete the service instance");
         String status = "fail";
         try {
             status = serviceInf.delete(nodeType, instanceId);
         } catch(Exception e) {
             LOGGER.error("fail to delete the sub-service", e);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
         }
 
+        LOGGER.info("end to delete the service instance");
         // save the segment information into the database
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         serviceSegment.setServiceId(serviceId);
         serviceSegment.setServiceSegmentId(instanceId);
 
         serviceSegmentDao.delete(serviceSegment);
+        LOGGER.warn("succeed to delete the servcie segment from t_lcm_service_segment");
 
         RestfulResponse rsp = new RestfulResponse();
         if("fail".equals(status)) {
             rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
-            LOGGER.error("fail to store the sub-service to LCM");
         }
         return rsp;
 

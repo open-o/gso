@@ -99,6 +99,7 @@ public class DriverServiceImpl implements IDriverService {
         }
 
         // 1. terminate action
+        LOGGER.info("terminate ns : begin");
         String terminateUrl = getUrl(nodeType, instanceId, CommonConstant.Step.TERMINATE);
         RestfulResponse terminateRsp = getOperationResponse(terminateUrl, CommonConstant.MethodType.POST);
         String terminateContent = null;
@@ -108,7 +109,9 @@ public class DriverServiceImpl implements IDriverService {
             LOGGER.error("fail to terminate the sub-service:{}", nodeType);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
         }
+        LOGGER.info("terminate ns : end");
 
+        LOGGER.info("query job : begin");
         // 2. query operation (get operation status)
         JSONObject terminateObj = JSONObject.fromObject(terminateContent);
         String jobId = terminateObj.getString("jobId");
@@ -123,6 +126,9 @@ public class DriverServiceImpl implements IDriverService {
             }
         }
 
+        LOGGER.info("query job : end");
+        
+        LOGGER.info("delete ns : begin");
         // 3. delete operation
         String deleteUrl = getUrl(nodeType, instanceId, CommonConstant.Step.DELETE);
         RestfulResponse deleteRsp = getOperationResponse(deleteUrl, CommonConstant.MethodType.DELETE);
@@ -134,6 +140,7 @@ public class DriverServiceImpl implements IDriverService {
             LOGGER.error("fail to delete the sub-service:{}", nodeType);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
         }
+        LOGGER.info("delete ns : end");
         return result;
     }
 
