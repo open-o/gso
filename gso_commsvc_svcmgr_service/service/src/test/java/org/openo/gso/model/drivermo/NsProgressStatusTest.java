@@ -35,24 +35,24 @@ public class NsProgressStatusTest {
     }
 
     @Test
-    public void testGetRspDescriptor() {
-        status.getRspDescriptor();
+    public void testGetResponseDescriptor() {
+        status.getResponseDescriptor();
     }
 
     @Test
-    public void testSetRspDescriptor() {
-        status.setRspDescriptor(new ResponseDescriptor());
+    public void testSetResponseDescriptor() {
+        status.setResponseDescriptor(new ResponseDescriptor());
     }
 
     @Test
-    public void testGetRspHistoryList() {
-        status.getRspHistoryList();
+    public void testGetResponseHistoryList() {
+        status.getResponseHistoryList();
     }
 
     @Test
-    public void testSetRspHistoryList() {
-        List<ResponseDescriptor> rspHistoryList = new ArrayList<ResponseDescriptor>();
-        status.setRspHistoryList(rspHistoryList);
+    public void testSetResponseHistoryList() {
+        List<ResponseDescriptor> ResponseHistoryList = new ArrayList<ResponseDescriptor>();
+        status.setResponseHistoryList(ResponseHistoryList);
     }
 
 }

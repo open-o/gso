@@ -475,11 +475,11 @@ public class DriverManagerImpl implements IDriverManager {
                 throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
             }
 
-            if("100".equals(progress.getRspDescriptor().getProgress())
-                    && "finished".equals(progress.getRspDescriptor().getStatus())) {
+            if("100".equals(progress.getResponseDescriptor().getProgress())
+                    && "finished".equals(progress.getResponseDescriptor().getStatus())) {
                 LOGGER.info("Success to create the sub-service");
                 queryFlag = false;
-            } else if("error".equals(progress.getRspDescriptor().getStatus())) {
+            } else if("error".equals(progress.getResponseDescriptor().getStatus())) {
                 LOGGER.error("Failed to create the sub service");
                 throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
             } else {
@@ -506,5 +506,6 @@ public class DriverManagerImpl implements IDriverManager {
         }
 
     }
+    
 
 }
