@@ -187,4 +187,11 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
 
         return Response.accepted().entity(result).build();
     }
+
+    @Override
+    public Response getInstanceByInstanceId(String serviceId, HttpServletRequest servletReq) throws ApplicationException {
+        LOGGER.error("Start to get service instance by instanceId.");
+        ServiceModel service = serviceManager.getInstanceByInstanceId(serviceId);
+        return Response.accepted(service).build();
+    }
 }

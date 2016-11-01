@@ -83,4 +83,12 @@ public interface IServiceManager {
      * @since GSO 0.5
      */
     void createServiceSegment(String reqContent, HttpServletRequest httpRequest) throws ApplicationException;
+
+    /**
+     * <br>
+     * 
+     * @return
+     * @since  SDNO 0.5
+     */
+    ServiceModel getInstanceByInstanceId(String serviceId);
 }

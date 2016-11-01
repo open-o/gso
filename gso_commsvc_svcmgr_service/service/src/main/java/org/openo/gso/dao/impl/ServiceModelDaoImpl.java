@@ -213,12 +213,23 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * @since GSO 0.5
      */
     @Override
-    public ServiceModel queryServiceById(String serviceId) throws ApplicationException {
+    public ServiceModel queryServiceByInstanceId(String serviceId) throws ApplicationException {
         try {
-            return getMapper(ServicePackageMapper.class).queryServiceById(serviceId);
+            return getMapper(ServiceModelMapper.class).queryServiceByInstanceId(serviceId);
         } catch(Exception e) {
-            LOGGER.error("Fail to delete service instance. {}", e);
+            LOGGER.error("Fail to query service instance by id : {}", e);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
+    }
+
+    @Override
+    public void updateServiceResult(String serviceId, String result) throws ApplicationException {
+        try {
+            getMapper(ServiceModelMapper.class).updateServiceResult(serviceId, result);
+        } catch(Exception e) {
+            LOGGER.error("fail to update the service : {}, result : {}", serviceId, e);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+        
     }
 }

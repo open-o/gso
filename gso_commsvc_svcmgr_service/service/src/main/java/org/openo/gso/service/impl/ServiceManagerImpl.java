@@ -547,4 +547,9 @@ public class ServiceManagerImpl implements IServiceManager {
         inventoryDao.delete(key, InvServiceParameterMapper.class);
         inventoryDao.delete(key, InvServiceModelMapper.class);
     }
+
+    @Override
+    public ServiceModel getInstanceByInstanceId(String serviceId) {
+        return serviceModelDao.queryServiceByInstanceId(serviceId);
+    }
 }
