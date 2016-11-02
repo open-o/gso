@@ -34,6 +34,7 @@ import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.constant.DriverExceptionID;
+import org.openo.gso.dao.inf.IServiceModelDao;
 import org.openo.gso.dao.inf.IServicePackageDao;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.exception.HttpCode;
@@ -81,6 +82,11 @@ public class DriverManagerImpl implements IDriverManager {
      * DAO to operate service package.
      */
     private IServicePackageDao servicePackageDao;
+    
+    /**
+     * DAO to operate service model
+     */
+    private IServiceModelDao serviceModelDao;
 
     /**
      * Proxy of interface with catalog.
@@ -385,17 +391,25 @@ public class DriverManagerImpl implements IDriverManager {
         int sequence = getSequenceOfNode(nodes, serviceSegment);
         serviceSegment.setTopoSeqNumber(sequence);
 
-        LOGGER.warn("store segment : begin");
-        // insert database
-        serviceSegmentDao.insert(serviceSegment);
         
-        LOGGER.warn("store segment : end");
 
         // Step 4: return the response
         RestfulResponse rsp = new RestfulResponse();
-        if("fail".equals(status)) {
+        if("success".equals(status)) {
+            LOGGER.warn("store segment : begin");
+            // insert database
+            serviceSegmentDao.insert(serviceSegment);
+            
+            LOGGER.warn("store segment : end");
+            if(CommonConstant.NodeType.SDN_UNDERLAYVPN_TYPE.equals(serviceNode.getNodeType())
+                    || CommonConstant.NodeType.SDN_OVERLAYVPN_TYPE.equals(serviceNode.getNodeType())){
+                serviceModelDao.updateServiceResult(serviceId, "success");
+            }
+            
+        }else{
             rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
             LOGGER.error("fail to store the sub-service to LCM");
+            serviceModelDao.updateServiceResult(serviceId, "fail");
         }
         return rsp;
     }
@@ -500,12 +514,11 @@ public class DriverManagerImpl implements IDriverManager {
         @Override
         public NsProgressStatus call() throws Exception {
 
-            // For every 5 seconds query progress
-            Thread.sleep(5000);
+            // For every 10 seconds query progress
+            Thread.sleep(10000);
             return serviceInf.getNsProgress(jobId);
         }
 
     }
-    
 
 }

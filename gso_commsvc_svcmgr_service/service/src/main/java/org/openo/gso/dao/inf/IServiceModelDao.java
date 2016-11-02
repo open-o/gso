@@ -66,5 +66,14 @@ public interface IServiceModelDao {
      * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    ServiceModel queryServiceById(String serviceId) throws ApplicationException;
+    ServiceModel queryServiceByInstanceId(String serviceId) throws ApplicationException;
+
+    /**
+     * <br>
+     * 
+     * @param serviceId
+     * @param string
+     * @since  SDNO 0.5
+     */
+    void updateServiceResult(String serviceId, String result);
 }

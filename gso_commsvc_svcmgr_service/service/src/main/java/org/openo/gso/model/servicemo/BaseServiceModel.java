@@ -61,6 +61,18 @@ public class BaseServiceModel {
      * Time that create service instance.
      */
     private Long createAt;
+    
+    /**
+     * 
+     */
+    private String result;
+    
+    
+
+    public BaseServiceModel() {
+        super();
+        this.result = "processing";
+    }
 
     /**
      * @return Returns the serviceId.
@@ -159,5 +171,23 @@ public class BaseServiceModel {
     public void setCreateAt(Long createAt) {
         this.createAt = createAt;
     }
+
+    
+    /**
+     * @return Returns the result.
+     */
+    public String getResult() {
+        return result;
+    }
+
+    
+    /**
+     * @param result The result to set.
+     */
+    public void setResult(String result) {
+        this.result = result;
+    }
+    
+    
 
 }
