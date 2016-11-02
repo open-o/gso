@@ -32,7 +32,7 @@
     <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServiceModel">
         insert into
         t_lcm_service
-        (serviceId,name,description,activeStatus,status,creator,createAt)
+        (serviceId,name,description,activeStatus,status,creator,createAt,result)
         values(#{serviceId},#{name},#{description},#{activeStatus},#{status},#{creator},#{createAt},#{result})
     </insert>
 
