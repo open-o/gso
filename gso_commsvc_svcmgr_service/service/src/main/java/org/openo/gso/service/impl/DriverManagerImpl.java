@@ -148,6 +148,20 @@ public class DriverManagerImpl implements IDriverManager {
     public void setCatalogProxy(ICatalogProxy catalogProxy) {
         this.catalogProxy = catalogProxy;
     }
+    
+    /**
+     * @return Returns the serviceModelDao.
+     */
+    public IServiceModelDao getServiceModelDao() {
+        return serviceModelDao;
+    }
+    
+    /**
+     * @param serviceModelDao The serviceModelDao to set.
+     */
+    public void setServiceModelDao(IServiceModelDao serviceModelDao) {
+        this.serviceModelDao = serviceModelDao;
+    }
 
     /**
      * Create service instance.<br/>
