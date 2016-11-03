@@ -121,8 +121,14 @@ public class DriverServiceImpl implements IDriverService {
 
         while(true) {
             boolean finished = finishedQuerying(nodeType, queryUrl);
+
             if(finished) {
                 break;
+            }
+            try {
+                Thread.sleep(10000);
+            } catch(InterruptedException e) {
+                LOGGER.error("fail to finished querying", e);
             }
         }
 
