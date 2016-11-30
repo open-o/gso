@@ -113,9 +113,9 @@
             <version>3.1.0</version>
         </dependency>        
         <dependency>
-            <groupId>com.googlecode.jmockit</groupId>
+            <groupId>org.jmockit</groupId>
             <artifactId>jmockit</artifactId>
-            <version>1.1</version>
+            <version>1.19</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -126,8 +126,8 @@
         </dependency>
         <dependency>
             <groupId>org.jmockit</groupId>
-            <artifactId>jmockit-coverage</artifactId>
-            <version>1.18</version>
+            <artifactId>jmockit</artifactId>
+            <version>1.19</version>
             <scope>test</scope>
         </dependency>
         <dependency>
