@@ -23,6 +23,7 @@
     </parent>
     <artifactId>org.openo.gso.commsvc</artifactId>
     <packaging>pom</packaging>
+	<name>gso/gso_commsvc_common</name>
 
     <scm>
         <developerConnection>scm:git:http://rnd-isourceb.huawei.com/OPEN-O/gso_commsvc_common.git</developerConnection>

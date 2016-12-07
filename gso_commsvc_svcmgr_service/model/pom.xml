@@ -23,7 +23,7 @@
     </parent>
 
     <artifactId>servicemanagerservice-model</artifactId>
-    <name>ServiceManagerServiceModel</name>
+    <name>gso/gso_commsvc_svcmgr_service/model</name>
     <packaging>jar</packaging>
 
     <dependencies>

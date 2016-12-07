@@ -27,6 +27,7 @@
     <groupId>org.openo.gso</groupId>
     <artifactId>org.openo.gso</artifactId>
     <packaging>pom</packaging>
+	<name>gso</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

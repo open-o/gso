@@ -23,7 +23,7 @@
     </parent>
 
     <artifactId>servicemanagerservice</artifactId>
-    <name>ServiceManagerService</name>
+    <name>gso/gso_commsvc_svcmgr_service/service</name>
     <packaging>war</packaging>
 
     <dependencies>

@@ -23,11 +23,12 @@
     </parent>
 
     <artifactId>servicemanagerservice-deployment</artifactId>
-    <name>ServiceManagerServiceDeployment</name>
+    <name>gso/gso_commsvc_svcmgr_service/deployment</name>
     <packaging>pom</packaging>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	    <packagename>ServiceManagerServiceDeployment</packagename>        
+		<packagename></packagename>
     </properties>
 
     <build>
