@@ -21,14 +21,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 
 /**
- * Interface for interaction with wso2.<br/>
+ * Interface for interaction with workflow.<br/>
  * <p>
  * </p>
  * 
  * @author
  * @version GSO 0.5 2016/8/22
  */
-public interface IWsoProxy {
+public interface IWorkflowProxy {
 
     /**
      * Start bepl workflow.<br/>
@@ -36,7 +36,7 @@ public interface IWsoProxy {
      * @param sendBody content of request
      * @param request http request
      * @return response content
-     * @throws ApplicationException when wso2 fails to start work flow.
+     * @throws ApplicationException when workflow fails to start work flow.
      * @since GSO 0.5
      */
     String startWorkFlow(Object sendBody, HttpServletRequest request) throws ApplicationException;

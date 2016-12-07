@@ -27,6 +27,7 @@ create table t_lcm_service
 	status       varchar(255) not null,
 	creator      varchar(255) not null,
 	createAt     bigint(13)   not null,
+	result       varchar(255) not null,
 	primary key(serviceId)
 )
 engine=innodb;

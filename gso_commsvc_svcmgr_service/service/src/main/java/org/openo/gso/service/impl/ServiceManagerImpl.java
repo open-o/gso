@@ -42,7 +42,7 @@ import org.openo.gso.model.servicemo.ServicePackageMapping;
 import org.openo.gso.model.servicemo.ServiceParameter;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.restproxy.inf.ICatalogProxy;
-import org.openo.gso.restproxy.inf.IWsoProxy;
+import org.openo.gso.restproxy.inf.IWorkflowProxy;
 import org.openo.gso.service.inf.IServiceManager;
 import org.openo.gso.synchronization.PackageOperationSingleton;
 import org.openo.gso.util.convertor.DataConverter;
@@ -89,9 +89,9 @@ public class ServiceManagerImpl implements IServiceManager {
     private ICatalogProxy catalogProxy;
 
     /**
-     * Proxy of interface with WSO2.
+     * Proxy of interface with workflow.
      */
-    private IWsoProxy wsoProxy;
+    private IWorkflowProxy workflowProxy;
 
     /**
      * DAO to operate inventory database.
@@ -125,9 +125,9 @@ public class ServiceManagerImpl implements IServiceManager {
         // Convert service data
         Map<String, Object> paramsMap = (Map<String, Object>)instanceParam;
         ServiceModel model = convertData(service);
-        model.setName((String) service.get(Constant.SERVICE_NAME));
-        model.setDescription((String) service.get(Constant.SERVICE_DESCRIPTION));
-        
+        model.setName((String)service.get(Constant.SERVICE_NAME));
+        model.setDescription((String)service.get(Constant.SERVICE_DESCRIPTION));
+
         List<ServiceParameter> paramList = convertParam(model.getServiceId(), paramsMap);
         model.setParameters(paramList);
 
@@ -275,17 +275,17 @@ public class ServiceManagerImpl implements IServiceManager {
     }
 
     /**
-     * @return Returns the wsoProxy.
+     * @return Returns the workflowProxy.
      */
-    public IWsoProxy getWsoProxy() {
-        return wsoProxy;
+    public IWorkflowProxy getWorkflowProxy() {
+        return workflowProxy;
     }
 
     /**
-     * @param wsoProxy The wsoProxy to set.
+     * @param workflowProxy The workflowProxy to set.
      */
-    public void setWsoProxy(IWsoProxy wsoProxy) {
-        this.wsoProxy = wsoProxy;
+    public void setWorkflowProxy(IWorkflowProxy workflowProxy) {
+        this.workflowProxy = workflowProxy;
     }
 
     /**
@@ -304,8 +304,7 @@ public class ServiceManagerImpl implements IServiceManager {
         // insert inventory data
         inventoryDao.insert(convertToInvData(model), InvServiceModelMapper.class);
         inventoryDao.insert(model.getServicePackage(), InvServicePackageMapper.class);
-        for(ServiceParameter param : parameters)
-        {
+        for(ServiceParameter param : parameters) {
             inventoryDao.insert(param, InvServiceParameterMapper.class);
         }
     }
@@ -379,8 +378,8 @@ public class ServiceManagerImpl implements IServiceManager {
             throws ApplicationException {
         OperationModel operation = getOperation(templateId, key, request);
         ValidateUtil.assertObjectNotNull(operation);
-        Map<String, Object> wsoBody = DataConverter.constructWsoBody(operation, parameters);
-        wsoProxy.startWorkFlow(wsoBody, request);
+        Map<String, Object> workflowBody = DataConverter.constructWorkflowBody(operation, parameters);
+        workflowProxy.startWorkFlow(workflowBody, request);
     }
 
     /**
@@ -493,16 +492,18 @@ public class ServiceManagerImpl implements IServiceManager {
     }
 
     /**
-     * Add service segments into wso2 input parameters.<br/>
+     * Add service segments into workflow input parameters.<br/>
      * 
-     * @param inputParam wso2's input paramters
+     * @param inputParam workflow's input paramters
      * @param segments service segments
      * @since GSO 0.5
      */
     private void addServiceSegment(Map<String, String> inputParam, List<ServiceSegmentModel> segments) {
         String segmentId = null;
         for(ServiceSegmentModel segment : segments) {
-            segmentId = segment.getNodeType() + Constant.SERVICE_SEGMENT_INSTANCE_ID;
+            StringBuilder builder =
+                    new StringBuilder(segment.getNodeType()).append(".").append(Constant.SERVICE_SEGMENT_INSTANCE_ID);
+            segmentId = builder.toString();
             inputParam.put(segmentId, segment.getServiceSegmentId());
         }
     }
@@ -544,5 +545,17 @@ public class ServiceManagerImpl implements IServiceManager {
         inventoryDao.delete(key, InvServicePackageMapper.class);
         inventoryDao.delete(key, InvServiceParameterMapper.class);
         inventoryDao.delete(key, InvServiceModelMapper.class);
+    }
+
+    /**
+     * Query service instance.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @return service instance
+     * @since GSO 0.5
+     */
+    @Override
+    public ServiceModel getInstanceByInstanceId(String serviceId) {
+        return serviceModelDao.queryServiceByInstanceId(serviceId);
     }
 }

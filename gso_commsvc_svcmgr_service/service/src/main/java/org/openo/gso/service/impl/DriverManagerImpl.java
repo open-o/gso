@@ -34,6 +34,7 @@ import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.constant.DriverExceptionID;
+import org.openo.gso.dao.inf.IServiceModelDao;
 import org.openo.gso.dao.inf.IServicePackageDao;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.exception.HttpCode;
@@ -81,6 +82,11 @@ public class DriverManagerImpl implements IDriverManager {
      * DAO to operate service package.
      */
     private IServicePackageDao servicePackageDao;
+    
+    /**
+     * DAO to operate service model
+     */
+    private IServiceModelDao serviceModelDao;
 
     /**
      * Proxy of interface with catalog.
@@ -142,6 +148,20 @@ public class DriverManagerImpl implements IDriverManager {
     public void setCatalogProxy(ICatalogProxy catalogProxy) {
         this.catalogProxy = catalogProxy;
     }
+    
+    /**
+     * @return Returns the serviceModelDao.
+     */
+    public IServiceModelDao getServiceModelDao() {
+        return serviceModelDao;
+    }
+    
+    /**
+     * @param serviceModelDao The serviceModelDao to set.
+     */
+    public void setServiceModelDao(IServiceModelDao serviceModelDao) {
+        this.serviceModelDao = serviceModelDao;
+    }
 
     /**
      * Create service instance.<br/>
@@ -178,24 +198,29 @@ public class DriverManagerImpl implements IDriverManager {
         LOGGER.info("id of instance to be deleted is {}", instanceId);
 
         // invoke the SDNO or NFVO to delete the instance
+        LOGGER.info("start to delete the service instance");
         String status = "fail";
         try {
             status = serviceInf.delete(nodeType, instanceId);
         } catch(Exception e) {
             LOGGER.error("fail to delete the sub-service", e);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
         }
 
-        // save the segment information into the database
-        ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
-        serviceSegment.setServiceId(serviceId);
-        serviceSegment.setServiceSegmentId(instanceId);
-
-        serviceSegmentDao.delete(serviceSegment);
+        LOGGER.info("end to delete the service instance");
+        
 
         RestfulResponse rsp = new RestfulResponse();
-        if("fail".equals(status)) {
+        if("success".equals(status)) {
+            // save the segment information into the database
+            ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
+            serviceSegment.setServiceId(serviceId);
+            serviceSegment.setServiceSegmentId(instanceId);
+
+            serviceSegmentDao.delete(serviceSegment);
+            LOGGER.warn("succeed to delete the servcie segment from t_lcm_service_segment");
+        }else{
             rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
-            LOGGER.error("fail to store the sub-service to LCM");
         }
         return rsp;
 
@@ -318,6 +343,7 @@ public class DriverManagerImpl implements IDriverManager {
     private RestfulResponse createNetworkSubService(ServiceNode serviceNode, String templateId,
             HttpServletRequest httpRequest) throws ApplicationException {
 
+        LOGGER.warn("create ns : begin");
         // Step 2:Make a list of parameters for the node Type
         Map<String, String> createParamMap = getCreateParamsByNodeType(serviceNode);
         
@@ -330,6 +356,9 @@ public class DriverManagerImpl implements IDriverManager {
                     DriverExceptionID.INVALID_VALUE_FROM_CREATE);
         }
         
+        LOGGER.warn("create ns : end");
+        
+        LOGGER.warn("instantiate ns : begin");
         Map<String, String> instParamMap = getInstParamsByNodeType(serviceNode);
 
         // Step 2: Instantiate Network service
@@ -339,7 +368,9 @@ public class DriverManagerImpl implements IDriverManager {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
                     DriverExceptionID.INVALID_VALUE_FROM_INSTANTIATE);
         }
+        LOGGER.warn("instantiate ns : end");
 
+        LOGGER.warn("query job : begin");
         // Step 3: Wait for Job to complete
         String status = "success";
         try {
@@ -348,10 +379,16 @@ public class DriverManagerImpl implements IDriverManager {
             LOGGER.error("fail to complete the job", e);
             status = "fail";
         }
+        LOGGER.warn("query job : end");
 
-        String serviceId = createParamMap.get("serviceId");
+        String serviceId = serviceNode.getInputParameters().get("serviceId");
+        LOGGER.warn("serviceId is {}", serviceId);
+        String serviceName = serviceNode.getInputParameters().get("serviceName");
+        LOGGER.warn("serviceName is {}", serviceName);
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
+        
         serviceSegment.setServiceId(serviceId);
+        serviceSegment.setServiceSegmentName(serviceName);
         serviceSegment.setServiceSegmentId(nsInstanceId);
         serviceSegment.setNodeType(serviceNode.getNodeType());
         serviceSegment.setStatus(status);
@@ -359,7 +396,7 @@ public class DriverManagerImpl implements IDriverManager {
 
         ServicePackageMapping pacakageInfo = servicePackageDao.queryPackageMapping(serviceId);
         if(null == pacakageInfo) {
-            LOGGER.error("There is no package in DB. The service is ", serviceId);
+            LOGGER.error("There is no package in DB. The service Id is {}", serviceId);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "There is no package in DB.");
         }
 
@@ -368,14 +405,25 @@ public class DriverManagerImpl implements IDriverManager {
         int sequence = getSequenceOfNode(nodes, serviceSegment);
         serviceSegment.setTopoSeqNumber(sequence);
 
-        // insert database
-        serviceSegmentDao.insert(serviceSegment);
+        
 
         // Step 4: return the response
         RestfulResponse rsp = new RestfulResponse();
-        if("fail".equals(status)) {
+        if("success".equals(status)) {
+            LOGGER.warn("store segment : begin");
+            // insert database
+            serviceSegmentDao.insert(serviceSegment);
+            
+            LOGGER.warn("store segment : end");
+            if(CommonConstant.NodeType.SDN_UNDERLAYVPN_TYPE.equals(serviceNode.getNodeType())
+                    || CommonConstant.NodeType.SDN_OVERLAYVPN_TYPE.equals(serviceNode.getNodeType())){
+                serviceModelDao.updateServiceResult(serviceId, "success");
+            }
+            
+        }else{
             rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
             LOGGER.error("fail to store the sub-service to LCM");
+            serviceModelDao.updateServiceResult(serviceId, "fail");
         }
         return rsp;
     }
@@ -455,11 +503,11 @@ public class DriverManagerImpl implements IDriverManager {
                 throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
             }
 
-            if("100".equals(progress.getRspDescriptor().getProgress())
-                    && "finished".equals(progress.getRspDescriptor().getStatus())) {
+            if("100".equals(progress.getResponseDescriptor().getProgress())
+                    && "finished".equals(progress.getResponseDescriptor().getStatus())) {
                 LOGGER.info("Success to create the sub-service");
                 queryFlag = false;
-            } else if("error".equals(progress.getRspDescriptor().getStatus())) {
+            } else if("error".equals(progress.getResponseDescriptor().getStatus())) {
                 LOGGER.error("Failed to create the sub service");
                 throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
             } else {
@@ -480,8 +528,8 @@ public class DriverManagerImpl implements IDriverManager {
         @Override
         public NsProgressStatus call() throws Exception {
 
-            // For every 5 seconds query progress
-            Thread.sleep(5000);
+            // For every 10 seconds query progress
+            Thread.sleep(10000);
             return serviceInf.getNsProgress(jobId);
         }
 

@@ -107,7 +107,7 @@
         <property name="serviceSegmentDao" ref="serviceSegmentDao"></property>
         <property name="servicePackageDao" ref="servicePackageDao"></property>
         <property name="catalogProxy" ref="catalogProxy"></property>
-        <property name="wsoProxy" ref="wsoProxy"></property>
+        <property name="workflowProxy" ref="workflowProxy"></property>
         <property name="inventoryDao" ref="inventoryDao"></property>
     </bean>
 
@@ -128,6 +128,7 @@
         <property name="serviceInf" ref="serviceInf"></property>
         <property name="serviceSegmentDao" ref="serviceSegmentDao"></property>
         <property name="servicePackageDao" ref="servicePackageDao"></property>
+        <property name="serviceModelDao" ref="serviceModelDao"></property>
         <property name="catalogProxy" ref="catalogProxy"></property>
     </bean>
 
@@ -160,7 +161,7 @@
     <bean id="catalogProxy" class="org.openo.gso.restproxy.impl.CatalogProxyImpl">
     </bean>
 
-    <bean id="wsoProxy" class="org.openo.gso.restproxy.impl.WsoProxyImpl">
+    <bean id="workflowProxy" class="org.openo.gso.restproxy.impl.WorkflowProxyImpl">
     </bean>
 
     <bean id="serviceInf" class="org.openo.gso.service.impl.DriverServiceImpl">

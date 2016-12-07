@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @version GSO 0.5 2016/8/22
  */
 public class DataConverter {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DataConverter.class);
 
     /**
@@ -94,7 +94,7 @@ public class DataConverter {
     }
 
     /**
-     * Construct body used to interacting with wso.<br/>
+     * Construct body used to interacting with workflow.<br/>
      * 
      * @param operation operation object
      * @param parameter which in body
@@ -102,7 +102,7 @@ public class DataConverter {
      * @throws ApplicationException
      * @since GSO 0.5
      */
-    public static Map<String, Object> constructWsoBody(OperationModel operation, Object parameter)
+    public static Map<String, Object> constructWorkflowBody(OperationModel operation, Object parameter)
             throws ApplicationException {
         Map<String, Object> body = new HashMap<String, Object>();
         body.put(Constant.WSO_PROCESSID, operation.getProcessId());

@@ -55,7 +55,7 @@ import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.restproxy.impl.CatalogProxyImpl;
-import org.openo.gso.restproxy.impl.WsoProxyImpl;
+import org.openo.gso.restproxy.impl.WorkflowProxyImpl;
 import org.openo.gso.service.impl.ServiceManagerImpl;
 import org.openo.gso.util.http.HttpUtil;
 import org.openo.gso.util.http.ResponseUtils;
@@ -124,9 +124,9 @@ public class ServicemgrRoaModuleImplTest {
     RestfulResponse responseSuccess = new RestfulResponse();
 
     /**
-     * WSO2 proxy.
+     * workflow proxy.
      */
-    WsoProxyImpl wsoProxy = new WsoProxyImpl();
+    WorkflowProxyImpl workflowProxy = new WorkflowProxyImpl();
 
     /**
      * Inventory DAO.
@@ -158,7 +158,7 @@ public class ServicemgrRoaModuleImplTest {
         serviceManager.setServiceSegmentDao(serviceSegmentDao);
         serviceManager.setServicePackageDao(packageDao);
         serviceManager.setCatalogProxy(catalogProxy);
-        serviceManager.setWsoProxy(wsoProxy);
+        serviceManager.setWorkflowProxy(workflowProxy);
         serviceManager.setInventoryDao(inventoryDao);
         serviceRoa.setServicemanager(serviceManager);
         responseSuccess.setStatus(HttpCode.RESPOND_OK);
@@ -240,7 +240,7 @@ public class ServicemgrRoaModuleImplTest {
         responsePlan.setStatus(HttpCode.RESPOND_OK);
         mockGet(responsePlan);
 
-        // mock start wso2 bpel workflow
+        // mock start workflow bpel workflow
         mockPost(responseSuccess);
 
         Response response = serviceRoa.createService(httpRequest);
@@ -287,7 +287,7 @@ public class ServicemgrRoaModuleImplTest {
         responsePlan.setStatus(HttpCode.RESPOND_OK);
         mockGet(responsePlan);
 
-        // mock start wso2 bpel workflow
+        // mock start workflow bpel workflow
         mockPost(responseSuccess);
         serviceRoa.deleteService("1", httpRequest);
     }

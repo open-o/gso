@@ -87,6 +87,20 @@ public interface IServicemgrRoaModule {
     Response getAllInstances(@Context HttpServletRequest servletReq) throws ApplicationException;
 
     /**
+     * Query service instance by instanceId<br>
+     * 
+     * @param servletReq
+     * @return
+     * @throws ApplicationException
+     * @since  GSO 0.5
+     */
+    @GET
+    @Path("/services/{serviceId}")
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+    Response getInstanceByInstanceId(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq) throws ApplicationException;
+    
+    /**
      * Query represent sequence in topology.<br/>
      * 
      * @param serviceId service instance ID

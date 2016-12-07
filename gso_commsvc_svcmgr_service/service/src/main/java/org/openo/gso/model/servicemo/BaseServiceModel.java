@@ -63,6 +63,23 @@ public class BaseServiceModel {
     private Long createAt;
 
     /**
+     * execution result
+     */
+    private String result;
+
+    /**
+     * Constructor<br/>
+     * <p>
+     * </p>
+     * 
+     * @since GSO 0.5
+     */
+    public BaseServiceModel() {
+        super();
+        this.result = "processing";
+    }
+
+    /**
      * @return Returns the serviceId.
      */
     public String getServiceId() {
@@ -158,6 +175,20 @@ public class BaseServiceModel {
      */
     public void setCreateAt(Long createAt) {
         this.createAt = createAt;
+    }
+
+    /**
+     * @return Returns the result.
+     */
+    public String getResult() {
+        return result;
+    }
+
+    /**
+     * @param result The result to set.
+     */
+    public void setResult(String result) {
+        this.result = result;
     }
 
 }

@@ -72,12 +72,12 @@ public class Constant {
     public static final String WORK_FLOW_PLAN_DELETE = "delete";
 
     /**
-     * filed in wso2 body.
+     * filed in workflow body.
      */
     public static final String WSO_PROCESSID = "processId";
 
     /**
-     * filed in wso2 body.
+     * filed in workflow body.
      */
     public static final String WSO_PARAMS = "params";
 

@@ -30,9 +30,9 @@ public class NsProgressStatus {
 
     String jobId;
 
-    ResponseDescriptor rspDescriptor;
+    ResponseDescriptor responseDescriptor;
 
-    List<ResponseDescriptor> rspHistoryList;
+    List<ResponseDescriptor> responseHistoryList;
 
     
     /**
@@ -50,36 +50,40 @@ public class NsProgressStatus {
         this.jobId = jobId;
     }
 
-    
-    /**
-     * @return Returns the rspDescriptor.
-     */
-    public ResponseDescriptor getRspDescriptor() {
-        return rspDescriptor;
-    }
 
     
     /**
-     * @param rspDescriptor The rspDescriptor to set.
+     * @return Returns the responseDescriptor.
      */
-    public void setRspDescriptor(ResponseDescriptor rspDescriptor) {
-        this.rspDescriptor = rspDescriptor;
+    public ResponseDescriptor getResponseDescriptor() {
+        return responseDescriptor;
     }
+
 
     
     /**
-     * @return Returns the rspHistoryList.
+     * @param responseDescriptor The responseDescriptor to set.
      */
-    public List<ResponseDescriptor> getRspHistoryList() {
-        return rspHistoryList;
+    public void setResponseDescriptor(ResponseDescriptor responseDescriptor) {
+        this.responseDescriptor = responseDescriptor;
     }
+
 
     
     /**
-     * @param rspHistoryList The rspHistoryList to set.
+     * @return Returns the responseHistoryList.
      */
-    public void setRspHistoryList(List<ResponseDescriptor> rspHistoryList) {
-        this.rspHistoryList = rspHistoryList;
+    public List<ResponseDescriptor> getResponseHistoryList() {
+        return responseHistoryList;
+    }
+
+
+    
+    /**
+     * @param responseHistoryList The responseHistoryList to set.
+     */
+    public void setResponseHistoryList(List<ResponseDescriptor> responseHistoryList) {
+        this.responseHistoryList = responseHistoryList;
     }
 
     

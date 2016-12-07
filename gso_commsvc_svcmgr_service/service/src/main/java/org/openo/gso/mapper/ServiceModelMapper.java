@@ -54,4 +54,23 @@ public interface ServiceModelMapper {
      * @since GSO 0.5
      */
     List<ServiceModel> queryAllServices();
+
+    /**
+     * Query service instance.<br>
+     * 
+     * @param serviceId service instance ID
+     * @return service instance
+     * @since SDNO 0.5
+     */
+    ServiceModel queryServiceByInstanceId(@Param("serviceId") String serviceId);
+
+    /**
+     * Update service instance execution result.<br>
+     * 
+     * @param serviceId service instance ID
+     * @param result service execution result
+     * @since SDNO 0.5
+     */
+    void updateServiceResult(@Param("serviceId") String serviceId, @Param("result") String result);
+
 }

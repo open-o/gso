@@ -20,29 +20,29 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
-import org.openo.gso.restproxy.inf.IWsoProxy;
+import org.openo.gso.restproxy.inf.IWorkflowProxy;
 import org.openo.gso.util.http.HttpUtil;
 import org.openo.gso.util.http.ResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation for interface of interaction with wso2.<br/>
+ * Implementation for interface of interaction with workflow.<br/>
  * <p>
  * </p>
  * 
  * @author
  * @version GSO 0.5 2016/8/22
  */
-public class WsoProxyImpl implements IWsoProxy {
+public class WorkflowProxyImpl implements IWorkflowProxy {
 
     /**
      * Log server.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(WsoProxyImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkflowProxyImpl.class);
 
     /**
-     * URI of wso2 starting bpel.
+     * URI of workflow starting bpel.
      */
     private static final String WSO_URI = "/openoapi/wso2bpel/v1/process/instance";
 
@@ -52,12 +52,12 @@ public class WsoProxyImpl implements IWsoProxy {
      * @param sendBody content of request
      * @param request http request
      * @return response content
-     * @throws ApplicationException when wso2 fails to start work flow.
+     * @throws ApplicationException when workflow fails to start work flow.
      * @since GSO 0.5
      */
     @Override
     public String startWorkFlow(Object sendBody, HttpServletRequest request) throws ApplicationException {
-        LOGGER.info("Notify wso2 to startup bpel workflow.");
+        LOGGER.info("Notify workflow to startup bpel workflow.");
         RestfulResponse response = HttpUtil.post(WSO_URI, sendBody, request);
         ResponseUtils.checkResonseAndThrowException(response, "start to bpel workflow.");
 

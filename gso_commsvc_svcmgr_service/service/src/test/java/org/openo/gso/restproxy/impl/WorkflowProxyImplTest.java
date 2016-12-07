@@ -35,11 +35,11 @@ import mockit.MockUp;
  * @author
  * @version GSO 0.5 2016/8/31
  */
-public class WsoProxyImplTest {
+public class WorkflowProxyImplTest {
 
     @Test
     public void test() throws ApplicationException {
-        WsoProxyImpl proxy = new WsoProxyImpl();
+        WorkflowProxyImpl proxy = new WorkflowProxyImpl();
         new MockUp<HttpUtil>() {
 
             @Mock
