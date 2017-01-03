@@ -51,6 +51,7 @@
     <modules>
         <module>gso_commsvc_common</module>
         <module>gso_commsvc_svcmgr_service</module>
+		<module>servicegateway</module>
     </modules>
     <build>
         <resources>
