@@ -469,12 +469,12 @@ public class DriverManagerImpl implements IDriverManager {
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
 
         // Step 2: Prepare the query param
-        Map<String, String> mapParams = new HashMap<String, String>();
-        mapParams.put("nodeTypeIds", serviceNode.getNodeType());
+        Map<String, String> queryParams = new HashMap<String, String>();
+        queryParams.put("nodeTypeIds", serviceNode.getNodeType());
         LOGGER.warn("node Type is {}", serviceNode.getNodeType());
 
         // Step 3:Send the request and get response
-        RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, null, mapParams);
+        RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, null, queryParams);
 
         LOGGER.error("response content is {}", rsp.getResponseContent());
 

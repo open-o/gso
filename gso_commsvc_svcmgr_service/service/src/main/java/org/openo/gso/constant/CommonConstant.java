@@ -41,6 +41,10 @@ public class CommonConstant {
         public static final String URL = "url";
 
         public static final String METHOD_TYPE = "methodType";
+
+        public static final String IP = "ip";
+        
+        public static final String PORT = "port";
         
         private HttpContext(){
             

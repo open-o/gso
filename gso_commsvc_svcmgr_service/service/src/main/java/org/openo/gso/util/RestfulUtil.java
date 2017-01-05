@@ -22,6 +22,7 @@ import java.util.Map;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.Restful;
 import org.openo.baseservice.roa.util.restclient.RestfulFactory;
+import org.openo.baseservice.roa.util.restclient.RestfulOptions;
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.constant.CommonConstant;
@@ -50,50 +51,41 @@ public class RestfulUtil {
      * invoke the restclient and return the response
      * 
      * @param paramsMap input header map
-     * @param params input body (raw data)
+     * @param body input body (raw data)
      * @param queryParam query condition
      * @return restful response
      * @since GSO 0.5
      */
-    public static RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
+    public static RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String body,
             Map<String, String> queryParam) {
         if(null == paramsMap) {
             return null;
         }
         String url = paramsMap.get(CommonConstant.HttpContext.URL);
-        LOGGER.warn("url is {}", url);
+        LOGGER.info("url is : {}", url);
         String methodType = paramsMap.get(CommonConstant.HttpContext.METHOD_TYPE);
-        LOGGER.warn("method type is {}", methodType);
+        LOGGER.info("method type is : {}", methodType);
+        String ip = paramsMap.get(CommonConstant.HttpContext.IP);
+        LOGGER.info("ip is : {}", ip);
+        String port = paramsMap.get(CommonConstant.HttpContext.PORT);
+        LOGGER.info("port is : {}", port);
         RestfulResponse rsp = null;
         Restful rest = RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP);
         try {
 
-            RestfulParametes restfulParametes = new RestfulParametes();
-            Map<String, String> headerMap = new HashMap<String, String>(3);
-            headerMap.put(CommonConstant.HttpContext.CONTENT_TYPE, CommonConstant.HttpContext.MEDIA_TYPE_JSON);
-            restfulParametes.setHeaderMap(headerMap);
+            RestfulParametes restfulParametes = setRestfulParameters(body, queryParam);
 
-            if(null != params) {
-                restfulParametes.setRawData(params);
-                LOGGER.warn("raw data is {}", params);
-            }
-
-            if(null != queryParam) {
-                for(Map.Entry<String, String> curEntity : queryParam.entrySet()) {
-                    LOGGER.warn("query condition: {} is {}", curEntity.getKey(), curEntity.getValue());
-                }
-                restfulParametes.setParamMap(queryParam);
-            }
-
+            RestfulOptions options = setRestfulOptions(ip, port);
+                
             if(rest != null) {
                 if(CommonConstant.MethodType.GET.equalsIgnoreCase(methodType)) {
-                    rsp = rest.get(url, restfulParametes);
+                    rsp = rest.get(url, restfulParametes, options);
                 } else if(CommonConstant.MethodType.POST.equalsIgnoreCase(methodType)) {
-                    rsp = rest.post(url, restfulParametes);
+                    rsp = rest.post(url, restfulParametes, options);
                 } else if(CommonConstant.MethodType.PUT.equalsIgnoreCase(methodType)) {
-                    rsp = rest.put(url, restfulParametes);
+                    rsp = rest.put(url, restfulParametes, options);
                 } else if(CommonConstant.MethodType.DELETE.equalsIgnoreCase(methodType)) {
-                    rsp = rest.delete(url, restfulParametes);
+                    rsp = rest.delete(url, restfulParametes, options);
                 }
             }
         } catch(ServiceException e) {
@@ -101,6 +93,53 @@ public class RestfulUtil {
         }
         LOGGER.warn("responseContent is {}", rsp.getResponseContent());
         return rsp;
+    }
+
+    /**
+     * set RestfulOptions<br>
+     * 
+     * @param ip ip of domainHost field
+     * @param port port of domainHost field
+     * @return RestfulOptions Object
+     * @since  GSO 0.5
+     */
+    private static RestfulOptions setRestfulOptions(String ip, String port) {
+        //ip & port must exist at the same time
+        if((null == ip) || (null == port)){
+            return null;
+        }
+        RestfulOptions options = new RestfulOptions();
+        options.setHost(ip);
+        options.setPort(Integer.valueOf(port));
+        return options;
+    }
+
+    /**
+     * set RestfulParameters<br>
+     * 
+     * @param body request body
+     * @param queryParam parameters for query
+     * @return RestfulParameters Object
+     * @since  GSO 0.5
+     */
+    private static RestfulParametes setRestfulParameters(String body, Map<String, String> queryParam) {
+        RestfulParametes restfulParametes = new RestfulParametes();
+        Map<String, String> headerMap = new HashMap<String, String>(3);
+        headerMap.put(CommonConstant.HttpContext.CONTENT_TYPE, CommonConstant.HttpContext.MEDIA_TYPE_JSON);
+        restfulParametes.setHeaderMap(headerMap);
+
+        if(null != body) {
+            restfulParametes.setRawData(body);
+            LOGGER.warn("raw data is {}", body);
+        }
+
+        if(null != queryParam) {
+            for(Map.Entry<String, String> curEntity : queryParam.entrySet()) {
+                LOGGER.warn("query condition: {} is {}", curEntity.getKey(), curEntity.getValue());
+            }
+            restfulParametes.setParamMap(queryParam);
+        }
+        return restfulParametes;
     }
 
 }
