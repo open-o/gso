@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@ import javax.ws.rs.core.Response;
 
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
-import org.openo.gso.roa.inf.IDrivermgrRoaModule;
+import org.openo.gso.roa.inf.INFVODrivermgrRoaModule;
+import org.openo.gso.roa.inf.ISDNODrivermgrRoaModule;
 import org.openo.gso.service.inf.IDriverManager;
 
 /**
@@ -32,7 +33,7 @@ import org.openo.gso.service.inf.IDriverManager;
  * @author
  * @version GSO 0.5 2016/8/4
  */
-public class DrivermgrRoaModuleImpl implements IDrivermgrRoaModule {
+public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODrivermgrRoaModule {
 
     /**
      * DriverManager.
@@ -53,12 +54,73 @@ public class DrivermgrRoaModuleImpl implements IDrivermgrRoaModule {
         this.driverMgr = driverMgr;
     }
 
+
     /**
-     * Terminate service instance.<br/>
+     * Create NFVO service instance<br>
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when operate database or parameter is wrong.
+     * @throws ApplicationException when fail to create service instance
+     * @since   GSO 0.5
+     */
+    @Override
+    public Response createNetworkService(HttpServletRequest servletReq) throws ApplicationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * Delete NFVO service instance<br>
+     *
+     * @return response
+     * @throws ApplicationException when fail to delete service instance
+     * @since   GSO 0.5
+     */
+    @Override
+    public Response deleteNetworkService() throws ApplicationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * Query NFVO job status<br>
+     * 
+     * @return response 
+     * @throws ApplicationException fail to query job status
+     * @since   GSO 0.5
+     */
+    @Override
+    public Response queryJobStatus() throws ApplicationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * Instantiate NFVO service instance<br>
+     * 
+     * @param servletReq http request
+     * @return response
+     * @throws ApplicationException when fail to instantiate the service instance
+     * @since   GSO 0.5
+     */
+    @Override
+    public Response instantiateNetworkService(HttpServletRequest servletReq) throws ApplicationException {
+
+        RestfulResponse rsp = driverMgr.instantiateService(servletReq);
+        if(rsp.getStatus() / 200 == 0) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(500).build();
+        }
+    }
+    
+
+    /**
+     * Terminate NFVO service instance.<br/>
+     * 
+     * @param servletReq http request
+     * @return response
+     * @throws ApplicationException when fail to terminate the service instance
      * @since GSO 0.5
      */
     @Override
@@ -70,17 +132,73 @@ public class DrivermgrRoaModuleImpl implements IDrivermgrRoaModule {
             return Response.status(500).build();
         }
     }
-
+    
+    /**
+     * Create SDNO service instance<br>
+     * 
+     * @param servletReq http request
+     * @return response
+     * @throws ApplicationException when fail to create service instance
+     * @since   GSO 0.5
+     */
     @Override
-    public Response instantiateNetworkService(HttpServletRequest servletReq)
-            throws ApplicationException {
+    public Response createNs(HttpServletRequest servletReq) throws ApplicationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-        RestfulResponse rsp = driverMgr.instantiateService(servletReq);
-        if(rsp.getStatus() / 200 == 0) {
-            return Response.status(200).build();
-        } else {
-            return Response.status(500).build();
-        }
+    /**
+     * Delete SDNO service instance<br>
+     * 
+     * @return response
+     * @throws ApplicationException when fail to delete service instance
+     * @since   GSO 0.5
+     */
+    @Override
+    public Response deleteNs() throws ApplicationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * Query SDNO job status<br>
+     * 
+     * @return response
+     * @throws ApplicationException when fail to query job status
+     * @since   GSO 0.5
+     */
+    @Override
+    public Response queryNsJobStatus() throws ApplicationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * Instantiate SDNO service instance<br>
+     * 
+     * @param servletReq http request
+     * @return response
+     * @throws ApplicationException when fail to instantiate the service instance
+     * @since   GSO 0.5
+     */
+    @Override
+    public Response instantiateNs(HttpServletRequest servletReq) throws ApplicationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * Terminate NFVO service instance<br>
+     * 
+     * @param servletReq http request
+     * @return response
+     * @throws ApplicationException when fail to terminate the service instance
+     * @since   GSO 0.5
+     */
+    @Override
+    public Response terminateNs(HttpServletRequest servletReq) throws ApplicationException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
