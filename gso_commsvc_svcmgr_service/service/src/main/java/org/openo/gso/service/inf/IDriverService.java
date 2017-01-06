@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public interface IDriverService {
 
     /**
      * <br>
-     * interface of deleting the sub-service
+     * terminate the network service
      * 
      * @param nodeType type of the node instance
      * @param instanceId id of the node instance
@@ -41,19 +41,29 @@ public interface IDriverService {
      * @throws ApplicationException when fail to delete the sub-service
      * @since GSO 0.5
      */
-    String delete(String nodeType, String instanceId) throws ApplicationException;
+    String terminateNs(String instanceId) throws ApplicationException;
 
+    /**
+     * <br>
+     * delete the network service
+     * @param instanceId
+     * @return
+     * @throws ApplicationException
+     * @since  GSO 0.5
+     */
+    String deleteNs(String instanceId) throws ApplicationException;
+    
     /**
      * <br>
      * create the network service
      * 
-     * @param templateId serviceTemplate id
+     * @param nsdId serviceTemplate id
      * @param paramMap map of the input parameters
      * @return result of the creating
      * @throws ApplicationException when fail to creat the network service
      * @since GSO 0.5
      */
-    String createNS(String templateId, Map<String, String> paramMap) throws ApplicationException;
+    String createNS(String nsdId, Map<String, String> paramMap) throws ApplicationException;
 
     /**
      * <br>
@@ -80,10 +90,10 @@ public interface IDriverService {
 
     /**
      * <br>
-     * set the node type
+     * set the domain type
      * 
-     * @param jobId type of the node
+     * @param domain type of the node
      * @since GSO 0.5
      */
-    void setNodeType(String jobId);
+    void setDomain(String domain);
 }

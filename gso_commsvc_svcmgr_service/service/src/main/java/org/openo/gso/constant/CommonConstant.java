@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 
 package org.openo.gso.constant;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * <br>
  * <p>
@@ -25,6 +28,50 @@ package org.openo.gso.constant;
  */
 public class CommonConstant {
 
+    
+    
+    public static final String CATALOGUE_QUERY_SVC_TMPL_NODETYPE_URL = "/openoapi/catalog/v1/servicetemplates/nesting";
+
+    public static final String SDNO_CREATE_URL = "/openoapi/sdnonslcm/v1/ns";
+    
+    public static final String SDNO_INSTANTIATE_URL = "/openoapi/sdnonslcm/v1/ns/%s/instantiate";
+    
+    public static final String SDNO_TERMINATE_URL = "/openoapi/sdnonslcm/v1/sss/%s/terminate";
+    
+    public static final String SDNO_DELETE_URL = "/openoapi/sdnonslcm/v1/sss/%s";
+
+    public static final String SDNO_QUERY_URL = "/openoapi/sdnonslcm/v1/jobs/%s";
+
+    public static final String NFVO_CREATE_URL = "/openoapi/nslcm/v1/ns";
+
+    public static final String NFVO_INSTANTIATE_URL = "/openoapi/nslcm/v1/ns/%s/instantiate";
+
+    public static final String NFVO_TERMINATE_URL = "/openoapi/nslcm/v1/ns/%s/terminate";
+    
+    public static final String NFVO_DELETE_URL = "/openoapi/nslcm/v1/ns/%s";
+    
+    public static final String NFVO_QUERY_URL = "/openoapi/nslcm/v1/jobs/%s";
+    
+    public final static Map nfvoUrlMap = new HashMap<String, String>();
+    
+    static {
+        nfvoUrlMap.put(Step.CREATE, NFVO_CREATE_URL);
+        nfvoUrlMap.put(Step.INSTANTIATE, NFVO_INSTANTIATE_URL);
+        nfvoUrlMap.put(Step.TERMINATE, NFVO_TERMINATE_URL);
+        nfvoUrlMap.put(Step.DELETE, NFVO_DELETE_URL);
+        nfvoUrlMap.put(Step.QUERY, NFVO_QUERY_URL);
+    }
+    
+    public final static Map sdnoUrlMap = new HashMap<String, String>();
+    
+    static {
+        sdnoUrlMap.put(Step.CREATE, SDNO_CREATE_URL);
+        sdnoUrlMap.put(Step.INSTANTIATE, SDNO_INSTANTIATE_URL);
+        sdnoUrlMap.put(Step.TERMINATE, SDNO_TERMINATE_URL);
+        sdnoUrlMap.put(Step.DELETE, SDNO_DELETE_URL);
+        sdnoUrlMap.put(Step.QUERY, SDNO_QUERY_URL);
+    }
+    
     /**
      * <br>
      * <p>
@@ -147,6 +194,8 @@ public class CommonConstant {
             
         }
     }
+    
+
     
     private CommonConstant(){
         

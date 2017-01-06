@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,9 +49,8 @@ public class DriverServiceImplTest {
                     return rspErr;
                 }
             };
-            svcImpl.delete("tosca.nodes.nfv.dc", "instanceId");
-            svcImpl.delete("tosca.nodes.sdn.overlayvpn", "instanceId");
-            svcImpl.delete("tosca.nodes.nfv.pop", "");
+            svcImpl.deleteNs("instanceId");
+            svcImpl.deleteNs("");
 
         } catch(ApplicationException e) {
 
@@ -70,10 +69,8 @@ public class DriverServiceImplTest {
                     return rsp;
                 }
             };
-            svcImpl.delete("tosca.nodes.nfv.dc", "instanceId");
-            svcImpl.delete("tosca.nodes.sdn.overlayvpn", "instanceId");
-            svcImpl.delete("tosca.nodes.nfv.pop", "");
-            svcImpl.delete("", "instanceId");
+            svcImpl.deleteNs("");
+            svcImpl.deleteNs("instanceId");
 
         } catch(ApplicationException e) {
 
@@ -92,14 +89,14 @@ public class DriverServiceImplTest {
                     return rspExp;
                 }
             };
-            svcImpl.delete("tosca.nodes.nfv.dc", "instanceId");
+            svcImpl.deleteNs("instanceId");
 
         } catch(ApplicationException e) {
 
         }
 
         try {
-            svcImpl.delete("", "instanceId");
+            svcImpl.deleteNs("instanceId");
 
         } catch(ApplicationException e) {
 
@@ -120,7 +117,7 @@ public class DriverServiceImplTest {
     public void testCreateNS() {
 
         DriverServiceImpl nsImpl = new DriverServiceImpl();
-        nsImpl.setNodeType("tosca.nodes.nfv.dc");
+        nsImpl.setDomain("sdno");
         ServiceTemplate svcTmpl = new ServiceTemplate();
         svcTmpl.setServiceTemplateId("id1");
         svcTmpl.setServiceTemplateName("service1");
@@ -145,7 +142,7 @@ public class DriverServiceImplTest {
 
     @Test
     public void testSetNodeType() {
-        svcImpl.setNodeType(CommonConstant.NodeType.NFV_DC_TYPE);
+        svcImpl.setDomain(CommonConstant.Domain.NFVO);
     }
 
 }

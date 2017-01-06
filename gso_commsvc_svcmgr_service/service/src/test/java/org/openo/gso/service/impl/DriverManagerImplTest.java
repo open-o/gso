@@ -26,7 +26,7 @@ import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
-import org.openo.gso.model.drivermo.TerminateParams;
+import org.openo.gso.model.drivermo.ServiceNode;
 import org.openo.gso.service.inf.IDriverService;
 import org.openo.gso.util.RestfulUtil;
 
@@ -49,7 +49,7 @@ public class DriverManagerImplTest {
         DriverManagerImpl impl = new DriverManagerImpl();
         impl.setServiceSegmentDao(serviceSegmentDao);
 
-        TerminateParams params = new TerminateParams();
+        ServiceNode params = new ServiceNode();
         params.setNodeType("tosca.nodes.nfv.dc");
         Map<String, String> inputParameters = new HashMap<String, String>();
         inputParameters.put("serviceId", "1");

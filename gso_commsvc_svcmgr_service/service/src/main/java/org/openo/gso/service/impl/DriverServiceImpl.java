@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,31 +53,11 @@ public class DriverServiceImpl implements IDriverService {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(DriverServiceImpl.class);
 
-    private static final String SDNO_TERMINATE_URL = "/openoapi/sdnonslcm/v1/sss/%s/terminate";
-
-    private static final String NFVO_TERMINATE_URL = "/openoapi/nslcm/v1/ns/%s/terminate";
-
-    private static final String SDNO_QUERY_URL = "/openoapi/sdnonslcm/v1/jobs/%s";
-
-    private static final String NFVO_QUERY_RUL = "/openoapi/nslcm/v1/jobs/%s";
-
-    private static final String SDNO_DELETE_URL = "/openoapi/sdnonslcm/v1/sss/%s";
-
-    private static final String NFVO_DELETE_URL = "/openoapi/nslcm/v1/ns/%s";
-
-    private static final String SDNO_CREATE_URL = "/openoapi/sdnonslcm/v1/ns";
-
-    private static final String NFVO_CREATE_URL = "/openoapi/nslcm/v1/ns";
-
-    private static final String SDNO_INSTANTIATE_URL = "/openoapi/sdnonslcm/v1/ns/%s/instantiate";
-
-    private static final String NFVO_INSTANTIATE_URL = "/openoapi/nslcm/v1/ns/%s/instantiate";
-
-    private String nodeType;
+    private String domain;
 
     /**
      * <br>
-     * delete the service instance
+     * terminate the service instance
      * 
      * @param nodeType type of the node instance
      * @param instanceId id of the sub-service instance
@@ -86,107 +66,40 @@ public class DriverServiceImpl implements IDriverService {
      * @since GSO 0.5
      */
     @Override
-    public String delete(String nodeType, String instanceId) throws ApplicationException {
-
-        if(StringUtils.isEmpty(nodeType)) {
-            LOGGER.error("invalid pramerter: nodeType");
-            throw new ApplicationException(HttpCode.BAD_REQUEST, DriverExceptionID.INVALID_PARAM);
-        }
-
-        if(StringUtils.isEmpty(instanceId)) {
-            LOGGER.error("invalid parameter:instanceId");
-            throw new ApplicationException(HttpCode.BAD_REQUEST, DriverExceptionID.INVALID_PARAM);
-        }
-
-        // 1. terminate action
-        LOGGER.info("terminate ns : begin");
-        String terminateUrl = getUrl(nodeType, instanceId, CommonConstant.Step.TERMINATE);
+    public String terminateNs(String instanceId) throws ApplicationException {
+        // terminate action
+        String terminateUrl = getUrl(domain, instanceId, CommonConstant.Step.TERMINATE);
         RestfulResponse terminateRsp = getOperationResponse(terminateUrl, CommonConstant.MethodType.POST);
-        String terminateContent = null;
-        if(HttpCode.isSucess(terminateRsp.getStatus())) {
-            terminateContent = terminateRsp.getResponseContent();
-        } else {
-            LOGGER.error("fail to terminate the sub-service:{}", nodeType);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
-        }
-        LOGGER.info("terminate ns : end");
-
-        LOGGER.info("query job : begin");
-        // 2. query operation (get operation status)
-        JSONObject terminateObj = JSONObject.fromObject(terminateContent);
-        String jobId = terminateObj.getString("jobId");
-        String queryUrl = getUrl(nodeType, jobId, CommonConstant.Step.QUERY);
-
-        // when the progress is 100% & status is finished, exit the loop query
-
-        while(true) {
-            boolean finished = finishedQuerying(nodeType, queryUrl);
-
-            if(finished) {
-                break;
-            }
-            try {
-                Thread.sleep(10000);
-            } catch(InterruptedException e) {
-                LOGGER.error("fail to finished querying", e);
-            }
-        }
-
-        LOGGER.info("query job : end");
+        LOGGER.info("create ns response content is : {}", terminateRsp.getResponseContent());
+        // Process Network Service Response
+        JSONObject obj = JSONObject.fromObject(terminateRsp.getResponseContent());
+        return obj.getString("jobId");
+    }   
         
-        LOGGER.info("delete ns : begin");
-        // 3. delete operation
-        String deleteUrl = getUrl(nodeType, instanceId, CommonConstant.Step.DELETE);
+    /**
+     * <br>
+     * delete the service instance
+     * @param instanceId id of the sub service instance
+     * @return result response for the action
+     * @throws ApplicationException when fail to complete the action
+     * @since   GSO 0.5
+     */
+    @Override
+    public String deleteNs(String instanceId) throws ApplicationException {
+        // delete action
+        String deleteUrl = getUrl(domain, instanceId, CommonConstant.Step.DELETE);
         RestfulResponse deleteRsp = getOperationResponse(deleteUrl, CommonConstant.MethodType.DELETE);
         String result = "fail";
         if(HttpCode.isSucess(deleteRsp.getStatus())) {
-            LOGGER.info("succeed to delete the sub-service:{}", nodeType);
+            LOGGER.info("succeed to delete the segment");
             result = "success";
         } else {
-            LOGGER.error("fail to delete the sub-service:{}", nodeType);
+            LOGGER.error("fail to delete the segment");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
         }
-        LOGGER.info("delete ns : end");
         return result;
-    }
-
-    /**
-     * <br>
-     * query operation
-     * 
-     * @param nodeType type of the node instance
-     * @param queryUrl url for query operation
-     * @param queryFlag flag to do the query if true
-     * @return whether the query operation is ok
-     * @throws ApplicationException when fail to query
-     * @since GSO 0.5
-     */
-    private boolean finishedQuerying(String nodeType, String queryUrl) throws ApplicationException {
-        RestfulResponse queryRsp = getOperationResponse(queryUrl, CommonConstant.MethodType.GET);
-        String queryContent = null;
-        if(HttpCode.isSucess(queryRsp.getStatus())) {
-            queryContent = queryRsp.getResponseContent();
-        } else {
-            LOGGER.error("fail to query the operation stuas:{}", nodeType);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
-        }
-
-        // process the query result
-        JSONObject queryObj = JSONObject.fromObject(queryContent);
-        JSONObject rspDesc = queryObj.getJSONObject("responseDescriptor");
-
-        boolean flag = false;
-        if("100".equals(rspDesc.get("progress")) && "finished".equals(rspDesc.get("status"))) {
-            LOGGER.info("succeed to terminate the sub-service:{}", nodeType);
-            flag = true;
-        } else if("error".equals(rspDesc.get("status"))) {
-            LOGGER.error("error in the result when query the operation status");
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
-        } else {
-            // do nothing
-        }
-        return flag;
-    }
+    }    
+            
 
     /**
      * <br>
@@ -210,44 +123,23 @@ public class DriverServiceImpl implements IDriverService {
      * <br>
      * get url for the operation
      * 
-     * @param nodeType type of the node instance
+     * @param domain of the node instance
      * @param variable variable should be put in the url
      * @param step step of the operation (terminate,query,delete)
      * @return url can be used to invoke corresponding service
      * @since GSO 0.5
      */
-    private String getUrl(String nodeType, String variable, String step) {
+    private String getUrl(String domain, String variable, String step) {
 
         String url = StringUtils.EMPTY;
-        String nfvoUrl = StringUtils.EMPTY;
-        String sdnoUrl = StringUtils.EMPTY;
+        String originalUrl = StringUtils.EMPTY;
 
-        if(CommonConstant.Step.CREATE.equals(step)) {
-            nfvoUrl = NFVO_CREATE_URL;
-            sdnoUrl = SDNO_CREATE_URL;
-        } else if(CommonConstant.Step.INSTANTIATE.equals(step)) {
-            nfvoUrl = NFVO_INSTANTIATE_URL;
-            sdnoUrl = SDNO_INSTANTIATE_URL;
-        } else if(CommonConstant.Step.TERMINATE.equals(step)) {
-            nfvoUrl = NFVO_TERMINATE_URL;
-            sdnoUrl = SDNO_TERMINATE_URL;
-        } else if(CommonConstant.Step.QUERY.equals(step)) {
-            nfvoUrl = NFVO_QUERY_RUL;
-            sdnoUrl = SDNO_QUERY_URL;
-        } else if(CommonConstant.Step.DELETE.equals(step)) {
-            nfvoUrl = NFVO_DELETE_URL;
-            sdnoUrl = SDNO_DELETE_URL;
-        } else {
-            // do nothing
-        }
-
-        if(CommonConstant.NodeType.NFV_DC_TYPE.equals(nodeType)
-                || CommonConstant.NodeType.NFV_POP_TYPE.equals(nodeType)
-                || CommonConstant.NodeType.NFV_VBRAS_TYPE.equals(nodeType)) {
-            url = String.format(nfvoUrl, variable);
-        } else if(CommonConstant.NodeType.SDN_OVERLAYVPN_TYPE.equals(nodeType)
-                || CommonConstant.NodeType.SDN_UNDERLAYVPN_TYPE.equals(nodeType)) {
-            url = String.format(sdnoUrl, variable);
+        if(CommonConstant.Domain.NFVO.equals(domain)) {
+            originalUrl = (String) CommonConstant.nfvoUrlMap.get(step);
+            url = String.format(originalUrl, variable);
+        } else if(CommonConstant.Domain.SDNO.equals(domain)) {
+            originalUrl = (String) CommonConstant.sdnoUrlMap.get(step);
+            url = String.format(originalUrl, variable);
         } else {
             // do nothing
         }
@@ -265,7 +157,7 @@ public class DriverServiceImpl implements IDriverService {
      * @since GSO 0.5
      */
     @Override
-    public String createNS(String templateId, Map<String, String> inputMap) throws ApplicationException {
+    public String createNS(String nsdId, Map<String, String> inputMap) throws ApplicationException {
 
         // Step 1: Prepare Network Service Request
         NSRequest oRequest = new NSRequest();
@@ -274,12 +166,12 @@ public class DriverServiceImpl implements IDriverService {
 
         String descKey = "serviceDescription";
 
-        oRequest.setNsdId(templateId);
+        oRequest.setNsdId(nsdId);
         oRequest.setNsName(inputMap.get(nsNameKey));
         oRequest.setDescription(inputMap.get(descKey));
 
         Map<String, String> paramsMap = new HashMap<String, String>();
-        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(nodeType, null, CommonConstant.Step.CREATE));
+        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, null, CommonConstant.Step.CREATE));
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
 
         // Step 2: Send Network Service Request
@@ -287,7 +179,7 @@ public class DriverServiceImpl implements IDriverService {
         req = JsonUtil.marshal(oRequest);
 
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, req, null);
-        LOGGER.warn("create ns response content is {}", rsp.getResponseContent());
+        LOGGER.info("create ns response content is : {}", rsp.getResponseContent());
 
         // Step 3: Process Network Service Response
         JSONObject obj = JSONObject.fromObject(rsp.getResponseContent());
@@ -317,14 +209,14 @@ public class DriverServiceImpl implements IDriverService {
 
         Map<String, String> paramsMap = new HashMap<String, String>();
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
-        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(nodeType, instanceId, CommonConstant.Step.INSTANTIATE));
+        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, instanceId, CommonConstant.Step.INSTANTIATE));
 
         // Step 2: Send Network Service Instantiate Request
         String networkSvcReq = "";
         networkSvcReq = JsonUtil.marshal(oRequest);
 
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, networkSvcReq, null);
-        LOGGER.warn("instantiate ns response content is {}", rsp.getResponseContent());
+        LOGGER.info("instantiate ns response content is : {}", rsp.getResponseContent());
 
         // Step 3: Process Network Service Instantiate Response
         JSONObject obj = JSONObject.fromObject(rsp.getResponseContent());
@@ -345,7 +237,7 @@ public class DriverServiceImpl implements IDriverService {
 
         // Get url based on node type
         Map<String, String> paramsMap = new HashMap<String, String>();
-        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(nodeType, jobId, CommonConstant.Step.QUERY));
+        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, jobId, CommonConstant.Step.QUERY));
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
 
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, null, null);
@@ -358,9 +250,8 @@ public class DriverServiceImpl implements IDriverService {
     }
 
     @Override
-    public void setNodeType(String type) {
-        nodeType = type;
-
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
 }

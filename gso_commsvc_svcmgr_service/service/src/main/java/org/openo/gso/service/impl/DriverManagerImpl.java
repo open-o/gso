@@ -42,7 +42,6 @@ import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.model.drivermo.NsProgressStatus;
 import org.openo.gso.model.drivermo.ServiceNode;
 import org.openo.gso.model.drivermo.ServiceTemplate;
-import org.openo.gso.model.drivermo.TerminateParams;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.restproxy.inf.ICatalogProxy;
@@ -451,7 +450,7 @@ public class DriverManagerImpl implements IDriverManager {
             LOGGER.error("Service interface not initialised");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
         }
-        serviceInf.setNodeType(serviceNode.getNodeType());
+        serviceInf.setDomain(domain);
 
         // Step 3: Call the Catalogue service to get service template id
         ServiceTemplate svcTmpl = getSvcTmplByNodeType(serviceNode);
@@ -486,8 +485,8 @@ public class DriverManagerImpl implements IDriverManager {
         LOGGER.warn("terminate json body is {}", jsonBody);
         
         // transfer the input into input parameters model
-        TerminateParams inputs = null;
-        inputs = JsonUtil.unMarshal(jsonBody, TerminateParams.class);
+        ServiceNode inputs = null;
+        inputs = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
 
         // get nodeType from the request body
         String nodeType = inputs.getNodeType();
@@ -507,7 +506,7 @@ public class DriverManagerImpl implements IDriverManager {
         LOGGER.info("start to delete the service instance");
         String status = "fail";
         try {
-            status = serviceInf.delete(nodeType, instanceId);
+            status = serviceInf.deleteNs(instanceId);
         } catch(Exception e) {
             LOGGER.error("fail to delete the sub-service", e);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
