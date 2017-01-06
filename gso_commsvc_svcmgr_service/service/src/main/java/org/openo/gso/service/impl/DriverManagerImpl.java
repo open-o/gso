@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -164,69 +164,6 @@ public class DriverManagerImpl implements IDriverManager {
     }
 
     /**
-     * Create service instance.<br/>
-     * 
-     * @param serviceModel service instance
-     * @param httpRequest http request
-     * @throws ApplicationException when operate DB or parameter is wrong.
-     * @since GSO 0.5
-     */
-    @Override
-    public RestfulResponse terminateService(HttpServletRequest httpRequest) throws ApplicationException {
-        String body = RestUtils.getRequestBody(httpRequest);
-        LOGGER.warn("terminate request body is {}", body);
-        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}");
-        
-        LOGGER.warn("terminate json body is {}", jsonBody);
-        
-        // transfer the input into input parameters model
-        TerminateParams inputs = null;
-        inputs = JsonUtil.unMarshal(jsonBody, TerminateParams.class);
-
-        // get nodeType from the request body
-        String nodeType = inputs.getNodeType();
-
-        LOGGER.info("nodeType is {}", nodeType);
-        // get instaceId & serviceId value from the map
-        Map<String, String> instIdMap = inputs.getInputParameters();
-
-        String serviceId = instIdMap.get("serviceId");
-        StringBuilder builder = new StringBuilder(nodeType);
-        builder.append(".instanceId");
-        String instKey = builder.toString();
-        String instanceId = instIdMap.get(instKey);
-        LOGGER.info("id of instance to be deleted is {}", instanceId);
-
-        // invoke the SDNO or NFVO to delete the instance
-        LOGGER.info("start to delete the service instance");
-        String status = "fail";
-        try {
-            status = serviceInf.delete(nodeType, instanceId);
-        } catch(Exception e) {
-            LOGGER.error("fail to delete the sub-service", e);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
-        }
-
-        LOGGER.info("end to delete the service instance");
-        
-
-        RestfulResponse rsp = new RestfulResponse();
-        if("success".equals(status)) {
-            // save the segment information into the database
-            ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
-            serviceSegment.setServiceId(serviceId);
-            serviceSegment.setServiceSegmentId(instanceId);
-
-            serviceSegmentDao.delete(serviceSegment);
-            LOGGER.warn("succeed to delete the servcie segment from t_lcm_service_segment");
-        }else{
-            rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
-        }
-        return rsp;
-
-    }
-
-    /**
      * <br/>
      * 
      * @param nodes
@@ -280,64 +217,6 @@ public class DriverManagerImpl implements IDriverManager {
         }
 
         return nodeSequence.indexOf(nodeName) + 1;
-    }
-
-    /**
-     * Instantiate service instance.<br/>
-     * 
-     * @param serviceNode service instance
-     * @param httpRequest http request
-     * @throws ApplicationException when parameter is wrong.
-     * @since GSO 0.5
-     */
-    @Override
-    public RestfulResponse instantiateService(HttpServletRequest httpRequest) throws ApplicationException {
-
-        String body = RestUtils.getRequestBody(httpRequest);
-
-        LOGGER.warn("instantiate request body is {}", body);
-        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}");
-        
-        LOGGER.warn("instantiate json body is {}", jsonBody);
-        // Step 0: Transfer the input into input parameters model
-        ServiceNode serviceNode = null;
-        serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
-
-        // Step 1:Validate input parameters
-        String nodeType = serviceNode.getNodeType();
-
-        if((null == nodeType) || (null == serviceNode.getInputParameters())) {
-            LOGGER.error("Input parameters from lcm/workflow are empty");
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
-        }
-
-        if(null == serviceInf) {
-            LOGGER.error("Service interface not initialised");
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
-        }
-        serviceInf.setNodeType(serviceNode.getNodeType());
-
-        // Step 3: Call the Catalogue service to get service template id
-        ServiceTemplate svcTmpl = getSvcTmplByNodeType(serviceNode);
-        if(null == svcTmpl) {
-            LOGGER.error("Failed to get service template from catalogue module");
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
-                    DriverExceptionID.FAILED_TO_SVCTMPL_CATALOGUE);
-        }
-
-        //nsdId of the nfvo is "id" in the response, not the "servcice template id"
-        String nsdId = StringUtils.EMPTY;
-        if(serviceNode.getNodeType().contains("nfv")){
-            nsdId = svcTmpl.getId();
-        }else if(serviceNode.getNodeType().contains("sdn")){
-            nsdId = svcTmpl.getServiceTemplateId();
-        }else{
-            LOGGER.error("invalid nodeType : {}", serviceNode.getNodeType());
-        }
-            
-        
-        
-        return createNetworkSubService(serviceNode, nsdId, httpRequest);
     }
 
     private RestfulResponse createNetworkSubService(ServiceNode serviceNode, String templateId,
@@ -537,6 +416,124 @@ public class DriverManagerImpl implements IDriverManager {
 
     @Override
     public RestfulResponse createNs(HttpServletRequest servletReq, String domain) throws ApplicationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public RestfulResponse deleteNs(String nsInstanceId, String domain) throws ApplicationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public RestfulResponse instantiateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain)
+            throws ApplicationException {
+        String body = RestUtils.getRequestBody(httpRequest);
+
+        LOGGER.warn("instantiate request body is {}", body);
+        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}");
+        
+        LOGGER.warn("instantiate json body is {}", jsonBody);
+        // Step 0: Transfer the input into input parameters model
+        ServiceNode serviceNode = null;
+        serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
+
+        // Step 1:Validate input parameters
+        String nodeType = serviceNode.getNodeType();
+
+        if((null == nodeType) || (null == serviceNode.getInputParameters())) {
+            LOGGER.error("Input parameters from lcm/workflow are empty");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
+        }
+
+        if(null == serviceInf) {
+            LOGGER.error("Service interface not initialised");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
+        }
+        serviceInf.setNodeType(serviceNode.getNodeType());
+
+        // Step 3: Call the Catalogue service to get service template id
+        ServiceTemplate svcTmpl = getSvcTmplByNodeType(serviceNode);
+        if(null == svcTmpl) {
+            LOGGER.error("Failed to get service template from catalogue module");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+                    DriverExceptionID.FAILED_TO_SVCTMPL_CATALOGUE);
+        }
+
+        //nsdId of the nfvo is "id" in the response, not the "servcice template id"
+        String nsdId = StringUtils.EMPTY;
+        if(serviceNode.getNodeType().contains("nfv")){
+            nsdId = svcTmpl.getId();
+        }else if(serviceNode.getNodeType().contains("sdn")){
+            nsdId = svcTmpl.getServiceTemplateId();
+        }else{
+            LOGGER.error("invalid nodeType : {}", serviceNode.getNodeType());
+        }
+            
+        
+        
+        return createNetworkSubService(serviceNode, nsdId, httpRequest);
+    }
+
+    @Override
+    public RestfulResponse terminateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain)
+            throws ApplicationException {
+        String body = RestUtils.getRequestBody(httpRequest);
+        LOGGER.warn("terminate request body is {}", body);
+        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}");
+        
+        LOGGER.warn("terminate json body is {}", jsonBody);
+        
+        // transfer the input into input parameters model
+        TerminateParams inputs = null;
+        inputs = JsonUtil.unMarshal(jsonBody, TerminateParams.class);
+
+        // get nodeType from the request body
+        String nodeType = inputs.getNodeType();
+
+        LOGGER.info("nodeType is {}", nodeType);
+        // get instaceId & serviceId value from the map
+        Map<String, String> instIdMap = inputs.getInputParameters();
+
+        String serviceId = instIdMap.get("serviceId");
+        StringBuilder builder = new StringBuilder(nodeType);
+        builder.append(".instanceId");
+        String instKey = builder.toString();
+        String instanceId = instIdMap.get(instKey);
+        LOGGER.info("id of instance to be deleted is {}", instanceId);
+
+        // invoke the SDNO or NFVO to delete the instance
+        LOGGER.info("start to delete the service instance");
+        String status = "fail";
+        try {
+            status = serviceInf.delete(nodeType, instanceId);
+        } catch(Exception e) {
+            LOGGER.error("fail to delete the sub-service", e);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
+        }
+
+        LOGGER.info("end to delete the service instance");
+        
+
+        RestfulResponse rsp = new RestfulResponse();
+        if("success".equals(status)) {
+            // save the segment information into the database
+            ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
+            serviceSegment.setServiceId(serviceId);
+            serviceSegment.setServiceSegmentId(instanceId);
+
+            serviceSegmentDao.delete(serviceSegment);
+            LOGGER.warn("succeed to delete the servcie segment from t_lcm_service_segment");
+        }else{
+            rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
+        }
+        return rsp;
+
+    }
+
+    @Override
+    public RestfulResponse getNsProgress(String jobId, String domain) throws ApplicationException {
         // TODO Auto-generated method stub
         return null;
     }

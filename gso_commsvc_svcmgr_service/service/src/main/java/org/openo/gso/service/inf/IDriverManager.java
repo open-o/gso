@@ -35,22 +35,26 @@ public interface IDriverManager {
     /**
      * instantiate service <br/>
      * 
+     * @param nsInstanceId uuid of service instance
      * @param httpRequest - http request
+     * @param domain SDNO or NFVO
      * @return restful response
      * @throws ApplicationException when fail to instantiate network service
      * @since GSO 0.5
      */
-    RestfulResponse instantiateService(HttpServletRequest httpRequest) throws ApplicationException;
+    RestfulResponse instantiateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain) throws ApplicationException;
     
     /**
      * terminate service instance.<br/>
      * 
+     * @param nsInstanceId uuid of service instance
      * @param httpRequest http request
+     * @param domain SDNO or NFVO
      * @return restful response
-     * @throws ApplicationException when operate DB or parameter is wrong.
+     * @throws ApplicationException when fail to terminate network service
      * @since GSO 0.5
      */
-    RestfulResponse terminateService(HttpServletRequest httpRequest) throws ApplicationException;
+    RestfulResponse terminateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain) throws ApplicationException;
 
     /**
      * create service<br>
@@ -62,5 +66,27 @@ public interface IDriverManager {
      * @since  GSO 0.5
      */
     RestfulResponse createNs(HttpServletRequest servletReq, String domain) throws ApplicationException;
+
+    /**
+     * delete service<br>
+     * 
+     * @param nsInstanceId uuid of service instance
+     * @param domain SDNO or NFVO
+     * @return response
+     * @throws ApplicationException when fail to delete network service
+     * @since  GSO 0.5
+     */
+    RestfulResponse deleteNs(String nsInstanceId, String domain) throws ApplicationException;
+
+    /**
+     * query service job status<br>
+     * 
+     * @param jobId uuid for service job
+     * @param domain SDNO or NFVO
+     * @return response
+     * @throws ApplicationException when fail to query service job status
+     * @since  GSO 0.5
+     */
+    RestfulResponse getNsProgress(String jobId, String domain) throws ApplicationException;
 
 }

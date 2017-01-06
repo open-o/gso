@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public class DriverManagerImplTest {
                 }
             };
 
-            impl.terminateService(httpRequest);
+            //impl.terminateService(httpRequest);
         } catch(ApplicationException e) {
             e.printStackTrace();
         }
@@ -108,7 +108,7 @@ public class DriverManagerImplTest {
                 }
             };
             DriverManagerImpl impl = new DriverManagerImpl();
-            impl.instantiateService(httpRequest);
+            //impl.instantiateService(httpRequest);
         } catch(ApplicationException e) {
 
         }

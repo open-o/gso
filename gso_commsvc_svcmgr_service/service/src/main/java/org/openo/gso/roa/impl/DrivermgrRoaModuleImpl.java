@@ -107,12 +107,13 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     @Override
     public Response instantiateNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
 
-        RestfulResponse rsp = driverMgr.instantiateService(servletReq);
-        if(rsp.getStatus() / 200 == 0) {
-            return Response.status(200).build();
-        } else {
-            return Response.status(500).build();
-        }
+//        RestfulResponse rsp = driverMgr.instantiateService(servletReq);
+//        if(rsp.getStatus() / 200 == 0) {
+//            return Response.status(200).build();
+//        } else {
+//            return Response.status(500).build();
+//        }
+        return null;
     }
     
 
@@ -126,12 +127,13 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response terminateNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.terminateService(servletReq);
-        if(rsp.getStatus() / 200 == 0) {
-            return Response.status(200).build();
-        } else {
-            return Response.status(500).build();
-        }
+//        RestfulResponse rsp = driverMgr.terminateService(servletReq);
+//        if(rsp.getStatus() / 200 == 0) {
+//            return Response.status(200).build();
+//        } else {
+//            return Response.status(500).build();
+//        }
+        return null;
     }
     
     /**
@@ -160,22 +162,31 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @since   GSO 0.5
      */
     @Override
-    public Response deleteSdnoNs() throws ApplicationException {
-        // TODO Auto-generated method stub
-        return null;
+    public Response deleteSdnoNs(String nsInstanceId) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.deleteNs(nsInstanceId, CommonConstant.Domain.SDNO);
+        if(rsp.getStatus() / 200 == 0) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(500).build();
+        }
     }
 
     /**
      * Query SDNO job status<br>
      * 
+     * @param jobId uuid of SDNO service job
      * @return response
      * @throws ApplicationException when fail to query job status
      * @since   GSO 0.5
      */
     @Override
-    public Response querySdnoJobStatus() throws ApplicationException {
-        // TODO Auto-generated method stub
-        return null;
+    public Response querySdnoJobStatus(String jobId) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.getNsProgress(jobId, CommonConstant.Domain.SDNO);
+        if(rsp.getStatus() / 200 == 0) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(500).build();
+        }
     }
 
     /**
@@ -187,9 +198,13 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @since   GSO 0.5
      */
     @Override
-    public Response instantiateSdnoNs(HttpServletRequest servletReq) throws ApplicationException {
-        // TODO Auto-generated method stub
-        return null;
+    public Response instantiateSdnoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, servletReq, CommonConstant.Domain.SDNO);
+        if(rsp.getStatus() / 200 == 0) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(500).build();
+        }
     }
 
     /**
@@ -201,9 +216,13 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @since   GSO 0.5
      */
     @Override
-    public Response terminateSdnoNs(HttpServletRequest servletReq) throws ApplicationException {
-        // TODO Auto-generated method stub
-        return null;
+    public Response terminateSdnoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.terminateNs(nsInstanceId, servletReq, CommonConstant.Domain.SDNO);
+        if(rsp.getStatus() / 200 == 0) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(500).build();
+        }
     }
 
 }

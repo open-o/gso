@@ -22,6 +22,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -55,6 +56,7 @@ public interface ISDNODrivermgrRoaModule {
     /**
      * Delete the SDNO instance<br>
      * 
+     * @param nsInstanceId uuid of service instance
      * @return response
      * @throws ApplicationException when fail to delete the network service
      * @since  GSO 0.5
@@ -63,11 +65,12 @@ public interface ISDNODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns/{nsInstanceId}")
-    Response deleteSdnoNs() throws ApplicationException;
+    Response deleteSdnoNs(@PathParam("nsInstanceId") String nsInstanceId) throws ApplicationException;
 
     /**
      * Query status of the SDNO instance<br>
      * 
+     * @param jobId uuid for SDNO job
      * @return status of the SDNO instance
      * @throws ApplicationException when fail to query status of the SDNO instance
      * @since  GSO 0.5
@@ -76,12 +79,13 @@ public interface ISDNODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/jobs/{jobId}")
-    Response querySdnoJobStatus() throws ApplicationException;
+    Response querySdnoJobStatus(@PathParam("jobId") String jobId) throws ApplicationException;
     
     /**
      * <br>
      * Instantiate the SDNO instance
      * 
+     * @param nsInstanceId uudi of service instance
      * @param servletReq http request
      * @return Response
      * @throws ApplicationException when fail to instantiate network service
@@ -91,11 +95,12 @@ public interface ISDNODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/{nsInstanceId}/instantiate")
-    Response instantiateSdnoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response instantiateSdnoNs(@PathParam("nsInstanceId") String nsInstanceId, @Context HttpServletRequest servletReq) throws ApplicationException;
 
     /**
      * Terminate the SDNO instance<br>
      * 
+     * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return response 
      * @throws ApplicationException when fail to terminate the SDNO instance
@@ -105,6 +110,6 @@ public interface ISDNODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/{nsInstanceId}/terminate")
-    Response terminateSdnoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response terminateSdnoNs(@PathParam("nsInstanceId") String nsInstanceId, @Context HttpServletRequest servletReq) throws ApplicationException;
 
 }
