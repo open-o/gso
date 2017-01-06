@@ -66,74 +66,88 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response createNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
-        // TODO Auto-generated method stub
-        return null;
+        RestfulResponse rsp = driverMgr.createNs(servletReq, CommonConstant.Domain.NFVO);
+        if(rsp.getStatus() / 200 == 0) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(500).build();
+        }
     }
 
     /**
      * Delete NFVO service instance<br>
      *
+     * @param nsInstanceId uudi of service instance
      * @return response
      * @throws ApplicationException when fail to delete service instance
      * @since   GSO 0.5
      */
     @Override
-    public Response deleteNfvoNs() throws ApplicationException {
-        // TODO Auto-generated method stub
-        return null;
+    public Response deleteNfvoNs(String nsInstanceId) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.deleteNs(nsInstanceId, CommonConstant.Domain.NFVO);
+        if(rsp.getStatus() / 200 == 0) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(500).build();
+        }
     }
 
     /**
      * Query NFVO job status<br>
      * 
+     * @param jobId uudi of NFVO job
      * @return response 
      * @throws ApplicationException fail to query job status
      * @since   GSO 0.5
      */
     @Override
-    public Response queryNfvoJobStatus() throws ApplicationException {
-        // TODO Auto-generated method stub
-        return null;
+    public Response queryNfvoJobStatus(String jobId) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.getNsProgress(jobId, CommonConstant.Domain.NFVO);
+        if(rsp.getStatus() / 200 == 0) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(500).build();
+        }
     }
 
     /**
      * Instantiate NFVO service instance<br>
      * 
+     * @param nsInstanceId uudi of service instance
      * @param servletReq http request
      * @return response
      * @throws ApplicationException when fail to instantiate the service instance
      * @since   GSO 0.5
      */
     @Override
-    public Response instantiateNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
+    public Response instantiateNfvoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
 
-//        RestfulResponse rsp = driverMgr.instantiateService(servletReq);
-//        if(rsp.getStatus() / 200 == 0) {
-//            return Response.status(200).build();
-//        } else {
-//            return Response.status(500).build();
-//        }
-        return null;
+        RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, servletReq, CommonConstant.Domain.NFVO);
+        if(rsp.getStatus() / 200 == 0) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(500).build();
+        }
     }
     
 
     /**
      * Terminate NFVO service instance.<br/>
      * 
+     * @param nsInstanceId uudi of service instance
      * @param servletReq http request
      * @return response
      * @throws ApplicationException when fail to terminate the service instance
      * @since GSO 0.5
      */
     @Override
-    public Response terminateNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
-//        RestfulResponse rsp = driverMgr.terminateService(servletReq);
-//        if(rsp.getStatus() / 200 == 0) {
-//            return Response.status(200).build();
-//        } else {
-//            return Response.status(500).build();
-//        }
-        return null;
+    public Response terminateNfvoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.terminateNs(nsInstanceId, servletReq, CommonConstant.Domain.NFVO);
+        if(rsp.getStatus() / 200 == 0) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(500).build();
+        }
     }
     
     /**

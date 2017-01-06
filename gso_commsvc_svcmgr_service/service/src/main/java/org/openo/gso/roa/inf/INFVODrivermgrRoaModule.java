@@ -22,6 +22,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -39,7 +40,7 @@ import org.openo.gso.commsvc.common.Exception.ApplicationException;
 public interface INFVODrivermgrRoaModule {
 
     /**
-     * Terminate the NFVO instance.<br/>
+     * Create the NFVO instance.<br/>
      * 
      * @param servletReq http request
      * @return response
@@ -54,7 +55,8 @@ public interface INFVODrivermgrRoaModule {
     
     /**
      * Delete the NFVO instance<br>
-     * 
+     
+     * @param nsInstanceId uudi of service instance
      * @return response
      * @throws ApplicationException when fail to delete the network service
      * @since  GSO 0.5
@@ -63,11 +65,12 @@ public interface INFVODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns/{nsInstanceId}")
-    Response deleteNfvoNs() throws ApplicationException;
+    Response deleteNfvoNs(@PathParam("nsInstanceId") String nsInstanceId) throws ApplicationException;
 
     /**
      * Query status of the NFVO instance<br>
      * 
+     * @param jobId uudi of NFVO job
      * @return status of the NFVO instance
      * @throws ApplicationException when fail to query status of the NFVO instance
      * @since  GSO 0.5
@@ -76,12 +79,13 @@ public interface INFVODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/jobs/{jobId}")
-    Response queryNfvoJobStatus() throws ApplicationException;
+    Response queryNfvoJobStatus(@PathParam("jobId") String jobId) throws ApplicationException;
     
     /**
      * <br>
      * Instantiate the NFVO instance
      * 
+     * @param nsInstanceId uudi of service instance
      * @param servletReq http request
      * @return Response
      * @throws ApplicationException when fail to instantiate network service
@@ -91,11 +95,12 @@ public interface INFVODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/{nsInstanceId}/instantiate")
-    Response instantiateNfvoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response instantiateNfvoNs(@PathParam("nsInstanceId") String nsInstanceId, @Context HttpServletRequest servletReq) throws ApplicationException;
 
     /**
      * Terminate the NFVO instance<br>
      * 
+     * @param nsInstanceId uudi of service instance
      * @param servletReq http request
      * @return response 
      * @throws ApplicationException when fail to terminate the NFVO instance
@@ -105,6 +110,6 @@ public interface INFVODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/{nsInstanceId}/terminate")
-    Response terminateNfvoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response terminateNfvoNs(@PathParam("nsInstanceId") String  nsInstanceId, @Context HttpServletRequest servletReq) throws ApplicationException;
 
 }

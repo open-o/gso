@@ -40,7 +40,7 @@ import org.openo.gso.commsvc.common.Exception.ApplicationException;
 public interface ISDNODrivermgrRoaModule {
 
     /**
-     * Terminate the SDNO instance.<br/>
+     * Create the SDNO instance.<br/>
      * 
      * @param servletReq http request
      * @return response
