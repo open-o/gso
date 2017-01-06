@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.roa.inf.INFVODrivermgrRoaModule;
 import org.openo.gso.roa.inf.ISDNODrivermgrRoaModule;
 import org.openo.gso.service.inf.IDriverManager;
@@ -64,7 +65,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @since   GSO 0.5
      */
     @Override
-    public Response createNetworkService(HttpServletRequest servletReq) throws ApplicationException {
+    public Response createNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -77,7 +78,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @since   GSO 0.5
      */
     @Override
-    public Response deleteNetworkService() throws ApplicationException {
+    public Response deleteNfvoNs() throws ApplicationException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -90,7 +91,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @since   GSO 0.5
      */
     @Override
-    public Response queryJobStatus() throws ApplicationException {
+    public Response queryNfvoJobStatus() throws ApplicationException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -104,7 +105,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @since   GSO 0.5
      */
     @Override
-    public Response instantiateNetworkService(HttpServletRequest servletReq) throws ApplicationException {
+    public Response instantiateNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
 
         RestfulResponse rsp = driverMgr.instantiateService(servletReq);
         if(rsp.getStatus() / 200 == 0) {
@@ -124,7 +125,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @since GSO 0.5
      */
     @Override
-    public Response terminateNetworkService(HttpServletRequest servletReq) throws ApplicationException {
+    public Response terminateNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
         RestfulResponse rsp = driverMgr.terminateService(servletReq);
         if(rsp.getStatus() / 200 == 0) {
             return Response.status(200).build();
@@ -142,9 +143,13 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @since   GSO 0.5
      */
     @Override
-    public Response createNs(HttpServletRequest servletReq) throws ApplicationException {
-        // TODO Auto-generated method stub
-        return null;
+    public Response createSdnoNs(HttpServletRequest servletReq) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.createNs(servletReq, CommonConstant.Domain.SDNO);
+        if(rsp.getStatus() / 200 == 0) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(500).build();
+        }
     }
 
     /**
@@ -155,7 +160,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @since   GSO 0.5
      */
     @Override
-    public Response deleteNs() throws ApplicationException {
+    public Response deleteSdnoNs() throws ApplicationException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -168,7 +173,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @since   GSO 0.5
      */
     @Override
-    public Response queryNsJobStatus() throws ApplicationException {
+    public Response querySdnoJobStatus() throws ApplicationException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -182,7 +187,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @since   GSO 0.5
      */
     @Override
-    public Response instantiateNs(HttpServletRequest servletReq) throws ApplicationException {
+    public Response instantiateSdnoNs(HttpServletRequest servletReq) throws ApplicationException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -196,7 +201,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @since   GSO 0.5
      */
     @Override
-    public Response terminateNs(HttpServletRequest servletReq) throws ApplicationException {
+    public Response terminateSdnoNs(HttpServletRequest servletReq) throws ApplicationException {
         // TODO Auto-generated method stub
         return null;
     }

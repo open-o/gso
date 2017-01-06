@@ -535,4 +535,10 @@ public class DriverManagerImpl implements IDriverManager {
 
     }
 
+    @Override
+    public RestfulResponse createNs(HttpServletRequest servletReq, String domain) throws ApplicationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

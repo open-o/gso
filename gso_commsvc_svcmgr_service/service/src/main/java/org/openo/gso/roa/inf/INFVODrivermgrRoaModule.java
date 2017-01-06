@@ -50,7 +50,7 @@ public interface INFVODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns")
-    Response createNetworkService(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response createNfvoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
     
     /**
      * Delete the NFVO instance<br>
@@ -63,7 +63,7 @@ public interface INFVODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns/{nsInstanceId}")
-    Response deleteNetworkService() throws ApplicationException;
+    Response deleteNfvoNs() throws ApplicationException;
 
     /**
      * Query status of the NFVO instance<br>
@@ -76,7 +76,7 @@ public interface INFVODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/jobs/{jobId}")
-    Response queryJobStatus() throws ApplicationException;
+    Response queryNfvoJobStatus() throws ApplicationException;
     
     /**
      * <br>
@@ -91,7 +91,7 @@ public interface INFVODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/{nsInstanceId}/instantiate")
-    Response instantiateNetworkService(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response instantiateNfvoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
 
     /**
      * Terminate the NFVO instance<br>
@@ -105,6 +105,6 @@ public interface INFVODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/{nsInstanceId}/terminate")
-    Response terminateNetworkService(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response terminateNfvoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
 
 }

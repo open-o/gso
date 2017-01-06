@@ -56,7 +56,6 @@ public class CommonConstant {
      * <p>
      * </p>
      * nodeType constant
-     * @author
      * @version     GSO 0.5  2016/9/3
      */
     public static class NodeType {
@@ -87,7 +86,6 @@ public class CommonConstant {
      * <p>
      * </p>
      * method type constant
-     * @author
      * @version     GSO 0.5  2016/9/3
      */
     public static class MethodType {
@@ -110,7 +108,6 @@ public class CommonConstant {
      * <p>
      * </p>
      * step constant
-     * @author
      * @version     GSO 0.5  2016/9/3
      */
     public static class Step {
@@ -131,6 +128,24 @@ public class CommonConstant {
             
         }
 
+    }
+
+    /**
+     * <br>
+     * <p>
+     * </p>
+     * domain constant
+     * @version     GSO 0.5  2017/1/6
+     */
+    public static class Domain {
+        
+        public static final String SDNO = "sdno";
+        
+        public static final String NFVO = "nfvo";
+        
+        private Domain(){
+            
+        }
     }
     
     private CommonConstant(){

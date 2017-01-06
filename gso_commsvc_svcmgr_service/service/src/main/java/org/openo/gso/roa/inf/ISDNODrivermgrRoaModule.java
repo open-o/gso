@@ -50,7 +50,7 @@ public interface ISDNODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns")
-    Response createNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response createSdnoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
     
     /**
      * Delete the SDNO instance<br>
@@ -63,7 +63,7 @@ public interface ISDNODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns/{nsInstanceId}")
-    Response deleteNs() throws ApplicationException;
+    Response deleteSdnoNs() throws ApplicationException;
 
     /**
      * Query status of the SDNO instance<br>
@@ -76,7 +76,7 @@ public interface ISDNODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/jobs/{jobId}")
-    Response queryNsJobStatus() throws ApplicationException;
+    Response querySdnoJobStatus() throws ApplicationException;
     
     /**
      * <br>
@@ -91,7 +91,7 @@ public interface ISDNODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/{nsInstanceId}/instantiate")
-    Response instantiateNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response instantiateSdnoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
 
     /**
      * Terminate the SDNO instance<br>
@@ -105,6 +105,6 @@ public interface ISDNODrivermgrRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/{nsInstanceId}/terminate")
-    Response terminateNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response terminateSdnoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
 
 }

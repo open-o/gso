@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,19 @@ import org.openo.gso.commsvc.common.Exception.ApplicationException;
  * @author
  * @version GSO 0.5 2016/8/4
  */
+
 public interface IDriverManager {
 
+    /**
+     * instantiate service <br/>
+     * 
+     * @param httpRequest - http request
+     * @return restful response
+     * @throws ApplicationException when fail to instantiate network service
+     * @since GSO 0.5
+     */
+    RestfulResponse instantiateService(HttpServletRequest httpRequest) throws ApplicationException;
+    
     /**
      * terminate service instance.<br/>
      * 
@@ -42,13 +53,14 @@ public interface IDriverManager {
     RestfulResponse terminateService(HttpServletRequest httpRequest) throws ApplicationException;
 
     /**
-     * instantiate service <br/>
+     * create service<br>
      * 
-     * @param httpRequest - http request
-     * @return restful response
-     * @throws ApplicationException when input parameter is wrong
-     * @since GSO 0.5
+     * @param servletReq
+     * @param domain SDNO or NFVO
+     * @return response
+     * @throws ApplicationException when fail to create network service
+     * @since  GSO 0.5
      */
-    RestfulResponse instantiateService(HttpServletRequest httpRequest) throws ApplicationException;
+    RestfulResponse createNs(HttpServletRequest servletReq, String domain) throws ApplicationException;
 
 }
