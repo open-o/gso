@@ -85,7 +85,7 @@ public interface ISDNODrivermgrRoaModule {
      * <br>
      * Instantiate the SDNO instance
      * 
-     * @param nsInstanceId uudi of service instance
+     * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return Response
      * @throws ApplicationException when fail to instantiate network service

@@ -77,7 +77,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     /**
      * Delete NFVO service instance<br>
      *
-     * @param nsInstanceId uudi of service instance
+     * @param nsInstanceId uuid of service instance
      * @return response
      * @throws ApplicationException when fail to delete service instance
      * @since   GSO 0.5
@@ -95,7 +95,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     /**
      * Query NFVO job status<br>
      * 
-     * @param jobId uudi of NFVO job
+     * @param jobId uuid of NFVO job
      * @return response 
      * @throws ApplicationException fail to query job status
      * @since   GSO 0.5
@@ -113,7 +113,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     /**
      * Instantiate NFVO service instance<br>
      * 
-     * @param nsInstanceId uudi of service instance
+     * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return response
      * @throws ApplicationException when fail to instantiate the service instance
@@ -134,7 +134,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     /**
      * Terminate NFVO service instance.<br/>
      * 
-     * @param nsInstanceId uudi of service instance
+     * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return response
      * @throws ApplicationException when fail to terminate the service instance
@@ -171,6 +171,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     /**
      * Delete SDNO service instance<br>
      * 
+     * @param nsInstanceId uuid of service instance
      * @return response
      * @throws ApplicationException when fail to delete service instance
      * @since   GSO 0.5
@@ -206,6 +207,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     /**
      * Instantiate SDNO service instance<br>
      * 
+     * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return response
      * @throws ApplicationException when fail to instantiate the service instance
@@ -224,6 +226,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     /**
      * Terminate NFVO service instance<br>
      * 
+     * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return response
      * @throws ApplicationException when fail to terminate the service instance

@@ -56,7 +56,7 @@ public interface INFVODrivermgrRoaModule {
     /**
      * Delete the NFVO instance<br>
      
-     * @param nsInstanceId uudi of service instance
+     * @param nsInstanceId uuid of service instance
      * @return response
      * @throws ApplicationException when fail to delete the network service
      * @since  GSO 0.5
@@ -70,7 +70,7 @@ public interface INFVODrivermgrRoaModule {
     /**
      * Query status of the NFVO instance<br>
      * 
-     * @param jobId uudi of NFVO job
+     * @param jobId uuid of NFVO job
      * @return status of the NFVO instance
      * @throws ApplicationException when fail to query status of the NFVO instance
      * @since  GSO 0.5
@@ -85,7 +85,7 @@ public interface INFVODrivermgrRoaModule {
      * <br>
      * Instantiate the NFVO instance
      * 
-     * @param nsInstanceId uudi of service instance
+     * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return Response
      * @throws ApplicationException when fail to instantiate network service
@@ -100,7 +100,7 @@ public interface INFVODrivermgrRoaModule {
     /**
      * Terminate the NFVO instance<br>
      * 
-     * @param nsInstanceId uudi of service instance
+     * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return response 
      * @throws ApplicationException when fail to terminate the NFVO instance
