@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
+import org.openo.gso.model.servicemo.ServiceSegmentOperation;
 
 /**
  * Interface to operate database.<br/>
@@ -38,7 +39,16 @@ public interface IServiceSegmentDao {
      * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void insert(ServiceSegmentModel serviceSegment) throws ApplicationException;
+    void insertSegment(ServiceSegmentModel serviceSegment) throws ApplicationException;
+    
+    /**
+     * Insert service segment operation<br>
+     * 
+     * @param svcSegmentOper service segment operation
+     * @throws ApplicationException when database exception or parameter is wrong
+     * @since  GSO 0.5
+     */
+    void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) throws ApplicationException;
 
     /**
      * Delete service segment instance by service ID.<br/>

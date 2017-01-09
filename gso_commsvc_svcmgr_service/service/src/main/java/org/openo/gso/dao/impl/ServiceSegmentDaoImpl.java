@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,9 @@ import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.ServiceSegmentMapper;
+import org.openo.gso.mapper.ServiceSegmentOperMapper;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
+import org.openo.gso.model.servicemo.ServiceSegmentOperation;
 import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +75,7 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * @since GSO 0.5
      */
     @Override
-    public void insert(ServiceSegmentModel serviceSegment) throws ApplicationException {
+    public void insertSegment(ServiceSegmentModel serviceSegment) throws ApplicationException {
         try {
             ValidateUtil.assertObjectNotNull(serviceSegment);
             ServiceSegmentMapper serviceSegmentMapper = getMapper(ServiceSegmentMapper.class);
@@ -82,6 +84,26 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
             LOGGER.error("Fail to insert service segment instance. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
+    }
+    
+    /**
+     * Insert service segment operation<br>
+     * 
+     * @param svcSegmentOper service segment operation
+     * @throws ApplicationException when database exception or parameter is wrong
+     * @since   GSO 0.5
+     */
+    @Override
+    public void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) throws ApplicationException {
+        try {
+            ValidateUtil.assertObjectNotNull(svcSegmentOper);
+            ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
+            svcSegmentOperMapper.insert(svcSegmentOper);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to insert service segment operation. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+        
     }
 
     /**
@@ -145,4 +167,6 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
         SqlSession session = dbSessionHandler.getSqlSession();
         return session.getMapper(type);
     }
+
+    
 }

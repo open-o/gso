@@ -134,7 +134,7 @@ public class DriverServiceImplTest {
                     return rsp;
                 }
             };
-            nsImpl.createNS(svcTmpl.getServiceTemplateId(), paramMap);
+            nsImpl.createNS(paramMap);
         } catch(ApplicationException e) {
 
         }

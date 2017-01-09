@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.openo.gso.model.drivermo;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * <br>
@@ -28,46 +28,42 @@ import java.util.Map;
  */
 public class ServiceNode {
 
-    private String nodeType;
+    /**
+     * name of node template
+     */
+    private String nodeTemplateName;
 
-    Map<String, String> inputParameters;
-
+    /**
+     * input parameters
+     */
+    private List<DomainInputParameter> inputParameters;
     
     /**
-     * @return Returns the nodeType.
+     * @return Returns the nodeTemplateName.
      */
-    public String getNodeType() {
-        return nodeType;
+    public String getNodeTemplateName() {
+        return nodeTemplateName;
     }
-
     
     /**
-     * @param nodeType The nodeType to set.
+     * @param nodeTemplateName The nodeTemplateName to set.
      */
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
+    public void setNodeTemplateName(String nodeTemplateName) {
+        this.nodeTemplateName = nodeTemplateName;
     }
 
-
-    
     /**
      * @return Returns the inputParameters.
      */
-    public Map<String, String> getInputParameters() {
+    public List<DomainInputParameter> getInputParameters() {
         return inputParameters;
     }
-
-
     
     /**
      * @param inputParameters The inputParameters to set.
      */
-    public void setInputParameters(Map<String, String> inputParameters) {
+    public void setInputParameters(List<DomainInputParameter> inputParameters) {
         this.inputParameters = inputParameters;
     }
-
-    
-
-
 
 }

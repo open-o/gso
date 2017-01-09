@@ -39,11 +39,12 @@ import org.openo.gso.dao.inf.IServicePackageDao;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
+import org.openo.gso.model.drivermo.DomainInputParameter;
 import org.openo.gso.model.drivermo.NsProgressStatus;
 import org.openo.gso.model.drivermo.ServiceNode;
 import org.openo.gso.model.drivermo.ServiceTemplate;
-import org.openo.gso.model.servicemo.ServicePackageMapping;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
+import org.openo.gso.model.servicemo.ServiceSegmentOperation;
 import org.openo.gso.restproxy.inf.ICatalogProxy;
 import org.openo.gso.service.inf.IDriverManager;
 import org.openo.gso.service.inf.IDriverService;
@@ -55,6 +56,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * Service management class.<br/>
@@ -68,8 +70,9 @@ public class DriverManagerImpl implements IDriverManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DriverManagerImpl.class);
 
-    private static String CATALOGUE_QUERY_SVC_TMPL_NODETYPE_URL = "/openoapi/catalog/v1/servicetemplates/nesting";
-
+    /**
+     * driver service interface
+     */
     private IDriverService serviceInf;
 
     /**
@@ -163,6 +166,205 @@ public class DriverManagerImpl implements IDriverManager {
     }
 
     /**
+     * create network service<br>
+     * 
+     * @param servletReq http request
+     * @param domain NFVO or SDNO
+     * @return restfulResponse
+     * @throws ApplicationException when fail to create network service
+     * @since   GSO 0.5
+     */
+    @Override
+    public RestfulResponse createNs(HttpServletRequest servletReq, String domain) throws ApplicationException {
+        
+        // Step 0: get request model
+        String body = RestUtils.getRequestBody(servletReq);
+        LOGGER.info("body for creating is {}", body);
+        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}").replaceAll("\"\\[", "\\]").replaceAll("\\]\"", "\\]");
+        LOGGER.warn("json body for creating is {}", jsonBody);
+        ServiceNode serviceNode = null;
+        serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
+
+        // Step 1:Validate input parameters
+        if((null == serviceNode.getNodeTemplateName()) || (null == serviceNode.getInputParameters())) {
+            LOGGER.error("Input parameters from lcm/workflow are empty");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
+        }
+        
+        // Step 2:Get input parameters for current node
+        List<DomainInputParameter> inputList = serviceNode.getInputParameters();
+        Map<String, DomainInputParameter> map = new HashMap<String, DomainInputParameter>();
+        for(DomainInputParameter input : inputList) {
+            map.put(input.getNodeTemplateName(), input);
+        }
+        DomainInputParameter currentInput = map.get(serviceNode.getNodeTemplateName());
+
+        // Step 3: Call the Catalogue service to get service template id
+        if(null == serviceInf) {
+            LOGGER.error("Service interface not initialised");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
+        }
+        serviceInf.setDomain(domain);
+        ServiceTemplate svcTmpl = getSvcTmplByNodeType(currentInput.getNodeType(), currentInput.getDomainHost());
+        if(null == svcTmpl) {
+            LOGGER.error("Failed to get service template from catalogue module");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+                    DriverExceptionID.FAILED_TO_SVCTMPL_CATALOGUE);
+        }
+
+        //nsdId for nfvo is "id" in the response, while for sndo is "servcice template id"
+        LOGGER.info("serviceTemplateId is {}, id is {}", svcTmpl.getServiceTemplateId(), svcTmpl.getId());
+        String nsdId = StringUtils.EMPTY;
+        if(CommonConstant.Domain.NFVO.equals(domain)){
+            nsdId = svcTmpl.getId();
+        }else {
+            nsdId = svcTmpl.getServiceTemplateId();
+        }
+        LOGGER.info("domain is {}, and nsdId is {}", domain, nsdId);
+        
+        //Step 4: Call NFVO or SDNO lcm to create ns
+        LOGGER.info("create ns -> begin");
+        Map<String, String> createParamMap = getCreateParams(nsdId, currentInput);
+        RestfulResponse restRsp = serviceInf.createNS(createParamMap);
+        LOGGER.info("response content is : {}", restRsp.getResponseContent());
+        JSONObject obj = JSONObject.fromObject(restRsp.getResponseContent());
+        String nsInstanceId = obj.getString(CommonConstant.NS_INSTANCE_ID);
+        if(StringUtils.isEmpty(nsInstanceId)) {
+            LOGGER.error("Invalid instanceId from create");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_VALUE_FROM_CREATE);
+        }
+        LOGGER.info("create ns -> end");
+        LOGGER.info("save segment info -> begin");
+        saveSegmentInfo(currentInput, nsInstanceId, domain, svcTmpl.getServiceTemplateId(), restRsp.getStatus());
+        LOGGER.info("save segment info -> end");
+        
+        return restRsp;
+    }
+
+    
+
+    @Override
+    public RestfulResponse deleteNs(String nsInstanceId, String domain) throws ApplicationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public RestfulResponse instantiateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain)
+            throws ApplicationException {
+//        String body = RestUtils.getRequestBody(httpRequest);
+//
+//        LOGGER.warn("instantiate request body is {}", body);
+//        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}");
+//        
+//        LOGGER.warn("instantiate json body is {}", jsonBody);
+//        // Step 0: Transfer the input into input parameters model
+//        ServiceNode serviceNode = null;
+//        serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
+//
+//        // Step 1:Validate input parameters
+//        String nodeType = serviceNode.getNodeType();
+//
+//        if((null == nodeType) || (null == serviceNode.getInputParameters())) {
+//            LOGGER.error("Input parameters from lcm/workflow are empty");
+//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
+//        }
+//
+//        if(null == serviceInf) {
+//            LOGGER.error("Service interface not initialised");
+//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
+//        }
+//        serviceInf.setDomain(domain);
+//
+//        // Step 3: Call the Catalogue service to get service template id
+//        ServiceTemplate svcTmpl = getSvcTmplByNodeType(serviceNode);
+//        if(null == svcTmpl) {
+//            LOGGER.error("Failed to get service template from catalogue module");
+//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+//                    DriverExceptionID.FAILED_TO_SVCTMPL_CATALOGUE);
+//        }
+//
+//        //nsdId of the nfvo is "id" in the response, not the "servcice template id"
+//        String nsdId = StringUtils.EMPTY;
+//        if(serviceNode.getNodeType().contains("nfv")){
+//            nsdId = svcTmpl.getId();
+//        }else if(serviceNode.getNodeType().contains("sdn")){
+//            nsdId = svcTmpl.getServiceTemplateId();
+//        }else{
+//            LOGGER.error("invalid nodeType : {}", serviceNode.getNodeType());
+//        }
+//            
+//        
+//        
+//        return createNetworkSubService(serviceNode, nsdId, httpRequest);
+        return null;
+    }
+
+    @Override
+    public RestfulResponse terminateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain)
+            throws ApplicationException {
+//        String body = RestUtils.getRequestBody(httpRequest);
+//        LOGGER.warn("terminate request body is {}", body);
+//        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}");
+//        
+//        LOGGER.warn("terminate json body is {}", jsonBody);
+//        
+//        // transfer the input into input parameters model
+//        ServiceNode inputs = null;
+//        inputs = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
+//
+//        // get nodeType from the request body
+//        String nodeType = inputs.getNodeType();
+//
+//        LOGGER.info("nodeType is {}", nodeType);
+//        // get instaceId & serviceId value from the map
+//        Map<String, String> instIdMap = inputs.getInputParameters();
+//
+//        String serviceId = instIdMap.get("serviceId");
+//        StringBuilder builder = new StringBuilder(nodeType);
+//        builder.append(".instanceId");
+//        String instKey = builder.toString();
+//        String instanceId = instIdMap.get(instKey);
+//        LOGGER.info("id of instance to be deleted is {}", instanceId);
+//
+//        // invoke the SDNO or NFVO to delete the instance
+//        LOGGER.info("start to delete the service instance");
+//        String status = "fail";
+//        try {
+//            status = serviceInf.deleteNs(instanceId);
+//        } catch(Exception e) {
+//            LOGGER.error("fail to delete the sub-service", e);
+//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
+//        }
+//
+//        LOGGER.info("end to delete the service instance");
+//        
+//
+//        RestfulResponse rsp = new RestfulResponse();
+//        if("success".equals(status)) {
+//            // save the segment information into the database
+//            ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
+//            serviceSegment.setServiceId(serviceId);
+//            serviceSegment.setServiceSegmentId(instanceId);
+//
+//            serviceSegmentDao.delete(serviceSegment);
+//            LOGGER.warn("succeed to delete the servcie segment from t_lcm_service_segment");
+//        }else{
+//            rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
+//        }
+//        return rsp;
+        return null;
+
+    }
+
+    @Override
+    public RestfulResponse getNsProgress(String jobId, String domain) throws ApplicationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    //TODO make sure node sequence implementation
+    /**
      * <br/>
      * 
      * @param nodes
@@ -221,145 +423,116 @@ public class DriverManagerImpl implements IDriverManager {
     private RestfulResponse createNetworkSubService(ServiceNode serviceNode, String templateId,
             HttpServletRequest httpRequest) throws ApplicationException {
 
-        LOGGER.warn("create ns : begin");
-        // Step 2:Make a list of parameters for the node Type
-        Map<String, String> createParamMap = getCreateParamsByNodeType(serviceNode);
-        
-        // Step 1: Create Network service
-        String nsInstanceId = serviceInf.createNS(templateId, createParamMap);
-        LOGGER.warn("nsInstanceId is {}", nsInstanceId);
-        if(StringUtils.isEmpty(nsInstanceId)) {
-            LOGGER.error("Invalid instanceId from create");
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
-                    DriverExceptionID.INVALID_VALUE_FROM_CREATE);
-        }
-        
-        LOGGER.warn("create ns : end");
-        
-        LOGGER.warn("instantiate ns : begin");
-        Map<String, String> instParamMap = getInstParamsByNodeType(serviceNode);
-
-        // Step 2: Instantiate Network service
-        String jobId = serviceInf.instantiateNS(nsInstanceId, instParamMap);
-        if(StringUtils.isEmpty(jobId)) {
-            LOGGER.error("Invalid jobId from instantiate");
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
-                    DriverExceptionID.INVALID_VALUE_FROM_INSTANTIATE);
-        }
-        LOGGER.warn("instantiate ns : end");
-
-        LOGGER.warn("query job : begin");
-        // Step 3: Wait for Job to complete
-        String status = "success";
-        try {
-            waitForJobToComplete(jobId);
-        } catch(ApplicationException e) {
-            LOGGER.error("fail to complete the job", e);
-            status = "fail";
-        }
-        LOGGER.warn("query job : end");
-
-        String serviceId = serviceNode.getInputParameters().get("serviceId");
-        LOGGER.warn("serviceId is {}", serviceId);
-        String serviceName = serviceNode.getInputParameters().get("serviceName");
-        LOGGER.warn("serviceName is {}", serviceName);
-        ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
-        
-        serviceSegment.setServiceId(serviceId);
-        serviceSegment.setServiceSegmentName(serviceName);
-        serviceSegment.setServiceSegmentId(nsInstanceId);
-        serviceSegment.setNodeType(serviceNode.getNodeType());
-        serviceSegment.setStatus(status);
-        serviceSegment.setTemplateId(templateId);
-
-        ServicePackageMapping pacakageInfo = servicePackageDao.queryPackageMapping(serviceId);
-        if(null == pacakageInfo) {
-            LOGGER.error("There is no package in DB. The service Id is {}", serviceId);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "There is no package in DB.");
-        }
-
-        // Query nodes of template
-        List<NodeTemplateModel> nodes = catalogProxy.getNodeTemplate(pacakageInfo.getTemplateId(), httpRequest);
-        int sequence = getSequenceOfNode(nodes, serviceSegment);
-        serviceSegment.setTopoSeqNumber(sequence);
+//        LOGGER.warn("create ns : begin");
+//        // Step 2:Make a list of parameters for the node Type
+//        Map<String, String> createParamMap = getCreateParamsByNodeType(serviceNode);
+//        
+//        // Step 1: Create Network service
+//        String nsInstanceId = serviceInf.createNS(templateId, createParamMap);
+//        LOGGER.warn("nsInstanceId is {}", nsInstanceId);
+//        if(StringUtils.isEmpty(nsInstanceId)) {
+//            LOGGER.error("Invalid instanceId from create");
+//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+//                    DriverExceptionID.INVALID_VALUE_FROM_CREATE);
+//        }
+//        
+//        LOGGER.warn("create ns : end");
+//        
+//        LOGGER.warn("instantiate ns : begin");
+//        Map<String, String> instParamMap = getInstParamsByNodeType(serviceNode);
+//
+//        // Step 2: Instantiate Network service
+//        String jobId = serviceInf.instantiateNS(nsInstanceId, instParamMap);
+//        if(StringUtils.isEmpty(jobId)) {
+//            LOGGER.error("Invalid jobId from instantiate");
+//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+//                    DriverExceptionID.INVALID_VALUE_FROM_INSTANTIATE);
+//        }
+//        LOGGER.warn("instantiate ns : end");
+//
+//        LOGGER.warn("query job : begin");
+//        // Step 3: Wait for Job to complete
+//        String status = "success";
+//        try {
+//            waitForJobToComplete(jobId);
+//        } catch(ApplicationException e) {
+//            LOGGER.error("fail to complete the job", e);
+//            status = "fail";
+//        }
+//        LOGGER.warn("query job : end");
+//
+//        String serviceId = serviceNode.getInputParameters().get("serviceId");
+//        LOGGER.warn("serviceId is {}", serviceId);
+//        String serviceName = serviceNode.getInputParameters().get("serviceName");
+//        LOGGER.warn("serviceName is {}", serviceName);
+//        ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
+//        
+//        serviceSegment.setServiceId(serviceId);
+//        serviceSegment.setServiceSegmentName(serviceName);
+//        serviceSegment.setServiceSegmentId(nsInstanceId);
+//        serviceSegment.setNodeType(serviceNode.getNodeType());
+//        serviceSegment.setStatus(status);
+//        serviceSegment.setTemplateId(templateId);
+//
+//        ServicePackageMapping pacakageInfo = servicePackageDao.queryPackageMapping(serviceId);
+//        if(null == pacakageInfo) {
+//            LOGGER.error("There is no package in DB. The service Id is {}", serviceId);
+//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "There is no package in DB.");
+//        }
+//
+//        // Query nodes of template
+//        List<NodeTemplateModel> nodes = catalogProxy.getNodeTemplate(pacakageInfo.getTemplateId(), httpRequest);
+//        int sequence = getSequenceOfNode(nodes, serviceSegment);
+//        serviceSegment.setTopoSeqNumber(sequence);
 
         
 
         // Step 4: return the response
         RestfulResponse rsp = new RestfulResponse();
-        if("success".equals(status)) {
-            LOGGER.warn("store segment : begin");
-            // insert database
-            serviceSegmentDao.insert(serviceSegment);
-            
-            LOGGER.warn("store segment : end");
-            if(CommonConstant.NodeType.SDN_UNDERLAYVPN_TYPE.equals(serviceNode.getNodeType())
-                    || CommonConstant.NodeType.SDN_OVERLAYVPN_TYPE.equals(serviceNode.getNodeType())){
-                serviceModelDao.updateServiceResult(serviceId, "success");
-            }
-            
-        }else{
-            rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
-            LOGGER.error("fail to store the sub-service to LCM");
-            serviceModelDao.updateServiceResult(serviceId, "fail");
-        }
+//        if("success".equals(status)) {
+//            LOGGER.warn("store segment : begin");
+//            // insert database
+//            serviceSegmentDao.insert(serviceSegment);
+//            
+//            LOGGER.warn("store segment : end");
+//            if(CommonConstant.NodeType.SDN_UNDERLAYVPN_TYPE.equals(serviceNode.getNodeType())
+//                    || CommonConstant.NodeType.SDN_OVERLAYVPN_TYPE.equals(serviceNode.getNodeType())){
+//                serviceModelDao.updateServiceResult(serviceId, "success");
+//            }
+//            
+//        }else{
+//            rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
+//            LOGGER.error("fail to store the sub-service to LCM");
+//            serviceModelDao.updateServiceResult(serviceId, "fail");
+//        }
         return rsp;
     }
 
     private Map<String, String> getInstParamsByNodeType(ServiceNode serviceNode) {
         // Make a list of parameters for the node Type
-        Map<String, String> mapParam = serviceNode.getInputParameters();
+//        Map<String, String> mapParam = serviceNode.getInputParameters();
         Map<String, String> instMapParam = new HashMap<String, String>();
 
-        for(Map.Entry<String, String> map : mapParam.entrySet())
-        {
-            String nodeType = serviceNode.getNodeType();
-            //filter not necessary parameters
-            if(!map.getKey().contains(nodeType)){
-                continue;
-            }
-            //replace the nodeType
-            String key = map.getKey().substring(map.getKey().lastIndexOf(".")+1);
-            instMapParam.put(key, map.getValue());
-            
-        }
+//        for(Map.Entry<String, String> map : mapParam.entrySet())
+//        {
+//            String nodeType = serviceNode.getNodeType();
+//            //filter not necessary parameters
+//            if(!map.getKey().contains(nodeType)){
+//                continue;
+//            }
+//            //replace the nodeType
+//            String key = map.getKey().substring(map.getKey().lastIndexOf(".")+1);
+//            instMapParam.put(key, map.getValue());
+//            
+//        }
 
         return instMapParam;
     }
 
-    private Map<String, String> getCreateParamsByNodeType(ServiceNode serviceNode) {
+    
 
-        // Make a list of parameters for the node Type
-        Map<String, String> mapParam = serviceNode.getInputParameters();
-        Map<String, String> createMapParam = new HashMap<String, String>();
-        createMapParam.put("serviceName", mapParam.get("serviceName"));
-        createMapParam.put("serviceDescription", mapParam.get("serviceDescription"));
-
-        return createMapParam;
-    }
-
-    private ServiceTemplate getSvcTmplByNodeType(ServiceNode serviceNode) throws ApplicationException {
-
-        Map<String, String> paramsMap = new HashMap<String, String>();
-
-        // Step 1: Prepare url and method type
-        paramsMap.put(CommonConstant.HttpContext.URL, CATALOGUE_QUERY_SVC_TMPL_NODETYPE_URL);
-        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
-
-        // Step 2: Prepare the query param
-        Map<String, String> queryParams = new HashMap<String, String>();
-        queryParams.put("nodeTypeIds", serviceNode.getNodeType());
-        LOGGER.warn("node Type is {}", serviceNode.getNodeType());
-
-        // Step 3:Send the request and get response
-        RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, null, queryParams);
-
-        LOGGER.error("response content is {}", rsp.getResponseContent());
-
-        JSONArray array = JSONArray.fromObject(rsp.getResponseContent());
-        return JsonUtil.unMarshal(array.getString(0), ServiceTemplate.class);
-
-    }
+    
+    
 
     private void waitForJobToComplete(String jobId) throws ApplicationException {
 
@@ -413,128 +586,109 @@ public class DriverManagerImpl implements IDriverManager {
 
     }
 
-    @Override
-    public RestfulResponse createNs(HttpServletRequest servletReq, String domain) throws ApplicationException {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * private method 1: get service template by node type<br>
+     * 
+     * @param nodeType node type
+     * @return service template
+     * @throws ApplicationException when fail to get service template
+     * @since  GSO 0.5
+     */
+    private ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost) throws ApplicationException {
+
+        // Step 1: Prepare url and method type
+        Map<String, String> paramsMap = new HashMap<String, String>();
+        paramsMap.put(CommonConstant.HttpContext.URL, CommonConstant.CATALOGUE_QUERY_SVC_TMPL_NODETYPE_URL);
+        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
+        parseDomainHost(domainHost, paramsMap);
+
+        // Step 2: Prepare the query param
+        LOGGER.info("node Type is {}", nodeType);
+        Map<String, String> queryParams = new HashMap<String, String>();
+        queryParams.put("nodeTypeIds", nodeType);
+        
+
+        // Step 3:Send the request and get response
+        RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, null, queryParams);
+        LOGGER.info("response content is {}", rsp.getResponseContent());
+        JSONArray array = JSONArray.fromObject(rsp.getResponseContent());
+        return JsonUtil.unMarshal(array.getString(0), ServiceTemplate.class);
     }
 
-    @Override
-    public RestfulResponse deleteNs(String nsInstanceId, String domain) throws ApplicationException {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * private method2 : get create params<br>
+     * 
+     * @param currentIput input params for current node
+     * @return param map for creating
+     * @since  GSO 0.5
+     */
+    private Map<String, String> getCreateParams(String nsdId, DomainInputParameter currentIput) {
+
+        Map<String, String> createParamMap = new HashMap<String, String>();
+        createParamMap.put(CommonConstant.NSD_ID, nsdId);
+        createParamMap.put(CommonConstant.NS_NAME, currentIput.getSubServiceName());
+        createParamMap.put(CommonConstant.DESC, currentIput.getSubServiceDesc());
+        
+        String domainHost = currentIput.getDomainHost();
+        parseDomainHost(domainHost, createParamMap);
+
+        return createParamMap;
     }
     
-    @Override
-    public RestfulResponse instantiateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain)
-            throws ApplicationException {
-        String body = RestUtils.getRequestBody(httpRequest);
-
-        LOGGER.warn("instantiate request body is {}", body);
-        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}");
-        
-        LOGGER.warn("instantiate json body is {}", jsonBody);
-        // Step 0: Transfer the input into input parameters model
-        ServiceNode serviceNode = null;
-        serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
-
-        // Step 1:Validate input parameters
-        String nodeType = serviceNode.getNodeType();
-
-        if((null == nodeType) || (null == serviceNode.getInputParameters())) {
-            LOGGER.error("Input parameters from lcm/workflow are empty");
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
+    /**
+     * private method3: parse domain host<br>
+     * 
+     * @param domainHost host & port which httprequest should send to
+     * @param paramsMap params map
+     * @since  GSO 0.5
+     */
+    private void parseDomainHost(String domainHost, Map<String, String> paramsMap) {
+        if(StringUtils.isEmpty(domainHost)){
+            LOGGER.info("domainHost is empty");
+            return;
         }
-
-        if(null == serviceInf) {
-            LOGGER.error("Service interface not initialised");
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
-        }
-        serviceInf.setDomain(domain);
-
-        // Step 3: Call the Catalogue service to get service template id
-        ServiceTemplate svcTmpl = getSvcTmplByNodeType(serviceNode);
-        if(null == svcTmpl) {
-            LOGGER.error("Failed to get service template from catalogue module");
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
-                    DriverExceptionID.FAILED_TO_SVCTMPL_CATALOGUE);
-        }
-
-        //nsdId of the nfvo is "id" in the response, not the "servcice template id"
-        String nsdId = StringUtils.EMPTY;
-        if(serviceNode.getNodeType().contains("nfv")){
-            nsdId = svcTmpl.getId();
-        }else if(serviceNode.getNodeType().contains("sdn")){
-            nsdId = svcTmpl.getServiceTemplateId();
-        }else{
-            LOGGER.error("invalid nodeType : {}", serviceNode.getNodeType());
-        }
-            
-        
-        
-        return createNetworkSubService(serviceNode, nsdId, httpRequest);
+        LOGGER.info("domainHost is {}", domainHost);
+        String ip = domainHost.substring(0, domainHost.indexOf(":"));
+        String port = domainHost.substring(domainHost.indexOf(":") + 1);
+        paramsMap.put(CommonConstant.HttpContext.IP, ip);
+        paramsMap.put(CommonConstant.HttpContext.PORT, port);
     }
-
-    @Override
-    public RestfulResponse terminateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain)
-            throws ApplicationException {
-        String body = RestUtils.getRequestBody(httpRequest);
-        LOGGER.warn("terminate request body is {}", body);
-        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}");
+    
+    /**
+     * private method 4: save segment information<br>
+     * 
+     * @param currentInput domain input parameters
+     * @param nsInstanceId instantce id
+     * @param domain nfvo or sdno
+     * @param svcTmplId service template id
+     * @param status http status
+     * @since  GSO 0.5
+     */
+    private void saveSegmentInfo(DomainInputParameter currentInput, String nsInstanceId, String domain,
+            String svcTmplId, int status) {
+        ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         
-        LOGGER.warn("terminate json body is {}", jsonBody);
+        serviceSegment.setServiceId(currentInput.getServiceId());
+        serviceSegment.setServiceSegmentId(nsInstanceId);
+        serviceSegment.setServiceSegmentType(domain);
+        serviceSegment.setServiceSegmentName(currentInput.getSubServiceName());
+        serviceSegment.setTemplateId(svcTmplId);
+        serviceSegment.setNodeType(currentInput.getNodeType());
+        serviceSegment.setDomainHost(currentInput.getDomainHost());
+        serviceSegment.setNodeTemplateName(currentInput.getNodeTemplateName());
         
-        // transfer the input into input parameters model
-        ServiceNode inputs = null;
-        inputs = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
-
-        // get nodeType from the request body
-        String nodeType = inputs.getNodeType();
-
-        LOGGER.info("nodeType is {}", nodeType);
-        // get instaceId & serviceId value from the map
-        Map<String, String> instIdMap = inputs.getInputParameters();
-
-        String serviceId = instIdMap.get("serviceId");
-        StringBuilder builder = new StringBuilder(nodeType);
-        builder.append(".instanceId");
-        String instKey = builder.toString();
-        String instanceId = instIdMap.get(instKey);
-        LOGGER.info("id of instance to be deleted is {}", instanceId);
-
-        // invoke the SDNO or NFVO to delete the instance
-        LOGGER.info("start to delete the service instance");
-        String status = "fail";
-        try {
-            status = serviceInf.deleteNs(instanceId);
-        } catch(Exception e) {
-            LOGGER.error("fail to delete the sub-service", e);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
+        serviceSegmentDao.insertSegment(serviceSegment);
+        
+        ServiceSegmentOperation svcSegmentOper = new ServiceSegmentOperation();
+        svcSegmentOper.setServiceSegmentId(nsInstanceId);
+        svcSegmentOper.setServiceSegmentType(domain);
+        if(HttpCode.isSucess(status)){
+            svcSegmentOper.setStatus(CommonConstant.Status.PROCESSING);
+        } else {
+            svcSegmentOper.setStatus(CommonConstant.Status.ERROR);
         }
-
-        LOGGER.info("end to delete the service instance");
         
-
-        RestfulResponse rsp = new RestfulResponse();
-        if("success".equals(status)) {
-            // save the segment information into the database
-            ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
-            serviceSegment.setServiceId(serviceId);
-            serviceSegment.setServiceSegmentId(instanceId);
-
-            serviceSegmentDao.delete(serviceSegment);
-            LOGGER.warn("succeed to delete the servcie segment from t_lcm_service_segment");
-        }else{
-            rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
-        }
-        return rsp;
-
-    }
-
-    @Override
-    public RestfulResponse getNsProgress(String jobId, String domain) throws ApplicationException {
-        // TODO Auto-generated method stub
-        return null;
+        serviceSegmentDao.insertSegmentOper(svcSegmentOper);
     }
 
 }

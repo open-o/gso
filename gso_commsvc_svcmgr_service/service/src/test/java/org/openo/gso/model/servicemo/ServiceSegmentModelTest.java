@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.openo.gso.model.servicemo;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.openo.gso.model.servicemo.ServiceSegmentModel;
 
 /**
  * Test ServiceSegmentModel Class.<br/>
@@ -40,7 +39,6 @@ public class ServiceSegmentModelTest {
         serviceSegment.setServiceSegmentName("POP service");
         serviceSegment.setTemplateId("12345");
         serviceSegment.setTopoSeqNumber(1);
-        serviceSegment.setStatus("createSucceed");
 
         assertEquals("tosaca.nfv.node.POP", serviceSegment.getNodeType());
         assertEquals("2", serviceSegment.getServiceId());
@@ -48,7 +46,6 @@ public class ServiceSegmentModelTest {
         assertEquals("12345", serviceSegment.getServiceSegmentId());
         assertEquals("12345", serviceSegment.getTemplateId());
         assertEquals(String.valueOf(1), String.valueOf(serviceSegment.getTopoSeqNumber()));
-        assertEquals("createSucceed", serviceSegment.getStatus());
     }
 
 }

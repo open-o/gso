@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,11 @@ public class ServiceSegmentModel {
      * Service segment instance ID.
      */
     private String serviceSegmentId;
+    
+    /**
+     * Service segment type
+     */
+    private String serviceSegmentType;
 
     /**
      * Service segment instance name.
@@ -57,9 +62,14 @@ public class ServiceSegmentModel {
     private int topoSeqNumber;
 
     /**
-     * The status of service segment.
+     * domain host
      */
-    private String status;
+    private String domainHost;
+    
+    /**
+     * node template name
+     */
+    private String nodeTemplateName;
 
     /**
      * @return Returns the serviceId.
@@ -87,6 +97,20 @@ public class ServiceSegmentModel {
      */
     public void setServiceSegmentId(String serviceSegmentId) {
         this.serviceSegmentId = serviceSegmentId;
+    }
+    
+    /**
+     * @return Returns the serviceSegmentType.
+     */
+    public String getServiceSegmentType() {
+        return serviceSegmentType;
+    }
+    
+    /**
+     * @param serviceSegmentType The serviceSegmentType to set.
+     */
+    public void setServiceSegmentType(String serviceSegmentType) {
+        this.serviceSegmentType = serviceSegmentType;
     }
 
     /**
@@ -144,18 +168,33 @@ public class ServiceSegmentModel {
     public void setTopoSeqNumber(int topoSeqNumber) {
         this.topoSeqNumber = topoSeqNumber;
     }
-
+    
     /**
-     * @return Returns the status.
+     * @return Returns the domainHost.
      */
-    public String getStatus() {
-        return status;
+    public String getDomainHost() {
+        return domainHost;
+    }
+    
+    /**
+     * @param domainHost The domainHost to set.
+     */
+    public void setDomainHost(String domainHost) {
+        this.domainHost = domainHost;
+    }
+    
+    /**
+     * @return Returns the nodeTemplateName.
+     */
+    public String getNodeTemplateName() {
+        return nodeTemplateName;
+    }
+    
+    /**
+     * @param nodeTemplateName The nodeTemplateName to set.
+     */
+    public void setNodeTemplateName(String nodeTemplateName) {
+        this.nodeTemplateName = nodeTemplateName;
     }
 
-    /**
-     * @param status The status to set.
-     */
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }

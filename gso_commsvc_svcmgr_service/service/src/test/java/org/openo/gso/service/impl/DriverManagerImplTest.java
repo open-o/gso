@@ -50,11 +50,9 @@ public class DriverManagerImplTest {
         impl.setServiceSegmentDao(serviceSegmentDao);
 
         ServiceNode params = new ServiceNode();
-        params.setNodeType("tosca.nodes.nfv.dc");
         Map<String, String> inputParameters = new HashMap<String, String>();
         inputParameters.put("serviceId", "1");
         inputParameters.put("tosca.nodes.nfv.dc.instanceId", "sub1");
-        params.setInputParameters(inputParameters);
         final String str =
                 "{\"nodeType\":\"tosca.nodes.nfv.dc\",\"inputParameters\":{\"tosca.nodes.nfv.dc.instanceId\":\"sub1\",\"serviceId\":\"1\"}}";
         final RestfulResponse rsp = new RestfulResponse();

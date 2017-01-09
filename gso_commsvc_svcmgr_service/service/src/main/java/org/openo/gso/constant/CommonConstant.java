@@ -63,7 +63,7 @@ public class CommonConstant {
     }
     
     public final static Map sdnoUrlMap = new HashMap<String, String>();
-    
+
     static {
         sdnoUrlMap.put(Step.CREATE, SDNO_CREATE_URL);
         sdnoUrlMap.put(Step.INSTANTIATE, SDNO_INSTANTIATE_URL);
@@ -191,6 +191,27 @@ public class CommonConstant {
         public static final String NFVO = "nfvo";
         
         private Domain(){
+            
+        }
+    }
+    
+    public static final String NSD_ID = "nsdId";
+    
+    public static final String NS_NAME= "nsName";
+    
+    public static final String DESC = "description";
+
+    public static final String NS_INSTANCE_ID = "nsInstanceId";
+
+    public static class Status {
+        
+        public static final String FINISHED = "finished";
+        
+        public static final String PROCESSING = "processing";
+        
+        public static final String ERROR = "error";
+        
+        private Status(){
             
         }
     }

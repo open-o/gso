@@ -157,34 +157,27 @@ public class DriverServiceImpl implements IDriverService {
      * @since GSO 0.5
      */
     @Override
-    public String createNS(String nsdId, Map<String, String> inputMap) throws ApplicationException {
-
-        // Step 1: Prepare Network Service Request
-        NSRequest oRequest = new NSRequest();
-
-        String nsNameKey = "serviceName";
-
-        String descKey = "serviceDescription";
-
-        oRequest.setNsdId(nsdId);
-        oRequest.setNsName(inputMap.get(nsNameKey));
-        oRequest.setDescription(inputMap.get(descKey));
+    public RestfulResponse createNS(Map<String, String> inputMap) throws ApplicationException {
 
         Map<String, String> paramsMap = new HashMap<String, String>();
         paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, null, CommonConstant.Step.CREATE));
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
+        
+        // Step 1: Prepare Network Service Request
+        NSRequest oRequest = new NSRequest();
+        oRequest.setNsdId(inputMap.get(CommonConstant.NSD_ID));
+        oRequest.setNsName(inputMap.get(CommonConstant.NS_NAME));
+        oRequest.setDescription(inputMap.get(CommonConstant.DESC));
 
         // Step 2: Send Network Service Request
         String req = "";
         req = JsonUtil.marshal(oRequest);
 
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, req, null);
+        LOGGER.info("create ns response status is : {}", rsp.getStatus());
         LOGGER.info("create ns response content is : {}", rsp.getResponseContent());
 
-        // Step 3: Process Network Service Response
-        JSONObject obj = JSONObject.fromObject(rsp.getResponseContent());
-        return obj.getString("nsInstanceId");
-
+        return rsp;
     }
 
     /**

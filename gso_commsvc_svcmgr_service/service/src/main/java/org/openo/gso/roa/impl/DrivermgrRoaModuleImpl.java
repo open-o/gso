@@ -18,6 +18,7 @@ package org.openo.gso.roa.impl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
@@ -67,12 +68,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     @Override
     public Response createNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
         RestfulResponse rsp = driverMgr.createNs(servletReq, CommonConstant.Domain.NFVO);
-        if(rsp.getStatus() / 200 == 0) {
-            return Response.status(200).build();
-        } else {
-            return Response.status(500).build();
-        }
+        return buildResponse(rsp);
     }
+
+
 
     /**
      * Delete NFVO service instance<br>
@@ -85,11 +84,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     @Override
     public Response deleteNfvoNs(String nsInstanceId) throws ApplicationException {
         RestfulResponse rsp = driverMgr.deleteNs(nsInstanceId, CommonConstant.Domain.NFVO);
-        if(rsp.getStatus() / 200 == 0) {
-            return Response.status(200).build();
-        } else {
-            return Response.status(500).build();
-        }
+        return buildResponse(rsp);
     }
 
     /**
@@ -103,11 +98,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     @Override
     public Response queryNfvoJobStatus(String jobId) throws ApplicationException {
         RestfulResponse rsp = driverMgr.getNsProgress(jobId, CommonConstant.Domain.NFVO);
-        if(rsp.getStatus() / 200 == 0) {
-            return Response.status(200).build();
-        } else {
-            return Response.status(500).build();
-        }
+        return buildResponse(rsp);
     }
 
     /**
@@ -123,11 +114,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     public Response instantiateNfvoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
 
         RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, servletReq, CommonConstant.Domain.NFVO);
-        if(rsp.getStatus() / 200 == 0) {
-            return Response.status(200).build();
-        } else {
-            return Response.status(500).build();
-        }
+        return buildResponse(rsp);
     }
     
 
@@ -143,11 +130,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     @Override
     public Response terminateNfvoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
         RestfulResponse rsp = driverMgr.terminateNs(nsInstanceId, servletReq, CommonConstant.Domain.NFVO);
-        if(rsp.getStatus() / 200 == 0) {
-            return Response.status(200).build();
-        } else {
-            return Response.status(500).build();
-        }
+        return buildResponse(rsp);
     }
     
     /**
@@ -161,11 +144,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     @Override
     public Response createSdnoNs(HttpServletRequest servletReq) throws ApplicationException {
         RestfulResponse rsp = driverMgr.createNs(servletReq, CommonConstant.Domain.SDNO);
-        if(rsp.getStatus() / 200 == 0) {
-            return Response.status(200).build();
-        } else {
-            return Response.status(500).build();
-        }
+        return buildResponse(rsp);
     }
 
     /**
@@ -179,11 +158,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     @Override
     public Response deleteSdnoNs(String nsInstanceId) throws ApplicationException {
         RestfulResponse rsp = driverMgr.deleteNs(nsInstanceId, CommonConstant.Domain.SDNO);
-        if(rsp.getStatus() / 200 == 0) {
-            return Response.status(200).build();
-        } else {
-            return Response.status(500).build();
-        }
+        return buildResponse(rsp);
     }
 
     /**
@@ -197,11 +172,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     @Override
     public Response querySdnoJobStatus(String jobId) throws ApplicationException {
         RestfulResponse rsp = driverMgr.getNsProgress(jobId, CommonConstant.Domain.SDNO);
-        if(rsp.getStatus() / 200 == 0) {
-            return Response.status(200).build();
-        } else {
-            return Response.status(500).build();
-        }
+        return buildResponse(rsp);
     }
 
     /**
@@ -216,11 +187,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     @Override
     public Response instantiateSdnoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
         RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, servletReq, CommonConstant.Domain.SDNO);
-        if(rsp.getStatus() / 200 == 0) {
-            return Response.status(200).build();
-        } else {
-            return Response.status(500).build();
-        }
+        return buildResponse(rsp);
     }
 
     /**
@@ -235,11 +202,19 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     @Override
     public Response terminateSdnoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
         RestfulResponse rsp = driverMgr.terminateNs(nsInstanceId, servletReq, CommonConstant.Domain.SDNO);
-        if(rsp.getStatus() / 200 == 0) {
-            return Response.status(200).build();
-        } else {
-            return Response.status(500).build();
-        }
+        return buildResponse(rsp);
     }
 
+    /**
+     * build response from restful reponse<br>
+     * 
+     * @param rsp restful response
+     * @return response instance
+     * @since  GSO 0.5
+     */
+    private Response buildResponse(RestfulResponse rsp) {
+        ResponseBuilder rspBuilder = Response.status(rsp.getStatus());
+        rspBuilder.entity(rsp.getResponseContent());
+        return rspBuilder.build();
+    }
 }

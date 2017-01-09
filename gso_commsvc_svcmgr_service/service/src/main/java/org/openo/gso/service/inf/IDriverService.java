@@ -18,6 +18,7 @@ package org.openo.gso.service.inf;
 
 import java.util.Map;
 
+import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.drivermo.NsProgressStatus;
 
@@ -57,13 +58,12 @@ public interface IDriverService {
      * <br>
      * create the network service
      * 
-     * @param nsdId serviceTemplate id
      * @param paramMap map of the input parameters
      * @return result of the creating
      * @throws ApplicationException when fail to creat the network service
      * @since GSO 0.5
      */
-    String createNS(String nsdId, Map<String, String> paramMap) throws ApplicationException;
+    RestfulResponse createNS(Map<String, String> paramMap) throws ApplicationException;
 
     /**
      * <br>

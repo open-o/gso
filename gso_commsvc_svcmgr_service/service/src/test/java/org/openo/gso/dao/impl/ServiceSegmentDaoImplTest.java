@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -134,7 +134,7 @@ public class ServiceSegmentDaoImplTest {
      */
     @Test(expected = ApplicationException.class)
     public void testInsertIsNull1() {
-        serviceSegmentDao.insert(null);
+        serviceSegmentDao.insertSegment(null);
     }
 
     /**
@@ -145,7 +145,7 @@ public class ServiceSegmentDaoImplTest {
     @Test(expected = ApplicationException.class)
     public void testInsertIsNull2() {
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
-        serviceSegmentDao.insert(serviceSegment);
+        serviceSegmentDao.insertSegment(serviceSegment);
     }
 
     /**
@@ -162,9 +162,8 @@ public class ServiceSegmentDaoImplTest {
         serviceSegment.setServiceSegmentName("POP service");
         serviceSegment.setTemplateId("12345");
         serviceSegment.setTopoSeqNumber(1);
-        serviceSegment.setStatus("createSucceed");
 
-        serviceSegmentDao.insert(serviceSegment);
+        serviceSegmentDao.insertSegment(serviceSegment);
     }
 
     /**

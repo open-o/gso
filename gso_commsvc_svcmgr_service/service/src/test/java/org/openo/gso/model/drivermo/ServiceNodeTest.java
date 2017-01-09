@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package org.openo.gso.model.drivermo;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -25,24 +25,24 @@ public class ServiceNodeTest {
 
     ServiceNode node = new ServiceNode();
     @Test
-    public void testGetNodeType() {
-        node.getNodeType();
+    public void testGetNodeTemplateName() {
+        node.getNodeTemplateName();
     }
 
     @Test
-    public void testSetNodeType() {
-        node.setNodeType("vnf");
+    public void testSetNodeTemplateName() {
+        node.setNodeTemplateName("pop1");
     }
 
     @Test
-    public void testGetStNodeParam() {
+    public void testGetInputParameters() {
         node.getInputParameters();
     }
 
     @Test
-    public void testSetStNodeParam() {
-        Map<String, String> map = new HashMap<String, String>();
-        node.setInputParameters(map);
+    public void testSetInputParameters() {
+        List<DomainInputParameter> paramsList= new ArrayList<DomainInputParameter>();
+        node.setInputParameters(paramsList);
     }
 
 }
