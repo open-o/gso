@@ -29,7 +29,7 @@
 
     <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServiceSegmentOperation">
         insert into
-        t_lcm_service_segment_operation
+        t_lcm_svcsegment_operation
         (serviceSegmentId,serviceSegmentType,jobId,status,progress,errorCode,statusDescription)
         values(#{serviceSegmentId},#{serviceSegmentType},#{jobId},#{status},#{progress},#{errorCode},#{statusDescription})
     </insert>
