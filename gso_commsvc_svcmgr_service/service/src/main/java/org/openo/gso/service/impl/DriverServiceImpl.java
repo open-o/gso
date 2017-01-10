@@ -35,8 +35,6 @@ import org.openo.gso.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.json.JSONObject;
-
 /**
  * <br>
  * <p>
@@ -88,14 +86,20 @@ public class DriverServiceImpl implements IDriverService {
      * @since GSO 0.5
      */
     @Override
-    public String terminateNs(String instanceId) throws ApplicationException {
+    public RestfulResponse terminateNs(Map<String, Object> inputMap) throws ApplicationException {
         // terminate action
-        String terminateUrl = getUrl(domain, instanceId, CommonConstant.Step.TERMINATE);
-        RestfulResponse terminateRsp = getOperationResponse(terminateUrl, CommonConstant.MethodType.POST);
-        LOGGER.info("create ns response content is : {}", terminateRsp.getResponseContent());
-        // Process Network Service Response
-        JSONObject obj = JSONObject.fromObject(terminateRsp.getResponseContent());
-        return obj.getString("jobId");
+        String nsInstanceId = (String) inputMap.get(CommonConstant.NS_INSTANCE_ID);
+        Map<String, Object> paramsMap = new HashMap<String, Object>();
+        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, nsInstanceId, CommonConstant.Step.TERMINATE));
+        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
+        paramsMap.put(CommonConstant.HttpContext.IP, inputMap.get(CommonConstant.HttpContext.IP));
+        paramsMap.put(CommonConstant.HttpContext.PORT, inputMap.get(CommonConstant.HttpContext.PORT));
+        
+        RestfulResponse terminateRsp = RestfulUtil.getRemoteResponse(paramsMap, null, null);
+        LOGGER.info("terminate ns response status is : {}", terminateRsp.getStatus());
+        LOGGER.info("terminate ns response content is : {}", terminateRsp.getResponseContent());
+
+        return terminateRsp;
     }   
         
     /**
@@ -133,12 +137,7 @@ public class DriverServiceImpl implements IDriverService {
      * @since GSO 0.5
      */
     private RestfulResponse getOperationResponse(String url, String methodType) {
-
-        Map<String, Object> paramsMap = new HashMap<String, Object>();
-        paramsMap.put(CommonConstant.HttpContext.URL, url);
-        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, methodType);
-        return RestfulUtil.getRemoteResponse(paramsMap, null, null);
-
+        return null;
     }
 
     /**

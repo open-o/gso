@@ -35,13 +35,12 @@ public interface IDriverService {
      * <br>
      * terminate the network service
      * 
-     * @param nodeType type of the node instance
-     * @param instanceId id of the node instance
-     * @return result of the delete operation
+     * @param paramMap parameters map
+     * @return job id of the terminate operation
      * @throws ApplicationException when fail to delete the sub-service
      * @since GSO 0.5
      */
-    String terminateNs(String instanceId) throws ApplicationException;
+    RestfulResponse terminateNs(Map<String, Object> paramMap) throws ApplicationException;
 
     /**
      * <br>

@@ -233,12 +233,31 @@ public class DriverManagerImpl implements IDriverManager {
 
     
 
+    /**
+     * delete network service<br>
+     * 
+     * @param nsInstanceId instance id
+     * @param domain nfvo or sdno
+     * @return response
+     * @throws ApplicationException when fail to delete network service
+     * @since   GSO 0.5
+     */
     @Override
     public RestfulResponse deleteNs(String nsInstanceId, String domain) throws ApplicationException {
         // TODO Auto-generated method stub
         return null;
     }
     
+    /**
+     * instantiate network service<br>
+     * 
+     * @param nsInstanceId instance id
+     * @param httpRequest http request
+     * @param domain sdno or nfvo
+     * @return response
+     * @throws ApplicationException when fail to instantiate network service
+     * @since   GSO 0.5
+     */
     @Override
     public RestfulResponse instantiateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain)
             throws ApplicationException {
@@ -275,62 +294,54 @@ public class DriverManagerImpl implements IDriverManager {
         return rsp;
     }
 
+    /**
+     * terminate network service<br>
+     * 
+     * @param nsInstanceId instance id
+     * @param httpRequest http request
+     * @param domain nfvo or sdno
+     * @return response
+     * @throws ApplicationException when fail to terminate network service
+     * @since   GSO 0.5
+     */
     @Override
     public RestfulResponse terminateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain)
             throws ApplicationException {
-//        String body = RestUtils.getRequestBody(httpRequest);
-//        LOGGER.warn("terminate request body is {}", body);
-//        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}");
-//        
-//        LOGGER.warn("terminate json body is {}", jsonBody);
-//        
-//        // transfer the input into input parameters model
-//        ServiceNode inputs = null;
-//        inputs = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
-//
-//        // get nodeType from the request body
-//        String nodeType = inputs.getNodeType();
-//
-//        LOGGER.info("nodeType is {}", nodeType);
-//        // get instaceId & serviceId value from the map
-//        Map<String, String> instIdMap = inputs.getInputParameters();
-//
-//        String serviceId = instIdMap.get("serviceId");
-//        StringBuilder builder = new StringBuilder(nodeType);
-//        builder.append(".instanceId");
-//        String instKey = builder.toString();
-//        String instanceId = instIdMap.get(instKey);
-//        LOGGER.info("id of instance to be deleted is {}", instanceId);
-//
-//        // invoke the SDNO or NFVO to delete the instance
-//        LOGGER.info("start to delete the service instance");
-//        String status = "fail";
-//        try {
-//            status = serviceInf.deleteNs(instanceId);
-//        } catch(Exception e) {
-//            LOGGER.error("fail to delete the sub-service", e);
-//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
-//        }
-//
-//        LOGGER.info("end to delete the service instance");
-//        
-//
-//        RestfulResponse rsp = new RestfulResponse();
-//        if("success".equals(status)) {
-//            // save the segment information into the database
-//            ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
-//            serviceSegment.setServiceId(serviceId);
-//            serviceSegment.setServiceSegmentId(instanceId);
-//
-//            serviceSegmentDao.delete(serviceSegment);
-//            LOGGER.warn("succeed to delete the servcie segment from t_lcm_service_segment");
-//        }else{
-//            rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
-//        }
-//        return rsp;
-        return null;
+        //get input for current node
+        DomainInputParameter input = getParamsForCurrentNode(httpRequest);
+        
+        // Step 2: Call the NFVO or SDNO service to terminate service
+        if(null == serviceInf) {
+            LOGGER.error("Service interface not initialised");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
+        }
+        serviceInf.setDomain(domain);
 
+        LOGGER.info("terminate ns -> begin");
+        Map<String, Object> termParamMap = getTermParams(nsInstanceId, input);
+        RestfulResponse rsp = serviceInf.terminateNs(termParamMap);
+        JSONObject obj = JSONObject.fromObject(rsp.getResponseContent());
+        String jobId = obj.getString(CommonConstant.JOB_ID);
+        if(StringUtils.isEmpty(jobId)) {
+            LOGGER.error("Invalid jobId from terminate operation");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_RESPONSE_FROM_INSTANTIATE_OPERATION);
+        }
+        LOGGER.info("terminate ns -> end");
+        
+        // Step 3: update segment operation
+        LOGGER.info("update segment info -> begin");
+        if(!HttpCode.isSucess(rsp.getStatus())){
+            updateSegmentOperStatusInfoAndErrCode(nsInstanceId, domain, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.TERMINATE_NS_FAILED);
+            LOGGER.error("fail to instantiate ns");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_INSTANTIATE_NS);
+        }
+        updateSegmentOperJobId(nsInstanceId, domain, jobId);
+        LOGGER.info("update segment info -> end");
+        
+        return rsp;
     }
+
+    
 
     /**
      * get ns progress by job Id<br>
@@ -556,9 +567,9 @@ public class DriverManagerImpl implements IDriverManager {
     }
     
     /**
-     * private method5 : get create params<br>
+     * private method5 : get instantiate params<br>
      * 
-     * @param 
+     * @param nsInstanceId instance id
      * @param currentIput input params for current node
      * @return param map for instantiate
      * @since  GSO 0.5
@@ -627,6 +638,25 @@ public class DriverManagerImpl implements IDriverManager {
         segmentOper.setProcess(Integer.valueOf(progress));
         serviceSegmentDao.updateSegmentOperProgress(segmentOper);
         
+    }
+    
+    /**
+     * private method9 : get terminate params<br>
+     * 
+     * @param nsInstanceId instance id
+     * @param input input params for current node
+     * @return param map for terminate
+     * @since  GSO 0.5
+     */
+    private Map<String, Object> getTermParams(String nsInstanceId, DomainInputParameter input) {
+        
+        Map<String, Object> termParamMap = new HashMap<String, Object>();
+        termParamMap.put(CommonConstant.NS_INSTANCE_ID, nsInstanceId);
+        
+        String domainHost = input.getDomainHost();
+        parseDomainHost(domainHost, termParamMap);
+
+        return termParamMap;
     }
     
     
