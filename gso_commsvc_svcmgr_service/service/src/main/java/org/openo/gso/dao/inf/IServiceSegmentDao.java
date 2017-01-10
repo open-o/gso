@@ -41,14 +41,7 @@ public interface IServiceSegmentDao {
      */
     void insertSegment(ServiceSegmentModel serviceSegment) throws ApplicationException;
     
-    /**
-     * Insert service segment operation<br>
-     * 
-     * @param svcSegmentOper service segment operation
-     * @throws ApplicationException when database exception or parameter is wrong
-     * @since  GSO 0.5
-     */
-    void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) throws ApplicationException;
+    
 
     /**
      * Delete service segment instance by service ID.<br/>
@@ -68,6 +61,26 @@ public interface IServiceSegmentDao {
      * @since GSO 0.5
      */
     List<ServiceSegmentModel> queryServiceSegments(String serviceId) throws ApplicationException;
+    
+    /**
+     * get service segment by segmentId and segmentType<br>
+     * 
+     * @param segmentId id of the service segment
+     * @param segmengType type of the service segment
+     * @return service segment model
+     * @since  GSO 0.5
+     */
+    ServiceSegmentModel queryServiceSegment(String jobId) throws ApplicationException;
+    
+    
+    /**
+     * Insert service segment operation<br>
+     * 
+     * @param svcSegmentOper service segment operation
+     * @throws ApplicationException when database exception or parameter is wrong
+     * @since  GSO 0.5
+     */
+    void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) throws ApplicationException;
 
     /**
      * Update jobId of the service segment<br>
@@ -75,7 +88,7 @@ public interface IServiceSegmentDao {
      * @param segmentOper service segment operation
      * @since  GSO 0.5
      */
-    void updateSegmentOperJobId(ServiceSegmentOperation segmentOper);
+    void updateSegmentOperJobId(ServiceSegmentOperation segmentOper) throws ApplicationException;
 
     /**
      * Update status of the service segment<br><br>
@@ -83,5 +96,15 @@ public interface IServiceSegmentDao {
      * @param segmentOper service segment operation
      * @since  GSO 0.5
      */
-    void updateSegmentOperStatus(ServiceSegmentOperation segmentOper);
+    void updateSegmentOperStatus(ServiceSegmentOperation segmentOper) throws ApplicationException;
+
+
+    /**
+     * Update progress of the service segment<br><br>
+     * 
+     * @param segmentOper service segment operation
+     * @since  GSO 0.5
+     */
+    void updateSegmentOperProgress(ServiceSegmentOperation segmentOper) throws ApplicationException;
+    
 }

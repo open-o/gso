@@ -27,20 +27,19 @@ import java.util.concurrent.ThreadPoolExecutor;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.eclipse.jetty.http.HttpStatus;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
-import org.openo.gso.constant.Constant;
 import org.openo.gso.constant.DriverExceptionID;
 import org.openo.gso.dao.inf.IServiceModelDao;
 import org.openo.gso.dao.inf.IServicePackageDao;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.exception.HttpCode;
-import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.model.drivermo.DomainInputParameter;
 import org.openo.gso.model.drivermo.NsProgressStatus;
+import org.openo.gso.model.drivermo.ResponseDescriptor;
 import org.openo.gso.model.drivermo.ServiceNode;
 import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
@@ -50,10 +49,8 @@ import org.openo.gso.service.inf.IDriverManager;
 import org.openo.gso.service.inf.IDriverService;
 import org.openo.gso.util.RestfulUtil;
 import org.openo.gso.util.json.JsonUtil;
-import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -69,6 +66,13 @@ import net.sf.json.JSONObject;
 public class DriverManagerImpl implements IDriverManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DriverManagerImpl.class);
+    
+    /**
+     * 10s
+     */
+    private static final long TEN_SECONDS = 10 * 1000;
+    
+    private String domain;
 
     /**
      * driver service interface
@@ -221,7 +225,6 @@ public class DriverManagerImpl implements IDriverManager {
             LOGGER.error("fail to create ns");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_CREATE_NS);
         }
-            
         
         return restRsp;
     }
@@ -262,7 +265,7 @@ public class DriverManagerImpl implements IDriverManager {
         // Step 3: update segment operation
         LOGGER.info("update segment info -> begin");
         if(!HttpCode.isSucess(rsp.getStatus())){
-            updateSegmentOperStatus(nsInstanceId, domain, rsp.getStatus());
+            updateSegmentOperStatusInfoAndErrCode(nsInstanceId, domain, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.INSTANTIATE_NS_FAILED);
             LOGGER.error("fail to instantiate ns");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_INSTANTIATE_NS);
         }
@@ -271,10 +274,6 @@ public class DriverManagerImpl implements IDriverManager {
         
         return rsp;
     }
-
-    
-
-    
 
     @Override
     public RestfulResponse terminateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain)
@@ -333,206 +332,87 @@ public class DriverManagerImpl implements IDriverManager {
 
     }
 
+    /**
+     * get ns progress by job Id<br>
+     * 
+     * @param jobId job id
+     * @param domain NFVO or SDNO
+     * @return ns progress
+     * @throws ApplicationException when fail to get ns progress
+     * @since   SDNO 0.5
+     */
     @Override
     public RestfulResponse getNsProgress(String jobId, String domain) throws ApplicationException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    //TODO make sure node sequence implementation
-    /**
-     * <br/>
-     * 
-     * @param nodes
-     * @param seviceSegment
-     * @return
-     * @throws ServiceException
-     * @since GSO 0.5
-     */
-    @SuppressWarnings("unchecked")
-    private int getSequenceOfNode(List<NodeTemplateModel> nodes, ServiceSegmentModel seviceSegment)
-            throws ApplicationException {
-
-        // Check data
-        if(CollectionUtils.isEmpty(nodes)) {
-            LOGGER.error("There is no nodes in template. The type of node is ", seviceSegment.getNodeType());
-            throw new ApplicationException(HttpCode.BAD_REQUEST, "Fail to get node from catalog.");
-        }
-        String type = seviceSegment.getNodeType();
-        ValidateUtil.assertStringNotNull(type);
-
-        // visit node
-        String nodeName = null;
-        List<String> nodeSequence = null;
-        for(NodeTemplateModel node : nodes) {
-
-            // get node name
-            if(node.getType().equals(seviceSegment.getNodeType())) {
-                nodeName = node.getName();
-            }
-
-            // get node sequence
-            if(node.getName().equals(Constant.NODE_SEQUENCE)) {
-                Map<String, Object> properties = node.getProperties();
-                if(!CollectionUtils.isEmpty(properties)) {
-                    Object sequence = properties.get(Constant.SEQUENCE_PROPERTY);
-                    if(sequence instanceof List) {
-                        nodeSequence = (List<String>)sequence;
-                        break;
-                    }
-                } else {
-                    LOGGER.error("There is no sequence for node. The service instance is {}",
-                            seviceSegment.getServiceId());
-                }
-            }
-        }
-
-        // validate
-        if((null == nodeSequence) || StringUtils.isEmpty(nodeName)) {
-            LOGGER.error("There is no sequence for node. The service instance is {}", seviceSegment.getServiceId());
-            return 0;
-        }
-
-        return nodeSequence.indexOf(nodeName) + 1;
-    }
-
-    private RestfulResponse createNetworkSubService(ServiceNode serviceNode, String templateId,
-            HttpServletRequest httpRequest) throws ApplicationException {
-
-//        LOGGER.warn("create ns : begin");
-//        // Step 2:Make a list of parameters for the node Type
-//        Map<String, String> createParamMap = getCreateParamsByNodeType(serviceNode);
-//        
-//        // Step 1: Create Network service
-//        String nsInstanceId = serviceInf.createNS(templateId, createParamMap);
-//        LOGGER.warn("nsInstanceId is {}", nsInstanceId);
-//        if(StringUtils.isEmpty(nsInstanceId)) {
-//            LOGGER.error("Invalid instanceId from create");
-//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
-//                    DriverExceptionID.INVALID_VALUE_FROM_CREATE);
-//        }
-//        
-//        LOGGER.warn("create ns : end");
-//        
-//        LOGGER.warn("instantiate ns : begin");
-//        Map<String, String> instParamMap = getInstParamsByNodeType(serviceNode);
-//
-//        // Step 2: Instantiate Network service
-//        String jobId = serviceInf.instantiateNS(nsInstanceId, instParamMap);
-//        if(StringUtils.isEmpty(jobId)) {
-//            LOGGER.error("Invalid jobId from instantiate");
-//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
-//                    DriverExceptionID.INVALID_VALUE_FROM_INSTANTIATE);
-//        }
-//        LOGGER.warn("instantiate ns : end");
-//
-//        LOGGER.warn("query job : begin");
-//        // Step 3: Wait for Job to complete
-//        String status = "success";
-//        try {
-//            waitForJobToComplete(jobId);
-//        } catch(ApplicationException e) {
-//            LOGGER.error("fail to complete the job", e);
-//            status = "fail";
-//        }
-//        LOGGER.warn("query job : end");
-//
-//        String serviceId = serviceNode.getInputParameters().get("serviceId");
-//        LOGGER.warn("serviceId is {}", serviceId);
-//        String serviceName = serviceNode.getInputParameters().get("serviceName");
-//        LOGGER.warn("serviceName is {}", serviceName);
-//        ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
-//        
-//        serviceSegment.setServiceId(serviceId);
-//        serviceSegment.setServiceSegmentName(serviceName);
-//        serviceSegment.setServiceSegmentId(nsInstanceId);
-//        serviceSegment.setNodeType(serviceNode.getNodeType());
-//        serviceSegment.setStatus(status);
-//        serviceSegment.setTemplateId(templateId);
-//
-//        ServicePackageMapping pacakageInfo = servicePackageDao.queryPackageMapping(serviceId);
-//        if(null == pacakageInfo) {
-//            LOGGER.error("There is no package in DB. The service Id is {}", serviceId);
-//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "There is no package in DB.");
-//        }
-//
-//        // Query nodes of template
-//        List<NodeTemplateModel> nodes = catalogProxy.getNodeTemplate(pacakageInfo.getTemplateId(), httpRequest);
-//        int sequence = getSequenceOfNode(nodes, serviceSegment);
-//        serviceSegment.setTopoSeqNumber(sequence);
-
-        
-
-        // Step 4: return the response
-        RestfulResponse rsp = new RestfulResponse();
-//        if("success".equals(status)) {
-//            LOGGER.warn("store segment : begin");
-//            // insert database
-//            serviceSegmentDao.insert(serviceSegment);
-//            
-//            LOGGER.warn("store segment : end");
-//            if(CommonConstant.NodeType.SDN_UNDERLAYVPN_TYPE.equals(serviceNode.getNodeType())
-//                    || CommonConstant.NodeType.SDN_OVERLAYVPN_TYPE.equals(serviceNode.getNodeType())){
-//                serviceModelDao.updateServiceResult(serviceId, "success");
-//            }
-//            
-//        }else{
-//            rsp.setStatus(HttpCode.INTERNAL_SERVER_ERROR);
-//            LOGGER.error("fail to store the sub-service to LCM");
-//            serviceModelDao.updateServiceResult(serviceId, "fail");
-//        }
-        return rsp;
-    }
-
-
-    private void waitForJobToComplete(String jobId) throws ApplicationException {
-
+        //Step 1: get service segmemt operation by job id
+        ServiceSegmentModel segment = serviceSegmentDao.queryServiceSegment(jobId);
+        //Step 2 : build query task
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+        String segmentId = segment.getServiceSegmentId();
+        String segmentType = domain;
+        String domainHost = segment.getDomainHost();
+        parseDomainHost(domainHost, paramMap);
+        QueryProgress task = new QueryProgress(jobId, paramMap);
+        this.domain = domain;
+        //Step 3: start query
+        LOGGER.info("query ns status -> begin");
         ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(1);
         boolean queryFlag = true;
-
+        RestfulResponse rsp = null;
         while(queryFlag) {
-
-            QueryProgress task = new QueryProgress(jobId);
-            Future<NsProgressStatus> status = executor.submit(task);
-
-            NsProgressStatus progress = null;
             try {
-                progress = status.get();
+                Future<RestfulResponse> status = executor.submit(task);
+                rsp = status.get();
             } catch(Exception e) {
-
-                queryFlag = false;
-                LOGGER.error("error in the result when query the operation status", e);
+                LOGGER.error("fail to query the operation status: {}", e);
+                executor.shutdown();
+                updateSegmentOperStatusInfoAndErrCode(segmentId, segmentType, CommonConstant.Status.ERROR, HttpStatus.INTERNAL_SERVER_ERROR_500, CommonConstant.StatusDesc.QUERY_JOB_STATUS_FAILED);
                 throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
             }
-
-            if("100".equals(progress.getResponseDescriptor().getProgress())
-                    && "finished".equals(progress.getResponseDescriptor().getStatus())) {
-                LOGGER.info("Success to create the sub-service");
+            
+            if(!HttpCode.isSucess(rsp.getStatus())){
+                LOGGER.info("fail to query job status");
+                updateSegmentOperStatusInfoAndErrCode(segment.getServiceSegmentId(), domain, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.QUERY_JOB_STATUS_FAILED);
+                throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
+            }
+            //Step 4: Process Network Service Instantiate Response
+            NsProgressStatus nsProgress = null;
+            nsProgress = JsonUtil.unMarshal(rsp.getResponseContent(), NsProgressStatus.class);
+            ResponseDescriptor rspDesc = nsProgress.getResponseDescriptor();
+            updateSegmentOperProgress(segmentId, segmentType, rspDesc.getProgress());
+            if(CommonConstant.Progress.ONE_HUNDRED.equals(rspDesc.getProgress()) && CommonConstant.Status.FINISHED.equals(rspDesc.getStatus())) {
+                LOGGER.info("job complete : create ns result is succeeded");
+                updateSegmentOperStatusInfoAndErrCode(segmentId, segmentType, CommonConstant.Status.FINISHED, rspDesc.getErrorCode(), rspDesc.getStatusDescription());
                 queryFlag = false;
-            } else if("error".equals(progress.getResponseDescriptor().getStatus())) {
-                LOGGER.error("Failed to create the sub service");
+            } else if(CommonConstant.Status.ERROR.equals(rspDesc.getStatus())) {
+                LOGGER.error("job complete : create ns result is failed");
+                updateSegmentOperStatusInfoAndErrCode(segmentId, segmentType, CommonConstant.Status.ERROR, rspDesc.getErrorCode(), rspDesc.getStatusDescription());
                 throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
             } else {
                 // do nothing
             }
         }
-
+        LOGGER.info("query ns status -> end");
+          
+        return rsp;
     }
+    
+    
 
-    class QueryProgress implements Callable<NsProgressStatus> {
+    class QueryProgress implements Callable<RestfulResponse> {
 
         String jobId;
-
-        QueryProgress(String jobInfo) {
+        Map<String, Object> map;
+        QueryProgress(String jobInfo, Map<String, Object> mapInfo) {
             jobId = jobInfo;
+            map = mapInfo;
         }
 
         @Override
-        public NsProgressStatus call() throws Exception {
-
+        public RestfulResponse call() throws Exception {
             // For every 10 seconds query progress
-            Thread.sleep(10000);
-            return serviceInf.getNsProgress(jobId);
+            Thread.sleep(TEN_SECONDS);
+            serviceInf.setDomain(domain);
+            return serviceInf.getNsProgress(jobId, map);
         }
 
     }
@@ -699,17 +579,19 @@ public class DriverManagerImpl implements IDriverManager {
     /**
      * private method 6: update segment operation status<br>
      * 
-     * @param nsInstanceId instance id
-     * @param domain nfvo or sdno
+     * @param segmentId instance id
+     * @param segmentType nfvo or sdno
      * @param status status: processing, finished, error
+     * @param errCode http code
      * @since  GSO 0.5
      */
-    private void updateSegmentOperStatus(String nsInstanceId, String domain, int statusCode) {
+    private void updateSegmentOperStatusInfoAndErrCode(String segmentId, String segmentType, String status, int errCode, String statusDesc) {
         ServiceSegmentOperation segmentOper = new ServiceSegmentOperation();
-        segmentOper.setServiceSegmentId(nsInstanceId);
-        segmentOper.setServiceSegmentType(domain);
-        segmentOper.setStatus(CommonConstant.Status.ERROR);
-        segmentOper.setErrorCode(statusCode);
+        segmentOper.setServiceSegmentId(segmentId);
+        segmentOper.setServiceSegmentType(segmentType);
+        segmentOper.setStatus(status);
+        segmentOper.setErrorCode(errCode);
+        segmentOper.setStatusDescription(statusDesc);
         serviceSegmentDao.updateSegmentOperStatus(segmentOper);
         
     }
@@ -717,17 +599,34 @@ public class DriverManagerImpl implements IDriverManager {
     /**
      * private method 7: update segment operation job id<br>
      * 
-     * @param nsInstanceId instance id
-     * @param domain nfvo or sdno
+     * @param segmentId instance id
+     * @param segmentType nfvo or sdno
      * @param jobId job id
      * @since  GSO 0.5
      */
-    private void updateSegmentOperJobId(String nsInstanceId, String domain, String jobId) {
+    private void updateSegmentOperJobId(String segmentId, String segmentType, String jobId) {
         ServiceSegmentOperation segmentOper = new ServiceSegmentOperation();
-        segmentOper.setServiceSegmentId(nsInstanceId);
-        segmentOper.setServiceSegmentType(domain);
+        segmentOper.setServiceSegmentId(segmentId);
+        segmentOper.setServiceSegmentType(segmentType);
         segmentOper.setJobId(jobId);
         serviceSegmentDao.updateSegmentOperJobId(segmentOper);
+    }
+    
+    /**
+     * private method8: update segment operation progress<br>
+     * 
+     * @param segmentId instance id
+     * @param segmentType nfvo or sdno
+     * @param progress prgress
+     * @since  GSO 0.5
+     */
+    private void updateSegmentOperProgress(String segmentId, String segmentType, String progress) {
+        ServiceSegmentOperation segmentOper = new ServiceSegmentOperation();
+        segmentOper.setServiceSegmentId(segmentId);
+        segmentOper.setServiceSegmentType(segmentType);
+        segmentOper.setProcess(Integer.valueOf(progress));
+        serviceSegmentDao.updateSegmentOperProgress(segmentOper);
+        
     }
     
     

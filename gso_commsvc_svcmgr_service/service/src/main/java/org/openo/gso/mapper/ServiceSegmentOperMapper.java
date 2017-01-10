@@ -51,4 +51,13 @@ public interface ServiceSegmentOperMapper {
      * @since  GSO 0.5
      */
     void updateStatus(ServiceSegmentOperation segmentOper);
+
+    /**
+     * Update progress of the service segment<br><br>
+     * 
+     * @param segmentOper service segment operation
+     * @since  GSO 0.5
+     */
+    void updateProgress(ServiceSegmentOperation segmentOper);
+
 }

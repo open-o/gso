@@ -40,7 +40,12 @@
     </update>
     
     <update id="updateStatus" parameterType="org.openo.gso.model.servicemo.ServiceSegmentOperation">
-        update t_lcm_svcsegment_operation set status = #{status}, errorCode = #{errorCode}
+        update t_lcm_svcsegment_operation set status = #{status}, errorCode = #{errorCode}, statusDescription = #{statusDescription}
+        where serviceSegmentId = #{serviceSegmentId} and serviceSegmentType = #{serviceSegmentType}
+    </update>
+    
+    <update id="updateProgress" parameterType="org.openo.gso.model.servicemo.ServiceSegmentOperation">
+        update t_lcm_svcsegment_operation set progress = #{progress}
         where serviceSegmentId = #{serviceSegmentId} and serviceSegmentType = #{serviceSegmentType}
     </update>
 

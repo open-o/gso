@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,15 @@ public interface ServiceSegmentMapper {
      * @since GSO 0.5
      */
     List<ServiceSegmentModel> queryServiceSegments(@Param("serviceId") String serviceId);
+    
+    /**
+     * Query service segment by segment id and segment type<br>
+     * 
+     * @param jobId job id
+     * @return service segment model
+     * @since  GSO 0.5
+     */
+    ServiceSegmentModel queryServiceSegment(@Param("jobId") String jobId);
 
     /**
      * Insert service segment instance.<br/>
@@ -63,4 +72,6 @@ public interface ServiceSegmentMapper {
      * @since GSO 0.5
      */
     void insert(ServiceSegmentModel serviceSegment);
+
+    
 }

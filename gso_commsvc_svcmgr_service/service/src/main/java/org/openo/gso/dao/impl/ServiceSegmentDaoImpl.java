@@ -85,26 +85,6 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
-    
-    /**
-     * Insert service segment operation<br>
-     * 
-     * @param svcSegmentOper service segment operation
-     * @throws ApplicationException when database exception or parameter is wrong
-     * @since   GSO 0.5
-     */
-    @Override
-    public void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) throws ApplicationException {
-        try {
-            ValidateUtil.assertObjectNotNull(svcSegmentOper);
-            ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
-            svcSegmentOperMapper.insert(svcSegmentOper);
-        } catch(Exception exception) {
-            LOGGER.error("Fail to insert service segment operation. {}", exception);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
-        }
-        
-    }
 
     /**
      * Delete service segment instance by service ID.<br/>
@@ -155,6 +135,25 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
+    
+    /**
+     * get service segment by segment id and segment type<br>
+     * 
+     * @param jobId job id
+     * @return service segment
+     * @since   GSO 0.5
+     */
+    @Override
+    public ServiceSegmentModel queryServiceSegment(String jobId) throws ApplicationException{
+        try {
+            ValidateUtil.assertObjectNotNull(jobId);
+            ServiceSegmentMapper serviceSegment = getMapper(ServiceSegmentMapper.class);
+            return serviceSegment.queryServiceSegment(jobId);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to get service segment segment by job id {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+    }
 
     /**
      * Get Sql mapper.<br/>
@@ -167,6 +166,26 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
         SqlSession session = dbSessionHandler.getSqlSession();
         return session.getMapper(type);
     }
+    
+    /**
+     * Insert service segment operation<br>
+     * 
+     * @param svcSegmentOper service segment operation
+     * @throws ApplicationException when database exception or parameter is wrong
+     * @since   GSO 0.5
+     */
+    @Override
+    public void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) throws ApplicationException {
+        try {
+            ValidateUtil.assertObjectNotNull(svcSegmentOper);
+            ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
+            svcSegmentOperMapper.insert(svcSegmentOper);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to insert service segment operation. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+        
+    }
 
     /**
      * Update jobId of the service segment<br>
@@ -175,7 +194,7 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * @since  GSO 0.5
      */
     @Override
-    public void updateSegmentOperJobId(ServiceSegmentOperation segmentOper) {
+    public void updateSegmentOperJobId(ServiceSegmentOperation segmentOper) throws ApplicationException {
         try {
             ValidateUtil.assertObjectNotNull(segmentOper);
             ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
@@ -195,7 +214,7 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * @since  GSO 0.5
      */
     @Override
-    public void updateSegmentOperStatus(ServiceSegmentOperation segmentOper) {
+    public void updateSegmentOperStatus(ServiceSegmentOperation segmentOper) throws ApplicationException {
         try {
             ValidateUtil.assertObjectNotNull(segmentOper);
             ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
@@ -207,5 +226,23 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
         
     }
 
+    /**
+     * Update progress of the service segment<br><br>
+     * 
+     * @param segmentOper service segment operation
+     * @since  GSO 0.5
+     */
+    @Override
+    public void updateSegmentOperProgress(ServiceSegmentOperation segmentOper) throws ApplicationException {
+        try {
+            ValidateUtil.assertObjectNotNull(segmentOper);
+            ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
+            svcSegmentOperMapper.updateProgress(segmentOper);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to update service segment operation progress. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+        
+    }
     
 }

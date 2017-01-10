@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
-import org.openo.gso.model.drivermo.NsProgressStatus;
 
 /**
  * <br>
@@ -81,11 +80,12 @@ public interface IDriverService {
      * query the progress of the instantiate operation
      * 
      * @param jobId job id
+     * @param map paramters map
      * @return progress detail
      * @throws ApplicationException when fail to query the progress
      * @since GSO 0.5
      */
-    NsProgressStatus getNsProgress(String jobId) throws ApplicationException;
+    RestfulResponse getNsProgress(String jobId, Map<String, Object> map) throws ApplicationException;
 
     /**
      * <br>

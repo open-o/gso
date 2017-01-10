@@ -53,5 +53,12 @@
         select serviceId,serviceSegmentId,serviceSegmentType,serviceSegmentName,templateId,nodeType,topoSeqNumber,domainHost,nodeTemplateName from t_lcm_service_segment where serviceId =
         #{serviceId}
     </select>
+    
+    <select id="queryServiceSegment" resultMap="ServiceSegmentResultMap">
+        select serviceId,segment.serviceSegmentId,segment.serviceSegmentType,serviceSegmentName,templateId,nodeType,topoSeqNumber,domainHost,nodeTemplateName 
+        from t_lcm_service_segment segment left join t_lcm_svcsegment_operation oper 
+        on (segment.serviceSegmentId = oper.serviceSegmentId and segment.serviceSegmentType = oper.serviceSegmentType)
+        where oper.jobId = #{jobId}
+    </select>
 
 </mapper>

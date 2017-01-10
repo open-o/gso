@@ -16,9 +16,6 @@
 
 package org.openo.gso.constant;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * <br>
  * <p>
@@ -51,26 +48,6 @@ public class CommonConstant {
     public static final String NFVO_DELETE_URL = "/openoapi/nslcm/v1/ns/%s";
     
     public static final String NFVO_QUERY_URL = "/openoapi/nslcm/v1/jobs/%s";
-    
-    public final static Map nfvoUrlMap = new HashMap<String, String>();
-    
-    static {
-        nfvoUrlMap.put(Step.CREATE, NFVO_CREATE_URL);
-        nfvoUrlMap.put(Step.INSTANTIATE, NFVO_INSTANTIATE_URL);
-        nfvoUrlMap.put(Step.TERMINATE, NFVO_TERMINATE_URL);
-        nfvoUrlMap.put(Step.DELETE, NFVO_DELETE_URL);
-        nfvoUrlMap.put(Step.QUERY, NFVO_QUERY_URL);
-    }
-    
-    public final static Map sdnoUrlMap = new HashMap<String, String>();
-
-    static {
-        sdnoUrlMap.put(Step.CREATE, SDNO_CREATE_URL);
-        sdnoUrlMap.put(Step.INSTANTIATE, SDNO_INSTANTIATE_URL);
-        sdnoUrlMap.put(Step.TERMINATE, SDNO_TERMINATE_URL);
-        sdnoUrlMap.put(Step.DELETE, SDNO_DELETE_URL);
-        sdnoUrlMap.put(Step.QUERY, SDNO_QUERY_URL);
-    }
     
     /**
      * <br>
@@ -206,6 +183,26 @@ public class CommonConstant {
     public static final String JOB_ID = "jobId";
 
     public static final String ADDITIONAL_PARAM_FOR_NS = "additionalParamForNs";
+
+    public static class StatusDesc {
+        
+        public static final String INSTANTIATE_NS_FAILED = "instantiate ns failed";
+        
+        public static final String QUERY_JOB_STATUS_FAILED = "query job status failed";
+        
+        private StatusDesc() {
+            
+        }
+    }
+
+    public static class Progress {
+        
+        public static final String ONE_HUNDRED = "100"; 
+        
+        private Progress() {
+            
+        }
+    }
 
     public static class Status {
         
