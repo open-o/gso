@@ -203,6 +203,10 @@ public class CommonConstant {
 
     public static final String NS_INSTANCE_ID = "nsInstanceId";
 
+    public static final String JOB_ID = "jobId";
+
+    public static final String ADDITIONAL_PARAM_FOR_NS = "additionalParamForNs";
+
     public static class Status {
         
         public static final String FINISHED = "finished";

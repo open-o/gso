@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,18 +56,18 @@ public class RestfulUtil {
      * @return restful response
      * @since GSO 0.5
      */
-    public static RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String body,
+    public static RestfulResponse getRemoteResponse(Map<String, Object> paramsMap, String body,
             Map<String, String> queryParam) {
         if(null == paramsMap) {
             return null;
         }
-        String url = paramsMap.get(CommonConstant.HttpContext.URL);
+        String url = (String) paramsMap.get(CommonConstant.HttpContext.URL);
         LOGGER.info("url is : {}", url);
-        String methodType = paramsMap.get(CommonConstant.HttpContext.METHOD_TYPE);
+        String methodType = (String) paramsMap.get(CommonConstant.HttpContext.METHOD_TYPE);
         LOGGER.info("method type is : {}", methodType);
-        String ip = paramsMap.get(CommonConstant.HttpContext.IP);
+        String ip = (String) paramsMap.get(CommonConstant.HttpContext.IP);
         LOGGER.info("ip is : {}", ip);
-        String port = paramsMap.get(CommonConstant.HttpContext.PORT);
+        String port =  (String) paramsMap.get(CommonConstant.HttpContext.PORT);
         LOGGER.info("port is : {}", port);
         RestfulResponse rsp = null;
         Restful rest = RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP);

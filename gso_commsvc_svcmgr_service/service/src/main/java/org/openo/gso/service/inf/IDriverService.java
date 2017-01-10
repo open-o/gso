@@ -59,23 +59,22 @@ public interface IDriverService {
      * create the network service
      * 
      * @param paramMap map of the input parameters
-     * @return result of the creating
+     * @return nsInstanceId
      * @throws ApplicationException when fail to creat the network service
      * @since GSO 0.5
      */
-    RestfulResponse createNS(Map<String, String> paramMap) throws ApplicationException;
+    RestfulResponse createNS(Map<String, Object> paramMap) throws ApplicationException;
 
     /**
      * <br>
      * instantiate the network service
      * 
-     * @param instanceId id of the node instance
      * @param mapParams input parameters
      * @return jobId of the instantiate operation
      * @throws ApplicationException when fail to instantiate
      * @since GSO 0.5
      */
-    String instantiateNS(String instanceId, Map<String, String> mapParams) throws ApplicationException;
+    RestfulResponse instantiateNS(Map<String, Object> mapParams) throws ApplicationException;
 
     /**
      * <br>

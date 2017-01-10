@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,13 @@ public class DriverExceptionID {
 
     public static final String FAILED_TO_SVCTMPL_CATALOGUE = "Failed to get service template from catalogue";
 
-    public static final String INVALID_VALUE_FROM_INSTANTIATE = "Invalid value from instantiate";
+    public static final String INVALID_RESPONSE_FROM_INSTANTIATE_OPERATION = "Invalid response from instantiate operation";
 
-    public static final String INVALID_VALUE_FROM_CREATE = "Invalid value from create";
+    public static final String INVALID_RESPONSEE_FROM_CREATE_OPERATION = "Invalid response from create operation";
+
+    public static final String FAIL_TO_INSTANTIATE_NS = "Fail to instantiate ns";
+
+    public static final String FAIL_TO_CREATE_NS = "Fail to create ns";
 
     private DriverExceptionID() {
 

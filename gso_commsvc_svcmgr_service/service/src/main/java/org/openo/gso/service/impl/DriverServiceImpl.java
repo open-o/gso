@@ -112,7 +112,7 @@ public class DriverServiceImpl implements IDriverService {
      */
     private RestfulResponse getOperationResponse(String url, String methodType) {
 
-        Map<String, String> paramsMap = new HashMap<String, String>();
+        Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(CommonConstant.HttpContext.URL, url);
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, methodType);
         return RestfulUtil.getRemoteResponse(paramsMap, null, null);
@@ -157,17 +157,17 @@ public class DriverServiceImpl implements IDriverService {
      * @since GSO 0.5
      */
     @Override
-    public RestfulResponse createNS(Map<String, String> inputMap) throws ApplicationException {
+    public RestfulResponse createNS(Map<String, Object> inputMap) throws ApplicationException {
 
-        Map<String, String> paramsMap = new HashMap<String, String>();
+        Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, null, CommonConstant.Step.CREATE));
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
         
         // Step 1: Prepare Network Service Request
         NSRequest oRequest = new NSRequest();
-        oRequest.setNsdId(inputMap.get(CommonConstant.NSD_ID));
-        oRequest.setNsName(inputMap.get(CommonConstant.NS_NAME));
-        oRequest.setDescription(inputMap.get(CommonConstant.DESC));
+        oRequest.setNsdId((String) inputMap.get(CommonConstant.NSD_ID));
+        oRequest.setNsName((String) inputMap.get(CommonConstant.NS_NAME));
+        oRequest.setDescription((String) inputMap.get(CommonConstant.DESC));
 
         // Step 2: Send Network Service Request
         String req = "";
@@ -185,35 +185,36 @@ public class DriverServiceImpl implements IDriverService {
      * 
      * @param instanceId - Network service to be instantiated
      * @param lstParams - List of user input parameters
-     * @return jobID
+     * @return jobId
      * @throws ApplicationException - when workflow engine returns invalid value
      * @since GSO 0.5
      */
+    @SuppressWarnings("unchecked")
     @Override
-    public String instantiateNS(String instanceId, Map<String, String> mapParams) throws ApplicationException {
+    public RestfulResponse instantiateNS(Map<String, Object> paramMap) throws ApplicationException {
 
         // Step 1: Prepare Network Service Instantiate Request
         NsInstantiateReq oRequest = new NsInstantiateReq();
 
-        oRequest.setNsInstanceId(instanceId);
-        oRequest.setAdditionalParamForNs(mapParams);
+        String nsInstanceId = (String) paramMap.get(CommonConstant.NS_INSTANCE_ID);
+        oRequest.setNsInstanceId(nsInstanceId);
+        oRequest.setAdditionalParamForNs((Map<String, String>)paramMap.get(CommonConstant.ADDITIONAL_PARAM_FOR_NS));
 
         // Get url based on node type
 
-        Map<String, String> paramsMap = new HashMap<String, String>();
+        Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
-        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, instanceId, CommonConstant.Step.INSTANTIATE));
+        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, nsInstanceId, CommonConstant.Step.INSTANTIATE));
 
         // Step 2: Send Network Service Instantiate Request
         String networkSvcReq = "";
         networkSvcReq = JsonUtil.marshal(oRequest);
 
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, networkSvcReq, null);
+        LOGGER.info("instantiate ns response status is : {}", rsp.getStatus());
         LOGGER.info("instantiate ns response content is : {}", rsp.getResponseContent());
 
-        // Step 3: Process Network Service Instantiate Response
-        JSONObject obj = JSONObject.fromObject(rsp.getResponseContent());
-        return obj.getString("jobId");
+        return rsp;
 
     }
 
@@ -229,7 +230,7 @@ public class DriverServiceImpl implements IDriverService {
     public NsProgressStatus getNsProgress(String jobId) throws ApplicationException {
 
         // Get url based on node type
-        Map<String, String> paramsMap = new HashMap<String, String>();
+        Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, jobId, CommonConstant.Step.QUERY));
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
 

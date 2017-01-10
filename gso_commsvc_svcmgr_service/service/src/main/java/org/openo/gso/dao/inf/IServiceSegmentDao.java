@@ -68,4 +68,20 @@ public interface IServiceSegmentDao {
      * @since GSO 0.5
      */
     List<ServiceSegmentModel> queryServiceSegments(String serviceId) throws ApplicationException;
+
+    /**
+     * Update jobId of the service segment<br>
+     * 
+     * @param segmentOper service segment operation
+     * @since  GSO 0.5
+     */
+    void updateSegmentOperJobId(ServiceSegmentOperation segmentOper);
+
+    /**
+     * Update status of the service segment<br><br>
+     * 
+     * @param segmentOper service segment operation
+     * @since  GSO 0.5
+     */
+    void updateSegmentOperStatus(ServiceSegmentOperation segmentOper);
 }

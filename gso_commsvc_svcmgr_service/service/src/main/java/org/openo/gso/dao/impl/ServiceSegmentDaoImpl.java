@@ -168,5 +168,44 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
         return session.getMapper(type);
     }
 
+    /**
+     * Update jobId of the service segment<br>
+     * 
+     * @param segmentOper service segment operation
+     * @since  GSO 0.5
+     */
+    @Override
+    public void updateSegmentOperJobId(ServiceSegmentOperation segmentOper) {
+        try {
+            ValidateUtil.assertObjectNotNull(segmentOper);
+            ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
+            svcSegmentOperMapper.updateJobId(segmentOper);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to update service segment operation job id. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+        
+    }
+
+    
+    /**
+     * Update status of the service segment<br><br>
+     * 
+     * @param segmentOper service segment operation
+     * @since  GSO 0.5
+     */
+    @Override
+    public void updateSegmentOperStatus(ServiceSegmentOperation segmentOper) {
+        try {
+            ValidateUtil.assertObjectNotNull(segmentOper);
+            ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
+            svcSegmentOperMapper.updateStatus(segmentOper);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to update service segment operation status. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+        
+    }
+
     
 }

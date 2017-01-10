@@ -121,7 +121,7 @@ public class DriverServiceImplTest {
         ServiceTemplate svcTmpl = new ServiceTemplate();
         svcTmpl.setServiceTemplateId("id1");
         svcTmpl.setServiceTemplateName("service1");
-        Map<String, String> paramMap = new HashMap<String, String>();
+        Map<String, Object> paramMap = new HashMap<String, Object>();
         final RestfulResponse rsp = new RestfulResponse();
         String responseString = "{\"nsInstanceId\":\"1\"}";
         rsp.setResponseJson(responseString);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,12 @@ public class RestfulUtilTest {
 
     @Test
     public void testGetRemoteResponse() {
-        Map<String, String> paramsMap = new HashMap<String, String>();
+        Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(CommonConstant.HttpContext.URL, "");
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
         String params = "";
+        
+        Map<String, String> queryParamMap = new HashMap<String, String>();
         final RestfulResponse rsp = new RestfulResponse();
         new MockUp<HttpRest>() {
 
@@ -63,16 +65,16 @@ public class RestfulUtilTest {
             }
         };
 
-        RestfulResponse postRsp = RestfulUtil.getRemoteResponse(paramsMap, params, paramsMap);
+        RestfulResponse postRsp = RestfulUtil.getRemoteResponse(paramsMap, params, queryParamMap);
         assertNotNull(postRsp);
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
-        RestfulResponse getRsp = RestfulUtil.getRemoteResponse(paramsMap, params, paramsMap);
+        RestfulResponse getRsp = RestfulUtil.getRemoteResponse(paramsMap, params, queryParamMap);
         assertNotNull(getRsp);
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.DELETE);
-        RestfulResponse deleteRsp = RestfulUtil.getRemoteResponse(paramsMap, params, paramsMap);
+        RestfulResponse deleteRsp = RestfulUtil.getRemoteResponse(paramsMap, params, queryParamMap);
         assertNotNull(deleteRsp);
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.PUT);
-        RestfulResponse putRsp = RestfulUtil.getRemoteResponse(paramsMap, params, paramsMap);
+        RestfulResponse putRsp = RestfulUtil.getRemoteResponse(paramsMap, params, queryParamMap);
         assertNotNull(putRsp);
     }
 

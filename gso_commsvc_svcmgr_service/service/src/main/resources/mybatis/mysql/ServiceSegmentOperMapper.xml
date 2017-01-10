@@ -33,5 +33,15 @@
         (serviceSegmentId,serviceSegmentType,jobId,status,progress,errorCode,statusDescription)
         values(#{serviceSegmentId},#{serviceSegmentType},#{jobId},#{status},#{progress},#{errorCode},#{statusDescription})
     </insert>
+    
+    <update id="updateJobId" parameterType="org.openo.gso.model.servicemo.ServiceSegmentOperation">
+        update t_lcm_svcsegment_operation set jobId = #{jobId} 
+        where serviceSegmentId = #{serviceSegmentId} and serviceSegmentType = #{serviceSegmentType}
+    </update>
+    
+    <update id="updateStatus" parameterType="org.openo.gso.model.servicemo.ServiceSegmentOperation">
+        update t_lcm_svcsegment_operation set status = #{status}, errorCode = #{errorCode}
+        where serviceSegmentId = #{serviceSegmentId} and serviceSegmentType = #{serviceSegmentType}
+    </update>
 
 </mapper>

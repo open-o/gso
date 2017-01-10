@@ -35,4 +35,20 @@ public interface ServiceSegmentOperMapper {
      * @since GSO 0.5
      */
     void insert(ServiceSegmentOperation svcSegmentOper);
+
+    /**
+     * Update job id of the service segment operation<br>
+     * 
+     * @param segmentOper service operation
+     * @since  GSO 0.5
+     */
+    void updateJobId(ServiceSegmentOperation segmentOper);
+
+    /**
+     * Update status of the service segment<br><br>
+     * 
+     * @param segmentOper service segment operation
+     * @since  GSO 0.5
+     */
+    void updateStatus(ServiceSegmentOperation segmentOper);
 }

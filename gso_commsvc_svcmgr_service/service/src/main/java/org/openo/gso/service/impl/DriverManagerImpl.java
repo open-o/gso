@@ -176,30 +176,10 @@ public class DriverManagerImpl implements IDriverManager {
      */
     @Override
     public RestfulResponse createNs(HttpServletRequest servletReq, String domain) throws ApplicationException {
-        
-        // Step 0: get request model
-        String body = RestUtils.getRequestBody(servletReq);
-        LOGGER.info("body for creating is {}", body);
-        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}").replaceAll("\"\\[", "\\]").replaceAll("\\]\"", "\\]");
-        LOGGER.warn("json body for creating is {}", jsonBody);
-        ServiceNode serviceNode = null;
-        serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
+        // Step 1: get parameters from request for current node
+        DomainInputParameter currentInput = getParamsForCurrentNode(servletReq);
 
-        // Step 1:Validate input parameters
-        if((null == serviceNode.getNodeTemplateName()) || (null == serviceNode.getInputParameters())) {
-            LOGGER.error("Input parameters from lcm/workflow are empty");
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
-        }
-        
-        // Step 2:Get input parameters for current node
-        List<DomainInputParameter> inputList = serviceNode.getInputParameters();
-        Map<String, DomainInputParameter> map = new HashMap<String, DomainInputParameter>();
-        for(DomainInputParameter input : inputList) {
-            map.put(input.getNodeTemplateName(), input);
-        }
-        DomainInputParameter currentInput = map.get(serviceNode.getNodeTemplateName());
-
-        // Step 3: Call the Catalogue service to get service template id
+        // Step 2: Call the Catalogue service to get service template id
         if(null == serviceInf) {
             LOGGER.error("Service interface not initialised");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
@@ -222,24 +202,30 @@ public class DriverManagerImpl implements IDriverManager {
         }
         LOGGER.info("domain is {}, and nsdId is {}", domain, nsdId);
         
-        //Step 4: Call NFVO or SDNO lcm to create ns
+        //Step 3: Call NFVO or SDNO lcm to create ns
         LOGGER.info("create ns -> begin");
-        Map<String, String> createParamMap = getCreateParams(nsdId, currentInput);
+        Map<String, Object> createParamMap = getCreateParams(nsdId, currentInput);
         RestfulResponse restRsp = serviceInf.createNS(createParamMap);
-        LOGGER.info("response content is : {}", restRsp.getResponseContent());
         JSONObject obj = JSONObject.fromObject(restRsp.getResponseContent());
         String nsInstanceId = obj.getString(CommonConstant.NS_INSTANCE_ID);
         if(StringUtils.isEmpty(nsInstanceId)) {
-            LOGGER.error("Invalid instanceId from create");
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_VALUE_FROM_CREATE);
+            LOGGER.error("Invalid instanceId from create operation");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_RESPONSEE_FROM_CREATE_OPERATION);
         }
         LOGGER.info("create ns -> end");
         LOGGER.info("save segment info -> begin");
+        //Step 4: save segment information
         saveSegmentInfo(currentInput, nsInstanceId, domain, svcTmpl.getServiceTemplateId(), restRsp.getStatus());
         LOGGER.info("save segment info -> end");
+        if(HttpCode.isSucess(restRsp.getStatus())){
+            
+        }
+            
         
         return restRsp;
     }
+
+    
 
     
 
@@ -252,53 +238,42 @@ public class DriverManagerImpl implements IDriverManager {
     @Override
     public RestfulResponse instantiateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain)
             throws ApplicationException {
-//        String body = RestUtils.getRequestBody(httpRequest);
-//
-//        LOGGER.warn("instantiate request body is {}", body);
-//        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}");
-//        
-//        LOGGER.warn("instantiate json body is {}", jsonBody);
-//        // Step 0: Transfer the input into input parameters model
-//        ServiceNode serviceNode = null;
-//        serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
-//
-//        // Step 1:Validate input parameters
-//        String nodeType = serviceNode.getNodeType();
-//
-//        if((null == nodeType) || (null == serviceNode.getInputParameters())) {
-//            LOGGER.error("Input parameters from lcm/workflow are empty");
-//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
-//        }
-//
-//        if(null == serviceInf) {
-//            LOGGER.error("Service interface not initialised");
-//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
-//        }
-//        serviceInf.setDomain(domain);
-//
-//        // Step 3: Call the Catalogue service to get service template id
-//        ServiceTemplate svcTmpl = getSvcTmplByNodeType(serviceNode);
-//        if(null == svcTmpl) {
-//            LOGGER.error("Failed to get service template from catalogue module");
-//            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
-//                    DriverExceptionID.FAILED_TO_SVCTMPL_CATALOGUE);
-//        }
-//
-//        //nsdId of the nfvo is "id" in the response, not the "servcice template id"
-//        String nsdId = StringUtils.EMPTY;
-//        if(serviceNode.getNodeType().contains("nfv")){
-//            nsdId = svcTmpl.getId();
-//        }else if(serviceNode.getNodeType().contains("sdn")){
-//            nsdId = svcTmpl.getServiceTemplateId();
-//        }else{
-//            LOGGER.error("invalid nodeType : {}", serviceNode.getNodeType());
-//        }
-//            
-//        
-//        
-//        return createNetworkSubService(serviceNode, nsdId, httpRequest);
-        return null;
+        // Step 1: get parameters from request for current node
+        DomainInputParameter currentInput = getParamsForCurrentNode(httpRequest);
+        // Step 2: Call the NFVO or SDNO service to instantiate service
+        if(null == serviceInf) {
+            LOGGER.error("Service interface not initialised");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
+        }
+        serviceInf.setDomain(domain);
+        
+        LOGGER.info("instantiate ns -> begin");
+        Map<String, Object> instParamMap = getInstParams(nsInstanceId, currentInput);
+        RestfulResponse rsp = serviceInf.instantiateNS(instParamMap);
+        JSONObject obj = JSONObject.fromObject(rsp.getResponseContent());
+        String jobId = obj.getString(CommonConstant.JOB_ID);
+        if(StringUtils.isEmpty(jobId)) {
+            LOGGER.error("Invalid jobId from instantiate operation");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_RESPONSE_FROM_INSTANTIATE_OPERATION);
+        }
+        LOGGER.info("instantiate ns -> end");
+        
+        // Step 3: update segment operation
+        LOGGER.info("update segment info -> begin");
+        if(!HttpCode.isSucess(rsp.getStatus())){
+            updateSegmentOperStatus(nsInstanceId, domain, rsp.getStatus());
+            LOGGER.error("fail to instantiate ns");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_INSTANTIATE_NS);
+        }
+        updateSegmentOperJobId(nsInstanceId, domain, jobId);
+        LOGGER.info("update segment info -> end");
+        
+        return rsp;
     }
+
+    
+
+    
 
     @Override
     public RestfulResponse terminateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain)
@@ -508,31 +483,6 @@ public class DriverManagerImpl implements IDriverManager {
         return rsp;
     }
 
-    private Map<String, String> getInstParamsByNodeType(ServiceNode serviceNode) {
-        // Make a list of parameters for the node Type
-//        Map<String, String> mapParam = serviceNode.getInputParameters();
-        Map<String, String> instMapParam = new HashMap<String, String>();
-
-//        for(Map.Entry<String, String> map : mapParam.entrySet())
-//        {
-//            String nodeType = serviceNode.getNodeType();
-//            //filter not necessary parameters
-//            if(!map.getKey().contains(nodeType)){
-//                continue;
-//            }
-//            //replace the nodeType
-//            String key = map.getKey().substring(map.getKey().lastIndexOf(".")+1);
-//            instMapParam.put(key, map.getValue());
-//            
-//        }
-
-        return instMapParam;
-    }
-
-    
-
-    
-    
 
     private void waitForJobToComplete(String jobId) throws ApplicationException {
 
@@ -587,6 +537,38 @@ public class DriverManagerImpl implements IDriverManager {
     }
 
     /**
+     * private method 0:get input parameters for current node<br>
+     * 
+     * @param servletReq http request
+     * @return input parameters for current node
+     * @since  GSO 0.5
+     */
+    private DomainInputParameter getParamsForCurrentNode(HttpServletRequest servletReq) {
+        // Step 0: get request model
+        String body = RestUtils.getRequestBody(servletReq);
+        LOGGER.info("body from request is {}", body);
+        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}").replaceAll("\"\\[", "\\]").replaceAll("\\]\"", "\\]");
+        LOGGER.warn("json body from request is {}", jsonBody);
+        ServiceNode serviceNode = null;
+        serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
+
+        // Step 1:Validate input parameters
+        if((null == serviceNode.getNodeTemplateName()) || (null == serviceNode.getInputParameters())) {
+            LOGGER.error("Input parameters from lcm/workflow are empty");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
+        }
+        
+        // Step 2:Get input parameters for current node
+        List<DomainInputParameter> inputList = serviceNode.getInputParameters();
+        Map<String, DomainInputParameter> map = new HashMap<String, DomainInputParameter>();
+        for(DomainInputParameter input : inputList) {
+            map.put(input.getNodeTemplateName(), input);
+        }
+        DomainInputParameter currentInput = map.get(serviceNode.getNodeTemplateName());
+        return currentInput;
+    }
+    
+    /**
      * private method 1: get service template by node type<br>
      * 
      * @param nodeType node type
@@ -597,7 +579,7 @@ public class DriverManagerImpl implements IDriverManager {
     private ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost) throws ApplicationException {
 
         // Step 1: Prepare url and method type
-        Map<String, String> paramsMap = new HashMap<String, String>();
+        Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(CommonConstant.HttpContext.URL, CommonConstant.CATALOGUE_QUERY_SVC_TMPL_NODETYPE_URL);
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
         parseDomainHost(domainHost, paramsMap);
@@ -622,9 +604,9 @@ public class DriverManagerImpl implements IDriverManager {
      * @return param map for creating
      * @since  GSO 0.5
      */
-    private Map<String, String> getCreateParams(String nsdId, DomainInputParameter currentIput) {
+    private Map<String, Object> getCreateParams(String nsdId, DomainInputParameter currentIput) {
 
-        Map<String, String> createParamMap = new HashMap<String, String>();
+        Map<String, Object> createParamMap = new HashMap<String, Object>();
         createParamMap.put(CommonConstant.NSD_ID, nsdId);
         createParamMap.put(CommonConstant.NS_NAME, currentIput.getSubServiceName());
         createParamMap.put(CommonConstant.DESC, currentIput.getSubServiceDesc());
@@ -642,7 +624,7 @@ public class DriverManagerImpl implements IDriverManager {
      * @param paramsMap params map
      * @since  GSO 0.5
      */
-    private void parseDomainHost(String domainHost, Map<String, String> paramsMap) {
+    private void parseDomainHost(String domainHost, Map<String, Object> paramsMap) {
         if(StringUtils.isEmpty(domainHost)){
             LOGGER.info("domainHost is empty");
             return;
@@ -665,7 +647,7 @@ public class DriverManagerImpl implements IDriverManager {
      * @since  GSO 0.5
      */
     private void saveSegmentInfo(DomainInputParameter currentInput, String nsInstanceId, String domain,
-            String svcTmplId, int status) {
+            String svcTmplId, int statusCode) {
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         
         serviceSegment.setServiceId(currentInput.getServiceId());
@@ -682,13 +664,71 @@ public class DriverManagerImpl implements IDriverManager {
         ServiceSegmentOperation svcSegmentOper = new ServiceSegmentOperation();
         svcSegmentOper.setServiceSegmentId(nsInstanceId);
         svcSegmentOper.setServiceSegmentType(domain);
-        if(HttpCode.isSucess(status)){
+        if(HttpCode.isSucess(statusCode)){
             svcSegmentOper.setStatus(CommonConstant.Status.PROCESSING);
         } else {
             svcSegmentOper.setStatus(CommonConstant.Status.ERROR);
+            svcSegmentOper.setErrorCode(statusCode);
         }
         
         serviceSegmentDao.insertSegmentOper(svcSegmentOper);
     }
+    
+    /**
+     * private method5 : get create params<br>
+     * 
+     * @param 
+     * @param currentIput input params for current node
+     * @return param map for instantiate
+     * @since  GSO 0.5
+     */
+    private Map<String, Object> getInstParams(String nsInstanceId, DomainInputParameter currentIput) {
+
+        Map<String, Object> instParamMap = new HashMap<String, Object>();
+        instParamMap.put(CommonConstant.NS_INSTANCE_ID, nsInstanceId);
+        instParamMap.put(CommonConstant.ADDITIONAL_PARAM_FOR_NS, currentIput.getAdditionalParamForNs());
+        
+        String domainHost = currentIput.getDomainHost();
+        parseDomainHost(domainHost, instParamMap);
+
+        return instParamMap;
+    }
+    
+    
+    /**
+     * private method 6: update segment operation status<br>
+     * 
+     * @param nsInstanceId instance id
+     * @param domain nfvo or sdno
+     * @param status status: processing, finished, error
+     * @since  GSO 0.5
+     */
+    private void updateSegmentOperStatus(String nsInstanceId, String domain, int statusCode) {
+        ServiceSegmentOperation segmentOper = new ServiceSegmentOperation();
+        segmentOper.setServiceSegmentId(nsInstanceId);
+        segmentOper.setServiceSegmentType(domain);
+        segmentOper.setStatus(CommonConstant.Status.ERROR);
+        segmentOper.setErrorCode(statusCode);
+        serviceSegmentDao.updateSegmentOperStatus(segmentOper);
+        
+    }
+    
+    /**
+     * private method 7: update segment operation job id<br>
+     * 
+     * @param nsInstanceId instance id
+     * @param domain nfvo or sdno
+     * @param jobId job id
+     * @since  GSO 0.5
+     */
+    private void updateSegmentOperJobId(String nsInstanceId, String domain, String jobId) {
+        ServiceSegmentOperation segmentOper = new ServiceSegmentOperation();
+        segmentOper.setServiceSegmentId(nsInstanceId);
+        segmentOper.setServiceSegmentType(domain);
+        segmentOper.setJobId(jobId);
+        serviceSegmentDao.updateSegmentOperJobId(segmentOper);
+    }
+    
+    
 
 }
