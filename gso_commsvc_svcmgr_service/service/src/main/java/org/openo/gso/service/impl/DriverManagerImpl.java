@@ -217,8 +217,9 @@ public class DriverManagerImpl implements IDriverManager {
         //Step 4: save segment information
         saveSegmentInfo(currentInput, nsInstanceId, domain, svcTmpl.getServiceTemplateId(), restRsp.getStatus());
         LOGGER.info("save segment info -> end");
-        if(HttpCode.isSucess(restRsp.getStatus())){
-            
+        if(!HttpCode.isSucess(restRsp.getStatus())){
+            LOGGER.error("fail to create ns");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_CREATE_NS);
         }
             
         
