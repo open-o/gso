@@ -88,10 +88,10 @@ public interface IDriverService {
 
     /**
      * <br>
-     * set the domain type
+     * set the segment type
      * 
-     * @param domain type of the node
+     * @param segmentType type of the node NFVO or SDNO
      * @since GSO 0.5
      */
-    void setDomain(String domain);
+    void setSegmentType(String segmentType);
 }

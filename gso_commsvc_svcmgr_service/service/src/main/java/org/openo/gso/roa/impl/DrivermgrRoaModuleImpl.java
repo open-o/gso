@@ -67,7 +67,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response createNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.createNs(servletReq, CommonConstant.Domain.NFVO);
+        RestfulResponse rsp = driverMgr.createNs(servletReq, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
 
@@ -83,7 +83,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response deleteNfvoNs(String nsInstanceId) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.deleteNs(nsInstanceId, CommonConstant.Domain.NFVO);
+        RestfulResponse rsp = driverMgr.deleteNs(nsInstanceId, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
 
@@ -97,7 +97,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response queryNfvoJobStatus(String jobId) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.getNsProgress(jobId, CommonConstant.Domain.NFVO);
+        RestfulResponse rsp = driverMgr.getNsProgress(jobId, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
 
@@ -113,7 +113,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     @Override
     public Response instantiateNfvoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
 
-        RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, servletReq, CommonConstant.Domain.NFVO);
+        RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, servletReq, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
     
@@ -129,7 +129,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response terminateNfvoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.terminateNs(nsInstanceId, servletReq, CommonConstant.Domain.NFVO);
+        RestfulResponse rsp = driverMgr.terminateNs(nsInstanceId, servletReq, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
     
@@ -143,7 +143,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response createSdnoNs(HttpServletRequest servletReq) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.createNs(servletReq, CommonConstant.Domain.SDNO);
+        RestfulResponse rsp = driverMgr.createNs(servletReq, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
 
@@ -157,7 +157,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response deleteSdnoNs(String nsInstanceId) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.deleteNs(nsInstanceId, CommonConstant.Domain.SDNO);
+        RestfulResponse rsp = driverMgr.deleteNs(nsInstanceId, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
 
@@ -171,7 +171,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response querySdnoJobStatus(String jobId) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.getNsProgress(jobId, CommonConstant.Domain.SDNO);
+        RestfulResponse rsp = driverMgr.getNsProgress(jobId, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
 
@@ -186,7 +186,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response instantiateSdnoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, servletReq, CommonConstant.Domain.SDNO);
+        RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, servletReq, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
 
@@ -201,7 +201,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response terminateSdnoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.terminateNs(nsInstanceId, servletReq, CommonConstant.Domain.SDNO);
+        RestfulResponse rsp = driverMgr.terminateNs(nsInstanceId, servletReq, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
 

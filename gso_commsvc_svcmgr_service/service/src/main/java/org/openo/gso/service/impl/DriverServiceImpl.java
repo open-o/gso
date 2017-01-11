@@ -49,7 +49,7 @@ public class DriverServiceImpl implements IDriverService {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(DriverServiceImpl.class);
 
-    private String domain;
+    private String segmentType;
     
     private static Map nfvoUrlMap;
     
@@ -88,7 +88,7 @@ public class DriverServiceImpl implements IDriverService {
         // terminate action
         String nsInstanceId = (String) inputMap.get(CommonConstant.NS_INSTANCE_ID);
         Map<String, Object> paramsMap = new HashMap<String, Object>();
-        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, nsInstanceId, CommonConstant.Step.TERMINATE));
+        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(segmentType, nsInstanceId, CommonConstant.Step.TERMINATE));
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
         paramsMap.put(CommonConstant.HttpContext.IP, inputMap.get(CommonConstant.HttpContext.IP));
         paramsMap.put(CommonConstant.HttpContext.PORT, inputMap.get(CommonConstant.HttpContext.PORT));
@@ -112,7 +112,7 @@ public class DriverServiceImpl implements IDriverService {
     public RestfulResponse deleteNs(Map<String, Object> inputMap) throws ApplicationException {
         String nsInstanceId = (String) inputMap.get(CommonConstant.NS_INSTANCE_ID);
         Map<String, Object> paramsMap = new HashMap<String, Object>();
-        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, nsInstanceId, CommonConstant.Step.DELETE));
+        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(segmentType, nsInstanceId, CommonConstant.Step.DELETE));
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.DELETE);
         paramsMap.put(CommonConstant.HttpContext.IP, inputMap.get(CommonConstant.HttpContext.IP));
         paramsMap.put(CommonConstant.HttpContext.PORT, inputMap.get(CommonConstant.HttpContext.PORT));
@@ -140,10 +140,10 @@ public class DriverServiceImpl implements IDriverService {
         String url = StringUtils.EMPTY;
         String originalUrl = StringUtils.EMPTY;
 
-        if(CommonConstant.Domain.NFVO.equals(domain)) {
+        if(CommonConstant.SegmentType.NFVO.equals(domain)) {
             originalUrl = (String) nfvoUrlMap.get(step);
             url = String.format(originalUrl, variable);
-        } else if(CommonConstant.Domain.SDNO.equals(domain)) {
+        } else if(CommonConstant.SegmentType.SDNO.equals(domain)) {
             originalUrl = (String) sdnoUrlMap.get(step);
             url = String.format(originalUrl, variable);
         } else {
@@ -166,7 +166,7 @@ public class DriverServiceImpl implements IDriverService {
     public RestfulResponse createNs(Map<String, Object> inputMap) throws ApplicationException {
 
         Map<String, Object> paramsMap = new HashMap<String, Object>();
-        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, null, CommonConstant.Step.CREATE));
+        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(segmentType, null, CommonConstant.Step.CREATE));
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
         paramsMap.put(CommonConstant.HttpContext.IP, inputMap.get(CommonConstant.HttpContext.IP));
         paramsMap.put(CommonConstant.HttpContext.PORT, inputMap.get(CommonConstant.HttpContext.PORT));
@@ -212,7 +212,7 @@ public class DriverServiceImpl implements IDriverService {
 
         Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
-        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, nsInstanceId, CommonConstant.Step.INSTANTIATE));
+        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(segmentType, nsInstanceId, CommonConstant.Step.INSTANTIATE));
         paramsMap.put(CommonConstant.HttpContext.IP, inputMap.get(CommonConstant.HttpContext.IP));
         paramsMap.put(CommonConstant.HttpContext.PORT, inputMap.get(CommonConstant.HttpContext.PORT));
 
@@ -242,7 +242,7 @@ public class DriverServiceImpl implements IDriverService {
 
         // Get url based on node type
         Map<String, Object> paramMap = new HashMap<String, Object>();
-        paramMap.put(CommonConstant.HttpContext.URL, getUrl(domain, jobId, CommonConstant.Step.QUERY));
+        paramMap.put(CommonConstant.HttpContext.URL, getUrl(segmentType, jobId, CommonConstant.Step.QUERY));
         paramMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
         paramMap.put(CommonConstant.HttpContext.IP, inputMap.get(CommonConstant.HttpContext.IP));
         paramMap.put(CommonConstant.HttpContext.PORT, inputMap.get(CommonConstant.HttpContext.PORT));
@@ -255,8 +255,8 @@ public class DriverServiceImpl implements IDriverService {
     }
 
     @Override
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public void setSegmentType(String segmentType) {
+        this.segmentType = segmentType;
     }
 
 }

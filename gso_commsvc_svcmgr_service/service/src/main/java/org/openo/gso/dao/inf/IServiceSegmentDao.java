@@ -113,7 +113,7 @@ public interface IServiceSegmentDao {
      * query service segment by id and type<br>
      * 
      * @param serviceSegmentId instance id
-     * @param serviceSegmentType nfvo or sdno
+     * @param serviceSegmentType NFVO or SDNO
      * @return service segment
      * @since  GSO 0.5
      */

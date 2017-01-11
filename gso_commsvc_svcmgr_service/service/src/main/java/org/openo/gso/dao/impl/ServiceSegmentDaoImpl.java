@@ -249,7 +249,7 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * query service segment by id and type<br>
      * 
      * @param segmentId instance id
-     * @param segmentType nfvo or sdno
+     * @param segmentType NFVO or SDNO
      * @return service segment
      * @throws ApplicationException when fail to query service segment by segment id and segment type
      * @since  GSO 0.5

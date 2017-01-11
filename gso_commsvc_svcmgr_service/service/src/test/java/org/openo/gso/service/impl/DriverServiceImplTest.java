@@ -111,7 +111,7 @@ public class DriverServiceImplTest {
     public void testCreateNS() {
 
         DriverServiceImpl nsImpl = new DriverServiceImpl();
-        nsImpl.setDomain("sdno");
+        nsImpl.setSegmentType("sdno");
         ServiceTemplate svcTmpl = new ServiceTemplate();
         svcTmpl.setServiceTemplateId("id1");
         svcTmpl.setServiceTemplateName("service1");
@@ -135,8 +135,8 @@ public class DriverServiceImplTest {
     }
 
     @Test
-    public void testSetNodeType() {
-        svcImpl.setDomain(CommonConstant.Domain.NFVO);
+    public void testSetSegmentType() {
+        svcImpl.setSegmentType(CommonConstant.SegmentType.NFVO);
     }
 
 }

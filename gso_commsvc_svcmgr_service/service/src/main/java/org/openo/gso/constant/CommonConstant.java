@@ -158,16 +158,16 @@ public class CommonConstant {
      * <br>
      * <p>
      * </p>
-     * domain constant
+     * segmentType constant
      * @version     GSO 0.5  2017/1/6
      */
-    public static class Domain {
+    public static class SegmentType {
         
-        public static final String SDNO = "sdno";
+        public static final String SDNO = "SDNO";
         
-        public static final String NFVO = "nfvo";
+        public static final String NFVO = "NFVO";
         
-        private Domain(){
+        private SegmentType(){
             
         }
     }
