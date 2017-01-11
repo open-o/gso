@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, Huawei Technologies Co., Ltd.
+ * Copyright (c) 2016-2017, Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
 package org.openo.gso.servicegateway.util.http;
 
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulFactory;
@@ -57,9 +55,8 @@ public class HttpUtil {
      * @throws ServiceException when request is failure.
      * @since GSO 0.5
      */
-    public static RestfulResponse get(final String url, final Map<String, String> httpHeaders,
-            HttpServletRequest httpRequest) throws ServiceException {
-        final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
+    public static RestfulResponse get(final String url, final Map<String, String> httpHeaders) throws ServiceException {
+        final RestfulParametes restfulParametes = getRestfulParametes();
         for(Map.Entry<String, String> entry : httpHeaders.entrySet()) {
             restfulParametes.putHttpContextHeader(entry.getKey(), entry.getValue());
         }
@@ -77,10 +74,9 @@ public class HttpUtil {
      * @throws ServiceException when request is failure.
      * @since GSO 0.5
      */
-    public static RestfulResponse post(final String url, Object sendObj, HttpServletRequest httpRequest)
-            throws ServiceException {
+    public static RestfulResponse post(final String url, Object sendObj) throws ServiceException {
 
-        final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
+        final RestfulParametes restfulParametes = getRestfulParametes();
         if(sendObj != null) {
             String strJsonReq = JsonUtil.marshal(sendObj);
             restfulParametes.setRawData(strJsonReq);
@@ -98,8 +94,8 @@ public class HttpUtil {
      * @throws ServiceException when request is failure.
      * @since GSO 0.5
      */
-    public static RestfulResponse delete(final String url, HttpServletRequest httpRequest) throws ServiceException {
-        final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
+    public static RestfulResponse delete(final String url) throws ServiceException {
+        final RestfulParametes restfulParametes = getRestfulParametes();
         return RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP).delete(url, restfulParametes);
     }
 
@@ -113,9 +109,8 @@ public class HttpUtil {
      * @throws ServiceException when request is failure.
      * @since GSO 0.5
      */
-    public static RestfulResponse put(final String url, final Map<String, String> httpHeaders,
-            HttpServletRequest httpRequest) throws ServiceException {
-        final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
+    public static RestfulResponse put(final String url, final Map<String, String> httpHeaders) throws ServiceException {
+        final RestfulParametes restfulParametes = getRestfulParametes();
         for(Map.Entry<String, String> entry : httpHeaders.entrySet()) {
             restfulParametes.putHttpContextHeader(entry.getKey(), entry.getValue());
         }
@@ -130,7 +125,7 @@ public class HttpUtil {
      * @return rest parameters
      * @since GSO 0.5
      */
-    public static RestfulParametes getRestfulParametes(HttpServletRequest httpRequest) {
+    public static RestfulParametes getRestfulParametes() {
         final RestfulParametes restfulParametes = new RestfulParametes();
         restfulParametes.putHttpContextHeader("Content-Type", "application/json;charset=UTF-8");
         return restfulParametes;

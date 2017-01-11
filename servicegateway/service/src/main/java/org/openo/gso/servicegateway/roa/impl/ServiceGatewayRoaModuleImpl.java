@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, Huawei Technologies Co., Ltd.
+ * Copyright (c) 2016-2017, Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,20 @@
 
 package org.openo.gso.servicegateway.roa.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.util.RestUtils;
-import org.openo.gso.servicegateway.constant.Constant;
-import org.openo.gso.servicegateway.exception.HttpCode;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.servicegateway.constant.FieldConstant;
+import org.openo.gso.servicegateway.model.OperationModel;
+import org.openo.gso.servicegateway.model.OperationResult;
 import org.openo.gso.servicegateway.roa.inf.IServiceGatewayRoaModule;
 import org.openo.gso.servicegateway.service.impl.ServiceGatewayImpl;
 import org.openo.gso.servicegateway.service.inf.IServiceGateway;
@@ -63,30 +68,20 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
      */
     @Override
     public Response createService(HttpServletRequest servletReq) {
-    	Map<String, Object> operateStatus = null;
-        Map<String, Object> result = null;
-        String serviceId = null;
+
+        OperationResult operResult = null;
         try {
             // 1. Check validation
             String reqContent = RestUtils.getRequestBody(servletReq);
             ValidateUtil.assertStringNotNull(reqContent);
-            LOGGER.info("Received a request form the NBI the reqContent is :"+ reqContent);
-
+            LOGGER.info("Received a request form the NBI the reqContent is :" + reqContent);
             // 2. Create service
-            serviceId = serviceGateway.createService(reqContent, servletReq);
-        } catch(ServiceException exception) {
+            operResult = serviceGateway.createService(reqContent, servletReq);
+        } catch(ApplicationException exception) {
             LOGGER.error("Fail to create service instance.");
-            operateStatus = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_FAIL, exception,
-                    String.valueOf(exception.getHttpCode()));            
-            result = ResponseUtils.setResult(serviceId, operateStatus);
-
-            return Response.accepted().entity(result).build();
+            throw ResponseUtils.getException(exception, "Fail to create service instance");
         }
-
-        operateStatus = ResponseUtils.setOperateStatus(Constant.RESPONSE_STATUS_SUCCESS, null,
-                String.valueOf(HttpCode.RESPOND_OK));
-        result = ResponseUtils.setResult(serviceId, operateStatus);
-
+        Map<String, Map<String, String>> result = operResult.toResultMap();
         return Response.accepted().entity(result).build();
     }
 
@@ -101,29 +96,63 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
      */
     @Override
     public Response deleteService(String serviceId, HttpServletRequest servletReq) {
-        Map<String, Object> result = null;
+        String operationId = null;
         try {
             // 1. Check validation
             String reqContent = RestUtils.getRequestBody(servletReq);
             ValidateUtil.assertStringNotNull(reqContent);
 
             // 2. Delete service
-            result = serviceGateway.deleteService(serviceId, reqContent, servletReq);
-        } catch(ServiceException exception) {
+            operationId = serviceGateway.deleteService(serviceId, reqContent, servletReq);
+        } catch(ApplicationException exception) {
             LOGGER.error("Fail to delete service instance.");
-            return Response.serverError().build();
+            throw ResponseUtils.getException(exception, "Fail to delete service instance");
         }
+        Map<String, String> result = new HashMap<String, String>();
+        result.put(FieldConstant.Delete.FIELD_RESPONSE_OPERATIONID, operationId);
         return Response.accepted().entity(result).build();
     }
 
-	public IServiceGateway getServiceGateway() 
-	{
-		return serviceGateway;
-	}
+    public IServiceGateway getServiceGateway() {
+        return serviceGateway;
+    }
 
-	public void setServiceGateway(IServiceGateway serviceGateway) 
-	{
-		this.serviceGateway = serviceGateway;
-	}
-    
+    public void setServiceGateway(IServiceGateway serviceGateway) {
+        this.serviceGateway = serviceGateway;
+    }
+
+    /**
+     * <br>
+     * query the operation status
+     * 
+     * @param serviceId
+     * @param operationId
+     * @param servletReq
+     * @return
+     * @throws ApplicationException
+     * @since GSO 0.5
+     */
+    public Response getOperation(String serviceId, String operationId, @Context HttpServletRequest servletReq)
+            throws ApplicationException {
+
+        OperationModel operation = serviceGateway.getOperation(serviceId, operationId, servletReq);
+        Map<String, Map<String, String>> result = operation.toResultMap();
+        return Response.accepted().entity(result).build();
+    }
+
+    /**
+     * get create parameters by template id
+     * <br>
+     * 
+     * @param tepmlateId
+     * @param servletReq
+     * @return
+     * @throws ApplicationException
+     * @since GSO 0.5
+     */
+    public Response generateCreateParameters(@PathParam("tepmlateId") String tepmlateId,
+            @Context HttpServletRequest servletReq) throws ApplicationException {
+        Map<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
+        return Response.accepted().entity(result).build();
+    }
 }
