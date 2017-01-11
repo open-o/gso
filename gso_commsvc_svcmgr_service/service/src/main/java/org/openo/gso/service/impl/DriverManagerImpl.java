@@ -209,7 +209,7 @@ public class DriverManagerImpl implements IDriverManager {
         //Step 3: Call NFVO or SDNO lcm to create ns
         LOGGER.info("create ns -> begin");
         Map<String, Object> createParamMap = getCreateParams(nsdId, currentInput);
-        RestfulResponse restRsp = serviceInf.createNS(createParamMap);
+        RestfulResponse restRsp = serviceInf.createNs(createParamMap);
         JSONObject obj = JSONObject.fromObject(restRsp.getResponseContent());
         String nsInstanceId = obj.getString(CommonConstant.NS_INSTANCE_ID);
         if(StringUtils.isEmpty(nsInstanceId)) {
@@ -257,7 +257,7 @@ public class DriverManagerImpl implements IDriverManager {
         serviceInf.setDomain(domain);
         
         LOGGER.info("delete ns -> begin");
-        RestfulResponse rsp = serviceInf.instantiateNS(delParamMap);
+        RestfulResponse rsp = serviceInf.deleteNs(delParamMap);
         LOGGER.info("delete ns -> end");
         if(!HttpCode.isSucess(rsp.getStatus())){
             updateSegmentOperStatusInfoAndErrCode(nsInstanceId, domain, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.DELETE_NS_FAILED);
@@ -297,7 +297,7 @@ public class DriverManagerImpl implements IDriverManager {
         
         LOGGER.info("instantiate ns -> begin");
         Map<String, Object> instParamMap = getInstParams(nsInstanceId, currentInput);
-        RestfulResponse rsp = serviceInf.instantiateNS(instParamMap);
+        RestfulResponse rsp = serviceInf.instantiateNs(instParamMap);
         JSONObject obj = JSONObject.fromObject(rsp.getResponseContent());
         String jobId = obj.getString(CommonConstant.JOB_ID);
         if(StringUtils.isEmpty(jobId)) {

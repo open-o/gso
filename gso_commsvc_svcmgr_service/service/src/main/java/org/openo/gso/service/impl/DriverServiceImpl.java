@@ -163,7 +163,7 @@ public class DriverServiceImpl implements IDriverService {
      * @since GSO 0.5
      */
     @Override
-    public RestfulResponse createNS(Map<String, Object> inputMap) throws ApplicationException {
+    public RestfulResponse createNs(Map<String, Object> inputMap) throws ApplicationException {
 
         Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, null, CommonConstant.Step.CREATE));
@@ -199,7 +199,7 @@ public class DriverServiceImpl implements IDriverService {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public RestfulResponse instantiateNS(Map<String, Object> inputMap) throws ApplicationException {
+    public RestfulResponse instantiateNs(Map<String, Object> inputMap) throws ApplicationException {
 
         // Step 1: Prepare Network Service Instantiate Request
         NsInstantiateReq oRequest = new NsInstantiateReq();

@@ -61,7 +61,7 @@ public interface IDriverService {
      * @throws ApplicationException when fail to creat the network service
      * @since GSO 0.5
      */
-    RestfulResponse createNS(Map<String, Object> paramMap) throws ApplicationException;
+    RestfulResponse createNs(Map<String, Object> paramMap) throws ApplicationException;
 
     /**
      * <br>
@@ -72,7 +72,7 @@ public interface IDriverService {
      * @throws ApplicationException when fail to instantiate
      * @since GSO 0.5
      */
-    RestfulResponse instantiateNS(Map<String, Object> mapParams) throws ApplicationException;
+    RestfulResponse instantiateNs(Map<String, Object> mapParams) throws ApplicationException;
 
     /**
      * <br>
