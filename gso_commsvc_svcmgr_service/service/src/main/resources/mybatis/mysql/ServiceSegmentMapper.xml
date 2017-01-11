@@ -60,5 +60,15 @@
         on (segment.serviceSegmentId = oper.serviceSegmentId and segment.serviceSegmentType = oper.serviceSegmentType)
         where oper.jobId = #{jobId}
     </select>
+    
+    <select id="queryServiceSegmentByIdAndType" resultMap="ServiceSegmentResultMap">
+        select serviceId,serviceSegmentId,serviceSegmentType,serviceSegmentName,templateId,nodeType,topoSeqNumber,domainHost,nodeTemplateName from t_lcm_service_segment 
+        where serviceSegmentId = #{serviceSegmentId} and serviceSegmentType = #{serviceSegmentType}
+        #{serviceId}
+    </select>
+    
+    <delete id="deleteSegmentByIdAndType" parameterType="org.openo.gso.model.servicemo.ServiceSegmentModel">
+        delete from t_lcm_service_segment where serviceSegmentId = #{serviceSegmentId} and serviceSegmentType = #{serviceSegmentType}
+    </delete>
 
 </mapper>

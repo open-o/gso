@@ -244,5 +244,68 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
         }
         
     }
+
+    /**
+     * query service segment by id and type<br>
+     * 
+     * @param segmentId instance id
+     * @param segmentType nfvo or sdno
+     * @return service segment
+     * @throws ApplicationException when fail to query service segment by segment id and segment type
+     * @since  GSO 0.5
+     */
+    @Override
+    public ServiceSegmentModel queryServiceSegmentByIdAndType(String segmentId, String segmentType)
+            throws ApplicationException {
+        try {
+            ValidateUtil.assertObjectNotNull(segmentId);
+            ValidateUtil.assertObjectNotNull(segmentType);
+            ServiceSegmentMapper segmentMapper = getMapper(ServiceSegmentMapper.class);
+            return segmentMapper.queryServiceSegmentByIdAndType(segmentId, segmentType);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to get service segment by id and type {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+    }
+
+    /**
+     * delete service segment by segment id and segment type<br>
+     * 
+     * @param serviceSegment service segment
+     * @throws ApplicationException when fail to delete service segment
+     * @since   GSO 0.5
+     */
+    @Override
+    public void deleteSegmentByIdAndType(ServiceSegmentModel serviceSegment) throws ApplicationException {
+        try {
+            ValidateUtil.assertObjectNotNull(serviceSegment);
+            ServiceSegmentMapper segmentMapper = getMapper(ServiceSegmentMapper.class);
+            segmentMapper.deleteSegmentByIdAndType(serviceSegment);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to delete service segment by id and type {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+        
+    }
+
+    /**
+     * delete service segment operation by segment id and segment type<br>
+     * 
+     * @param svcSegmentOper service segment
+     * @throws ApplicationException when fail to delete service segment operation
+     * @since   GSO 0.5
+     */
+    @Override
+    public void deleteSegmentOperByIdAndType(ServiceSegmentOperation svcSegmentOper) {
+        try {
+            ValidateUtil.assertObjectNotNull(svcSegmentOper);
+            ServiceSegmentOperMapper segmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
+            segmentOperMapper.deleteSegmentOperByIdAndType(svcSegmentOper);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to delete service segment operation by id and type {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+        
+    }
     
 }

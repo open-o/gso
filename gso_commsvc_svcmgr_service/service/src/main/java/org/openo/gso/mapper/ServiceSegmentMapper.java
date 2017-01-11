@@ -19,6 +19,7 @@ package org.openo.gso.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 
 /**
@@ -72,6 +73,25 @@ public interface ServiceSegmentMapper {
      * @since GSO 0.5
      */
     void insert(ServiceSegmentModel serviceSegment);
+
+    /**
+     * query service segment by id and type<br>
+     * 
+     * @param serviceSegmentId instance id
+     * @param serviceSegmentType nfvo or sdno
+     * @return service segment
+     * @since  GSO 0.5
+     */
+    ServiceSegmentModel queryServiceSegmentByIdAndType(@Param("serviceSegmentId") String serviceSegmentId, @Param("serviceSegmentType") String serviceSegmentType);
+
+    /**
+     * delete service segment by segment id and segment type<br>
+     * 
+     * @param serviceSegment service segment
+     * @throws ApplicationException when fail to delete service segment
+     * @since   GSO 0.5
+     */
+    void deleteSegmentByIdAndType(ServiceSegmentModel serviceSegment);
 
     
 }

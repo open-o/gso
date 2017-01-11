@@ -219,10 +219,11 @@ public class DriverManagerImpl implements IDriverManager {
         LOGGER.info("create ns -> end");
         LOGGER.info("save segment info -> begin");
         //Step 4: save segment information
-        saveSegmentInfo(currentInput, nsInstanceId, domain, svcTmpl.getServiceTemplateId(), restRsp.getStatus());
+        saveSegmentInfo(currentInput, nsInstanceId, domain, svcTmpl.getServiceTemplateId());
         LOGGER.info("save segment info -> end");
         if(!HttpCode.isSucess(restRsp.getStatus())){
             LOGGER.error("fail to create ns");
+            updateSegmentOperStatusInfoAndErrCode(nsInstanceId, domain, CommonConstant.Status.ERROR, restRsp.getStatus(), CommonConstant.StatusDesc.CREATE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_CREATE_NS);
         }
         
@@ -244,10 +245,34 @@ public class DriverManagerImpl implements IDriverManager {
      */
     @Override
     public RestfulResponse deleteNs(String nsInstanceId, String domain) throws ApplicationException {
-        // TODO Auto-generated method stub
-        return null;
+        //Step 1: get service segment by segmentId and segmentType
+        ServiceSegmentModel segment = serviceSegmentDao.queryServiceSegmentByIdAndType(nsInstanceId, domain);
+        Map<String, Object> delParamMap = getDelParams(nsInstanceId, segment.getDomainHost());
+        
+        // Step 2: Call the NFVO or SDNO service to instantiate service
+        if(null == serviceInf) {
+            LOGGER.error("Service interface not initialised");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
+        }
+        serviceInf.setDomain(domain);
+        
+        LOGGER.info("delete ns -> begin");
+        RestfulResponse rsp = serviceInf.instantiateNS(delParamMap);
+        LOGGER.info("delete ns -> end");
+        if(!HttpCode.isSucess(rsp.getStatus())){
+            updateSegmentOperStatusInfoAndErrCode(nsInstanceId, domain, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.DELETE_NS_FAILED);
+            LOGGER.error("fail to delete ns");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_INSTANTIATE_NS);
+        }
+        deleteSegmentInfo(nsInstanceId, domain);
+        return rsp;
+        
     }
+
     
+    
+    
+
     /**
      * instantiate network service<br>
      * 
@@ -539,7 +564,7 @@ public class DriverManagerImpl implements IDriverManager {
      * @since  GSO 0.5
      */
     private void saveSegmentInfo(DomainInputParameter currentInput, String nsInstanceId, String domain,
-            String svcTmplId, int statusCode) {
+            String svcTmplId) {
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         
         serviceSegment.setServiceId(currentInput.getServiceId());
@@ -556,12 +581,7 @@ public class DriverManagerImpl implements IDriverManager {
         ServiceSegmentOperation svcSegmentOper = new ServiceSegmentOperation();
         svcSegmentOper.setServiceSegmentId(nsInstanceId);
         svcSegmentOper.setServiceSegmentType(domain);
-        if(HttpCode.isSucess(statusCode)){
-            svcSegmentOper.setStatus(CommonConstant.Status.PROCESSING);
-        } else {
-            svcSegmentOper.setStatus(CommonConstant.Status.ERROR);
-            svcSegmentOper.setErrorCode(statusCode);
-        }
+        svcSegmentOper.setStatus(CommonConstant.Status.PROCESSING);
         
         serviceSegmentDao.insertSegmentOper(svcSegmentOper);
     }
@@ -657,6 +677,43 @@ public class DriverManagerImpl implements IDriverManager {
         parseDomainHost(domainHost, termParamMap);
 
         return termParamMap;
+    }
+    
+    /**
+     * private method10 : get delete params<br>
+     * 
+     * @param nsInstanceId instance id
+     * @param domainHost domain host
+     * @return param map for delete
+     * @since  GSO 0.5
+     */
+    private Map<String, Object> getDelParams(String nsInstanceId, String domainHost) {
+        Map<String, Object> delParamMap = new HashMap<String, Object>();
+        delParamMap.put(CommonConstant.NS_INSTANCE_ID, nsInstanceId);
+        parseDomainHost(domainHost, delParamMap);
+        return delParamMap;
+    }
+    
+    /**
+     * delete service segment<br>
+     * 
+     * @param segmentId instance id
+     * @param segmentType nfvo or sdno
+     * @since  GSO 0.5
+     */
+    private void deleteSegmentInfo(String segmentId, String segmentType) {
+        ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
+        serviceSegment.setServiceSegmentId(segmentId);
+        serviceSegment.setServiceSegmentType(segmentType);
+               
+        serviceSegmentDao.deleteSegmentByIdAndType(serviceSegment);
+        
+        ServiceSegmentOperation svcSegmentOper = new ServiceSegmentOperation();
+        svcSegmentOper.setServiceSegmentId(segmentId);
+        svcSegmentOper.setServiceSegmentType(segmentType);
+        
+        serviceSegmentDao.deleteSegmentOperByIdAndType(svcSegmentOper);
+        
     }
     
     

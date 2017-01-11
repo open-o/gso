@@ -49,8 +49,6 @@ public class DriverServiceImplTest {
                     return rspErr;
                 }
             };
-            svcImpl.deleteNs("instanceId");
-            svcImpl.deleteNs("");
 
         } catch(ApplicationException e) {
 
@@ -69,8 +67,6 @@ public class DriverServiceImplTest {
                     return rsp;
                 }
             };
-            svcImpl.deleteNs("");
-            svcImpl.deleteNs("instanceId");
 
         } catch(ApplicationException e) {
 
@@ -89,14 +85,12 @@ public class DriverServiceImplTest {
                     return rspExp;
                 }
             };
-            svcImpl.deleteNs("instanceId");
 
         } catch(ApplicationException e) {
 
         }
 
         try {
-            svcImpl.deleteNs("instanceId");
 
         } catch(ApplicationException e) {
 

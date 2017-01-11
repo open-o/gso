@@ -16,6 +16,7 @@
 
 package org.openo.gso.mapper;
 
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServiceSegmentOperation;
 
 /**
@@ -59,5 +60,14 @@ public interface ServiceSegmentOperMapper {
      * @since  GSO 0.5
      */
     void updateProgress(ServiceSegmentOperation segmentOper);
+
+    /**
+     * delete service segment operation by segment id and segment type<br>
+     * 
+     * @param svcSegmentOper service segment
+     * @throws ApplicationException when fail to delete service segment operation
+     * @since   GSO 0.5
+     */
+    void deleteSegmentOperByIdAndType(ServiceSegmentOperation svcSegmentOper);
 
 }

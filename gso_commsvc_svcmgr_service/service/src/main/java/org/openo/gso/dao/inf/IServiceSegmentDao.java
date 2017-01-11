@@ -106,5 +106,37 @@ public interface IServiceSegmentDao {
      * @since  GSO 0.5
      */
     void updateSegmentOperProgress(ServiceSegmentOperation segmentOper) throws ApplicationException;
+
+
+
+    /**
+     * query service segment by id and type<br>
+     * 
+     * @param serviceSegmentId instance id
+     * @param serviceSegmentType nfvo or sdno
+     * @return service segment
+     * @since  GSO 0.5
+     */
+    ServiceSegmentModel queryServiceSegmentByIdAndType(String serviceSegmentId, String serviceSegmentType) throws ApplicationException;
+
+
+
+    /**
+     * delete segment by segment id and segment type<br>
+     * 
+     * @param serviceSegment service segment
+     * @since  GSO 0.5
+     */
+    void deleteSegmentByIdAndType(ServiceSegmentModel serviceSegment) throws ApplicationException;
+
+
+
+    /**
+     * delete segment operation by segment id and segment type<br>
+     * 
+     * @param svcSegmentOper service segment operation
+     * @since  GSO 0.5
+     */
+    void deleteSegmentOperByIdAndType(ServiceSegmentOperation svcSegmentOper);
     
 }

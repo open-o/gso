@@ -45,12 +45,12 @@ public interface IDriverService {
     /**
      * <br>
      * delete the network service
-     * @param instanceId
-     * @return
-     * @throws ApplicationException
+     * @param paramMap map of the input parameters
+     * @return response
+     * @throws ApplicationException when fail to delete the network service
      * @since  GSO 0.5
      */
-    String deleteNs(String instanceId) throws ApplicationException;
+    RestfulResponse deleteNs(Map<String, Object> paramMap) throws ApplicationException;
     
     /**
      * <br>

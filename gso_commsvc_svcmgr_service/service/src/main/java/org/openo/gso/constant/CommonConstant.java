@@ -191,6 +191,10 @@ public class CommonConstant {
         public static final String QUERY_JOB_STATUS_FAILED = "query job status failed";
 
         public static final String TERMINATE_NS_FAILED = "terminate ns failed";
+
+        public static final String DELETE_NS_FAILED = "delete ns failed";
+
+        public static final String CREATE_NS_FAILED = "create ns failed";
         
         private StatusDesc() {
             

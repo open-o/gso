@@ -25,8 +25,6 @@ import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.CommonConstant.Step;
-import org.openo.gso.constant.DriverExceptionID;
-import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.drivermo.NSRequest;
 import org.openo.gso.model.drivermo.NsInstantiateReq;
 import org.openo.gso.service.inf.IDriverService;
@@ -111,34 +109,21 @@ public class DriverServiceImpl implements IDriverService {
      * @since   GSO 0.5
      */
     @Override
-    public String deleteNs(String instanceId) throws ApplicationException {
-        // delete action
-        String deleteUrl = getUrl(domain, instanceId, CommonConstant.Step.DELETE);
-        RestfulResponse deleteRsp = getOperationResponse(deleteUrl, CommonConstant.MethodType.DELETE);
-        String result = "fail";
-        if(HttpCode.isSucess(deleteRsp.getStatus())) {
-            LOGGER.info("succeed to delete the segment");
-            result = "success";
-        } else {
-            LOGGER.error("fail to delete the segment");
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
-        }
-        return result;
+    public RestfulResponse deleteNs(Map<String, Object> inputMap) throws ApplicationException {
+        String nsInstanceId = (String) inputMap.get(CommonConstant.NS_INSTANCE_ID);
+        Map<String, Object> paramsMap = new HashMap<String, Object>();
+        paramsMap.put(CommonConstant.HttpContext.URL, getUrl(domain, nsInstanceId, CommonConstant.Step.DELETE));
+        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.DELETE);
+        paramsMap.put(CommonConstant.HttpContext.IP, inputMap.get(CommonConstant.HttpContext.IP));
+        paramsMap.put(CommonConstant.HttpContext.PORT, inputMap.get(CommonConstant.HttpContext.PORT));
+        
+        RestfulResponse deleteRsp = RestfulUtil.getRemoteResponse(paramsMap, null, null);
+        LOGGER.info("delete ns response status is : {}", deleteRsp.getStatus());
+        LOGGER.info("delete ns response content is : {}", deleteRsp.getResponseContent());
+
+        return deleteRsp;
     }    
             
-
-    /**
-     * <br>
-     * operation of different methodType
-     * 
-     * @param url url of the action
-     * @param methodType method type for terminate action
-     * @return result of the terminate operation(jobId for query)
-     * @since GSO 0.5
-     */
-    private RestfulResponse getOperationResponse(String url, String methodType) {
-        return null;
-    }
 
     /**
      * <br>

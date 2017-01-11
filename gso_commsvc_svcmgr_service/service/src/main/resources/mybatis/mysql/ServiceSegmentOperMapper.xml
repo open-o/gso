@@ -48,5 +48,9 @@
         update t_lcm_svcsegment_operation set progress = #{progress}
         where serviceSegmentId = #{serviceSegmentId} and serviceSegmentType = #{serviceSegmentType}
     </update>
+    
+    <delete id="deleteSegmentOperByIdAndType" parameterType="org.openo.gso.model.servicemo.ServiceSegmentOperation">
+        delete from t_lcm_svcsegment_operation where serviceSegmentId = #{serviceSegmentId} and serviceSegmentType = #{serviceSegmentType}
+    </delete>
 
 </mapper>
