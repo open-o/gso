@@ -291,6 +291,7 @@ public class DriverManagerImpl implements IDriverManager {
         // Step 2: Call the NFVO or SDNO service to instantiate service
         if(null == serviceInf) {
             LOGGER.error("Service interface not initialised");
+            updateSegmentOperStatusInfoAndErrCode(nsInstanceId, segmentType, CommonConstant.Status.ERROR, HttpStatus.INTERNAL_SERVER_ERROR_500, CommonConstant.StatusDesc.INSTANTIATE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
         }
         serviceInf.setSegmentType(segmentType);
@@ -302,6 +303,7 @@ public class DriverManagerImpl implements IDriverManager {
         String jobId = obj.getString(CommonConstant.JOB_ID);
         if(StringUtils.isEmpty(jobId)) {
             LOGGER.error("Invalid jobId from instantiate operation");
+            updateSegmentOperStatusInfoAndErrCode(nsInstanceId, segmentType, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.INSTANTIATE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_RESPONSE_FROM_INSTANTIATE_OPERATION);
         }
         LOGGER.info("instantiate ns -> end");
