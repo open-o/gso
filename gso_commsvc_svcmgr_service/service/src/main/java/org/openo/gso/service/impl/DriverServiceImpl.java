@@ -27,11 +27,14 @@ import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.CommonConstant.Step;
 import org.openo.gso.model.drivermo.NSRequest;
 import org.openo.gso.model.drivermo.NsInstantiateReq;
+import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.service.inf.IDriverService;
 import org.openo.gso.util.RestfulUtil;
 import org.openo.gso.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sf.json.JSONArray;
 
 /**
  * <br>
@@ -257,6 +260,54 @@ public class DriverServiceImpl implements IDriverService {
     @Override
     public void setSegmentType(String segmentType) {
         this.segmentType = segmentType;
+    }
+    
+    /**
+     * get service template by node type<br>
+     * 
+     * @param nodeType node type
+     * @return service template
+     * @throws ApplicationException when fail to get service template
+     * @since  GSO 0.5
+     */
+    public ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost) throws ApplicationException {
+
+        // Step 1: Prepare url and method type
+        Map<String, Object> paramsMap = new HashMap<String, Object>();
+        paramsMap.put(CommonConstant.HttpContext.URL, CommonConstant.CATALOGUE_QUERY_SVC_TMPL_NODETYPE_URL);
+        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
+        parseDomainHost(domainHost, paramsMap);
+
+        // Step 2: Prepare the query param
+        LOGGER.info("node Type is {}", nodeType);
+        Map<String, String> queryParams = new HashMap<String, String>();
+        queryParams.put("nodeTypeIds", nodeType);
+        
+
+        // Step 3:Send the request and get response
+        RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, null, queryParams);
+        LOGGER.info("response content is {}", rsp.getResponseContent());
+        JSONArray array = JSONArray.fromObject(rsp.getResponseContent());
+        return JsonUtil.unMarshal(array.getString(0), ServiceTemplate.class);
+    }
+    
+    /**
+     * private method3: parse domain host<br>
+     * 
+     * @param domainHost host & port which httprequest should send to
+     * @param paramsMap params map
+     * @since  GSO 0.5
+     */
+    private void parseDomainHost(String domainHost, Map<String, Object> paramsMap) {
+        if(StringUtils.isEmpty(domainHost)){
+            LOGGER.info("domainHost is empty");
+            return;
+        }
+        LOGGER.info("domainHost is {}", domainHost);
+        String ip = domainHost.substring(0, domainHost.indexOf(":"));
+        String port = domainHost.substring(domainHost.indexOf(":") + 1);
+        paramsMap.put(CommonConstant.HttpContext.IP, ip);
+        paramsMap.put(CommonConstant.HttpContext.PORT, port);
     }
 
 }

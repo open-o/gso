@@ -33,8 +33,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
+import org.openo.gso.model.servicemo.ServiceSegmentOperation;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -165,7 +167,7 @@ public class ServiceSegmentDaoImplTest {
 
         serviceSegmentDao.insertSegment(serviceSegment);
     }
-
+    
     /**
      * Delete successfully.<br/>
      * 
@@ -203,5 +205,110 @@ public class ServiceSegmentDaoImplTest {
                 return session;
             }
         };
+    }
+    
+    /**
+     * Query Segment By Job Id<br>
+     * 
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testQuerySegmentByJobId() {
+        String jobId = "1";
+        serviceSegmentDao.queryServiceSegment(jobId);
+    }
+    
+    /**
+     * Insert Service Segment Operation<br>
+     * 
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testInsertSegmentOper() {
+        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
+        segOper.setServiceSegmentId("1");
+        segOper.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
+        serviceSegmentDao.insertSegmentOper(segOper);
+    }
+    
+    /**
+     * Update Service Segment Operation Job Id<br>
+     * 
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testUpdateSegmentOperJobId() {
+        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
+        segOper.setServiceSegmentId("1");
+        segOper.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
+        segOper.setJobId("1");
+        serviceSegmentDao.updateSegmentOperJobId(segOper);
+    }
+    
+    /**
+     * Update Service Segment Operation Status<br>
+     * 
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testUpdateSegmentOperStatus() {
+        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
+        segOper.setServiceSegmentId("1");
+        segOper.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
+        segOper.setStatus(CommonConstant.Status.FINISHED);
+        segOper.setStatusDescription("desc");
+        serviceSegmentDao.updateSegmentOperStatus(segOper);
+    }
+    
+    /**
+     * Update Service Segment Operation Status<br>
+     * 
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testUpdateSegmentOperProgress(){
+        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
+        segOper.setServiceSegmentId("1");
+        segOper.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
+        segOper.setProcess(Integer.valueOf(CommonConstant.Progress.ONE_HUNDRED));
+        serviceSegmentDao.updateSegmentOperProgress(segOper);
+    }
+    
+    
+    /**
+     * Query Segment By Id And Type<br>
+     * 
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testQuerySegmentByIdAndType() {
+        String segmentId = "1";
+        serviceSegmentDao.queryServiceSegmentByIdAndType(segmentId, CommonConstant.SegmentType.NFVO);
+    }
+    
+    /**
+     * Delete Segment By Id And Type<br>
+     * 
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testDeleteSegmentByIdAndType() {
+        ServiceSegmentModel seg = new ServiceSegmentModel();
+        seg.setServiceSegmentId("1");
+        seg.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
+        serviceSegmentDao.deleteSegmentByIdAndType(seg);
+    }
+    
+    /**
+     * Delete Segment Operation By Id And Type<br>
+     * 
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testDeleteSegmentOperByIdAndType() {
+        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
+        segOper.setServiceSegmentId("1");
+        segOper.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
+        serviceSegmentDao.deleteSegmentOperByIdAndType(segOper);
     }
 }

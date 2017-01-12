@@ -47,12 +47,10 @@ import org.openo.gso.model.servicemo.ServiceSegmentOperation;
 import org.openo.gso.restproxy.inf.ICatalogProxy;
 import org.openo.gso.service.inf.IDriverManager;
 import org.openo.gso.service.inf.IDriverService;
-import org.openo.gso.util.RestfulUtil;
 import org.openo.gso.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
@@ -189,7 +187,7 @@ public class DriverManagerImpl implements IDriverManager {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
         }
         serviceInf.setSegmentType(segmentType);
-        ServiceTemplate svcTmpl = getSvcTmplByNodeType(currentInput.getNodeType(), currentInput.getDomainHost());
+        ServiceTemplate svcTmpl = serviceInf.getSvcTmplByNodeType(currentInput.getNodeType(), currentInput.getDomainHost());
         if(null == svcTmpl) {
             LOGGER.error("Failed to get service template from catalogue module");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
@@ -465,7 +463,7 @@ public class DriverManagerImpl implements IDriverManager {
         // Step 0: get request model
         String body = RestUtils.getRequestBody(servletReq);
         LOGGER.info("body from request is {}", body);
-        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}").replaceAll("\"\\[", "\\]").replaceAll("\\]\"", "\\]");
+        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}").replaceAll("\"\\[", "\\[").replaceAll("\\]\"", "\\]");
         LOGGER.warn("json body from request is {}", jsonBody);
         ServiceNode serviceNode = null;
         serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
@@ -486,34 +484,6 @@ public class DriverManagerImpl implements IDriverManager {
         return currentInput;
     }
     
-    /**
-     * private method 1: get service template by node type<br>
-     * 
-     * @param nodeType node type
-     * @return service template
-     * @throws ApplicationException when fail to get service template
-     * @since  GSO 0.5
-     */
-    private ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost) throws ApplicationException {
-
-        // Step 1: Prepare url and method type
-        Map<String, Object> paramsMap = new HashMap<String, Object>();
-        paramsMap.put(CommonConstant.HttpContext.URL, CommonConstant.CATALOGUE_QUERY_SVC_TMPL_NODETYPE_URL);
-        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
-        parseDomainHost(domainHost, paramsMap);
-
-        // Step 2: Prepare the query param
-        LOGGER.info("node Type is {}", nodeType);
-        Map<String, String> queryParams = new HashMap<String, String>();
-        queryParams.put("nodeTypeIds", nodeType);
-        
-
-        // Step 3:Send the request and get response
-        RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, null, queryParams);
-        LOGGER.info("response content is {}", rsp.getResponseContent());
-        JSONArray array = JSONArray.fromObject(rsp.getResponseContent());
-        return JsonUtil.unMarshal(array.getString(0), ServiceTemplate.class);
-    }
 
     /**
      * private method2 : get create params<br>

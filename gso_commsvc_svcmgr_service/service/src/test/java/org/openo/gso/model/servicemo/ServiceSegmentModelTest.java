@@ -19,6 +19,7 @@ package org.openo.gso.model.servicemo;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.openo.gso.constant.CommonConstant;
 
 /**
  * Test ServiceSegmentModel Class.<br/>
@@ -39,6 +40,9 @@ public class ServiceSegmentModelTest {
         serviceSegment.setServiceSegmentName("POP service");
         serviceSegment.setTemplateId("12345");
         serviceSegment.setTopoSeqNumber(1);
+        serviceSegment.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
+        serviceSegment.setDomainHost("1.1.1.1:24");
+        serviceSegment.setNodeTemplateName("POP");
 
         assertEquals("tosaca.nfv.node.POP", serviceSegment.getNodeType());
         assertEquals("2", serviceSegment.getServiceId());
@@ -46,6 +50,9 @@ public class ServiceSegmentModelTest {
         assertEquals("12345", serviceSegment.getServiceSegmentId());
         assertEquals("12345", serviceSegment.getTemplateId());
         assertEquals(String.valueOf(1), String.valueOf(serviceSegment.getTopoSeqNumber()));
+        assertEquals(CommonConstant.SegmentType.NFVO, serviceSegment.getServiceSegmentType());
+        assertEquals("1.1.1.1:24", serviceSegment.getDomainHost());
+        assertEquals("POP", serviceSegment.getNodeTemplateName());
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,6 +115,16 @@ public class ServiceTemplateTest {
     public void testSetLstOutputs() {
         List<OutputParameter> lstOutputs = new ArrayList<OutputParameter>();
         tmp.setLstOutputs(lstOutputs);
+    }
+    
+    @Test
+    public void testSetId() {
+        tmp.setId("1");
+    }
+    
+    @Test
+    public void testGetId() {
+        tmp.getId();
     }
 
 }

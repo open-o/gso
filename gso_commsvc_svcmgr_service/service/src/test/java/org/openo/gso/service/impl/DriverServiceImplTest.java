@@ -21,9 +21,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
-import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.util.RestfulUtil;
 
 import mockit.Mock;
@@ -31,70 +29,76 @@ import mockit.MockUp;
 
 public class DriverServiceImplTest {
 
-    DriverServiceImpl svcImpl = new DriverServiceImpl();
-
     @Test
-    public void testDelete() {
+    public void testCreateNs() {
 
-        final RestfulResponse rspErr = new RestfulResponse();
-        rspErr.setStatus(202);
-        String strErr = "{\"jobId\":\"1\",\"responseDescriptor\":{\"status\":\"error\",\"progress\":\"100\"}}";
-        rspErr.setResponseJson(strErr);
-        try {
-            new MockUp<RestfulUtil>() {
-
-                @Mock
-                public RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
-                        Map<String, String> queryParam) {
-                    return rspErr;
-                }
-            };
-
-        } catch(ApplicationException e) {
-
-        }
-
+        DriverServiceImpl impl = new DriverServiceImpl();
+        impl.setSegmentType(CommonConstant.SegmentType.NFVO);
+        Map<String, Object> inputMap = new HashMap<String, Object>();
         final RestfulResponse rsp = new RestfulResponse();
-        rsp.setStatus(202);
-        String str = "{\"jobId\":\"1\",\"responseDescriptor\":{\"status\":\"finished\",\"progress\":\"100\"}}";
-        rsp.setResponseJson(str);
-        try {
-            new MockUp<RestfulUtil>() {
+        new MockUp<RestfulUtil>() {
+            
+            @Mock
+            public RestfulResponse getRemoteResponse(Map<String, Object> paramsMap, String body,
+                    Map<String, String> queryParam) {
+            return rsp;
+            }
+        };
+        impl.createNs(inputMap);
+    }
+    
+    @Test
+    public void testDeleteNs() {
 
-                @Mock
-                public RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
-                        Map<String, String> queryParam) {
-                    return rsp;
-                }
-            };
+        DriverServiceImpl impl = new DriverServiceImpl();
+        impl.setSegmentType(CommonConstant.SegmentType.NFVO);
+        Map<String, Object> inputMap = new HashMap<String, Object>();
+        final RestfulResponse rsp = new RestfulResponse();
+        new MockUp<RestfulUtil>() {
+            
+            @Mock
+            public RestfulResponse getRemoteResponse(Map<String, Object> paramsMap, String body,
+                    Map<String, String> queryParam) {
+            return rsp;
+            }
+        };
+        impl.deleteNs(inputMap);
+    }
+    
+    @Test
+    public void testInstantiateNs() {
+        DriverServiceImpl impl = new DriverServiceImpl();
+        impl.setSegmentType(CommonConstant.SegmentType.NFVO);
+        Map<String, Object> inputMap = new HashMap<String, Object>();
+        final RestfulResponse rsp = new RestfulResponse();
+        new MockUp<RestfulUtil>() {
+            
+            @Mock
+            public RestfulResponse getRemoteResponse(Map<String, Object> paramsMap, String body,
+                    Map<String, String> queryParam) {
+            return rsp;
+            }
+        };
+        impl.instantiateNs(inputMap);
 
-        } catch(ApplicationException e) {
+    }
+    
+    @Test
+    public void testTerminateNs() {
+        DriverServiceImpl impl = new DriverServiceImpl();
+        impl.setSegmentType(CommonConstant.SegmentType.NFVO);
+        Map<String, Object> inputMap = new HashMap<String, Object>();
+        final RestfulResponse rsp = new RestfulResponse();
+        new MockUp<RestfulUtil>() {
+            
+            @Mock
+            public RestfulResponse getRemoteResponse(Map<String, Object> paramsMap, String body,
+                    Map<String, String> queryParam) {
+            return rsp;
+            }
+        };
+        impl.terminateNs(inputMap);
 
-        }
-
-        final RestfulResponse rspExp = new RestfulResponse();
-        rsp.setStatus(500);
-        String strExp = "{\"jobId\":\"1\",\"responseDescriptor\":{\"status\":\"error\",\"progress\":\"100\"}}";
-        rsp.setResponseJson(strExp);
-        try {
-            new MockUp<RestfulUtil>() {
-
-                @Mock
-                public RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
-                        Map<String, String> queryParam) {
-                    return rspExp;
-                }
-            };
-
-        } catch(ApplicationException e) {
-
-        }
-
-        try {
-
-        } catch(ApplicationException e) {
-
-        }
     }
 
     @Test
@@ -102,40 +106,13 @@ public class DriverServiceImplTest {
 
     }
 
-    @Test
-    public void testInstantiateNS() {
+    
 
-    }
-
-    @Test
-    public void testCreateNS() {
-
-        DriverServiceImpl nsImpl = new DriverServiceImpl();
-        nsImpl.setSegmentType("sdno");
-        ServiceTemplate svcTmpl = new ServiceTemplate();
-        svcTmpl.setServiceTemplateId("id1");
-        svcTmpl.setServiceTemplateName("service1");
-        Map<String, Object> paramMap = new HashMap<String, Object>();
-        final RestfulResponse rsp = new RestfulResponse();
-        String responseString = "{\"nsInstanceId\":\"1\"}";
-        rsp.setResponseJson(responseString);
-        try {
-            new MockUp<RestfulUtil>() {
-
-                @Mock
-                public RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
-                        Map<String, String> queryParam) {
-                    return rsp;
-                }
-            };
-            nsImpl.createNs(paramMap);
-        } catch(ApplicationException e) {
-
-        }
-    }
+    
 
     @Test
     public void testSetSegmentType() {
+        DriverServiceImpl svcImpl = new DriverServiceImpl();
         svcImpl.setSegmentType(CommonConstant.SegmentType.NFVO);
     }
 

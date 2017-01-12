@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,13 +51,61 @@ public class DrivermgrRoaModuleImplTest {
     }
 
     @Test
-    public void testTerminateNetworkService() {
-
+    public void testCreateNFVONs() {
+        impl.createNfvoNs(servletReq);
     }
-
+    
     @Test
-    public void testInstantiateNetworkService() {
-
+    public void testDeleteNFVONs() {
+        String nsInstanceId = "1";
+        impl.deleteNfvoNs(nsInstanceId);
+    }
+    
+    @Test
+    public void testTerminateNFVONs() {
+        String nsInstanceId = "1";
+        impl.terminateNfvoNs(nsInstanceId, servletReq);
+    }
+    
+    @Test
+    public void testInstantiateNFVONs() {
+        String nsInstanceId = "1";
+        impl.instantiateNfvoNs(nsInstanceId, servletReq);
+    }
+    
+    @Test
+    public void testQueryNFVONsProgress() {
+        String jobId = "1";
+        impl.queryNfvoJobStatus(jobId);
+    }
+    
+    @Test
+    public void testCreateSDNONs() {
+        impl.createSdnoNs(servletReq);
+    }
+    
+    @Test
+    public void testDeleteSDNONs() {
+        String nsInstanceId = "1";
+        impl.deleteSdnoNs(nsInstanceId);
+    }
+    
+    @Test
+    public void testTerminateSDNONs() {
+        String nsInstanceId = "1";
+        impl.terminateSdnoNs(nsInstanceId, servletReq);
+    }
+    
+    @Test
+    public void testInstantiateSDNONs() {
+        String nsInstanceId = "1";
+        impl.instantiateSdnoNs(nsInstanceId, servletReq);
+    }
+    
+    @Test
+    public void testQuerySDNONsProgress() {
+        String jobId = "1";
+        impl.querySdnoJobStatus(jobId);
     }
 
 }

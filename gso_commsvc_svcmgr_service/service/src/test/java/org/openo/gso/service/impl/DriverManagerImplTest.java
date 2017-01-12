@@ -16,7 +16,6 @@
 
 package org.openo.gso.service.impl;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,14 +24,15 @@ import org.junit.Test;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
-import org.openo.gso.model.drivermo.ServiceNode;
+import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.service.inf.IDriverService;
-import org.openo.gso.util.RestfulUtil;
 
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.Mocked;
+import mockit.NonStrictExpectations;
 
 public class DriverManagerImplTest {
 
@@ -45,18 +45,20 @@ public class DriverManagerImplTest {
     HttpServletRequest httpRequest;
 
     @Test
-    public void testTerminateService() {
+    public void testCreateService() {
         DriverManagerImpl impl = new DriverManagerImpl();
         impl.setServiceSegmentDao(serviceSegmentDao);
-
-        ServiceNode params = new ServiceNode();
-        Map<String, String> inputParameters = new HashMap<String, String>();
-        inputParameters.put("serviceId", "1");
-        inputParameters.put("tosca.nodes.nfv.dc.instanceId", "sub1");
+        impl.setServiceInf(serviceInf);
         final String str =
-                "{\"nodeType\":\"tosca.nodes.nfv.dc\",\"inputParameters\":{\"tosca.nodes.nfv.dc.instanceId\":\"sub1\",\"serviceId\":\"1\"}}";
-        final RestfulResponse rsp = new RestfulResponse();
-        rsp.setStatus(200);
+                "{\"nodeTemplateName\":\"POP\",\"inputParameters\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
+        
+        final ServiceTemplate svcTmpl = new ServiceTemplate();
+        svcTmpl.setServiceTemplateId("1");
+        svcTmpl.setId("2");
+        
+        final RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(200);
+        restRsp.setResponseJson("{\"nsInstanceId\":\"1\"}");
         try {
             new MockUp<RestUtils>() {
 
@@ -65,29 +67,64 @@ public class DriverManagerImplTest {
                     return str;
                 }
             };
-            new MockUp<RestfulUtil>() {
-
-                @Mock
-                public RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
-                        Map<String, String> queryParam) {
-                    return rsp;
+            
+            new NonStrictExpectations() {
+                {
+                    
+                    serviceInf.getSvcTmplByNodeType(anyString, anyString);
+                    returns(svcTmpl);
                 }
-            };
+            }; 
+            
+            new NonStrictExpectations() {
+                {
+                    
+                    serviceInf.createNs((Map<String, Object>)any);
+                    returns(restRsp);
+                }
+            }; 
 
-            //impl.terminateService(httpRequest);
+            impl.createNs(httpRequest, CommonConstant.SegmentType.NFVO);
         } catch(ApplicationException e) {
             e.printStackTrace();
         }
+    }
+    
+    @Test
+    public void testDeleteService() {
+        DriverManagerImpl impl = new DriverManagerImpl();
+        impl.setServiceSegmentDao(serviceSegmentDao);
+        impl.setServiceInf(serviceInf);
+        final RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(200);
+        try{
+            new NonStrictExpectations() {
+                {
+                    
+                    serviceInf.deleteNs((Map<String, Object>)any);
+                    returns(restRsp);
+                }
+            };
+            impl.deleteNs("1", CommonConstant.SegmentType.NFVO);
+        } catch(ApplicationException e) {
+            e.printStackTrace();
+        }
+        
+            
+        
     }
 
     @Test
     public void testInstantiateService() {
 
+        DriverManagerImpl impl = new DriverManagerImpl();
+        impl.setServiceSegmentDao(serviceSegmentDao);
+        impl.setServiceInf(serviceInf);
         final String str =
-                "{\"nodeType\":\"tosca.nodes.nfv.pop\",\"stNodeParam\":[{\"tosca.nodes.nfv.pop.param1\":\"value1\"}]}";
+                "{\"nodeTemplateName\":\"POP\",\"inputParameters\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
         final RestfulResponse rsp = new RestfulResponse();
-        rsp.setStatus(202);
-        String tempStr = "{\"jobId\":\"1\",\"responseDescriptor\":{\"status\":\"error\",\"progress\":\"100\"}}";
+        rsp.setStatus(200);
+        String tempStr = "{\"jobId\":\"1\"}";
         rsp.setResponseJson(tempStr);
         try {
             new MockUp<RestUtils>() {
@@ -97,16 +134,51 @@ public class DriverManagerImplTest {
                     return str;
                 }
             };
-            new MockUp<RestfulUtil>() {
-
-                @Mock
-                public RestfulResponse getRemoteResponse(Map<String, String> paramsMap, String params,
-                        Map<String, String> queryParam) {
-                    return rsp;
+            
+            new NonStrictExpectations() {
+                {
+                    
+                    serviceInf.instantiateNs((Map<String, Object>)any);
+                    returns(rsp);
                 }
             };
-            DriverManagerImpl impl = new DriverManagerImpl();
-            //impl.instantiateService(httpRequest);
+                 
+            impl.instantiateNs("1", httpRequest, CommonConstant.SegmentType.NFVO);
+        } catch(ApplicationException e) {
+
+        }
+    }
+    
+    @Test
+    public void testTerminateService() {
+
+        DriverManagerImpl impl = new DriverManagerImpl();
+        impl.setServiceSegmentDao(serviceSegmentDao);
+        impl.setServiceInf(serviceInf);
+        final String str =
+                "{\"nodeTemplateName\":\"POP\",\"inputParameters\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
+        final RestfulResponse rsp = new RestfulResponse();
+        rsp.setStatus(200);
+        String tempStr = "{\"jobId\":\"1\"}";
+        rsp.setResponseJson(tempStr);
+        try {
+            new MockUp<RestUtils>() {
+
+                @Mock
+                public String getRequestBody(HttpServletRequest request) {
+                    return str;
+                }
+            };
+            
+            new NonStrictExpectations() {
+                {
+                    
+                    serviceInf.terminateNs((Map<String, Object>)any);
+                    returns(rsp);
+                }
+            };
+                 
+            impl.terminateNs("1", httpRequest, CommonConstant.SegmentType.NFVO);
         } catch(ApplicationException e) {
 
         }

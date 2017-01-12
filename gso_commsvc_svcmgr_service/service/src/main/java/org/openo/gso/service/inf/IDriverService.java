@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.model.drivermo.ServiceTemplate;
 
 /**
  * <br>
@@ -94,4 +95,14 @@ public interface IDriverService {
      * @since GSO 0.5
      */
     void setSegmentType(String segmentType);
+
+    /**
+     * get service template by node type<br>
+     * 
+     * @param nodeType node type
+     * @return service template
+     * @throws ApplicationException when fail to get service template
+     * @since  GSO 0.5
+     */
+    ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost) throws ApplicationException;
 }
