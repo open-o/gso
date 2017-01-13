@@ -1,4 +1,4 @@
--- Copyright 2016 Huawei Technologies Co., Ltd.
+-- Copyright 2016-2017 Huawei Technologies Co., Ltd.
 --
 -- Licensed under the Apache License, Version 2.0 (the "License");
 -- you may not use this file except in compliance with the License.
@@ -21,13 +21,12 @@ create table t_lcm_service
 	activeStatus varchar(255) not null,
 	status       varchar(255) not null,
 	creator      varchar(255) not null,
-	createAt     bigint(13)   not null,
-	result       varchar(255) not null,
+	createAt     bigint(13)   not null,	
 	primary key(serviceId)
 );
 
-insert into t_lcm_service (serviceId,name,description,activeStatus,status,creator,createAt,result) 
-VALUES('1', 'siteToDC', 'site to DC', 'active', 'createSucceed', 'admin', 1234567890123,'creating');
+insert into t_lcm_service (serviceId,name,description,activeStatus,status,creator,createAt) 
+VALUES('1', 'siteToDC', 'site to DC', 'active', 'createSucceed', 'admin', 1234567890123);
 
-insert into t_lcm_service (serviceId,name,description,activeStatus,status,creator,createAt,result) 
-VALUES('3', 'siteToDC3', 'site to DC', 'active', 'createSucceed', 'admin', 1234567890123,'creating');
+insert into t_lcm_service (serviceId,name,description,activeStatus,status,creator,createAt) 
+VALUES('3', 'siteToDC3', 'site to DC', 'active', 'createSucceed', 'admin', 1234567890123);

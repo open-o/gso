@@ -21,6 +21,7 @@ import org.openo.gso.dao.inf.IInventoryDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.exception.HttpCode;
+import org.openo.gso.mapper.InvServiceModelMapper;
 import org.openo.gso.mapper.InventoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,5 +111,24 @@ public class InventoryDaoImpl implements IInventoryDao {
      */
     private <T> T getMapper(Class<T> type) {
         return invSessionHandler.getSqlSession().getMapper(type);
+    }
+
+    /**
+     * Update service instance status.<br/>
+     * 
+     * @param serviceId service instance ID.
+     * @param status service instance status
+     * @throws ApplicationException when database exception or parameter is wrong
+     * @since GSO 0.5
+     */
+    @Override
+    public void updateServiceStatus(String serviceId, String status) throws ApplicationException {
+        try {
+            InvServiceModelMapper mapper = getMapper(InvServiceModelMapper.class);
+            mapper.updateServiceStatus(serviceId, status);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to update service instance status. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
     }
 }

@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.dao.inf.IInventoryDao;
 import org.openo.gso.dao.inf.IServiceModelDao;
@@ -37,12 +38,15 @@ import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.model.catalogmo.OperationModel;
 import org.openo.gso.model.servicemo.InvServiceModel;
+import org.openo.gso.model.servicemo.ServiceDetailModel;
 import org.openo.gso.model.servicemo.ServiceModel;
+import org.openo.gso.model.servicemo.ServiceOperation;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 import org.openo.gso.model.servicemo.ServiceParameter;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.restproxy.inf.ICatalogProxy;
 import org.openo.gso.restproxy.inf.IWorkflowProxy;
+import org.openo.gso.service.inf.IOperationManager;
 import org.openo.gso.service.inf.IServiceManager;
 import org.openo.gso.synchronization.PackageOperationSingleton;
 import org.openo.gso.util.convertor.DataConverter;
@@ -99,6 +103,25 @@ public class ServiceManagerImpl implements IServiceManager {
     private IInventoryDao inventoryDao;
 
     /**
+     * Service operation manager.
+     */
+    private IOperationManager operationManager;
+
+    /**
+     * @return Returns the operationManager.
+     */
+    public IOperationManager getOperationManager() {
+        return operationManager;
+    }
+
+    /**
+     * @param operationManager The operationManager to set.
+     */
+    public void setOperationManager(IOperationManager operationManager) {
+        this.operationManager = operationManager;
+    }
+
+    /**
      * Create service instance.<br/>
      * 
      * @param reqContent content of request
@@ -108,7 +131,8 @@ public class ServiceManagerImpl implements IServiceManager {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public ServiceModel createService(String reqContent, HttpServletRequest httpRequest) throws ApplicationException {
+    public ServiceDetailModel createService(String reqContent, HttpServletRequest httpRequest)
+            throws ApplicationException {
 
         // Parse request
         Map<String, Object> requestBody = JsonUtil.unMarshal(reqContent, Map.class);
@@ -122,7 +146,7 @@ public class ServiceManagerImpl implements IServiceManager {
         Object instanceParam = service.get(Constant.SERVICE_PARAMETERS);
         ValidateUtil.validate(defineParams, instanceParam);
 
-        // Convert service data
+        // Convert service data for database operation
         Map<String, Object> paramsMap = (Map<String, Object>)instanceParam;
         ServiceModel model = convertData(service);
         model.setName((String)service.get(Constant.SERVICE_NAME));
@@ -136,9 +160,14 @@ public class ServiceManagerImpl implements IServiceManager {
         ValidateUtil.assertStringNotNull(csarId);
         PackageOperationSingleton.getInstance().addBeingUsedCsarIds(csarId);
 
+        ServiceDetailModel svcDetail = new ServiceDetailModel();
+        ServiceOperation svcOperation = null;
         try {
             // Insert data into DB
             insertDB(model, paramList);
+
+            // Create operation record
+            svcOperation = operationManager.createOperation(model.getServiceId(), Constant.OPERATION_CREATE);
 
             // Start to create workflow
             paramsMap.put(Constant.SERVICE_ID, model.getServiceId());
@@ -148,14 +177,28 @@ public class ServiceManagerImpl implements IServiceManager {
             paramsMap.put("serviceDescription", model.getDescription());
             LOGGER.warn("serviceDescription is {}", model.getDescription());
             startWorkFlow(templateId, Constant.WORK_FLOW_PLAN_CREATE, httpRequest, paramsMap);
-        } catch(ApplicationException e) {
-            throw e;
+        } catch(ApplicationException exception) {
+            LOGGER.error("Fail to create service instance. {}", exception);
+            // update service instance status
+            model.setStatus(CommonConstant.Status.ERROR);
+            if(null != svcOperation) {
+                svcOperation.setResult(CommonConstant.Status.ERROR);
+                svcOperation.setProgress(100);
+                svcOperation.setReason(exception.getMessage());
+            }
+            updateData(model, svcOperation);
+            throw exception;
         } finally {
+
             // Delete csar ID from cache
             PackageOperationSingleton.getInstance().removeBeingUsedCsarId(csarId);
         }
 
-        return model;
+        // Assemble return data
+        svcDetail.setServiceModel(model);
+        svcDetail.setServiceOperation(svcOperation);
+
+        return svcDetail;
     }
 
     /**
@@ -371,15 +414,16 @@ public class ServiceManagerImpl implements IServiceManager {
      * @param key name of work flow
      * @param request http request
      * @param parameters request parameters
+     * @return response status code
      * @throws ApplicationException when fail to execute.
      * @since GSO 0.5
      */
-    private void startWorkFlow(String templateId, String key, HttpServletRequest request, Object parameters)
+    private int startWorkFlow(String templateId, String key, HttpServletRequest request, Object parameters)
             throws ApplicationException {
         OperationModel operation = getOperation(templateId, key, request);
         ValidateUtil.assertObjectNotNull(operation);
         Map<String, Object> workflowBody = DataConverter.constructWorkflowBody(operation, parameters);
-        workflowProxy.startWorkFlow(workflowBody, request);
+        return workflowProxy.startWorkFlow(workflowBody, request);
     }
 
     /**
@@ -519,7 +563,7 @@ public class ServiceManagerImpl implements IServiceManager {
         InvServiceModel invService = new InvServiceModel();
         invService.setServiceId(service.getServiceId());
         invService.setName(service.getName());
-        invService.setServiceType("GSO");
+        invService.setServiceType(CommonConstant.SegmentType.GSO);
         invService.setDescription(service.getDescription());
         invService.setActiveStatus(service.getActiveStatus());
         invService.setStatus(service.getStatus());
@@ -557,5 +601,21 @@ public class ServiceManagerImpl implements IServiceManager {
     @Override
     public ServiceModel getInstanceByInstanceId(String serviceId) {
         return serviceModelDao.queryServiceByInstanceId(serviceId);
+    }
+
+    /**
+     * Update service instance status.<br/>
+     * 
+     * @param svcModel service instance
+     * @param operation service operation
+     * @param status
+     * @since GSO 0.5
+     */
+    private void updateData(ServiceModel svcModel, ServiceOperation operation) throws ApplicationException {
+        serviceModelDao.updateServiceStatus(svcModel.getServiceId(), svcModel.getStatus());
+        inventoryDao.updateServiceStatus(svcModel.getServiceId(), svcModel.getStatus());
+        if(null != operation) {
+            operationManager.updateOperation(operation);
+        }
     }
 }

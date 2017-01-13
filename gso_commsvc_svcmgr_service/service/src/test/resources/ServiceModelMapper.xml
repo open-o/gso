@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2016 Huawei Technologies Co., Ltd.
+    Copyright 2016-2017 Huawei Technologies Co., Ltd.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -25,15 +25,14 @@
         <result property="activeStatus" column="activeStatus" />
         <result property="status" column="status" />
         <result property="creator" column="creator" />
-        <result property="createAt" column="createAt" />
-        <result property="result" column="result" />
+        <result property="createAt" column="createAt" />        
     </resultMap>
 
     <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServiceModel">
         insert into
         t_lcm_service
         (serviceId,name,description,activeStatus,status,creator,createAt,result)
-        values(#{serviceId},#{name},#{description},#{activeStatus},#{status},#{creator},#{createAt},#{result})
+        values(#{serviceId},#{name},#{description},#{activeStatus},#{status},#{creator},#{createAt})
     </insert>
 
     <delete id="delete">

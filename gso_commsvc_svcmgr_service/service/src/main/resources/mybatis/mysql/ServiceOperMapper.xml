@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright 2017 Huawei Technologies Co., Ltd.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.openo.gso.mapper.ServiceOperMapper">
+
+    <resultMap type="org.openo.gso.model.servicemo.ServiceOperation" id="serviceOperResultMap">
+        <result property="serviceId" column="serviceId" />
+        <result property="operationId" column="operationId" />
+        <result property="operation" column="operationType" />
+        <result property="userId" column="userId" />
+        <result property="result" column="result" />
+        <result property="operationContent" column="operationContent" />
+        <result property="progress" column="progress" />
+        <result property="reason" column="reason" />
+        <result property="operationAt" column="operationAt" />
+        <result property="finishedAt" column="finishedAt" />    
+    </resultMap>
+
+    <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServiceOperation">
+        insert into
+        t_lcm_service_operation
+        (serviceId,operationId,operationType,userId,result,operationContent,progress,reason,operationAt,finishedAt)
+        values(#{serviceId},#{operationId},#{operationType},#{userId},#{result},#{operationContent},#{progress},#{reason},#{operationAt},#{finishedAt})
+    </insert>
+
+    <delete id="delete">
+        delete from t_lcm_service_operation where serviceId = #{serviceId}
+    </delete>
+
+    <select id="queryOperationById" resultMap="serviceOperResultMap">
+        select serviceId,operationId,operationType,userId,result,operationContent,progress,reason,operationAt,finishedAt from t_lcm_service_operation where serviceId = #{serviceId} and operationId = #{operationId}
+    </select>
+    
+    <update id="update" parameterType="org.openo.gso.model.servicemo.ServiceOperation">
+        update t_lcm_service_operation
+        <set>
+            <if test="operationContent != null">
+                operationContent = #{operationContent},
+            </if>
+            <if test="result != null">
+                result = #{result},
+            </if>
+            <if test="reason != null">
+                reason = #{reason},
+            </if>
+            <if test="progress != null">
+                progress = #{progress},
+            </if>
+            <if test="finishedAt != null">
+                finishedAt = #{finishedAt}
+            </if>
+        </set>
+        where operationId = #{operationId}
+    </update>
+
+</mapper>

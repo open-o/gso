@@ -21,20 +21,19 @@ package org.openo.gso.constant;
  * <p>
  * </p>
  * constant
- * @version     GSO 0.5  2016/9/3
+ * 
+ * @version GSO 0.5 2016/9/3
  */
 public class CommonConstant {
 
-    
-    
     public static final String CATALOGUE_QUERY_SVC_TMPL_NODETYPE_URL = "/openoapi/catalog/v1/servicetemplates/nesting";
 
     public static final String SDNO_CREATE_URL = "/openoapi/sdnonslcm/v1/ns";
-    
+
     public static final String SDNO_INSTANTIATE_URL = "/openoapi/sdnonslcm/v1/ns/%s/instantiate";
-    
+
     public static final String SDNO_TERMINATE_URL = "/openoapi/sdnonslcm/v1/sss/%s/terminate";
-    
+
     public static final String SDNO_DELETE_URL = "/openoapi/sdnonslcm/v1/sss/%s";
 
     public static final String SDNO_QUERY_URL = "/openoapi/sdnonslcm/v1/jobs/%s";
@@ -44,17 +43,18 @@ public class CommonConstant {
     public static final String NFVO_INSTANTIATE_URL = "/openoapi/nslcm/v1/ns/%s/instantiate";
 
     public static final String NFVO_TERMINATE_URL = "/openoapi/nslcm/v1/ns/%s/terminate";
-    
+
     public static final String NFVO_DELETE_URL = "/openoapi/nslcm/v1/ns/%s";
-    
+
     public static final String NFVO_QUERY_URL = "/openoapi/nslcm/v1/jobs/%s";
-    
+
     /**
      * <br>
      * <p>
      * </p>
      * HttpContext constant
-     * @version     GSO 0.5  2016/9/3
+     * 
+     * @version GSO 0.5 2016/9/3
      */
     public static class HttpContext {
 
@@ -67,11 +67,11 @@ public class CommonConstant {
         public static final String METHOD_TYPE = "methodType";
 
         public static final String IP = "ip";
-        
+
         public static final String PORT = "port";
-        
-        private HttpContext(){
-            
+
+        private HttpContext() {
+
         }
     }
 
@@ -80,27 +80,28 @@ public class CommonConstant {
      * <p>
      * </p>
      * nodeType constant
-     * @version     GSO 0.5  2016/9/3
+     * 
+     * @version GSO 0.5 2016/9/3
      */
     public static class NodeType {
 
-        //dc
+        // dc
         public static final String NFV_DC_TYPE = "tosca.nodes.nfv.NS.DC_NS";
 
-        //pop
+        // pop
         public static final String NFV_POP_TYPE = "tosca.nodes.nfv.NS.POP_NS";
-        
-        //tic core
+
+        // tic core
         public static final String NFV_VBRAS_TYPE = "tosca.nodes.nfv.NS.VBRAS_NS";
 
-        //overlay vpn
+        // overlay vpn
         public static final String SDN_OVERLAYVPN_TYPE = "tosca.nodes.sdn.ext.NS.enterprise2DC";
-        
-        //underlay vpn
+
+        // underlay vpn
         public static final String SDN_UNDERLAYVPN_TYPE = "tosca.nodes.sdn.ext.NS.ns_underlayervpn";
-        
-        private NodeType(){
-            
+
+        private NodeType() {
+
         }
 
     }
@@ -110,7 +111,8 @@ public class CommonConstant {
      * <p>
      * </p>
      * method type constant
-     * @version     GSO 0.5  2016/9/3
+     * 
+     * @version GSO 0.5 2016/9/3
      */
     public static class MethodType {
 
@@ -121,9 +123,9 @@ public class CommonConstant {
         public static final String PUT = "put";
 
         public static final String GET = "get";
-        
-        private MethodType(){
-            
+
+        private MethodType() {
+
         }
     }
 
@@ -132,7 +134,8 @@ public class CommonConstant {
      * <p>
      * </p>
      * step constant
-     * @version     GSO 0.5  2016/9/3
+     * 
+     * @version GSO 0.5 2016/9/3
      */
     public static class Step {
 
@@ -147,9 +150,9 @@ public class CommonConstant {
         public static final String QUERY = "query";
 
         public static final String DELETE = "delete";
-        
-        private Step(){
-            
+
+        private Step() {
+
         }
 
     }
@@ -159,23 +162,26 @@ public class CommonConstant {
      * <p>
      * </p>
      * segmentType constant
-     * @version     GSO 0.5  2017/1/6
+     * 
+     * @version GSO 0.5 2017/1/6
      */
     public static class SegmentType {
-        
+
         public static final String SDNO = "SDNO";
-        
+
         public static final String NFVO = "NFVO";
-        
-        private SegmentType(){
-            
+
+        public static final String GSO = "GSO";
+
+        private SegmentType() {
+
         }
     }
-    
+
     public static final String NSD_ID = "nsdId";
-    
-    public static final String NS_NAME= "nsName";
-    
+
+    public static final String NS_NAME = "nsName";
+
     public static final String DESC = "description";
 
     public static final String NS_INSTANCE_ID = "nsInstanceId";
@@ -185,9 +191,9 @@ public class CommonConstant {
     public static final String ADDITIONAL_PARAM_FOR_NS = "additionalParamForNs";
 
     public static class StatusDesc {
-        
+
         public static final String INSTANTIATE_NS_FAILED = "instantiate ns failed";
-        
+
         public static final String QUERY_JOB_STATUS_FAILED = "query job status failed";
 
         public static final String TERMINATE_NS_FAILED = "terminate ns failed";
@@ -195,37 +201,35 @@ public class CommonConstant {
         public static final String DELETE_NS_FAILED = "delete ns failed";
 
         public static final String CREATE_NS_FAILED = "create ns failed";
-        
+
         private StatusDesc() {
-            
+
         }
     }
 
     public static class Progress {
-        
-        public static final String ONE_HUNDRED = "100"; 
-        
+
+        public static final String ONE_HUNDRED = "100";
+
         private Progress() {
-            
+
         }
     }
 
     public static class Status {
-        
+
         public static final String FINISHED = "finished";
-        
+
         public static final String PROCESSING = "processing";
-        
+
         public static final String ERROR = "error";
-        
-        private Status(){
-            
+
+        private Status() {
+
         }
     }
-    
 
-    
-    private CommonConstant(){
-        
+    private CommonConstant() {
+
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class BaseServiceModel {
     private String activeStatus;
 
     /**
-     * Creating status of service instance. For example createdSucceed, createdFail.
+     * Creating status of service instance. finished|error|processing.
      */
     private String status;
 
@@ -63,9 +63,23 @@ public class BaseServiceModel {
     private Long createAt;
 
     /**
-     * execution result
+     * Service segment number
      */
-    private String result;
+    private int segmentNumber;
+
+    /**
+     * @return Returns the segmentNumber.
+     */
+    public int getSegmentNumber() {
+        return segmentNumber;
+    }
+
+    /**
+     * @param segmentNumber The segmentNumber to set.
+     */
+    public void setSegmentNumber(int segmentNumber) {
+        this.segmentNumber = segmentNumber;
+    }
 
     /**
      * Constructor<br/>
@@ -76,7 +90,6 @@ public class BaseServiceModel {
      */
     public BaseServiceModel() {
         super();
-        this.result = "processing";
     }
 
     /**
@@ -176,19 +189,4 @@ public class BaseServiceModel {
     public void setCreateAt(Long createAt) {
         this.createAt = createAt;
     }
-
-    /**
-     * @return Returns the result.
-     */
-    public String getResult() {
-        return result;
-    }
-
-    /**
-     * @param result The result to set.
-     */
-    public void setResult(String result) {
-        this.result = result;
-    }
-
 }

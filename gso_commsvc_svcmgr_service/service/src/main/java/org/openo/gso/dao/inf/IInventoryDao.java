@@ -50,4 +50,14 @@ public interface IInventoryDao {
      * @since GSO 0.5
      */
     <M> void delete(String key, Class<M> mapperType) throws ApplicationException;
+
+    /**
+     * Update service instance status.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @param status service execution status. finished
+     * @throws ApplicationException
+     * @since GSO 0.5
+     */
+    void updateServiceStatus(String serviceId, String status) throws ApplicationException;
 }

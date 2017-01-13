@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2016 Huawei Technologies Co., Ltd.
+    Copyright 2016-2017 Huawei Technologies Co., Ltd.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -26,14 +26,14 @@
         <result property="status" column="status" />
         <result property="creator" column="creator" />
         <result property="createAt" column="createAt" />
-        <result property="result" column="result"/>
+        <result property="segmentNumber" column="segmentNumber" />      
     </resultMap>
 
     <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServiceModel">
         insert into
         t_lcm_service
-        (serviceId,name,description,activeStatus,status,creator,createAt,result)
-        values(#{serviceId},#{name},#{description},#{activeStatus},#{status},#{creator},#{createAt},#{result})
+        (serviceId,name,description,activeStatus,status,creator,createAt,segmentNumber)
+        values(#{serviceId},#{name},#{description},#{activeStatus},#{status},#{creator},#{createAt},#{segmentNumber})
     </insert>
 
     <delete id="delete">
@@ -42,15 +42,15 @@
 
 
     <select id="queryAllServices" resultMap="serviceModelResultMap">
-        select serviceId,name,description,activeStatus,status,creator,createAt,result from t_lcm_service
+        select serviceId,name,description,activeStatus,status,creator,createAt,segmentNumber from t_lcm_service
     </select>
     
     <select id="queryServiceByInstanceId" resultMap="serviceModelResultMap">
-        select serviceId,name,description,activeStatus,status,creator,createAt,result from t_lcm_service where serviceId = #{serviceId}
+        select serviceId,name,description,activeStatus,status,creator,createAt,segmentNumber from t_lcm_service where serviceId = #{serviceId}
     </select>
     
-    <update id="updateServiceResult" parameterType="java.lang.String">
-        update t_lcm_service set result = #{result} where serviceId = #{serviceId}
+    <update id="updateServiceStatus" parameterType="java.lang.String">
+        update t_lcm_service set status = #{status} where serviceId = #{serviceId}
     </update>
 
 </mapper>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,12 +56,12 @@ public class WorkflowProxyImpl implements IWorkflowProxy {
      * @since GSO 0.5
      */
     @Override
-    public String startWorkFlow(Object sendBody, HttpServletRequest request) throws ApplicationException {
+    public int startWorkFlow(Object sendBody, HttpServletRequest request) throws ApplicationException {
         LOGGER.info("Notify workflow to startup bpel workflow.");
         RestfulResponse response = HttpUtil.post(WSO_URI, sendBody, request);
         ResponseUtils.checkResonseAndThrowException(response, "start to bpel workflow.");
 
-        return response.getResponseContent();
+        return response.getStatus();
     }
 
 }
