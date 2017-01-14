@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,13 @@
 
 package org.openo.gso.util.convertor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.model.catalogmo.OperationModel;
 import org.openo.gso.model.servicemo.ServiceModel;
@@ -59,6 +62,7 @@ public class DataConverter {
      * @return service model
      * @since GSO 0.5
      */
+    @SuppressWarnings("unchecked")
     public static ServiceModel convertServiceModel(Map<String, Object> data) {
         String uuid = UuidUtils.createUuid();
         ServiceModel model = new ServiceModel();
@@ -68,8 +72,17 @@ public class DataConverter {
         model.setName((String)data.get(Constant.SERVICE_NAME));
         model.setDescription((String)data.get(Constant.SERVICE_DESCRIPTION));
         model.setActiveStatus(Constant.DEFAULT_STRING);
-        model.setStatus(Constant.DEFAULT_STRING);
+        model.setStatus(CommonConstant.Status.PROCESSING);
         model.setCreator(Constant.DEFAULT_STRING);
+        model.setSegmentNumber(0);
+        Object param = data.get(Constant.SERVICE_PARAMETERS);
+        if(param instanceof Map) {
+            Map<String, Object> paramMap = (Map<String, Object>)param;
+            Object segments = paramMap.get(Constant.SERVICE_SEGMENTS);
+            if(segments instanceof List) {
+                model.setSegmentNumber(((List<?>)segments).size());
+            }
+        }
 
         // Service template data
         ServicePackageMapping packageMapping = new ServicePackageMapping();
@@ -118,4 +131,48 @@ public class DataConverter {
         return body;
     }
 
+    /**
+     * Assemble all of service instances response result.<br/>
+     * 
+     * @param services service instance
+     * @return response result.
+     * @since GSO 0.5
+     */
+    @SuppressWarnings("unchecked")
+    public static Object getAllSvcIntancesResult(List<ServiceModel> services) {
+        List<Object> resultLst = new ArrayList<>();
+        if(null != services) {
+            Map<String, Object> properties = null;
+            for(ServiceModel model : services) {
+                properties = JsonUtil.unMarshal(JsonUtil.marshal(model), Map.class);
+                properties.remove(Constant.MODEL_COLUMN_SEGMENT_NUMBER);
+                resultLst.add(properties);
+            }
+        }
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put(Constant.SERVICES_INDENTIRY, resultLst);
+
+        return resultMap;
+    }
+
+    /**
+     * Assemble service instance response result<br/>
+     * 
+     * @param service service instance
+     * @return response result
+     * @since GSO 0.5
+     */
+    @SuppressWarnings("unchecked")
+    public static Object getSvcInstanceResult(ServiceModel service) {
+        Map<String, Object> resultMap = new HashMap<>();
+        Map<String, Object> properties = null;
+        if(null != service) {
+            properties = JsonUtil.unMarshal(JsonUtil.marshal(service), Map.class);
+            properties.remove(Constant.MODEL_COLUMN_SEGMENT_NUMBER);
+            resultMap.put(Constant.SERVICE_INDENTIFY, properties);
+        }
+        resultMap.put(Constant.SERVICE_INDENTIFY, properties);
+
+        return resultMap;
+    }
 }

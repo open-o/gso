@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2016 Huawei Technologies Co., Ltd.
+    Copyright 2016-2017 Huawei Technologies Co., Ltd.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -40,9 +40,7 @@
         delete from t_lcm_servicebaseinfo where serviceId = #{serviceId}
     </delete>
 
-
-    <select id="queryAllServices" resultMap="invServiceModelResultMap">
-        select serviceId,serviceName,serviceType, description,activeStatus,status,creator,createTime from t_lcm_servicebaseinfo
-    </select>
-
+    <update id="updateServiceStatus" parameterType="java.lang.String">
+        update t_lcm_servicebaseinfo set status = #{status} where serviceId = #{serviceId}
+    </update>
 </mapper>

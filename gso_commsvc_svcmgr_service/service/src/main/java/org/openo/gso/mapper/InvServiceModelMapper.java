@@ -44,4 +44,13 @@ public interface InvServiceModelMapper extends InventoryMapper {
      * @since GSO 0.5
      */
     void delete(@Param("serviceId") String serviceId);
+
+    /**
+     * Update service instance status.<br/>
+     * 
+     * @param serviceId service instance id.
+     * @param status service instance status
+     * @since GSO 0.5
+     */
+    void updateServiceStatus(@Param("serviceId") String serviceId, @Param("status") String status);
 }

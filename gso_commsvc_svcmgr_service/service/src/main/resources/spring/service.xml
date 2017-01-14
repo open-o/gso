@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2016 Huawei Technologies Co., Ltd.
+    Copyright 2016-2017 Huawei Technologies Co., Ltd.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@
     <!-- these are included in the dependency jar -->
     <import resource="classpath:META-INF/cxf/cxf.xml" />
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
-    
+
     <!-- jar rest server registration -->
-    <jaxrs:server id="gsoServer" address="/">    
+    <jaxrs:server id="gsoServer" address="/">
         <!-- registering beans -->
         <jaxrs:serviceBeans>
             <ref bean="ServicemgrRoaModuleImpl"></ref>
@@ -109,6 +109,7 @@
         <property name="catalogProxy" ref="catalogProxy"></property>
         <property name="workflowProxy" ref="workflowProxy"></property>
         <property name="inventoryDao" ref="inventoryDao"></property>
+        <property name="operationManager" ref="operationManager"></property>
     </bean>
 
     <bean id="ServicePackageModuleImpl" class="org.openo.gso.roa.impl.ServicePackageModuleImpl">
@@ -119,7 +120,7 @@
         <property name="servicePackageDao" ref="servicePackageDao"></property>
         <property name="catalogProxy" ref="catalogProxy"></property>
     </bean>
-    
+
     <bean id="DrivermgrRoaModuleImpl" class="org.openo.gso.roa.impl.DrivermgrRoaModuleImpl">
         <property name="driverMgr" ref="driverMgr"></property>
     </bean>
@@ -166,4 +167,13 @@
 
     <bean id="serviceInf" class="org.openo.gso.service.impl.DriverServiceImpl">
     </bean>
+
+    <bean id="operationManager" class="org.openo.gso.service.impl.OperationManager">
+        <property name="serviceOperDao" ref="serviceOperDao" />
+    </bean>
+
+    <bean id="serviceSegmentDao" class="org.openo.gso.dao.impl.ServiceOperDaoImpl">
+        <property name="dbSessionHandler" ref="dbSessionHandler" />
+    </bean>
+    
 </beans>

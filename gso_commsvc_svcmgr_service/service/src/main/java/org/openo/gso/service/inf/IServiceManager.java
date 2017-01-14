@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
+import org.openo.gso.model.servicemo.ServiceDetailModel;
 
 /**
  * Interface to operate service.<br/>
@@ -43,7 +44,7 @@ public interface IServiceManager {
      * @throws ApplicationException when operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    ServiceModel createService(String reqContent, HttpServletRequest httpRequest) throws ApplicationException;
+    ServiceDetailModel createService(String reqContent, HttpServletRequest httpRequest) throws ApplicationException;
 
     /**
      * Delete service instances.<br/>
@@ -88,7 +89,7 @@ public interface IServiceManager {
      * <br>
      * 
      * @return
-     * @since  SDNO 0.5
+     * @since SDNO 0.5
      */
     ServiceModel getInstanceByInstanceId(String serviceId);
 }

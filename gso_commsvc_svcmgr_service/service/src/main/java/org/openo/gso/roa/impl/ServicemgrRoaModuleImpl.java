@@ -26,10 +26,12 @@ import javax.ws.rs.core.Response;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.Constant;
+import org.openo.gso.model.servicemo.ServiceDetailModel;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.roa.inf.IServicemgrRoaModule;
 import org.openo.gso.service.inf.IServiceManager;
+import org.openo.gso.util.convertor.DataConverter;
 import org.openo.gso.util.http.ResponseUtils;
 import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
@@ -80,24 +82,33 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     @Override
     public Response createService(HttpServletRequest servletReq) {
         LOGGER.error("Start to create service instance.");
-        ServiceModel serviceModel = null;
+        ServiceDetailModel svcDetail = null;
         try {
             // 1. Check validation
             String reqContent = RestUtils.getRequestBody(servletReq);
             ValidateUtil.assertStringNotNull(reqContent);
 
             // 2. Create service
-            serviceModel = serviceManager.createService(reqContent, servletReq);
+            svcDetail = serviceManager.createService(reqContent, servletReq);
         } catch(ApplicationException exception) {
             LOGGER.error("Fail to create service instance.", exception);
             throw ResponseUtils.getException(exception, "Fail to create service instance.");
         }
 
-        String serviceId =
-                ((null != serviceModel) && (null != serviceModel.getServiceId())) ? serviceModel.getServiceId() : null;
-        Map<String, String> map = new HashMap<String,String>();
-        map.put("serviceId", serviceId);
-        return Response.accepted().entity(map).build();
+        // 3. assemble response data.
+        String serviceId = ((null != svcDetail) && (null != svcDetail.getServiceModel()))
+                ? svcDetail.getServiceModel().getServiceId() : null;
+        String operationId = ((null != svcDetail) && (null != svcDetail.getServiceOperation()))
+                ? svcDetail.getServiceOperation().getOperationId() : null;
+        Map<String, String> ids = new HashMap<String, String>();
+        ids.put(Constant.SERVICE_INSTANCE_ID, serviceId);
+        ids.put(Constant.SERVICE_OPERATION_ID, operationId);
+        Map<String, Object> rsp = new HashMap<String, Object>();
+        rsp.put(Constant.SERVICE_INDENTIFY, ids);
+
+        LOGGER.error("create service response: {}", rsp);
+
+        return Response.accepted().entity(rsp).build();
     }
 
     /**
@@ -135,7 +146,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     public Response getAllInstances(HttpServletRequest servletReq) throws ApplicationException {
         LOGGER.error("Start to get all service instances.");
         List<ServiceModel> services = serviceManager.getAllInstances();
-        return Response.accepted(services).build();
+        return Response.accepted(DataConverter.getAllSvcIntancesResult(services)).build();
     }
 
     /**
@@ -189,9 +200,10 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     }
 
     @Override
-    public Response getInstanceByInstanceId(String serviceId, HttpServletRequest servletReq) throws ApplicationException {
+    public Response getInstanceByInstanceId(String serviceId, HttpServletRequest servletReq)
+            throws ApplicationException {
         LOGGER.error("Start to get service instance by instanceId.");
         ServiceModel service = serviceManager.getInstanceByInstanceId(serviceId);
-        return Response.accepted(service).build();
+        return Response.accepted(DataConverter.getSvcInstanceResult(service)).build();
     }
 }

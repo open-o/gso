@@ -69,12 +69,12 @@ public interface IServiceModelDao {
     ServiceModel queryServiceByInstanceId(String serviceId) throws ApplicationException;
 
     /**
-     * Update service instance execution result.<br>
+     * Update service instance execution status.<br>
      * 
      * @param serviceId service instance ID
-     * @param string execution result
+     * @param status execution status
      * @since GSO 0.5
      */
-    void updateServiceResult(String serviceId, String result);
+    void updateServiceStatus(String serviceId, String status) throws ApplicationException;
 
 }

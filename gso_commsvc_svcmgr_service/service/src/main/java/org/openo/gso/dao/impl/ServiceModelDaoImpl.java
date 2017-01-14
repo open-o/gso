@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -226,14 +226,14 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * Update service instance execution result.<br/>
      * 
      * @param serviceId service instance ID
-     * @param result service instance execution result
+     * @param status service instance execution status
      * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public void updateServiceResult(String serviceId, String result) throws ApplicationException {
+    public void updateServiceStatus(String serviceId, String status) throws ApplicationException {
         try {
-            getMapper(ServiceModelMapper.class).updateServiceResult(serviceId, result);
+            getMapper(ServiceModelMapper.class).updateServiceStatus(serviceId, status);
         } catch(Exception e) {
             LOGGER.error("fail to update the service : {}, result : {}", serviceId, e);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);

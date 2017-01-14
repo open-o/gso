@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,6 +145,36 @@ public class Constant {
      * Default value.
      */
     public static final String DEFAULT_STRING = "--";
+
+    /**
+     * Service operation ID.
+     */
+    public static final String SERVICE_OPERATION_ID = "operationId";
+
+    /**
+     * Create operation
+     */
+    public static final String OPERATION_CREATE = "create";
+
+    /**
+     * Delete operation
+     */
+    public static final String OPERATION_DELETE = "delete";
+
+    /**
+     * Service segments.
+     */
+    public static final String SERVICE_SEGMENTS = "segments";
+
+    /**
+     * Services identify
+     */
+    public static final String SERVICES_INDENTIRY = "services";
+
+    /**
+     * Service instance property "segmentNumber"
+     */
+    public static final String MODEL_COLUMN_SEGMENT_NUMBER = "segmentNumber";
 
     /**
      * Constructor<br/>
