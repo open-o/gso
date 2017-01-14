@@ -38,7 +38,7 @@ public class DomainInputParameter {
     
     private String nodeType;
     
-    private List<Object> parameters;
+    private List<Object> segments;
     
     private Map<String, String> additionalParamForNs;
 
@@ -137,24 +137,21 @@ public class DomainInputParameter {
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
     }
-
     
     /**
-     * @return Returns the parameters.
+     * @return Returns the segments.
      */
-    public List<Object> getParameters() {
-        return parameters;
+    public List<Object> getSegments() {
+        return segments;
     }
-
     
     /**
-     * @param parameters The parameters to set.
+     * @param segments The segments to set.
      */
-    public void setParameters(List<Object> parameters) {
-        this.parameters = parameters;
+    public void setSegments(List<Object> segments) {
+        this.segments = segments;
     }
 
-    
     /**
      * @return Returns the additionalParamForNs.
      */

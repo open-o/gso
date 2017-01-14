@@ -469,13 +469,13 @@ public class DriverManagerImpl implements IDriverManager {
         serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
 
         // Step 1:Validate input parameters
-        if((null == serviceNode.getNodeTemplateName()) || (null == serviceNode.getInputParameters())) {
+        if((null == serviceNode.getNodeTemplateName()) || (null == serviceNode.getSegments())) {
             LOGGER.error("Input parameters from lcm/workflow are empty");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
         }
         
         // Step 2:Get input parameters for current node
-        List<DomainInputParameter> inputList = serviceNode.getInputParameters();
+        List<DomainInputParameter> inputList = serviceNode.getSegments();
         Map<String, DomainInputParameter> map = new HashMap<String, DomainInputParameter>();
         for(DomainInputParameter input : inputList) {
             map.put(input.getNodeTemplateName(), input);

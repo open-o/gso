@@ -35,14 +35,14 @@ public class ServiceNodeTest {
     }
 
     @Test
-    public void testGetInputParameters() {
-        node.getInputParameters();
+    public void testGetSegments() {
+        node.getSegments();
     }
 
     @Test
-    public void testSetInputParameters() {
+    public void testSetSegments() {
         List<DomainInputParameter> paramsList= new ArrayList<DomainInputParameter>();
-        node.setInputParameters(paramsList);
+        node.setSegments(paramsList);
     }
 
 }

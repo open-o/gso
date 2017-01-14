@@ -90,13 +90,13 @@ public class DomainInputParameterTest {
 
     @Test
     public void testGetParameters() {
-        List<Object> parameters = input.getParameters();
+        List<Object> segments = input.getSegments();
     }
 
     @Test
-    public void testSetParameters() {
-        List<Object> parameters = new ArrayList<Object>();
-        input.setParameters(parameters);
+    public void testSetSegments() {
+        List<Object> segments = new ArrayList<Object>();
+        input.setSegments(segments);
     }
 
     @Test
