@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.openo.gso.servicegateway.util.validate;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.servicegateway.exception.ErrorCode;
 import org.openo.gso.servicegateway.exception.HttpCode;
 import org.slf4j.Logger;
@@ -53,29 +53,29 @@ public class ValidateUtil {
      * Assert String parameter.<br/>
      * 
      * @param param parameter data
-     * @throws ServiceException when parameter is null or empty.
+     * @throws ApplicationException when parameter is null or empty.
      * @since GSO 0.5
      */
-    public static void assertStringNotNull(String param) throws ServiceException {
+    public static void assertStringNotNull(String param) throws ApplicationException {
         if(StringUtils.hasLength(param)) {
             return;
         }
 
         LOGGER.error("Parameter is null or empty.");
-        throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, HttpCode.BAD_REQUEST);
+        throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM);
     }
 
     /**
      * Assert object is null.<br/>
      * 
      * @param object data object
-     * @throws ServiceException when object is null.
+     * @throws ApplicationException when object is null.
      * @since GSO 0.5
      */
-    public static void assertObjectNotNull(Object object) throws ServiceException {
+    public static void assertObjectNotNull(Object object) throws ApplicationException {
         if(null == object) {
             LOGGER.error("Object is null.");
-            throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM, "Object is null.");
+            throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM);
         }
 
     }

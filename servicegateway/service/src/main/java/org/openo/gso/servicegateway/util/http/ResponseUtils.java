@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, Huawei Technologies Co., Ltd.
+ * Copyright (c) 2016-2017, Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,17 @@
 
 package org.openo.gso.servicegateway.util.http;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.type.TypeReference;
-import org.openo.baseservice.remoteservice.exception.ExceptionArgs;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.commsvc.common.Exception.ExceptionArgs;
 import org.openo.gso.servicegateway.constant.Constant;
-import org.openo.gso.servicegateway.exception.ErrorCode;
 import org.openo.gso.servicegateway.exception.HttpCode;
 import org.openo.gso.servicegateway.util.json.JsonUtil;
 import org.slf4j.Logger;
@@ -66,22 +65,22 @@ public class ResponseUtils {
      * 
      * @param response rest response
      * @param function function name
-     * @throws ServiceException when the result of rest request is failure.
+     * @throws ApplicationException when the result of rest request is failure.
      * @since GSO 0.5
      */
     public static void checkResonseAndThrowException(RestfulResponse response, String function)
-            throws ServiceException {
+            throws ApplicationException {
         if(!HttpCode.isSucess(response.getStatus())) {
-            ServiceException roaExceptionInfo = null;
+            ApplicationException roaExceptionInfo = null;
             try {
-                roaExceptionInfo = JsonUtil.unMarshal(response.getResponseContent(), ServiceException.class);
-            } catch(ServiceException e) {
+                roaExceptionInfo = JsonUtil.unMarshal(response.getResponseContent(), ApplicationException.class);
+            } catch(ApplicationException e) {
                 LOGGER.error("transfer the response json string has some error: {}", e);
 
                 ExceptionArgs args = new ExceptionArgs();
-                args.setDescArgs(new String[] {"Fail to " + function});
-
-                throw new ServiceException(ServiceException.DEFAULT_ID, response.getStatus(), args);
+                args.setDescription("Fail to unMarshal the Json");
+                args.setReason("Fail to " + function);
+                throw new ApplicationException(response.getStatus(), args);
             }
 
             throw roaExceptionInfo;
@@ -95,12 +94,13 @@ public class ResponseUtils {
      * @param key key
      * @param type type
      * @return model data
-     * @throws ServiceException when transfer failed
+     * @throws ApplicationException when transfer failed
      * @since SDNO 0.5
      */
     @SuppressWarnings("unchecked")
-    public static <T> List<T> getDataModelFromRsp(String request, String key, Class<T> type) throws ServiceException {
-        //ValidateUtil.assertStringNotNull(request);
+    public static <T> List<T> getDataModelFromRsp(String request, String key, Class<T> type)
+            throws ApplicationException {
+        // ValidateUtil.assertStringNotNull(request);
         Map<String, Object> requestMap = JsonUtil.unMarshal(request, Map.class);
         Object data = requestMap.get(key);
         List<T> dataModelList = new LinkedList<T>();
@@ -108,8 +108,7 @@ public class ResponseUtils {
             for(Object model : (List<T>)data) {
                 if(!(model instanceof Map)) {
                     LOGGER.error("The format of response content is wrong! Not Map.");
-                    throw new ServiceException(ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM,
-                            "The format of response content is wrong.");
+                    throw new ApplicationException(HttpCode.BAD_REQUEST, "The format of response content is wrong.");
                 }
 
                 dataModelList.add(JsonUtil.unMarshal(JsonUtil.marshal(model), type));
@@ -129,33 +128,34 @@ public class ResponseUtils {
      * @since SDNO 0.5
      */
     public static <T> T getDataModelFromRspList(String request, TypeReference<T> type) throws ServiceException {
-        //ValidateUtil.assertStringNotNull(request);
+        // ValidateUtil.assertStringNotNull(request);
         return JsonUtil.unMarshal(request, type);
     }
+   
 
     /**
-     * Set operation result.<br/>
+     * Get exception information.<br/>
      * 
-     * @param status status fail or success
-     * @param exception operation exception information
-     * @param errorCode error code
-     * @return result in form of map
+     * @param exception operation exception
+     * @param description
+     * @return exception object
      * @since GSO 0.5
      */
-    public static Map<String, Object> setOperateStatus(String status, ServiceException exception, String errorCode) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put(Constant.RESPONSE_STATUS, status);
-        if(null == exception) {
-            result.put(Constant.RESPONSE_STATUS_DESCRIPTION, status);
+    public static ApplicationException getException(ApplicationException exception, String description) {
+        ExceptionArgs args = null;
+        Object exceptionObject = exception.getResponse().getEntity();
+        if(exceptionObject instanceof ExceptionArgs) {
+            args = (ExceptionArgs)exceptionObject;
         } else {
-            if((null != exception.getExceptionArgs()) && (null != exception.getExceptionArgs().getDescArgs())) {
-                result.put(Constant.RESPONSE_STATUS_DESCRIPTION, Arrays.asList(exception.getExceptionArgs().getDescArgs()).toString());
-            }
+            args = new ExceptionArgs();
+            args.setDescription(description);
+            args.setReason(exception.getResponse().getEntity());
         }
-        result.put(Constant.RESPONSE_ERRORCODE, errorCode);
-        return result;
+        ApplicationException appException = new ApplicationException(exception.getResponse().getStatus(), args);
+
+        return appException;
     }
-    
+
     /**
      * Assemble operation result.<br/>
      * 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, Huawei Technologies Co., Ltd.
+ * Copyright (c) 2016-2017, Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 package org.openo.gso.servicegateway.service.inf;
 
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
-
-import java.util.Map;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.servicegateway.model.CreateParameterRspModel;
+import org.openo.gso.servicegateway.model.OperationModel;
+import org.openo.gso.servicegateway.model.OperationResult;
 
 /**
  * Interface to operate service.<br/>
@@ -39,19 +39,44 @@ public interface IServiceGateway {
      * @param reqContent content of request
      * @param httpRequest http request
      * @return service instance
-     * @throws ServiceException when operate DB or parameter is wrong.
+     * @throws ApplicationException when operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-	String createService(String reqContent, HttpServletRequest httpRequest) throws ServiceException;
+    OperationResult createService(String reqContent, HttpServletRequest httpRequest) throws ApplicationException;
 
     /**
      * Delete service instances.<br/>
      * 
      * @param serviceId service instance ID
      * @param httpRequest http request
-     * @throws ServiceException operate DB or parameter is wrong.
+     * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    Map<String, Object> deleteService(String serviceId, String reqContent, HttpServletRequest httpRequest) throws ServiceException;
+    String deleteService(String serviceId, String reqContent, HttpServletRequest httpRequest)
+            throws ApplicationException;
 
+    /**
+     * query the operation information
+     * <br>
+     * 
+     * @param serviceId
+     * @param operationId
+     * @return
+     * @throws ApplicationException
+     * @since GSO 0.5
+     */
+    OperationModel getOperation(String serviceId, String operationId, HttpServletRequest httpRequest)
+            throws ApplicationException;
+
+    /**
+     * <br>
+     *  generate the parameters for create service
+     * @param templateId
+     * @param servletReq
+     * @return
+     * @throws ApplicationException
+     * @since GSO 0.5
+     */
+    CreateParameterRspModel generateCreateParameters(String templateId, HttpServletRequest servletReq)
+            throws ApplicationException;
 }

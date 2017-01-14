@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, Huawei Technologies Co., Ltd.
+ * Copyright (c) 2016-2017, Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.openo.gso.servicegateway.roa.inf;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -26,6 +27,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 
 /**
  * API for restful interface.<br/>
@@ -35,7 +37,7 @@ import org.openo.baseservice.remoteservice.exception.ServiceException;
  * @author
  * @version GSO 0.5 2016/8/4
  */
-@Path("/servicegateway/v1/services")
+@Path("/servicegateway/v1")
 @Consumes({"application/json"})
 @Produces({"application/json"})
 public interface IServiceGatewayRoaModule {
@@ -51,7 +53,8 @@ public interface IServiceGatewayRoaModule {
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    Response createService(@Context HttpServletRequest servletReq) throws ServiceException;
+    @Path("/services")
+    Response createService(@Context HttpServletRequest servletReq) throws ApplicationException;
 
     /**
      * Delete service instance.<br/>
@@ -65,8 +68,38 @@ public interface IServiceGatewayRoaModule {
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    @Path("/{serviceId}/terminate")
+    @Path("/services/{serviceId}/terminate")
     Response deleteService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq)
-            throws ServiceException;
+            throws ApplicationException;
+
+    /**
+     * Query operation by operationId<br>
+     * 
+     * @param servletReq
+     * @return
+     * @throws ApplicationException
+     * @since GSO 0.5
+     */
+    @GET
+    @Path("/services/{serviceId}/operations/{operationId}")
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+    Response getOperation(@PathParam("serviceId") String serviceId, @PathParam("operationId") String operationId,
+            @Context HttpServletRequest servletReq) throws ApplicationException;
+
+    /**
+     * Query create parameters by templateId<br>
+     * 
+     * @param servletReq
+     * @return
+     * @throws ApplicationException
+     * @since GSO 0.5
+     */
+    @GET
+    @Path("/createparameters/{tepmlateId}")
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+    Response generateCreateParameters(@PathParam("tepmlateId") String tepmlateId, @Context HttpServletRequest servletReq)
+            throws ApplicationException;
 
 }
