@@ -1,0 +1,17 @@
+{
+  "csarId": "eea33156-514b-48ad-b165-0a38d0baa623",
+  "name": "POP_NS",
+  "downloadUri": "http://10.229.42.149:80/files/catalog-http/NSAR/ZTE/POP_NS_TEST/v1.0/POP_NS.csar",
+  "size": "80.2 KB",
+  "version": "v1.0",
+  "provider": "ZTE",
+  "type": "NSAR",
+  "format": "yaml",
+  "deletionPending": false,
+  "createTime": "2017-01-04 15:54:42",
+  "modifyTime": "2017-01-04 15:54:42",
+  "operationalState": "Disabled",
+  "usageState": "NotInUse",
+  "onBoardState": "non-onBoarded",
+  "processState": "normal"
+}

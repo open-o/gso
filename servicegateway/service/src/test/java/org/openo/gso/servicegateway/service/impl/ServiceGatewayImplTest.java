@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, Huawei Technologies Co., Ltd.
+ * Copyright (c) 2016-2017, Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.gso.servicegateway.service.impl.ServiceGatewayImpl;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 
 /**
  * Test ServiceGatewayImpl Class.<br/>
@@ -51,11 +51,11 @@ public class ServiceGatewayImplTest {
     /**
      * Invalid parameter.<br/>
      * 
-     * @throws ServiceException when parameter is wrong.
+     * @throws ApplicationException when parameter is wrong.
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testCreateServiceFail() throws ServiceException {
+    @Test(expected = ApplicationException.class)
+    public void testCreateServiceFail() throws ApplicationException {
         serviceManager.createService(null, httpRequest);
     }
 
@@ -65,9 +65,9 @@ public class ServiceGatewayImplTest {
      * @throws ServiceException when parameter is wrong.
      * @since GSO 0.5
      */
-    @Test(expected = ServiceException.class)
-    public void testDeleteServiceFail() throws ServiceException {    	
-        serviceManager.deleteService(null, "", httpRequest);
+    @Test(expected = ApplicationException.class)
+    public void testDeleteServiceFail() throws ApplicationException {    	
+        serviceManager.deleteService(null, httpRequest);
     }
 
 }

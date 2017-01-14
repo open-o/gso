@@ -26,8 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.openo.baseservice.remoteservice.exception.ExceptionArgs;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.baseservice.roa.util.restclient.RestfulFactory;
-import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.servicegateway.common.CommonUtil;
@@ -43,6 +41,7 @@ import org.openo.gso.servicegateway.model.ParameterDefineModel;
 import org.openo.gso.servicegateway.model.SegmentTemplateModel;
 import org.openo.gso.servicegateway.model.ServiceTemplateModel;
 import org.openo.gso.servicegateway.service.inf.IServiceGateway;
+import org.openo.gso.servicegateway.util.http.HttpUtil;
 import org.openo.gso.servicegateway.util.http.ResponseUtils;
 import org.openo.gso.servicegateway.util.json.JsonUtil;
 import org.openo.gso.servicegateway.util.validate.ValidateUtil;
@@ -85,15 +84,15 @@ public class ServiceGatewayImpl implements IServiceGateway {
 
         // Parse request
         Map<String, Object> requestBody = JsonUtil.unMarshal(reqContent, Map.class);
-        Map<String, Object> service = (Map<String, Object>)requestBody.get(Constant.SERVICE_INDENTIFY);
+        Map<String, Object> service = (Map<String, Object>)requestBody.get(FieldConstant.Create.FIELD_SERVICE);
         if(null == service) {
             service = requestBody;
         }
         ValidateUtil.assertObjectNotNull(requestBody);
-        String templateId = (String)service.get("templateId");
+        String templateId = (String)service.get(FieldConstant.Create.FIELD_TEMPLATEID);
+        // query the template information
         ServiceTemplateModel templateDetail = CommonUtil.getServiceTemplateByTemplateId(templateId);
-        LOGGER.info("Send the cretation RESTful request to orchestrator.The Body is" + requestBody.toString());
-        // call the restful
+        // check the template type
         OperationResult result = null;
         switch(templateDetail.getTemplateType()) {
             case GSO: {
@@ -102,19 +101,22 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 break;
             }
             case SDNO: {
-                String nsdId = (String)service.get(FieldConstant.Create.FIELD_SERVICEDEFID);
+                // for sdno, nsdId is templateId
+                String nsdId = templateId;
                 result = createNonGSOService(EnumServiceType.SDNO, nsdId, Constant.SDNO_URL_CREATE,
                         Constant.SDNO_URL_INSTANTIATE, Constant.SDNO_URL_QUERYJOB, service);
                 break;
             }
             case NFVO: {
+                // for nfvo, nsdId is the id of the template(it is not the templateId,a template
+                // contains id and templateId)
                 String nsdId = (String)templateDetail.getTemplateDetail().get(FieldConstant.CatalogTemplate.FIELD_ID);
                 result = createNonGSOService(EnumServiceType.NFVO, nsdId, Constant.NFVO_URL_CREATE,
                         Constant.NFVO_URL_INSTANTIATE, Constant.NFVO_URL_QUERYJOB, service);
                 break;
             }
             default: {
-                throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "query Template info failed");
+                throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "query template information failed");
             }
         }
         return result;
@@ -126,37 +128,35 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * 
      * @param reqBody request body
      * @return operation id for GSO
+     * @throws ApplicationException when inner error
      * @since GSO 0.5
      */
+    @SuppressWarnings("unchecked")
     private OperationResult createGSOService(Map<String, Object> reqBody) throws ApplicationException {
         // for GSO， the request body is same as servicegateway.
         OperationResult result = new OperationResult();
         try {
-            RestfulResponse restfulRsp = RestfulFactory.getRestInstance("http").post(Constant.GSO_URL_CREATE,
-                    getRestfulParameters(JsonUtil.marshal(reqBody)));
 
-            LOGGER.info("Receive the cretation RESTful response from orchestrator.The status is:"
-                    + restfulRsp.getStatus() + " the content is:" + restfulRsp.getResponseContent());
-            if(null != restfulRsp) {
-                // Record the result of registration
-                // (201:success;415:Invalid Parameter;500:Internal Server Error)
-                LOGGER.info("restful call result:" + restfulRsp.getStatus());
-                if(restfulRsp.getStatus() == HttpCode.RESPOND_ACCEPTED || restfulRsp.getStatus() == HttpCode.RESPOND_OK
-                        || restfulRsp.getStatus() == HttpCode.CREATED_OK) {
-                    Map<String, Object> rspBody = JsonUtil.unMarshal(restfulRsp.getResponseContent(), Map.class);
-                    Map<String, String> respServiceInfo =
-                            (Map<String, String>)rspBody.get(FieldConstant.Create.FIELD_RESPONSE_SERVICE);
-                    String serviceId = respServiceInfo.get(FieldConstant.Create.FIELD_RESPONSE_SERVICEID);
-                    String operationId = respServiceInfo.get(FieldConstant.Create.FIELD_RESPONSE_OPERATIONID);
-                    result.setServiceId(serviceId);
-                    result.setOperationId(operationId);
-                    String uri = String.format(Constant.GSO_URL_QUERY_OPRATION, serviceId, operationId);
-                    ProgressPool.getInstance().dealCreateProgress(EnumServiceType.GSO, operationId, uri);
-                } else {
-                    ExceptionArgs args = new ExceptionArgs();
-                    args.setDescArgs(new String[] {"Fail to create service:" + restfulRsp.getResponseContent()});
-                    throw new ApplicationException(restfulRsp.getStatus(), args);
-                }
+            String body = JsonUtil.marshal(reqBody);
+            LOGGER.info("create gso service ,req:" + body);
+            RestfulResponse restfulRsp = HttpUtil.post(Constant.GSO_URL_CREATE, body);
+            CommonUtil.logTheResponseData("create gso service", restfulRsp);
+            // Record the result of registration
+            if(HttpCode.isSucess(restfulRsp.getStatus())) {
+                Map<String, Object> rspBody = JsonUtil.unMarshal(restfulRsp.getResponseContent(), Map.class);
+                Map<String, String> respServiceInfo =
+                        (Map<String, String>)rspBody.get(FieldConstant.Create.FIELD_RESPONSE_SERVICE);
+                String serviceId = respServiceInfo.get(FieldConstant.Create.FIELD_RESPONSE_SERVICEID);
+                String operationId = respServiceInfo.get(FieldConstant.Create.FIELD_RESPONSE_OPERATIONID);
+                result.setServiceId(serviceId);
+                result.setOperationId(operationId);
+                String uri = String.format(Constant.GSO_URL_QUERY_OPRATION, serviceId, operationId);
+                // use progress pool to create a new thread,for query the progress.
+                ProgressPool.getInstance().dealCreateProgress(EnumServiceType.GSO, operationId, uri);
+            } else {
+                ExceptionArgs args = new ExceptionArgs();
+                args.setDescArgs(new String[] {"Fail to create service:" + restfulRsp.getResponseContent()});
+                throw new ApplicationException(restfulRsp.getStatus(), args);
             }
         } catch(ServiceException e) {
             LOGGER.error("service gateway create restful call result:", e);
@@ -173,39 +173,34 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * @return operation result for create sdno/nfvo service
      * @since GSO 0.5
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked"})
     private OperationResult createNonGSOService(EnumServiceType serviceType, String nsdId, String createUri,
             String instantUri, String queryJobUri, Map<String, Object> reqBody) throws ApplicationException {
 
         OperationResult result = new OperationResult();
-        // create service
+        // create service params
         Map<String, Object> paramsForCreate = new HashMap<String, Object>();
         paramsForCreate.put(FieldConstant.NSCreate.FIELD_NSDID, nsdId);
         paramsForCreate.put(FieldConstant.NSCreate.FIELD_NSNAME, reqBody.get(FieldConstant.Create.FIELD_NAME));
         paramsForCreate.put(FieldConstant.NSCreate.FIELD_DESCRIPTION,
                 reqBody.get(FieldConstant.Create.FIELD_DESCRIPTION));
-        Map<String, Object> parameters =
-                (Map<String, Object>)(((List)reqBody.get(FieldConstant.Create.FIELD_PARAMETERS)).get(0));
+        // get the parameters
+        Map<String, Object> parameters = (Map<String, Object>)reqBody.get(FieldConstant.Create.FIELD_PARAMETERS);
         // check domain, only gso service support multi domain.
         String domain = (String)parameters.get(FieldConstant.Create.PARAM_FIELD_NAME_DOMAIN);
         if(!StringUtils.isEmpty(domain)) {
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "The Domain of the Service should be null");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "The Domain of the service should be null");
         }
         // deal with parameters
         Object nsParams = parameters.get(FieldConstant.Create.PARAM_FIELD_NAME_NSPARAM);
 
         // sent Create Msg
         try {
-            RestfulResponse restfulRsp = RestfulFactory.getRestInstance("http").post(createUri,
-                    getRestfulParameters(JsonUtil.marshal(paramsForCreate)));
-
-            LOGGER.info("Receive the cretation RESTful response from orchestrator.The status is:"
-                    + restfulRsp.getStatus() + " the content is:" + restfulRsp.getResponseContent());
-            // Record the result of registration
-            // (201:success;415:Invalid Parameter;500:Internal Server Error)
-            LOGGER.info("restful call result:" + restfulRsp.getStatus());
-            if(restfulRsp.getStatus() == HttpCode.RESPOND_ACCEPTED || restfulRsp.getStatus() == HttpCode.RESPOND_OK
-                    || restfulRsp.getStatus() == HttpCode.CREATED_OK) {
+            String body = JsonUtil.marshal(paramsForCreate);
+            LOGGER.info("create ns service:" + body);
+            RestfulResponse restfulRsp = HttpUtil.post(createUri, body);
+            CommonUtil.logTheResponseData("create ns service", restfulRsp);
+            if(HttpCode.isSucess(restfulRsp.getStatus())) {
                 Map<String, Object> rspBody = JsonUtil.unMarshal(restfulRsp.getResponseContent(), Map.class);
                 String nsInstanceId = (String)rspBody.get(FieldConstant.NSCreate.FIELD_RESPONSE_NSINSTANCEID);
 
@@ -213,17 +208,21 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 Map<String, Object> paramsForInstantiate = new HashMap<String, Object>();
                 paramsForInstantiate.put(FieldConstant.NSInstantiate.FIELD_NSINSTANCEID, nsInstanceId);
                 paramsForInstantiate.put(FieldConstant.NSInstantiate.FIELD_PARAMS, nsParams);
-                RestfulResponse instantiateRsp = RestfulFactory.getRestInstance("http").post(instantUri,
-                        getRestfulParameters(JsonUtil.marshal(paramsForCreate)));
-                if(instantiateRsp.getStatus() == HttpCode.RESPOND_ACCEPTED
-                        || instantiateRsp.getStatus() == HttpCode.RESPOND_OK
-                        || instantiateRsp.getStatus() == HttpCode.CREATED_OK) {
-                    Map<String, Object> instantRspBody = JsonUtil.unMarshal(restfulRsp.getResponseContent(), Map.class);
+                // sent instantiate msg
+                String instantiateMsg = JsonUtil.marshal(paramsForCreate);
+                LOGGER.info("instantiate ns service, req:" + instantiateMsg);
+                String instantUrl = String.format(instantUri, nsInstanceId);
+                RestfulResponse instantiateRsp = HttpUtil.post(instantUrl, instantiateMsg);
+                CommonUtil.logTheResponseData("instantiate ns service", instantiateRsp);
+                if(HttpCode.isSucess(instantiateRsp.getStatus())) {
+                    Map<String, Object> instantRspBody =
+                            JsonUtil.unMarshal(instantiateRsp.getResponseContent(), Map.class);
                     result.setServiceId(nsInstanceId);
                     String jobId = (String)instantRspBody.get(FieldConstant.NSInstantiate.FIELD_RESPONSE_JOBID);
                     result.setOperationId(jobId);
                     String uri = String.format(queryJobUri, jobId);
-                    ProgressPool.getInstance().dealCreateProgress(EnumServiceType.GSO, jobId, uri);
+                    // use progressPool to create a thread to query the progress
+                    ProgressPool.getInstance().dealCreateProgress(serviceType, jobId, uri);
                     return result;
                 } else {
                     ExceptionArgs args = new ExceptionArgs();
@@ -243,22 +242,6 @@ public class ServiceGatewayImpl implements IServiceGateway {
     }
 
     /**
-     * get the parameters for restful<br/>
-     * 
-     * @author
-     * @param bodyData
-     *            Json Body
-     * @return the RestfulParametes Instance
-     * @since GSO 0.5, 2016-8-9
-     */
-    private static RestfulParametes getRestfulParameters(final String bodyData) {
-        RestfulParametes param = new RestfulParametes();
-        param.putHttpContextHeader(Constant.HEAD_ERMAP_TYPE, Constant.HEAD_ERMAP_VALUE);
-        param.setRawData(bodyData);
-        return param;
-    }
-
-    /**
      * Delete service instances.<br/>
      * 
      * @param serviceId service instance ID
@@ -267,13 +250,9 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * @since GSO 0.5
      */
     @Override
-    public String deleteService(String serviceId, String reqContent, HttpServletRequest httpRequest)
-            throws ApplicationException {
-        if(httpRequest == null) {
-            LOGGER.error("ServiceGatewayImpl.deleteService httpRequest is null");
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
-                    "ServiceGatewayImpl.deleteService httpRequest is null");
-        }
+    public String deleteService(String serviceId, HttpServletRequest httpRequest) throws ApplicationException {
+
+        // get the serviceType
         EnumServiceType serviceType = CommonUtil.getServiceTypeByServiceId(serviceId);
         String operationId = "";
         switch(serviceType) {
@@ -285,17 +264,18 @@ public class ServiceGatewayImpl implements IServiceGateway {
             case SDNO: {
                 String deleteUri = String.format(Constant.SDNO_URL_DELETE, serviceId);
                 String terminateUri = String.format(Constant.SDNO_URL_TERMINATE, serviceId);
-                deleteNonGSOService(serviceType, serviceId, deleteUri, terminateUri, Constant.SDNO_URL_QUERYJOB);
+                operationId =deleteNonGSOService(serviceType, serviceId, deleteUri, terminateUri, Constant.SDNO_URL_QUERYJOB);
                 break;
             }
             case NFVO: {
                 String deleteUri = String.format(Constant.NFVO_URL_DELETE, serviceId);
                 String terminateUri = String.format(Constant.NFVO_URL_TERMINATE, serviceId);
-                deleteNonGSOService(serviceType, serviceId, deleteUri, terminateUri, Constant.NFVO_URL_QUERYJOB);
+                operationId =deleteNonGSOService(serviceType, serviceId, deleteUri, terminateUri, Constant.NFVO_URL_QUERYJOB);
                 break;
             }
             default: {
-                throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "query Template info failed");
+                throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+                        "query service data from inventory failed");
             }
         }
         return operationId;
@@ -305,20 +285,23 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * delete gso service
      * <br>
      * 
-     * @param serviceId
+     * @param serviceId the service id
      * @return the operationId for delete GSO service.
      * @since GSO 0.5
      */
+    @SuppressWarnings("unchecked")
     private String deleteGSOService(String serviceId) throws ApplicationException {
         String operationId = "";
         try {
-            RestfulResponse restfulRsp =
-                    RestfulFactory.getRestInstance("http").delete(Constant.GSO_URL_DELETE, getRestfulParameters(""));
-            if(restfulRsp.getStatus() == HttpCode.RESPOND_ACCEPTED || restfulRsp.getStatus() == HttpCode.RESPOND_OK
-                    || restfulRsp.getStatus() == HttpCode.CREATED_OK) {
+            LOGGER.info("delete gso service:" + serviceId);
+            String url = String.format(Constant.GSO_URL_DELETE, serviceId);
+            RestfulResponse restfulRsp = HttpUtil.delete(url);
+            CommonUtil.logTheResponseData("delete gso service", restfulRsp);
+            if(HttpCode.isSucess(restfulRsp.getStatus())) {
                 Map<String, Object> rspBody = JsonUtil.unMarshal(restfulRsp.getResponseContent(), Map.class);
                 operationId = (String)rspBody.get(FieldConstant.Delete.FIELD_RESPONSE_OPERATIONID);
                 String operationUri = String.format(Constant.GSO_URL_QUERY_OPRATION, serviceId, operationId);
+                // use progress pool to start a new thread to query the progress
                 ProgressPool.getInstance().dealDeleteProgress(EnumServiceType.GSO, operationId, serviceId, "",
                         operationUri);
             } else {
@@ -336,11 +319,12 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * delete sdno/nfvo service
      * <br>
      * 
-     * @param ServiceId
+     * @param serviceId the service id
      * @return the operation id for delete sdno/nfvo service
      * @throws ApplicationException
      * @since GSO 0.5
      */
+    @SuppressWarnings("unchecked")
     private String deleteNonGSOService(EnumServiceType serviceType, final String serviceId, final String deleteUri,
             final String terminateUri, final String queryJobUri) throws ApplicationException {
         try {
@@ -348,8 +332,10 @@ public class ServiceGatewayImpl implements IServiceGateway {
             reqBody.put(FieldConstant.NSTerminate.FIELD_NSINSTANCEID, serviceId);
             reqBody.put(FieldConstant.NSTerminate.FIELD_TERMINATIONTYPE, "graceful");
             reqBody.put(FieldConstant.NSTerminate.FIELD_TIMEOUT, "60");
-            RestfulResponse restfulRsp = RestfulFactory.getRestInstance("http").post(terminateUri,
-                    getRestfulParameters(JsonUtil.marshal(reqBody)));
+            String body = JsonUtil.marshal(reqBody);
+            LOGGER.info("delete ns service req:" + body);
+            RestfulResponse restfulRsp = HttpUtil.post(terminateUri, body);
+            CommonUtil.logTheResponseData("delete ns service", restfulRsp);
             if(HttpCode.isSucess(restfulRsp.getStatus())) {
                 Map<String, Object> rspBody = JsonUtil.unMarshal(restfulRsp.getResponseContent(), Map.class);
                 String jobId = (String)rspBody.get(Constant.JOB_ID);
@@ -358,21 +344,22 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 ProgressPool.getInstance().dealDeleteProgress(serviceType, jobId, serviceId, deleteUri, uri);
                 return jobId;
             } else {
-                LOGGER.info("delete gso service failed.");
-                throw new ApplicationException(restfulRsp.getStatus(), "delete gso service failed.");
+                LOGGER.info("delete ns service failed.");
+                throw new ApplicationException(restfulRsp.getStatus(), "delete ns service failed.");
             }
         } catch(ServiceException e) {
-            LOGGER.info("delete gso service failed.");
+            LOGGER.info("delete ns service failed.");
             throw new ApplicationException(e.getHttpCode(), e.getExceptionArgs());
         }
     }
 
     /**
      * <br>
+     * query the operation progress model
      * 
-     * @param serviceId
-     * @param operationId
-     * @return
+     * @param serviceId the service id
+     * @param operationId the operation id
+     * @return the operation model
      * @throws ApplicationException
      * @since GSO 0.5
      */
@@ -387,10 +374,11 @@ public class ServiceGatewayImpl implements IServiceGateway {
 
     /**
      * <br>
+     * generate the parameter model for the gui
      * 
-     * @param templateId
-     * @param servletReq
-     * @return
+     * @param templateId the template id
+     * @param servletReq the http req
+     * @return the parameter model
      * @throws ApplicationException
      * @since GSO 0.5
      */
@@ -405,7 +393,6 @@ public class ServiceGatewayImpl implements IServiceGateway {
         if(EnumServiceType.UNKNOWN == template.getTemplateType()) {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "failed to query the template");
         }
-
         // generate params
         switch(template.getTemplateType()) {
             case GSO: {
@@ -415,11 +402,14 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 break;
             }
             case SDNO: {
+                // for sdno , only parameters defined in the template needed.
                 CreateParameterModel param = generateTemplateParameters(template);
                 rspModel.setParameters(param);
                 break;
             }
             case NFVO: {
+                // for nfvo, parameters defined in the template, location param, sdn controller
+                // param need.
                 CreateParameterModel param = generateNFVOTemplateParameters(template);
                 rspModel.setParameters(param);
                 break;
@@ -432,37 +422,47 @@ public class ServiceGatewayImpl implements IServiceGateway {
     }
 
     /**
-     * generate the parameter list for gso template
+     * generate the parameter model for gso template
      * <br>
      * 
-     * @param template
-     * @return
+     * @param template the template model
+     * @return the parameter model
      * @since GSO 0.5
      */
-    private CreateParameterModel generateGSOTemplateParameters(ServiceTemplateModel template, boolean needHostParam) {
-        // generate gso's inputs
+    private CreateParameterModel generateGSOTemplateParameters(ServiceTemplateModel template, boolean needHostParam)
+            throws ApplicationException {
+        // generate gso's own inputs
         CreateParameterModel param = generateTemplateParameters(template);
 
         // generate gso's subobjects.
         List<CreateParameterModel> segmentParams = new ArrayList<CreateParameterModel>();
         String templateId = (String)template.getTemplateDetail().get(FieldConstant.CatalogTemplate.FIELD_TEMPLATEID);
         List<SegmentTemplateModel> segments = CommonUtil.getSegmentTemplatesByGSOTemplateId(templateId);
+        if(null == segments || segments.isEmpty()) {
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+                    "fail to query the segments of the gso template");
+        }
+        // loop segments
         for(SegmentTemplateModel segment : segments) {
+            // some segment is not a subobject, ignore it
             if(null == segment.getTemplateModel()
                     || EnumServiceType.UNKNOWN == segment.getTemplateModel().getTemplateType()) {
                 continue;
             }
+            // generate the parameters for the subobject
             CreateParameterModel segmentParam = null;
             switch(segment.getTemplateModel().getTemplateType()) {
                 case GSO:
-                    // only the top gso's subobject can select host.
+                    // only the top gso's subobject can select host,so the second param is false
                     segmentParam = generateGSOTemplateParameters(segment.getTemplateModel(), false);
                     break;
                 case SDNO:
+                    // for sdno, only the parameters defined in the template needed.
                     segmentParam = generateTemplateParameters(segment.getTemplateModel());
                     break;
                 case NFVO:
-                    segmentParam = generateNFVOTemplateParameters(template);
+                    // for nfvo, params defined in the template,location ,sdncontroller needed.
+                    segmentParam = generateNFVOTemplateParameters(segment.getTemplateModel());
                     break;
                 default:
                     break;
@@ -472,6 +472,10 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 if(needHostParam) {
                     segmentParam.setDomainHost(CommonUtil.generateDomainsInfo());
                 }
+                // for segment ,nodeTemplateName and nodeType needed
+                segmentParam.setNodeTemplateName(segment.getNodeTemplateName());
+                segmentParam.setNodeType(segment.getNodeType());
+                // add the segment to the list
                 segmentParams.add(segmentParam);
             }
         }
@@ -484,8 +488,8 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * nfvo need vims and sdncontrollers
      * <br>
      * 
-     * @param template
-     * @return
+     * @param template the template model
+     * @return the parameter model for nfvo
      * @since GSO 0.5
      */
     private CreateParameterModel generateNFVOTemplateParameters(ServiceTemplateModel template) {
@@ -509,11 +513,11 @@ public class ServiceGatewayImpl implements IServiceGateway {
     }
 
     /**
-     * generate template parameters
+     * generate template input parameters
      * <br>
      * 
-     * @param template
-     * @return
+     * @param template the template model
+     * @return the parameter model contains inputs of the template
      * @since GSO 0.5
      */
     private CreateParameterModel generateTemplateParameters(ServiceTemplateModel template) {

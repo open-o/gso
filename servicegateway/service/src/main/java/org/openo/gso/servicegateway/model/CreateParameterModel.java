@@ -32,28 +32,28 @@ public class CreateParameterModel {
     /**
      * the domain for the subobject of the template
      */
-    ParameterDefineModel domainHost;
+    private ParameterDefineModel domainHost;
 
     /**
      * the nodeTemplateName defined in the template
      */
-    String nodeTemplateName = "";
+    private String nodeTemplateName = "";
 
     /**
      * the nodeType defined in the template
      */
-    String nodeType = "";
+    private String nodeType = "";
 
     /**
      * if the subobject is gso. the parameters is used for its all subobjects
      */
-    List<CreateParameterModel> segments = new ArrayList<CreateParameterModel>();
+    private List<CreateParameterModel> segments = new ArrayList<CreateParameterModel>();
 
     /**
      * the additionalParamForNs is used for the ns itself, both gso,sdno, nfvo
      * this params is defined in the template. and both with the location and sdn controller.
      */
-    List<ParameterDefineModel> additionalParamForNs = new ArrayList<ParameterDefineModel>();
+    private List<ParameterDefineModel> additionalParamForNs = new ArrayList<ParameterDefineModel>();
 
     /**
      * @return Returns the domainHost.

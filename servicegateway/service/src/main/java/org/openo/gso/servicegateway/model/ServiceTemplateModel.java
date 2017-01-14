@@ -29,9 +29,9 @@ import java.util.Map;
  */
 public class ServiceTemplateModel {
 
-    EnumServiceType templateType = EnumServiceType.UNKNOWN;
+    private EnumServiceType templateType = EnumServiceType.UNKNOWN;
 
-    Map<String, Object> templateDetail;
+    private Map<String, Object> templateDetail;
 
     public EnumServiceType getTemplateType() {
         return templateType;
