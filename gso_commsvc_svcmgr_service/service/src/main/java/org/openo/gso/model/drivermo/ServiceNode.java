@@ -36,7 +36,7 @@ public class ServiceNode {
     /**
      * input parameters
      */
-    private List<DomainInputParameter> inputParameters;
+    private List<DomainInputParameter> segments;
     
     /**
      * @return Returns the nodeTemplateName.
@@ -51,19 +51,20 @@ public class ServiceNode {
     public void setNodeTemplateName(String nodeTemplateName) {
         this.nodeTemplateName = nodeTemplateName;
     }
-
+    
     /**
-     * @return Returns the inputParameters.
+     * @return Returns the segments.
      */
-    public List<DomainInputParameter> getInputParameters() {
-        return inputParameters;
+    public List<DomainInputParameter> getSegments() {
+        return segments;
     }
     
     /**
-     * @param inputParameters The inputParameters to set.
+     * @param segments The segments to set.
      */
-    public void setInputParameters(List<DomainInputParameter> inputParameters) {
-        this.inputParameters = inputParameters;
+    public void setSegments(List<DomainInputParameter> segments) {
+        this.segments = segments;
     }
+
 
 }
