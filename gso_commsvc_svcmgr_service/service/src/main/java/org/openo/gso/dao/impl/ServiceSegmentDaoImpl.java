@@ -112,6 +112,26 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
     }
 
     /**
+     * delete service segment by segment id and segment type<br>
+     * 
+     * @param serviceSegment service segment
+     * @throws ApplicationException when fail to delete service segment
+     * @since   GSO 0.5
+     */
+    @Override
+    public void deleteSegmentByIdAndType(ServiceSegmentModel serviceSegment) throws ApplicationException {
+        try {
+            ValidateUtil.assertObjectNotNull(serviceSegment);
+            ServiceSegmentMapper segmentMapper = getMapper(ServiceSegmentMapper.class);
+            segmentMapper.deleteSegmentByIdAndType(serviceSegment);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to delete service segment by id and type {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+        
+    }
+
+    /**
      * Query service segment instances by service ID.<br/>
      * 
      * @param serviceId service instance ID
@@ -135,22 +155,27 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
-    
+
+
     /**
-     * get service segment by segment id and segment type<br>
+     * query service segment by id and type<br>
      * 
-     * @param jobId job id
+     * @param segmentId instance id
+     * @param segmentType NFVO or SDNO
      * @return service segment
-     * @since   GSO 0.5
+     * @throws ApplicationException when fail to query service segment by segment id and segment type
+     * @since  GSO 0.5
      */
     @Override
-    public ServiceSegmentModel queryServiceSegment(String jobId) throws ApplicationException{
+    public ServiceSegmentModel queryServiceSegmentByIdAndType(String segmentId, String segmentType)
+            throws ApplicationException {
         try {
-            ValidateUtil.assertObjectNotNull(jobId);
-            ServiceSegmentMapper serviceSegment = getMapper(ServiceSegmentMapper.class);
-            return serviceSegment.queryServiceSegment(jobId);
+            ValidateUtil.assertObjectNotNull(segmentId);
+            ValidateUtil.assertObjectNotNull(segmentType);
+            ServiceSegmentMapper segmentMapper = getMapper(ServiceSegmentMapper.class);
+            return segmentMapper.queryServiceSegmentByIdAndType(segmentId, segmentType);
         } catch(Exception exception) {
-            LOGGER.error("Fail to get service segment segment by job id {}", exception);
+            LOGGER.error("Fail to get service segment by id and type {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
@@ -179,7 +204,7 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
         try {
             ValidateUtil.assertObjectNotNull(svcSegmentOper);
             ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
-            svcSegmentOperMapper.insert(svcSegmentOper);
+            svcSegmentOperMapper.insertSegmentOper(svcSegmentOper);
         } catch(Exception exception) {
             LOGGER.error("Fail to insert service segment operation. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
@@ -188,124 +213,45 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
     }
 
     /**
-     * Update jobId of the service segment<br>
+     * Update service segment operation<br>
      * 
      * @param segmentOper service segment operation
      * @since  GSO 0.5
      */
     @Override
-    public void updateSegmentOperJobId(ServiceSegmentOperation segmentOper) throws ApplicationException {
+    public void updateSegmentOper(ServiceSegmentOperation segmentOper) throws ApplicationException {
         try {
             ValidateUtil.assertObjectNotNull(segmentOper);
             ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
-            svcSegmentOperMapper.updateJobId(segmentOper);
+            svcSegmentOperMapper.updateSegmentOper(segmentOper);
         } catch(Exception exception) {
-            LOGGER.error("Fail to update service segment operation job id. {}", exception);
+            LOGGER.error("Fail to update service segment operation. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
         
     }
 
-    
-    /**
-     * Update status of the service segment<br><br>
-     * 
-     * @param segmentOper service segment operation
-     * @since  GSO 0.5
-     */
-    @Override
-    public void updateSegmentOperStatus(ServiceSegmentOperation segmentOper) throws ApplicationException {
-        try {
-            ValidateUtil.assertObjectNotNull(segmentOper);
-            ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
-            svcSegmentOperMapper.updateStatus(segmentOper);
-        } catch(Exception exception) {
-            LOGGER.error("Fail to update service segment operation status. {}", exception);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
-        }
-        
-    }
 
     /**
-     * Update progress of the service segment<br><br>
+     * Query service segment operation by job id and segment type<br>
      * 
-     * @param segmentOper service segment operation
+     * @param jobId job id
+     * @param segmentType segment type
+     * @return service segment operation instance
+     * @throws ApplicationException when fail to query service segmetn operation
      * @since  GSO 0.5
      */
     @Override
-    public void updateSegmentOperProgress(ServiceSegmentOperation segmentOper) throws ApplicationException {
+    public ServiceSegmentOperation querySegmentOperByJobIdAndType(String jobId, String segmentType) throws ApplicationException {
         try {
-            ValidateUtil.assertObjectNotNull(segmentOper);
-            ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
-            svcSegmentOperMapper.updateProgress(segmentOper);
-        } catch(Exception exception) {
-            LOGGER.error("Fail to update service segment operation progress. {}", exception);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
-        }
-        
-    }
-
-    /**
-     * query service segment by id and type<br>
-     * 
-     * @param segmentId instance id
-     * @param segmentType NFVO or SDNO
-     * @return service segment
-     * @throws ApplicationException when fail to query service segment by segment id and segment type
-     * @since  GSO 0.5
-     */
-    @Override
-    public ServiceSegmentModel queryServiceSegmentByIdAndType(String segmentId, String segmentType)
-            throws ApplicationException {
-        try {
-            ValidateUtil.assertObjectNotNull(segmentId);
+            ValidateUtil.assertObjectNotNull(jobId);
             ValidateUtil.assertObjectNotNull(segmentType);
-            ServiceSegmentMapper segmentMapper = getMapper(ServiceSegmentMapper.class);
-            return segmentMapper.queryServiceSegmentByIdAndType(segmentId, segmentType);
-        } catch(Exception exception) {
-            LOGGER.error("Fail to get service segment by id and type {}", exception);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
-        }
-    }
-
-    /**
-     * delete service segment by segment id and segment type<br>
-     * 
-     * @param serviceSegment service segment
-     * @throws ApplicationException when fail to delete service segment
-     * @since   GSO 0.5
-     */
-    @Override
-    public void deleteSegmentByIdAndType(ServiceSegmentModel serviceSegment) throws ApplicationException {
-        try {
-            ValidateUtil.assertObjectNotNull(serviceSegment);
-            ServiceSegmentMapper segmentMapper = getMapper(ServiceSegmentMapper.class);
-            segmentMapper.deleteSegmentByIdAndType(serviceSegment);
-        } catch(Exception exception) {
-            LOGGER.error("Fail to delete service segment by id and type {}", exception);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
-        }
-        
-    }
-
-    /**
-     * delete service segment operation by segment id and segment type<br>
-     * 
-     * @param svcSegmentOper service segment
-     * @throws ApplicationException when fail to delete service segment operation
-     * @since   GSO 0.5
-     */
-    @Override
-    public void deleteSegmentOperByIdAndType(ServiceSegmentOperation svcSegmentOper) {
-        try {
-            ValidateUtil.assertObjectNotNull(svcSegmentOper);
             ServiceSegmentOperMapper segmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
-            segmentOperMapper.deleteSegmentOperByIdAndType(svcSegmentOper);
+            return segmentOperMapper.querySegmentOperByJobIdAndType(jobId, segmentType);
         } catch(Exception exception) {
-            LOGGER.error("Fail to delete service segment operation by id and type {}", exception);
+            LOGGER.error("Fail to get service segment operation by job id and type {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
-        
     }
     
 }

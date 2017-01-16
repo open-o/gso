@@ -80,12 +80,14 @@ create table t_lcm_svcsegment_operation
 (
     serviceSegmentId varchar(255) not null,
     serviceSegmentType varchar(20)  not null,
-    jobId  varchar(36) ,
+    operationType varchar(20) not null,
+    serviceId varchar(36),
+    jobId  varchar(36),
     status varchar(20) ,
     progress int,    
     errorCode int,
     statusDescription varchar(255) ,
-    constraint pk_t_seg_operation primary key(serviceSegmentId, serviceSegmentType)
+    constraint pk_t_seg_operation primary key(serviceSegmentId, serviceSegmentType, operationType)
 )
 engine=innodb;
 

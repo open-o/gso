@@ -25,7 +25,7 @@ import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.CommonConstant.Step;
-import org.openo.gso.model.drivermo.NSRequest;
+import org.openo.gso.model.drivermo.NsCreateReq;
 import org.openo.gso.model.drivermo.NsInstantiateReq;
 import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.service.inf.IDriverService;
@@ -175,7 +175,7 @@ public class DriverServiceImpl implements IDriverService {
         paramsMap.put(CommonConstant.HttpContext.PORT, inputMap.get(CommonConstant.HttpContext.PORT));
         
         // Step 1: Prepare Network Service Request
-        NSRequest oRequest = new NSRequest();
+        NsCreateReq oRequest = new NsCreateReq();
         oRequest.setNsdId((String) inputMap.get(CommonConstant.NSD_ID));
         oRequest.setNsName((String) inputMap.get(CommonConstant.NS_NAME));
         oRequest.setDescription((String) inputMap.get(CommonConstant.DESC));
@@ -286,6 +286,7 @@ public class DriverServiceImpl implements IDriverService {
 
         // Step 3:Send the request and get response
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, null, queryParams);
+        LOGGER.info("response status is {}", rsp.getStatus());
         LOGGER.info("response content is {}", rsp.getResponseContent());
         JSONArray array = JSONArray.fromObject(rsp.getResponseContent());
         return JsonUtil.unMarshal(array.getString(0), ServiceTemplate.class);

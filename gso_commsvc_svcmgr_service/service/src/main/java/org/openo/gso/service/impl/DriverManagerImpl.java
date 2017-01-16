@@ -215,22 +215,24 @@ public class DriverManagerImpl implements IDriverManager {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_RESPONSEE_FROM_CREATE_OPERATION);
         }
         LOGGER.info("create ns -> end");
-        LOGGER.info("save segment info -> begin");
-        //Step 4: save segment information
-        saveSegmentInfo(currentInput, nsInstanceId, segmentType, svcTmpl.getServiceTemplateId());
-        LOGGER.info("save segment info -> end");
+        LOGGER.info("save segment and operaton info -> begin");
+        //Step 4: save segment information 
+        ServiceSegmentModel segmentInfo = buildSegmentInfo(currentInput, nsInstanceId, segmentType, svcTmpl.getServiceTemplateId());
+        serviceSegmentDao.insertSegment(segmentInfo);
+        //Step 5: and segment operation information
+        ServiceSegmentOperation segmentOperInfo = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.CREATE, currentInput.getServiceId(), CommonConstant.Status.PROCESSING);
+        serviceSegmentDao.insertSegmentOper(segmentOperInfo);
+        LOGGER.info("save segment and operation info -> end");
+        
         if(!HttpCode.isSucess(restRsp.getStatus())){
-            LOGGER.error("fail to create ns");
-            updateSegmentOperStatusInfoAndErrCode(nsInstanceId, segmentType, CommonConstant.Status.ERROR, restRsp.getStatus(), CommonConstant.StatusDesc.CREATE_NS_FAILED);
+            LOGGER.error("update segment operation status : fail to create ns");
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.CREATE);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, restRsp.getStatus(), CommonConstant.StatusDesc.CREATE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_CREATE_NS);
         }
         
         return restRsp;
     }
-
-    
-
-    
 
     /**
      * delete network service<br>
@@ -250,6 +252,8 @@ public class DriverManagerImpl implements IDriverManager {
         // Step 2: Call the NFVO or SDNO service to instantiate service
         if(null == serviceInf) {
             LOGGER.error("Service interface not initialised");
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.DELETE);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, HttpStatus.INTERNAL_SERVER_ERROR_500, CommonConstant.StatusDesc.TERMINATE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
         }
         serviceInf.setSegmentType(segmentType);
@@ -258,11 +262,20 @@ public class DriverManagerImpl implements IDriverManager {
         RestfulResponse rsp = serviceInf.deleteNs(delParamMap);
         LOGGER.info("delete ns -> end");
         if(!HttpCode.isSucess(rsp.getStatus())){
-            updateSegmentOperStatusInfoAndErrCode(nsInstanceId, segmentType, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.DELETE_NS_FAILED);
             LOGGER.error("fail to delete ns");
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.DELETE);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.TERMINATE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_INSTANTIATE_NS);
         }
+
+        // update service segment operation status
+        ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.DELETE);
+        updateSegmentOperStatus(statusSegOper, CommonConstant.Status.FINISHED, rsp.getStatus(), null);
+        LOGGER.info("update segment operaton status for delete -> end");
+        
+        // delete segment info
         deleteSegmentInfo(nsInstanceId, segmentType);
+        LOGGER.info("delete segment information -> end");
         return rsp;
         
     }
@@ -289,7 +302,8 @@ public class DriverManagerImpl implements IDriverManager {
         // Step 2: Call the NFVO or SDNO service to instantiate service
         if(null == serviceInf) {
             LOGGER.error("Service interface not initialised");
-            updateSegmentOperStatusInfoAndErrCode(nsInstanceId, segmentType, CommonConstant.Status.ERROR, HttpStatus.INTERNAL_SERVER_ERROR_500, CommonConstant.StatusDesc.INSTANTIATE_NS_FAILED);
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.CREATE);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, HttpStatus.INTERNAL_SERVER_ERROR_500, CommonConstant.StatusDesc.INSTANTIATE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
         }
         serviceInf.setSegmentType(segmentType);
@@ -301,20 +315,24 @@ public class DriverManagerImpl implements IDriverManager {
         String jobId = obj.getString(CommonConstant.JOB_ID);
         if(StringUtils.isEmpty(jobId)) {
             LOGGER.error("Invalid jobId from instantiate operation");
-            updateSegmentOperStatusInfoAndErrCode(nsInstanceId, segmentType, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.INSTANTIATE_NS_FAILED);
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.CREATE);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.INSTANTIATE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_RESPONSE_FROM_INSTANTIATE_OPERATION);
         }
         LOGGER.info("instantiate ns -> end");
         
-        // Step 3: update segment operation
-        LOGGER.info("update segment info -> begin");
         if(!HttpCode.isSucess(rsp.getStatus())){
-            updateSegmentOperStatusInfoAndErrCode(nsInstanceId, segmentType, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.INSTANTIATE_NS_FAILED);
-            LOGGER.error("fail to instantiate ns");
+            LOGGER.error("update segment operation status : fail to instantiate ns");
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.CREATE);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.INSTANTIATE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_INSTANTIATE_NS);
         }
-        updateSegmentOperJobId(nsInstanceId, segmentType, jobId);
-        LOGGER.info("update segment info -> end");
+        
+        // Step 3: update segment operation job id
+        LOGGER.info("update segment operation job id -> begin");
+        ServiceSegmentOperation jobSegOper = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.CREATE, jobId);
+        serviceSegmentDao.updateSegmentOper(jobSegOper);
+        LOGGER.info("update segment operation job id -> end");
         
         return rsp;
     }
@@ -332,12 +350,19 @@ public class DriverManagerImpl implements IDriverManager {
     @Override
     public RestfulResponse terminateNs(String nsInstanceId, HttpServletRequest httpRequest, String segmentType)
             throws ApplicationException {
-        //get input for current node
+        //Step1: get input for current node
         DomainInputParameter input = getParamsForCurrentNode(httpRequest);
+        
+        // save segment operation info for delete process
+        LOGGER.info("save segment operation for delete process");
+        ServiceSegmentOperation segmentOperInfo = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.DELETE, input.getServiceId(), CommonConstant.Status.PROCESSING);
+        serviceSegmentDao.insertSegmentOper(segmentOperInfo);
         
         // Step 2: Call the NFVO or SDNO service to terminate service
         if(null == serviceInf) {
             LOGGER.error("Service interface not initialised");
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.DELETE);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, HttpStatus.INTERNAL_SERVER_ERROR_500, CommonConstant.StatusDesc.TERMINATE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
         }
         serviceInf.setSegmentType(segmentType);
@@ -349,19 +374,23 @@ public class DriverManagerImpl implements IDriverManager {
         String jobId = obj.getString(CommonConstant.JOB_ID);
         if(StringUtils.isEmpty(jobId)) {
             LOGGER.error("Invalid jobId from terminate operation");
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.DELETE);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.TERMINATE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_RESPONSE_FROM_INSTANTIATE_OPERATION);
         }
         LOGGER.info("terminate ns -> end");
         
         // Step 3: update segment operation
-        LOGGER.info("update segment info -> begin");
         if(!HttpCode.isSucess(rsp.getStatus())){
-            updateSegmentOperStatusInfoAndErrCode(nsInstanceId, segmentType, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.TERMINATE_NS_FAILED);
             LOGGER.error("fail to instantiate ns");
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.DELETE);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.TERMINATE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_INSTANTIATE_NS);
         }
-        updateSegmentOperJobId(nsInstanceId, segmentType, jobId);
-        LOGGER.info("update segment info -> end");
+        LOGGER.info("update segment job id -> begin");
+        ServiceSegmentOperation jobSegOper = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.DELETE, jobId);
+        serviceSegmentDao.updateSegmentOper(jobSegOper);
+        LOGGER.info("update segment job id -> end");
         
         return rsp;
     }
@@ -375,15 +404,17 @@ public class DriverManagerImpl implements IDriverManager {
      * @param segmentType NFVO or SDNO
      * @return ns progress
      * @throws ApplicationException when fail to get ns progress
-     * @since   SDNO 0.5
+     * @since   GSO 0.5
      */
     @Override
     public RestfulResponse getNsProgress(String jobId, String segmentType) throws ApplicationException {
-        //Step 1: get service segmemt operation by job id
-        ServiceSegmentModel segment = serviceSegmentDao.queryServiceSegment(jobId);
+        ServiceSegmentOperation segmentOper = serviceSegmentDao.querySegmentOperByJobIdAndType(jobId, segmentType);
+        String segmentId = segmentOper.getServiceSegmentId();
+        String operType = segmentOper.getOperationType();
+        //Step 1: get service segmemt operation by segment id and segment type
+        ServiceSegmentModel segment = serviceSegmentDao.queryServiceSegmentByIdAndType(segmentId, segmentType);
         //Step 2 : build query task
         Map<String, Object> paramMap = new HashMap<String, Object>();
-        String segmentId = segment.getServiceSegmentId();
         String domainHost = segment.getDomainHost();
         parseDomainHost(domainHost, paramMap);
         QueryProgress task = new QueryProgress(jobId, paramMap);
@@ -391,40 +422,46 @@ public class DriverManagerImpl implements IDriverManager {
         //Step 3: start query
         LOGGER.info("query ns status -> begin");
         ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(1);
-        boolean queryFlag = true;
         RestfulResponse rsp = null;
-        while(queryFlag) {
-            try {
-                Future<RestfulResponse> status = executor.submit(task);
-                rsp = status.get();
-            } catch(Exception e) {
-                LOGGER.error("fail to query the operation status: {}", e);
-                executor.shutdown();
-                updateSegmentOperStatusInfoAndErrCode(segmentId, segmentType, CommonConstant.Status.ERROR, HttpStatus.INTERNAL_SERVER_ERROR_500, CommonConstant.StatusDesc.QUERY_JOB_STATUS_FAILED);
-                throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
+        try {
+            Future<RestfulResponse> status = executor.submit(task);
+            rsp = status.get();
+        } catch(Exception e) {
+            LOGGER.error("fail to query the operation status: {}", e);
+            executor.shutdown();
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, HttpStatus.INTERNAL_SERVER_ERROR_500, CommonConstant.StatusDesc.QUERY_JOB_STATUS_FAILED);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
+        }
+
+        if(!HttpCode.isSucess(rsp.getStatus())) {
+            LOGGER.info("fail to query job status");
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.QUERY_JOB_STATUS_FAILED);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
+        }
+        // Step 4: Process Network Service Instantiate Response
+        NsProgressStatus nsProgress = null;
+        nsProgress = JsonUtil.unMarshal(rsp.getResponseContent(), NsProgressStatus.class);
+        ResponseDescriptor rspDesc = nsProgress.getResponseDescriptor();
+        // Step 5: update segment operation progress
+        ServiceSegmentOperation progressSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType, rspDesc.getProgress());
+        serviceSegmentDao.updateSegmentOper(progressSegOper);
+
+        // Step 6: update segment operation status
+        if(CommonConstant.Progress.ONE_HUNDRED.equals(rspDesc.getProgress()) && CommonConstant.Status.FINISHED.equals(rspDesc.getStatus())) {
+            LOGGER.info("job result is succeeded, operType is {}", operType);
+            if(CommonConstant.OperationType.CREATE.equals(operType)) {
+                ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
+                updateSegmentOperStatus(statusSegOper, CommonConstant.Status.FINISHED, rspDesc.getErrorCode(), rspDesc.getStatusDescription());
             }
-            
-            if(!HttpCode.isSucess(rsp.getStatus())){
-                LOGGER.info("fail to query job status");
-                updateSegmentOperStatusInfoAndErrCode(segment.getServiceSegmentId(), segmentType, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.QUERY_JOB_STATUS_FAILED);
-                throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
-            }
-            //Step 4: Process Network Service Instantiate Response
-            NsProgressStatus nsProgress = null;
-            nsProgress = JsonUtil.unMarshal(rsp.getResponseContent(), NsProgressStatus.class);
-            ResponseDescriptor rspDesc = nsProgress.getResponseDescriptor();
-            updateSegmentOperProgress(segmentId, segmentType, rspDesc.getProgress());
-            if(CommonConstant.Progress.ONE_HUNDRED.equals(rspDesc.getProgress()) && CommonConstant.Status.FINISHED.equals(rspDesc.getStatus())) {
-                LOGGER.info("job complete : create ns result is succeeded");
-                updateSegmentOperStatusInfoAndErrCode(segmentId, segmentType, CommonConstant.Status.FINISHED, rspDesc.getErrorCode(), rspDesc.getStatusDescription());
-                queryFlag = false;
-            } else if(CommonConstant.Status.ERROR.equals(rspDesc.getStatus())) {
-                LOGGER.error("job complete : create ns result is failed");
-                updateSegmentOperStatusInfoAndErrCode(segmentId, segmentType, CommonConstant.Status.ERROR, rspDesc.getErrorCode(), rspDesc.getStatusDescription());
-                throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
-            } else {
-                // do nothing
-            }
+        } else if(CommonConstant.Status.ERROR.equals(rspDesc.getStatus())) {
+            LOGGER.error("job result is failed, operType is {}", operType);
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, rspDesc.getErrorCode(), rspDesc.getStatusDescription());
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
+        } else {
+            // do nothing
         }
         LOGGER.info("query ns status -> end");
           
@@ -453,7 +490,7 @@ public class DriverManagerImpl implements IDriverManager {
     }
 
     /**
-     * private method 0:get input parameters for current node<br>
+     * private method 1:get input parameters for current node<br>
      * 
      * @param servletReq http request
      * @return input parameters for current node
@@ -532,9 +569,10 @@ public class DriverManagerImpl implements IDriverManager {
      * @param segmentType NFVO or SDNO
      * @param svcTmplId service template id
      * @param status http status
+     * @return service segment instance
      * @since  GSO 0.5
      */
-    private void saveSegmentInfo(DomainInputParameter currentInput, String nsInstanceId, String segmentType,
+    private ServiceSegmentModel buildSegmentInfo(DomainInputParameter currentInput, String nsInstanceId, String segmentType,
             String svcTmplId) {
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         
@@ -547,16 +585,9 @@ public class DriverManagerImpl implements IDriverManager {
         serviceSegment.setDomainHost(currentInput.getDomainHost());
         serviceSegment.setNodeTemplateName(currentInput.getNodeTemplateName());
         
-        serviceSegmentDao.insertSegment(serviceSegment);
-        
-        ServiceSegmentOperation svcSegmentOper = new ServiceSegmentOperation();
-        svcSegmentOper.setServiceSegmentId(nsInstanceId);
-        svcSegmentOper.setServiceSegmentType(segmentType);
-        svcSegmentOper.setStatus(CommonConstant.Status.PROCESSING);
-        
-        serviceSegmentDao.insertSegmentOper(svcSegmentOper);
+        return serviceSegment;
     }
-    
+
     /**
      * private method5 : get instantiate params<br>
      * 
@@ -581,55 +612,22 @@ public class DriverManagerImpl implements IDriverManager {
     /**
      * private method 6: update segment operation status<br>
      * 
-     * @param segmentId instance id
-     * @param segmentType NFVO or SDNO
+     * @param segmentOper service segment operation instance
      * @param status status: processing, finished, error
      * @param errCode http code
+     * @param statusDesc status description
      * @since  GSO 0.5
      */
-    private void updateSegmentOperStatusInfoAndErrCode(String segmentId, String segmentType, String status, int errCode, String statusDesc) {
-        ServiceSegmentOperation segmentOper = new ServiceSegmentOperation();
-        segmentOper.setServiceSegmentId(segmentId);
-        segmentOper.setServiceSegmentType(segmentType);
+    private void updateSegmentOperStatus(ServiceSegmentOperation segmentOper, String status, int errCode, String statusDesc) {
+
         segmentOper.setStatus(status);
         segmentOper.setErrorCode(errCode);
         segmentOper.setStatusDescription(statusDesc);
-        serviceSegmentDao.updateSegmentOperStatus(segmentOper);
+        
+        serviceSegmentDao.updateSegmentOper(segmentOper);
         
     }
     
-    /**
-     * private method 7: update segment operation job id<br>
-     * 
-     * @param segmentId instance id
-     * @param segmentType NFVO or SDNO
-     * @param jobId job id
-     * @since  GSO 0.5
-     */
-    private void updateSegmentOperJobId(String segmentId, String segmentType, String jobId) {
-        ServiceSegmentOperation segmentOper = new ServiceSegmentOperation();
-        segmentOper.setServiceSegmentId(segmentId);
-        segmentOper.setServiceSegmentType(segmentType);
-        segmentOper.setJobId(jobId);
-        serviceSegmentDao.updateSegmentOperJobId(segmentOper);
-    }
-    
-    /**
-     * private method8: update segment operation progress<br>
-     * 
-     * @param segmentId instance id
-     * @param segmentType NFVO or SDNO
-     * @param progress prgress
-     * @since  GSO 0.5
-     */
-    private void updateSegmentOperProgress(String segmentId, String segmentType, String progress) {
-        ServiceSegmentOperation segmentOper = new ServiceSegmentOperation();
-        segmentOper.setServiceSegmentId(segmentId);
-        segmentOper.setServiceSegmentType(segmentType);
-        segmentOper.setProcess(Integer.valueOf(progress));
-        serviceSegmentDao.updateSegmentOperProgress(segmentOper);
-        
-    }
     
     /**
      * private method9 : get terminate params<br>
@@ -676,15 +674,7 @@ public class DriverManagerImpl implements IDriverManager {
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
         serviceSegment.setServiceSegmentId(segmentId);
         serviceSegment.setServiceSegmentType(segmentType);
-               
         serviceSegmentDao.deleteSegmentByIdAndType(serviceSegment);
-        
-        ServiceSegmentOperation svcSegmentOper = new ServiceSegmentOperation();
-        svcSegmentOper.setServiceSegmentId(segmentId);
-        svcSegmentOper.setServiceSegmentType(segmentType);
-        
-        serviceSegmentDao.deleteSegmentOperByIdAndType(svcSegmentOper);
-        
     }
     
     

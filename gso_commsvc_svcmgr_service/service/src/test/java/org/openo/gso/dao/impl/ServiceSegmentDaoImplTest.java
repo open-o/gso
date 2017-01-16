@@ -207,17 +207,7 @@ public class ServiceSegmentDaoImplTest {
         };
     }
     
-    /**
-     * Query Segment By Job Id<br>
-     * 
-     * @since  GSO 0.5
-     */
-    @Test
-    public void testQuerySegmentByJobId() {
-        String jobId = "1";
-        serviceSegmentDao.queryServiceSegment(jobId);
-    }
-    
+   
     /**
      * Insert Service Segment Operation<br>
      * 
@@ -232,48 +222,18 @@ public class ServiceSegmentDaoImplTest {
     }
     
     /**
-     * Update Service Segment Operation Job Id<br>
+     * Update Service Segment Operation<br>
      * 
      * @since  GSO 0.5
      */
     @Test
-    public void testUpdateSegmentOperJobId() {
+    public void testUpdateSegmentOper() {
         ServiceSegmentOperation segOper = new ServiceSegmentOperation();
         segOper.setServiceSegmentId("1");
         segOper.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
         segOper.setJobId("1");
-        serviceSegmentDao.updateSegmentOperJobId(segOper);
+        serviceSegmentDao.updateSegmentOper(segOper);
     }
-    
-    /**
-     * Update Service Segment Operation Status<br>
-     * 
-     * @since  GSO 0.5
-     */
-    @Test
-    public void testUpdateSegmentOperStatus() {
-        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
-        segOper.setServiceSegmentId("1");
-        segOper.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
-        segOper.setStatus(CommonConstant.Status.FINISHED);
-        segOper.setStatusDescription("desc");
-        serviceSegmentDao.updateSegmentOperStatus(segOper);
-    }
-    
-    /**
-     * Update Service Segment Operation Status<br>
-     * 
-     * @since  GSO 0.5
-     */
-    @Test
-    public void testUpdateSegmentOperProgress(){
-        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
-        segOper.setServiceSegmentId("1");
-        segOper.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
-        segOper.setProcess(Integer.valueOf(CommonConstant.Progress.ONE_HUNDRED));
-        serviceSegmentDao.updateSegmentOperProgress(segOper);
-    }
-    
     
     /**
      * Query Segment By Id And Type<br>
@@ -297,18 +257,5 @@ public class ServiceSegmentDaoImplTest {
         seg.setServiceSegmentId("1");
         seg.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
         serviceSegmentDao.deleteSegmentByIdAndType(seg);
-    }
-    
-    /**
-     * Delete Segment Operation By Id And Type<br>
-     * 
-     * @since  GSO 0.5
-     */
-    @Test
-    public void testDeleteSegmentOperByIdAndType() {
-        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
-        segOper.setServiceSegmentId("1");
-        segOper.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
-        serviceSegmentDao.deleteSegmentOperByIdAndType(segOper);
     }
 }

@@ -41,7 +41,7 @@ public interface ServiceSegmentMapper {
     void batchInsert(@Param("serviceSegments") List<ServiceSegmentModel> serviceSegments);
 
     /**
-     * Delete service segment instance by service instance ID and segment ID.<br/>
+     * Delete service segment instance by service instance ID and segment id and segment type.<br/>
      * 
      * @param serviceSegment service segment object
      * @since GSO 0.5
@@ -57,15 +57,6 @@ public interface ServiceSegmentMapper {
      */
     List<ServiceSegmentModel> queryServiceSegments(@Param("serviceId") String serviceId);
     
-    /**
-     * Query service segment by segment id and segment type<br>
-     * 
-     * @param jobId job id
-     * @return service segment model
-     * @since  GSO 0.5
-     */
-    ServiceSegmentModel queryServiceSegment(@Param("jobId") String jobId);
-
     /**
      * Insert service segment instance.<br/>
      * 

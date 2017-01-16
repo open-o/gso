@@ -16,7 +16,7 @@
 
 package org.openo.gso.mapper;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.apache.ibatis.annotations.Param;
 import org.openo.gso.model.servicemo.ServiceSegmentOperation;
 
 /**
@@ -35,39 +35,24 @@ public interface ServiceSegmentOperMapper {
      * @param serviceSegment service segment instance
      * @since GSO 0.5
      */
-    void insert(ServiceSegmentOperation svcSegmentOper);
+    void insertSegmentOper(ServiceSegmentOperation svcSegmentOper);
 
     /**
-     * Update job id of the service segment operation<br>
+     * Update service segment operation<br>
      * 
      * @param segmentOper service operation
      * @since  GSO 0.5
      */
-    void updateJobId(ServiceSegmentOperation segmentOper);
+    void updateSegmentOper(ServiceSegmentOperation segmentOper);
 
     /**
-     * Update status of the service segment<br><br>
+     * Query service segment operation by job id and segment type<br>
      * 
-     * @param segmentOper service segment operation
+     * @param jobId job id
+     * @param serviceSegmentType segment type
+     * @return service segment operation instance
      * @since  GSO 0.5
      */
-    void updateStatus(ServiceSegmentOperation segmentOper);
-
-    /**
-     * Update progress of the service segment<br><br>
-     * 
-     * @param segmentOper service segment operation
-     * @since  GSO 0.5
-     */
-    void updateProgress(ServiceSegmentOperation segmentOper);
-
-    /**
-     * delete service segment operation by segment id and segment type<br>
-     * 
-     * @param svcSegmentOper service segment
-     * @throws ApplicationException when fail to delete service segment operation
-     * @since   GSO 0.5
-     */
-    void deleteSegmentOperByIdAndType(ServiceSegmentOperation svcSegmentOper);
+    ServiceSegmentOperation querySegmentOperByJobIdAndType(@Param("jobId")String jobId, @Param("serviceSegmentType")String serviceSegmentType);
 
 }

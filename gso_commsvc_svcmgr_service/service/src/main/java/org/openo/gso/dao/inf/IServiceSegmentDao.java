@@ -63,15 +63,23 @@ public interface IServiceSegmentDao {
     List<ServiceSegmentModel> queryServiceSegments(String serviceId) throws ApplicationException;
     
     /**
-     * get service segment by segmentId and segmentType<br>
+     * query service segment by id and type<br>
      * 
-     * @param segmentId id of the service segment
-     * @param segmengType type of the service segment
-     * @return service segment model
+     * @param serviceSegmentId instance id
+     * @param serviceSegmentType NFVO or SDNO
+     * @return service segment
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since  GSO 0.5
      */
-    ServiceSegmentModel queryServiceSegment(String jobId) throws ApplicationException;
+    ServiceSegmentModel queryServiceSegmentByIdAndType(String serviceSegmentId, String serviceSegmentType) throws ApplicationException;
     
+    /**
+     * delete segment by segment id and segment type<br>
+     * 
+     * @param serviceSegment service segment
+     * @since  GSO 0.5
+     */
+    void deleteSegmentByIdAndType(ServiceSegmentModel serviceSegment) throws ApplicationException;
     
     /**
      * Insert service segment operation<br>
@@ -83,60 +91,23 @@ public interface IServiceSegmentDao {
     void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) throws ApplicationException;
 
     /**
-     * Update jobId of the service segment<br>
+     * Update the service segment operation<br>
      * 
      * @param segmentOper service segment operation
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since  GSO 0.5
      */
-    void updateSegmentOperJobId(ServiceSegmentOperation segmentOper) throws ApplicationException;
+    void updateSegmentOper(ServiceSegmentOperation segmentOper) throws ApplicationException;
 
     /**
-     * Update status of the service segment<br><br>
+     * Query service segment operation by job id and segment type<br>
      * 
-     * @param segmentOper service segment operation
+     * @param jobId job id
+     * @param segmentType segment type
+     * @return service segment operation instance
+     * @throws ApplicationException when database exception or parameter is wrong
      * @since  GSO 0.5
      */
-    void updateSegmentOperStatus(ServiceSegmentOperation segmentOper) throws ApplicationException;
-
-
-    /**
-     * Update progress of the service segment<br><br>
-     * 
-     * @param segmentOper service segment operation
-     * @since  GSO 0.5
-     */
-    void updateSegmentOperProgress(ServiceSegmentOperation segmentOper) throws ApplicationException;
-
-
-
-    /**
-     * query service segment by id and type<br>
-     * 
-     * @param serviceSegmentId instance id
-     * @param serviceSegmentType NFVO or SDNO
-     * @return service segment
-     * @since  GSO 0.5
-     */
-    ServiceSegmentModel queryServiceSegmentByIdAndType(String serviceSegmentId, String serviceSegmentType) throws ApplicationException;
-
-
-
-    /**
-     * delete segment by segment id and segment type<br>
-     * 
-     * @param serviceSegment service segment
-     * @since  GSO 0.5
-     */
-    void deleteSegmentByIdAndType(ServiceSegmentModel serviceSegment) throws ApplicationException;
-
-
-
-    /**
-     * delete segment operation by segment id and segment type<br>
-     * 
-     * @param svcSegmentOper service segment operation
-     * @since  GSO 0.5
-     */
-    void deleteSegmentOperByIdAndType(ServiceSegmentOperation svcSegmentOper);
+    ServiceSegmentOperation querySegmentOperByJobIdAndType(String jobId, String segmentType) throws ApplicationException;
     
 }

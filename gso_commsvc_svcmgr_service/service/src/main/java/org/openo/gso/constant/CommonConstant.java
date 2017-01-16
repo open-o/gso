@@ -223,9 +223,20 @@ public class CommonConstant {
         public static final String PROCESSING = "processing";
 
         public static final String ERROR = "error";
+        
+        private Status(){
+            
+        }
+    }
 
-        private Status() {
-
+    public static class OperationType {
+        
+        public static final String CREATE = "create";
+        
+        public static final String DELETE = "delete";
+        
+        private OperationType() {
+            
         }
     }
 

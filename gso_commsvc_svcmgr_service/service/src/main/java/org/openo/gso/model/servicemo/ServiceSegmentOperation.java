@@ -40,6 +40,16 @@ public class ServiceSegmentOperation {
     private String jobId;
     
     /**
+     * id of the service instance
+     */
+    private String serviceId;
+    
+    /**
+     * type of the operation : create or delete
+     */
+    private String operationType;
+    
+    /**
      * staus of the segment
      */
     private String status;
@@ -59,6 +69,75 @@ public class ServiceSegmentOperation {
      */
     private String statusDescription;
     
+    /**
+     * Service Segment Operation Constructor<br>
+     * <p>
+     * </p>
+     * 
+     * @since  GSO 0.5
+     */
+    public ServiceSegmentOperation() {
+        
+    }
+    
+    /**
+     * Service Segment Operation Constructor<br>
+     * <p>
+     * </p>
+     * 
+     * @param segmentId service segment id
+     * @param segmentType service segment type
+     * @param operType operation type
+     * @since  GSO 0.5
+     */
+    public ServiceSegmentOperation(String segmentId, String segmentType, String operType) {
+        
+        this.serviceSegmentId = segmentId;
+        this.serviceSegmentType = segmentType;
+        this.operationType = operType;
+        
+    }
+
+    /**
+     * Service Segment Operation Constructor<br>
+     * <p>
+     * </p>
+     * 
+     * @param segmentId service segment id
+     * @param segmentType service segment type
+     * @param operType operation type
+     * @param serviceId service id
+     * @status status service segment operation status
+     * @since  GSO 0.5
+     */
+    public ServiceSegmentOperation(String segmentId, String segmentType, String operType, String serviceId, String status) {
+        
+        this.serviceSegmentId = segmentId;
+        this.serviceSegmentType = segmentType;
+        this.operationType = operType;
+        this.serviceId = serviceId;
+        this.status = status;
+        
+    }
+    
+    /**
+     * Service Segment Operation Constructor<br>
+     * <p>
+     * </p>
+     * 
+     * @param segmentId service segment id
+     * @param segmentType service segment type
+     * @param operType operation type
+     * @param jobId job id
+     * @since  GSO 0.5
+     */
+    public ServiceSegmentOperation(String segmentId, String segmentType, String operType, String jobId) {
+        this.serviceSegmentId = segmentId;
+        this.serviceSegmentType = segmentType;
+        this.operationType = operType;
+        this.jobId = jobId;
+    }
+
     /**
      * @return Returns the serviceSegmentId.
      */
@@ -101,6 +180,34 @@ public class ServiceSegmentOperation {
         this.jobId = jobId;
     }
     
+    /**
+     * @return Returns the serviceId.
+     */
+    public String getServiceId() {
+        return serviceId;
+    }
+    
+    /**
+     * @param serviceId The serviceId to set.
+     */
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
+    }
+    
+    /**
+     * @return Returns the operationType.
+     */
+    public String getOperationType() {
+        return operationType;
+    }
+    
+    /**
+     * @param operationType The operationType to set.
+     */
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
     /**
      * @return Returns the status.
      */
