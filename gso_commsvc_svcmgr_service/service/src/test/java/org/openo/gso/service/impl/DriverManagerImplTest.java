@@ -25,8 +25,12 @@ import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
+import org.openo.gso.dao.inf.IServiceModelDao;
+import org.openo.gso.dao.inf.IServicePackageDao;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.model.drivermo.ServiceTemplate;
+import org.openo.gso.model.servicemo.ServiceSegmentOperation;
+import org.openo.gso.restproxy.inf.ICatalogProxy;
 import org.openo.gso.service.inf.IDriverService;
 
 import mockit.Mock;
@@ -41,8 +45,32 @@ public class DriverManagerImplTest {
 
     @Mocked
     IServiceSegmentDao serviceSegmentDao;
+    
+    @Mocked
+    IServiceModelDao serviceModelDao;
+    
+    @Mocked
+    IServicePackageDao servicePackageDao;
+    
+    @Mocked
+    ICatalogProxy catalogProxy;
 
     HttpServletRequest httpRequest;
+    
+    @Test
+    public void test() {
+        DriverManagerImpl impl = new DriverManagerImpl();
+        impl.setServiceInf(serviceInf);
+        impl.setServiceSegmentDao(serviceSegmentDao);
+        impl.setServiceModelDao(serviceModelDao);
+        impl.setServicePackageDao(servicePackageDao);
+        impl.setCatalogProxy(catalogProxy);
+        impl.getServiceInf();
+        impl.getServiceSegmentDao();
+        impl.getServiceModelDao();
+        impl.getServicePackageDao();
+        impl.getCatalogProxy();
+    }
 
     @Test
     public void testCreateService() {
@@ -50,7 +78,7 @@ public class DriverManagerImplTest {
         impl.setServiceSegmentDao(serviceSegmentDao);
         impl.setServiceInf(serviceInf);
         final String str =
-                "{\"nodeTemplateName\":\"POP\",\"inputParameters\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
+                "{\"nodeTemplateName\":\"POP\",\"segments\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
         
         final ServiceTemplate svcTmpl = new ServiceTemplate();
         svcTmpl.setServiceTemplateId("1");
@@ -121,7 +149,7 @@ public class DriverManagerImplTest {
         impl.setServiceSegmentDao(serviceSegmentDao);
         impl.setServiceInf(serviceInf);
         final String str =
-                "{\"nodeTemplateName\":\"POP\",\"inputParameters\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
+                "{\"nodeTemplateName\":\"POP\",\"segments\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
         final RestfulResponse rsp = new RestfulResponse();
         rsp.setStatus(200);
         String tempStr = "{\"jobId\":\"1\"}";
@@ -151,12 +179,11 @@ public class DriverManagerImplTest {
     
     @Test
     public void testTerminateService() {
-
         DriverManagerImpl impl = new DriverManagerImpl();
         impl.setServiceSegmentDao(serviceSegmentDao);
         impl.setServiceInf(serviceInf);
         final String str =
-                "{\"nodeTemplateName\":\"POP\",\"inputParameters\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
+                "{\"nodeTemplateName\":\"POP\",\"segments\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
         final RestfulResponse rsp = new RestfulResponse();
         rsp.setStatus(200);
         String tempStr = "{\"jobId\":\"1\"}";
@@ -179,6 +206,25 @@ public class DriverManagerImplTest {
             };
                  
             impl.terminateNs("1", httpRequest, CommonConstant.SegmentType.NFVO);
+        } catch(ApplicationException e) {
+
+        }
+    }
+    
+    @Test
+    public void testGetNsProgress() {
+        DriverManagerImpl impl = new DriverManagerImpl();
+        impl.setServiceSegmentDao(serviceSegmentDao);
+        impl.setServiceInf(serviceInf);
+        ServiceSegmentOperation svcSegOper = new ServiceSegmentOperation("1", CommonConstant.SegmentType.NFVO, CommonConstant.OperationType.CREATE);
+        try {
+            new NonStrictExpectations() {
+                {
+                    serviceSegmentDao.querySegmentOperByJobIdAndType(anyString, anyString);
+                    returns(svcSegOper);
+                }
+            };
+            impl.getNsProgress("j1", CommonConstant.SegmentType.NFVO);
         } catch(ApplicationException e) {
 
         }

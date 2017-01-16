@@ -25,9 +25,15 @@ public class ServiceSegmentOperationTest {
 
     @Test
     public void test() {
+        ServiceSegmentOperation svcOper0 = new ServiceSegmentOperation("segmentId", "segmentType", "operType");
+        ServiceSegmentOperation svcOper1 = new ServiceSegmentOperation("segmentId", "segmentType", "operType", "jobId");
+        ServiceSegmentOperation svcOper2 = new ServiceSegmentOperation("segmentId", "segmentType", "operType", "serviceId", "status");
+        
         ServiceSegmentOperation segOper = new ServiceSegmentOperation();
         segOper.setServiceSegmentId("1");
         segOper.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
+        segOper.setOperationType(CommonConstant.OperationType.CREATE);
+        segOper.setServiceId("s1");
         segOper.setJobId("2");
         segOper.setErrorCode(200);
         segOper.setProcess(50);
@@ -36,6 +42,8 @@ public class ServiceSegmentOperationTest {
 
         assertEquals("1", segOper.getServiceSegmentId());
         assertEquals(CommonConstant.SegmentType.NFVO, segOper.getServiceSegmentType());
+        assertEquals(CommonConstant.OperationType.CREATE, segOper.getOperationType());
+        assertEquals("s1", segOper.getServiceId());
         assertEquals("2", segOper.getJobId());
         assertEquals(200, segOper.getErrorCode());
         assertEquals(50, segOper.getProcess());

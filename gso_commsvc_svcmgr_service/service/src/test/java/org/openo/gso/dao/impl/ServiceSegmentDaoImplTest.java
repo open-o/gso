@@ -258,4 +258,16 @@ public class ServiceSegmentDaoImplTest {
         seg.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
         serviceSegmentDao.deleteSegmentByIdAndType(seg);
     }
+    
+    /**
+     * Query Segment Oper By Job Id And Type<br>
+     * 
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testQuerySegmentOperByJobIdAndType() {
+        String jobId = "1";
+        String segmentType = CommonConstant.SegmentType.NFVO;
+        serviceSegmentDao.querySegmentOperByJobIdAndType(jobId, segmentType);
+    }
 }
