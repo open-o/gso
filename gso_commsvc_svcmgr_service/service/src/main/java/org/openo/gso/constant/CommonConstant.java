@@ -190,6 +190,8 @@ public class CommonConstant {
 
     public static final String ADDITIONAL_PARAM_FOR_NS = "additionalParamForNs";
 
+    public static final String LOCAL_HOST = "localhost";
+
     public static class StatusDesc {
 
         public static final String INSTANTIATE_NS_FAILED = "instantiate ns failed";
