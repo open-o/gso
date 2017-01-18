@@ -28,7 +28,7 @@
         <result property="progress" column="progress" />
         <result property="reason" column="reason" />
         <result property="operationAt" column="operationAt" />
-        <result property="finishedAt" column="finishedAt" />    
+        <result property="finishedAt" column="finishedAt" />
     </resultMap>
 
     <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServiceOperation">
@@ -43,9 +43,11 @@
     </delete>
 
     <select id="queryOperationById" resultMap="serviceOperResultMap">
-        select serviceId,operationId,operationType,userId,result,operationContent,progress,reason,operationAt,finishedAt from t_lcm_service_operation where serviceId = #{serviceId} and operationId = #{operationId}
+        select
+        serviceId,operationId,operationType,userId,result,operationContent,progress,reason,operationAt,finishedAt from
+        t_lcm_service_operation where serviceId = #{serviceId} and operationId = #{operationId}
     </select>
-    
+
     <update id="update" parameterType="org.openo.gso.model.servicemo.ServiceOperation">
         update t_lcm_service_operation
         <set>
@@ -68,4 +70,40 @@
         where operationId = #{operationId}
     </update>
 
+    <delete id="deleteHistory">
+        delete svc, seg from t_lcm_service_operation as svc left join t_lcm_svcsegment_operation as seg on svc.serviceId = seg.serviceId where
+        svc.serviceId in (select serviceId from (select serviceId,operationAt from t_lcm_service_operation) as tmp where
+        from_unixtime(tmp.operationAt/1000) &lt; date_sub(now(),interval 15 day))
+    </delete>
+    
+    <select id="queryOperByIds" resultMap="serviceOperResultMap">
+        select serviceId,operationId,operationType,userId,result,operationContent,progress,reason,operationAt,finishedAt from t_lcm_service_operation where serviceId in
+        <foreach item="item" index="index" collection="svcIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    
+    <update id="batchUpdate" parameterType="java.util.List" >  
+        <foreach collection="svcOperations" item="item" index="index" separator=";">  
+            update t_lcm_service_operation 
+            <set>
+                <if test="item.result != null">
+                    result = #{item.result},
+                </if>
+                <if test="item.reason != null">
+                   reason = #{item.reason},
+                </if>
+                <if test="item.operationContent != null">
+                   operationContent = #{item.operationContent},
+                </if>
+                <if test="item.progress != null">
+                   progress = #{item.progress},
+                </if>
+                <if test="item.finishedAt">
+                   finishedAt = #{item.finishedAt}
+                </if>
+            </set>
+            where operationId = #{item.operationId}  
+        </foreach>  
+    </update>
 </mapper>

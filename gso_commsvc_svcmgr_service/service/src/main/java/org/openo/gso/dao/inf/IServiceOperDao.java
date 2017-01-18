@@ -16,6 +16,8 @@
 
 package org.openo.gso.dao.inf;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServiceOperation;
@@ -68,4 +70,30 @@ public interface IServiceOperDao {
      * @since GSO 0.5
      */
     void update(ServiceOperation serviceOperation) throws ApplicationException;
+
+    /**
+     * Delete old operation records which are generated for 15 days.<br/>
+     * 
+     * @throws ApplicationException
+     * @since GSO 0.5
+     */
+    void deleteHistory() throws ApplicationException;
+
+    /**
+     * Get operations by service progress type.<br/>
+     * 
+     * @param svcIds service instance ID
+     * @return service operations
+     * @since GSO 0.5
+     */
+    List<ServiceOperation> queryOperByIds(List<String> svcIds) throws ApplicationException;
+
+    /**
+     * Batch update service operations.<br/>
+     * 
+     * @param svcOperations service operations
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    void batchUpdate(@Param("svcOperations") List<ServiceOperation> svcOperations) throws ApplicationException;
 }

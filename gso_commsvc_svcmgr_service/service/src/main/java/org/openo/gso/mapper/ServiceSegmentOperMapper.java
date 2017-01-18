@@ -16,6 +16,8 @@
 
 package org.openo.gso.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.openo.gso.model.servicemo.ServiceSegmentOperation;
 
@@ -41,7 +43,7 @@ public interface ServiceSegmentOperMapper {
      * Update service segment operation<br>
      * 
      * @param segmentOper service operation
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     void updateSegmentOper(ServiceSegmentOperation segmentOper);
 
@@ -51,8 +53,25 @@ public interface ServiceSegmentOperMapper {
      * @param jobId job id
      * @param serviceSegmentType segment type
      * @return service segment operation instance
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
-    ServiceSegmentOperation querySegmentOperByJobIdAndType(@Param("jobId")String jobId, @Param("serviceSegmentType")String serviceSegmentType);
+    ServiceSegmentOperation querySegmentOperByJobIdAndType(@Param("jobId") String jobId,
+            @Param("serviceSegmentType") String serviceSegmentType);
 
+    /**
+     * Delete operations by service instance ID.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @since GSO 0.5
+     */
+    void deleteByServiceId(@Param("serviceId") String serviceId);
+
+    /**
+     * Query segment operations by service instance ids.<br/>
+     * 
+     * @param svcIds service instance ids.
+     * @return service segment operations.
+     * @since GSO 0.5
+     */
+    List<ServiceSegmentOperation> querySegmentOperByIds(@Param("svcIds") List<String> svcIds);
 }

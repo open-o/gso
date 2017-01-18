@@ -16,6 +16,8 @@
 
 package org.openo.gso.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.openo.gso.model.servicemo.InvServiceModel;
 
@@ -53,4 +55,12 @@ public interface InvServiceModelMapper extends InventoryMapper {
      * @since GSO 0.5
      */
     void updateServiceStatus(@Param("serviceId") String serviceId, @Param("status") String status);
+
+    /**
+     * Batch update service instances.<br/>
+     * 
+     * @param services service instances
+     * @since GSO 0.5
+     */
+    void batchUpdate(@Param("services") List<InvServiceModel> services);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openo.baseservice.util.impl.SystemEnvVariablesFactory;
 import org.openo.gso.commsvc.common.constant.Constant;
 import org.openo.gso.commsvc.common.register.RegisterUtil;
+import org.openo.gso.util.service.ServiceTimeTaskUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +47,9 @@ public class Activator {
     public void start() {
         // register restful to M-Bus when starting service
         registerService();
+
+        // Startup timing task
+        ServiceTimeTaskUtil.startUpTask();
     }
 
     /**

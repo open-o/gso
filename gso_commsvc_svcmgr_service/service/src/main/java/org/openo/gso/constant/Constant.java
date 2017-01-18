@@ -177,6 +177,11 @@ public class Constant {
     public static final String MODEL_COLUMN_SEGMENT_NUMBER = "segmentNumber";
 
     /**
+     * Node name identify.
+     */
+    public static final String NODE_TEMPLATE_NAME = "nodeTemplateName";
+
+    /**
      * Constructor<br/>
      * <p>
      * </p>

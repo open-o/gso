@@ -45,7 +45,7 @@
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
         </jaxrs:providers>
     </jaxrs:server>
-
+    <bean id="Activator" class="org.openo.gso.activator.Activator" init-method="start"></bean>
     <bean id="SwaggerRoa" class="org.openo.gso.roa.inf.SwaggerRoa"></bean>
     <bean id="gsodb" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="com.mysql.jdbc.Driver" />
@@ -172,8 +172,8 @@
         <property name="serviceOperDao" ref="serviceOperDao" />
     </bean>
 
-    <bean id="serviceSegmentDao" class="org.openo.gso.dao.impl.ServiceOperDaoImpl">
+    <bean id="serviceOperDao" class="org.openo.gso.dao.impl.ServiceOperDaoImpl">
         <property name="dbSessionHandler" ref="dbSessionHandler" />
     </bean>
-    
+
 </beans>

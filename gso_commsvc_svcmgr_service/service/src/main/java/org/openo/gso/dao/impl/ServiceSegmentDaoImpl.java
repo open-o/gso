@@ -254,4 +254,21 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
         }
     }
     
+	/**
+     * Query segment operations by service instance ids.<br/>
+     * 
+     * @param svcIds service instance ids.
+     * @return service segment operations.
+     * @throws ApplicationException when database exception.
+     * @since GSO 0.5
+     */
+    @Override
+    public List<ServiceSegmentOperation> querySegmentOperByIds(List<String> svcIds) throws ApplicationException {
+        try {
+            return getMapper(ServiceSegmentOperMapper.class).querySegmentOperByIds(svcIds);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to query segments operations {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+    }
 }

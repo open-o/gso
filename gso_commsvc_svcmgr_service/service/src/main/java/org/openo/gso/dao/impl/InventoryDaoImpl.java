@@ -16,6 +16,8 @@
 
 package org.openo.gso.dao.impl;
 
+import java.util.List;
+
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.inf.IInventoryDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
@@ -23,6 +25,8 @@ import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.InvServiceModelMapper;
 import org.openo.gso.mapper.InventoryMapper;
+import org.openo.gso.model.servicemo.InvServiceModel;
+import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,6 +132,25 @@ public class InventoryDaoImpl implements IInventoryDao {
             mapper.updateServiceStatus(serviceId, status);
         } catch(Exception exception) {
             LOGGER.error("Fail to update service instance status. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+    }
+
+    /**
+     * Batch update service instances.<br/>
+     * 
+     * @param services service instances
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    @Override
+    public void batchUpdate(List<InvServiceModel> services) throws ApplicationException {
+        try {
+            LOGGER.info("Batch  update inventory services: {}", services);
+            ValidateUtil.assertObjectNotNull(services);
+            getMapper(InvServiceModelMapper.class).batchUpdate(services);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to batch update inventory service instance. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }

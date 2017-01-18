@@ -43,4 +43,16 @@
     <update id="updateServiceStatus" parameterType="java.lang.String">
         update t_lcm_servicebaseinfo set status = #{status} where serviceId = #{serviceId}
     </update>
+    
+    <update id="batchUpdate" parameterType="java.util.List" >  
+        <foreach collection="services" item="item" index="index" separator=";">  
+            update t_lcm_servicebaseinfo 
+            <set>
+                <if test="item.status != null">
+                    status = #{item.status}
+                </if>
+            </set>
+            where serviceId = #{item.serviceId}  
+        </foreach>  
+    </update>
 </mapper>

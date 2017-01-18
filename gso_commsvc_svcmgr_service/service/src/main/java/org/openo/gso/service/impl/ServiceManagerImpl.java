@@ -37,7 +37,6 @@ import org.openo.gso.mapper.InvServiceParameterMapper;
 import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.model.catalogmo.OperationModel;
-import org.openo.gso.model.servicemo.InvServiceModel;
 import org.openo.gso.model.servicemo.ServiceDetailModel;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServiceOperation;
@@ -170,13 +169,8 @@ public class ServiceManagerImpl implements IServiceManager {
             svcOperation = operationManager.createOperation(model.getServiceId(), Constant.OPERATION_CREATE);
 
             // Start to create workflow
-            paramsMap.put(Constant.SERVICE_ID, model.getServiceId());
-            LOGGER.warn("serviceId is {}", model.getServiceId());
-            paramsMap.put("serviceName", model.getName());
-            LOGGER.warn("serviceName is {}", model.getName());
-            paramsMap.put("serviceDescription", model.getDescription());
-            LOGGER.warn("serviceDescription is {}", model.getDescription());
-            startWorkFlow(templateId, Constant.WORK_FLOW_PLAN_CREATE, httpRequest, paramsMap);
+            startWorkFlow(templateId, Constant.WORK_FLOW_PLAN_CREATE, httpRequest,
+                    DataConverter.getWorkFlowParams(paramsMap, model));
         } catch(ApplicationException exception) {
             LOGGER.error("Fail to create service instance. {}", exception);
             // update service instance status
@@ -345,7 +339,7 @@ public class ServiceManagerImpl implements IServiceManager {
         serviceModelDao.insert(model);
 
         // insert inventory data
-        inventoryDao.insert(convertToInvData(model), InvServiceModelMapper.class);
+        inventoryDao.insert(DataConverter.convertToInvData(model), InvServiceModelMapper.class);
         inventoryDao.insert(model.getServicePackage(), InvServicePackageMapper.class);
         for(ServiceParameter param : parameters) {
             inventoryDao.insert(param, InvServiceParameterMapper.class);
@@ -550,27 +544,6 @@ public class ServiceManagerImpl implements IServiceManager {
             segmentId = builder.toString();
             inputParam.put(segmentId, segment.getServiceSegmentId());
         }
-    }
-
-    /**
-     * Convert gso data to inventory data.<br/>
-     * 
-     * @param service gso instance
-     * @return inventory instance
-     * @since GSO 0.5
-     */
-    private InvServiceModel convertToInvData(ServiceModel service) {
-        InvServiceModel invService = new InvServiceModel();
-        invService.setServiceId(service.getServiceId());
-        invService.setName(service.getName());
-        invService.setServiceType(CommonConstant.SegmentType.GSO);
-        invService.setDescription(service.getDescription());
-        invService.setActiveStatus(service.getActiveStatus());
-        invService.setStatus(service.getStatus());
-        invService.setCreator(service.getCreator());
-        invService.setCreateAt(service.getCreateAt());
-
-        return invService;
     }
 
     /**
