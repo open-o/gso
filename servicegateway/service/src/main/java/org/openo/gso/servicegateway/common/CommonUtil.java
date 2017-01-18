@@ -43,13 +43,12 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
- * 
  * <br>
  * <p>
  * </p>
  * 
  * @author
- * @version     GSO 0.5  2017.1.11
+ * @version GSO 0.5 2017.1.11
  */
 public class CommonUtil {
 
@@ -60,8 +59,8 @@ public class CommonUtil {
 
     /**
      * <br>
-     * 
-     * @param templateId
+     * get the template model by template id
+     * @param templateId the template id
      * @return the Type of the Template
      * @since GSO 0.5
      */
@@ -69,24 +68,24 @@ public class CommonUtil {
     public static ServiceTemplateModel getServiceTemplateByTemplateId(String templateId) {
 
         ServiceTemplateModel templateModel = new ServiceTemplateModel();
-        EnumServiceType type = EnumServiceType.UNKNOWN;
         try {
-            RestfulResponse resp =
-                    HttpUtil.get(Constant.CATALOG_TEMPLATE_URL + templateId, new HashMap<String, String>());
-            if(resp.getStatus() == HttpCode.RESPOND_ACCEPTED || resp.getStatus() == HttpCode.RESPOND_OK
-                    || resp.getStatus() == HttpCode.CREATED_OK) {
+            LOGGER.info("query template detail for templat id:" + templateId);
+            String url = String.format(Constant.CATALOG_TEMPLATE_URL, templateId);
+            RestfulResponse resp = HttpUtil.get(url, new HashMap<String, String>());
+            logTheResponseData("query template detail", resp);
+            if(HttpCode.isSucess(resp.getStatus())) {
 
                 Map<String, Object> rspBody = JsonUtil.unMarshal(resp.getResponseContent(), Map.class);
                 templateModel.setTemplateDetail(rspBody);
                 String csarId = (String)rspBody.get(FieldConstant.CatalogTemplate.FIELD_CSARID);
-                templateModel.setTemplateType(getServiceTypeByCsarId(csarId));
+                EnumServiceType type = getServiceTypeByCsarId(csarId);
+                templateModel.setTemplateType(type);
+                return templateModel;
             }
         } catch(ServiceException e) {
-
             LOGGER.info("query the template by template Id failed, template Id:" + templateId, e);
         }
         LOGGER.info("query the template by template Id failed, template Id:" + templateId);
-        templateModel.setTemplateType(type);
         return templateModel;
     }
 
@@ -94,8 +93,8 @@ public class CommonUtil {
      * get service type by csar id
      * <br>
      * 
-     * @param csarId
-     * @return
+     * @param csarId the csar id 
+     * @return the service type of the csar
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
@@ -103,14 +102,13 @@ public class CommonUtil {
         EnumServiceType type = EnumServiceType.UNKNOWN;
         RestfulResponse csarResp;
         try {
-            csarResp = HttpUtil.get(Constant.CATALOG_CSAR_URL + csarId, new HashMap<String, String>());
-            LOGGER.info("query the casr  by csar Id , respose status:" + csarResp.getStatus());
-            LOGGER.info("query the casr  by csar Id , respose status:" + csarResp.getResponseContent());
-            if(csarResp.getStatus() == HttpCode.RESPOND_ACCEPTED || csarResp.getStatus() == HttpCode.RESPOND_OK
-                    || csarResp.getStatus() == HttpCode.CREATED_OK) {
+            LOGGER.info("query the csar, csar id:" + csarId);
+            String url = String.format(Constant.CATALOG_CSAR_URL, csarId);
+            csarResp = HttpUtil.get(url, new HashMap<String, String>());
+            logTheResponseData("query the casr  by csar Id", csarResp);
+            if(HttpCode.isSucess(csarResp.getStatus())) {
                 Map<String, Object> csarBody = JsonUtil.unMarshal(csarResp.getResponseContent(), Map.class);
                 String csarType = (String)csarBody.get(Constant.CATALOG_CSAR_PARAM_TYPE);
-
                 if(Constant.CATALOG_CSAR_TYPE_GSAR.equals(csarType)) {
                     type = EnumServiceType.GSO;
                 } else if(Constant.CATALOG_CSAR_TYPE_NFAR.equals(csarType)
@@ -132,18 +130,20 @@ public class CommonUtil {
      * query service type by service Id
      * <br>
      * 
-     * @param serviceId
-     * @return
+     * @param serviceId the service id
+     * @return the service type
      * @since GSO 0.5
      */
+    @SuppressWarnings("unchecked")
     public static EnumServiceType getServiceTypeByServiceId(String serviceId) {
-        EnumServiceType type = EnumServiceType.UNKNOWN;
         try {
-            RestfulResponse resp =
-                    HttpUtil.get(Constant.INVENTORY_URL_QUERYSERVICE + serviceId, new HashMap<String, String>());
-            if(resp.getStatus() == HttpCode.RESPOND_ACCEPTED || resp.getStatus() == HttpCode.RESPOND_OK
-                    || resp.getStatus() == HttpCode.CREATED_OK) {
-                Map<String, Object> rspBody = JsonUtil.unMarshal(resp.getResponseContent(), Map.class);
+            LOGGER.info("query data from inventory, service id:" + serviceId);
+            String url = String.format(Constant.INVENTORY_URL_QUERYSERVICE, serviceId);
+            RestfulResponse resp = HttpUtil.get(url, new HashMap<String, String>());
+            logTheResponseData("query data from inventory", resp);
+            if(HttpCode.isSucess(resp.getStatus())) {
+                Map<String, Object> rspBody =
+                        (Map<String, Object>)JsonUtil.unMarshal(resp.getResponseContent(), Map.class);
                 String serviceType = (String)rspBody.get("serviceType");
                 if("GSO".equals(serviceType)) {
                     return EnumServiceType.GSO;
@@ -156,23 +156,24 @@ public class CommonUtil {
                 }
             }
         } catch(ServiceException e) {
-
             LOGGER.info("query the service info by service Id failed, service Id:" + serviceId, e);
         }
-        return type;
+        return EnumServiceType.UNKNOWN;
     }
 
     /**
      * query vim info
      * <br>
      * 
-     * @return
+     * @return the vim map, key is id ,value is nmae 
      * @since GSO 0.5
      */
     public static Map<String, String> queryVimInfo() {
         Map<String, String> vims = new HashMap<String, String>();
         try {
+            LOGGER.info("query vims from extsys start");
             RestfulResponse resp = HttpUtil.get(Constant.EXTSYS_URL_QUERYVIMS, new HashMap<String, String>());
+            logTheResponseData("query vims from extsys", resp);
             if(HttpCode.isSucess(resp.getStatus())) {
 
                 JSONArray array = JSONArray.fromObject(resp.getResponseContent());
@@ -195,13 +196,15 @@ public class CommonUtil {
      * query sdn controller info
      * <br>
      * 
-     * @return
+     * @return the sdn controller map, key is id, value is name
      * @since GSO 0.5
      */
     public static Map<String, String> querySDNControllerInfo() {
         Map<String, String> sdncontrollers = new HashMap<String, String>();
         try {
+            LOGGER.info("query sdn controllers from extsys start");
             RestfulResponse resp = HttpUtil.get(Constant.EXTSYS_URL_QUERYSDNCONTROLLERS, new HashMap<String, String>());
+            logTheResponseData("query sdn controllers from extsys", resp);
             if(HttpCode.isSucess(resp.getStatus())) {
 
                 JSONArray array = JSONArray.fromObject(resp.getResponseContent());
@@ -224,8 +227,8 @@ public class CommonUtil {
      * generate location param
      * <br>
      * 
-     * @param vims
-     * @return
+     * @param vims the map of the vims, key is id, value is name
+     * @return the location parameter define model
      * @since GSO 0.5
      */
     public static ParameterDefineModel generateLocationParam(Map<String, String> vims) {
@@ -242,8 +245,8 @@ public class CommonUtil {
      * generate sdnController param
      * <br>
      * 
-     * @param sdncontrollers
-     * @return
+     * @param sdncontrollers the map of the sdncontroller ,key is id, value is name
+     * @return the sdncontroller param define model
      * @since GSO 0.5
      */
     public static ParameterDefineModel generateSDNControllerParam(Map<String, String> sdnControllers) {
@@ -260,7 +263,7 @@ public class CommonUtil {
      * <br>
      * generate domains param
      * 
-     * @return
+     * @return the domain parameter define model
      * @since GSO 0.5
      */
     public static ParameterDefineModel generateDomainsInfo() {
@@ -268,6 +271,10 @@ public class CommonUtil {
         String root = SystemEnvVariablesFactory.getInstance().getAppRoot();
         String serviceFilePath = root + File.separator + Constant.FILE_PATH_DOMAINSINFO;
         String jsonInfo = RegisterUtil.readFile(serviceFilePath);
+        if("".equals(jsonInfo))
+        {
+            return null;
+        }
         JSONArray array = JSONArray.fromObject(jsonInfo);
         Map<String, String> domainsInfo = new HashMap<String, String>();
         for(int i = 0, size = array.size(); i < size; i++) {
@@ -291,20 +298,25 @@ public class CommonUtil {
      * query the sub templates by gso's template id
      * <br>
      * 
-     * @param templateId
+     * @param templateId the template id
      * @return key is nodeTemplateName of the subTemplate, value is the template
      * @since GSO 0.5
      */
+    @SuppressWarnings("unchecked")
     public static List<SegmentTemplateModel> getSegmentTemplatesByGSOTemplateId(String templateId) {
         List<SegmentTemplateModel> segments = new ArrayList<SegmentTemplateModel>();
         try {
+            // query nodetypes by template id
             String queryNodeTypeUrl = String.format(Constant.CATALOG_NODETYPE_URL, templateId);
+            LOGGER.info("query nodetypes for template id:" + templateId);
             RestfulResponse resp = HttpUtil.get(queryNodeTypeUrl, new HashMap<String, String>());
+            logTheResponseData("query nodetypes from catalog", resp);
             if(HttpCode.isSucess(resp.getStatus())) {
                 StringBuffer queryNodeTemplateUri = new StringBuffer();
                 JSONArray array = JSONArray.fromObject(resp.getResponseContent());
                 for(int i = 0, size = array.size(); i < size; i++) {
                     JSONObject object = array.getJSONObject(i);
+                    // change the segments to model list
                     SegmentTemplateModel segmentTemplate = new SegmentTemplateModel();
                     segmentTemplate.setNodeTemplateName((String)object.get(FieldConstant.NodeTemplates.FIELD_NAME));
                     String nodeType = (String)object.get(FieldConstant.NodeTemplates.FIELD_TYPE);
@@ -315,19 +327,23 @@ public class CommonUtil {
                         queryNodeTemplateUri.append(",");
                     }
                 }
-                // query nodeTempaltes
+                // query nodeTempaltes by node types
                 String queryNodeTemplatesUrl =
                         String.format(Constant.CATALOG_TEMPLATE_BYNOTEYPE_URL, queryNodeTemplateUri);
+                LOGGER.info("query node templates for node types:" + queryNodeTemplateUri);
                 RestfulResponse nodeTemplatesResp = HttpUtil.get(queryNodeTemplatesUrl, new HashMap<String, String>());
+                logTheResponseData("query node templates from catalog", nodeTemplatesResp);
                 if(HttpCode.isSucess(nodeTemplatesResp.getStatus())) {
-                    JSONArray arrayTempate = JSONArray.fromObject(resp.getResponseContent());
+                    JSONArray arrayTempate = JSONArray.fromObject(nodeTemplatesResp.getResponseContent());
                     for(int i = 0, size = arrayTempate.size(); i < size; i++) {
                         String object = arrayTempate.getString(i);
                         Map<String, Object> rspBody = JsonUtil.unMarshal(object, Map.class);
+                        // here parse the template to model
                         ServiceTemplateModel templateModel = new ServiceTemplateModel();
                         templateModel.setTemplateDetail(rspBody);
                         String csarId = (String)rspBody.get(FieldConstant.CatalogTemplate.FIELD_CSARID);
                         templateModel.setTemplateType(getServiceTypeByCsarId(csarId));
+                        // fill the template model to segment list
                         SegmentTemplateModel segmentTemplate =
                                 getSegmentTemplateModel(segments, getTemplateNodeType(templateModel));
                         segmentTemplate.setTemplateModel(templateModel);
@@ -342,11 +358,12 @@ public class CommonUtil {
     }
 
     /**
+     * get the segment template model from the list by node type
      * <br>
      * 
-     * @param segmentTemplates
-     * @param nodeType
-     * @return
+     * @param segmentTemplates the list of the segment templates
+     * @param nodeType the node type
+     * @return the segment template
      * @since GSO 0.5
      */
     private static SegmentTemplateModel getSegmentTemplateModel(List<SegmentTemplateModel> segmentTemplates,
@@ -363,8 +380,8 @@ public class CommonUtil {
      * get template node type
      * <br>
      * 
-     * @param template
-     * @return
+     * @param template the template model
+     * @return the template node type
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
@@ -377,5 +394,18 @@ public class CommonUtil {
 
         }
         return nodeType;
+    }
+
+    /**
+     * print the rsponse
+     * <br>
+     * 
+     * @param oparation the operation description
+     * @param resp the response model 
+     * @since GSO 0.5
+     */
+    public static void logTheResponseData(String oparation, RestfulResponse resp) {
+        LOGGER.info(oparation + " status:" + resp.getStatus());
+        LOGGER.info(oparation + " content:" + resp.getResponseContent());
     }
 }

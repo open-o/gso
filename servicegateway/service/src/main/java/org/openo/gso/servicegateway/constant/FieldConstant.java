@@ -58,7 +58,7 @@ public class FieldConstant {
 
         public static String PARAM_FIELD_NAME_NODETYPE = "nodeType";
 
-        public static String PARAM_FIELD_NAME_NSPARAM = "additionalParamForNs";
+        public static String PARAM_FIELD_NAME_NSPARAM = "additionalParamForNS";
 
         public static String FIELD_RESPONSE_SERVICE = "service";
 
@@ -132,7 +132,7 @@ public class FieldConstant {
         public static String FIELD_USERID = "userId";
 
         public static String FIELD_OPERATIONCONTENT = "operationContent";
-
+        
         public static String FIELD_RESULT = "result";
 
         public static String FIELD_REASON = "reason";
@@ -149,7 +149,7 @@ public class FieldConstant {
 
     public static class CatalogTemplate {
 
-        public static String FIELD_TEMPLATEID = "templateId";
+        public static String FIELD_TEMPLATEID = "serviceTemplateId";
 
         public static String FIELD_ID = "id";
 

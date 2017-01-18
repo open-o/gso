@@ -30,12 +30,12 @@ public class CreateParameterRspModel {
     /**
      * the template id
      */
-    String templateId;
+    private String templateId;
 
     /**
      * the parameters generated
      */
-    CreateParameterModel parameters;
+    private CreateParameterModel parameters;
 
     /**
      * @return Returns the templateId.

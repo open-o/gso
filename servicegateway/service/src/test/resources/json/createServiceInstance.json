@@ -1,12 +1,48 @@
 {
-    "name": "gso_service",
-	"description": "siteToDc",
-	"serviceDefId": "78ede6f3-66cc-46ab-b748-38a6c010d272",
-	"templateId": "38a6c01-66cc-46ab-b748-38a6c010d272",
-	"templateName": "GsoTemplate",
-	"gatewayUri":"/openoapi/lifecyclymgr/v1/services",
-	"parameters": {
-		"POP.vFW-moc": "xxx",
-		"POP.vCPE-moc": "xxx"
-	}
+    "service":{
+        "name":"gso_test1",
+        "description":"gso_test1",
+        "serviceDefId":"60c3e96e-0970-4871-b6e0-3b6de7561519",
+        "templateId":"592f9437-a9c0-4303-b9f6-c445bb7e9814",
+        "parameters":{
+            "domainHost":"",
+            "nodeTemplateName":"",
+            "nodeType":"",
+            "segments":[
+                {
+                    "domainHost":"10.11.11.1:80",
+                    "nodeTemplateName":"POP_NS",
+                    "nodeType":"tosca.nodes.nfv.NS.POP",
+                    "segments":[
+                    ],
+                    "additionalParamForNS":{
+                        "externalDataNetworkName":"Flow_out_net",
+                        "m6000_mng_ip":"181.18.20.2",
+                        "externalCompanyFtpDataNetworkName":"Flow_out_net",
+                        "externalPluginManageNetworkName":"plugin_net_2014",
+                        "externalManageNetworkName":"mng_net_2017",
+                        "sfc_data_network":"sfc_data_net_2016",
+                        "NatIpRange":"210.1.1.10-210.1.1.20",
+                        "location":"4050083f-465f-4838-af1e-47a545222ad0",
+                        "sdncontroller":"9b9f02c0-298b-458a-bc9c-be3692e4f35e"
+                    }
+                },
+                {
+                    "domainHost":"10.11.11.2:80",
+                    "nodeTemplateName":"POP_DC",
+                    "nodeType":"tosca.nodes.nfv.NS.DC",
+                    "segments":[
+
+                    ],
+                    "additionalParamForNS":{
+                        "location":"e151059a-d924-4629-845f-264db19e50b4",
+                        "sdncontroller":"9b9f02c0-298b-458a-bc9c-be3692e4f35e"
+                    }
+                }
+            ],
+            "additionalParamForNS":{
+
+            }
+        }
+    }
 }

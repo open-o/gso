@@ -22,10 +22,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.baseservice.roa.util.restclient.RestfulFactory;
-import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.gso.servicegateway.constant.Constant;
+import org.openo.gso.servicegateway.common.CommonUtil;
 import org.openo.gso.servicegateway.constant.FieldConstant;
 import org.openo.gso.servicegateway.exception.HttpCode;
 import org.openo.gso.servicegateway.model.EnumServiceType;
@@ -69,8 +67,8 @@ public class ProgressPool {
     /**
      * time sleep: 10 second
      */
-    private static final int TIME_SLEEP = 10000;
-    
+    private static final int TIME_SLEEP = 3000;
+
     /**
      * release data time:1 day
      */
@@ -113,7 +111,7 @@ public class ProgressPool {
     public void dealCreateProgress(final EnumServiceType serviceType, final String operationId,
             final String queryJobUri) {
 
-        Thread deleteThread = new Thread(new Runnable() {
+        Thread createThread = new Thread(new Runnable() {
 
             @Override
             public void run() {
@@ -124,58 +122,7 @@ public class ProgressPool {
                 }
             }
         });
-        deleteThread.start();
-    }
-
-    /**
-     * delete gso service in background
-     * <br>
-     * 
-     * @param operationId
-     * @param serviceId
-     * @param deleteUri
-     * @param queryJobUri
-     * @since GSO 0.5
-     */
-    private void dealNonGSOCreateProgress(final String operationId, final String queryJobUri) {
-        OperationModel model = addNewOpertaionModel(operationId);
-        try {
-            int timeOut = 0;
-            while(timeOut <= TIME_OUT) {
-                RestfulResponse resp = HttpUtil.get(queryJobUri, new HashMap<String, String>());
-                if(resp.getStatus() == HttpCode.RESPOND_ACCEPTED || resp.getStatus() == HttpCode.RESPOND_OK
-                        || resp.getStatus() == HttpCode.CREATED_OK) {
-                    Map<String, Object> rspBody = JsonUtil.unMarshal(resp.getResponseContent(), Map.class);
-                    Map<String, Object> responseDescriptor =
-                            (Map<String, Object>)rspBody.get(FieldConstant.QueryJob.FIELD_RESPONSEDESCRIPTOR);
-                    model.setProgress((String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_PROGRESS));
-                    // set the status as processing. only after deleted. it could be finished
-                    String status = (String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_STATUS);
-                    model.setResult(status);
-                    model.setOperationContent(
-                            (String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_STATUSDESCRIPTION));
-                    model.setReason((String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_STATUSDESCRIPTION));
-                    if(FieldConstant.QueryJob.STATUS_FINISHED.equals(status)
-                            || FieldConstant.QueryJob.STATUS_ERROR.equals(status)) {
-                        break;
-                    }
-                    try {
-                        Thread.sleep(TIME_SLEEP);
-                        timeOut = timeOut + TIME_SLEEP;
-                    } catch(InterruptedException e) {
-                        LOGGER.info("time sleep error");
-                    }
-
-                } else {
-                    break;
-                }
-            }
-
-        } catch(ServiceException e) {
-            LOGGER.info("query operation failed", e);
-            model.setResult(FieldConstant.QueryOperation.RESULT_ERROR);
-            model.setReason("query operation inner error");
-        }
+        createThread.start();
     }
 
     /**
@@ -206,6 +153,73 @@ public class ProgressPool {
     }
 
     /**
+     * delete gso service in background
+     * <br>
+     * 
+     * @param operationId
+     * @param serviceId
+     * @param deleteUri
+     * @param queryJobUri
+     * @since GSO 0.5
+     */
+    @SuppressWarnings("unchecked")
+    private void dealNonGSOCreateProgress(final String operationId, final String queryJobUri) {
+        OperationModel model = addNewOpertaionModel(operationId);
+        try {
+            int timeOut = 0;
+            while(timeOut <= TIME_OUT) {
+                LOGGER.info("query NS operation info start");
+                RestfulResponse resp = HttpUtil.get(queryJobUri, new HashMap<String, String>());
+                CommonUtil.logTheResponseData("query NS operation info", resp);
+                if(HttpCode.isSucess(resp.getStatus())) {
+                    Map<String, Object> rspBody = JsonUtil.unMarshal(resp.getResponseContent(), Map.class);
+                    // set the progress information to model
+                    Map<String, Object> responseDescriptor =
+                            (Map<String, Object>)rspBody.get(FieldConstant.QueryJob.FIELD_RESPONSEDESCRIPTOR);
+                    model.setProgress((String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_PROGRESS));
+                    // set the status as processing. only after deleted. it could be finished
+                    String status = (String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_STATUS);
+                    model.setResult(status);
+                    model.setOperationContent(
+                            (String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_STATUSDESCRIPTION));
+                    // for nfvo/sdno, set the errorcode as fail reason
+                    model.setReason((String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_ERRORCODE));
+                    // if finished or error ,stop to query the progress
+                    if(FieldConstant.QueryJob.STATUS_FINISHED.equals(status)
+                            || FieldConstant.QueryJob.STATUS_ERROR.equals(status)) {
+                        break;
+                    }
+                    try {
+                        Thread.sleep(TIME_SLEEP);
+                        timeOut = timeOut + TIME_SLEEP;
+                    } catch(InterruptedException e) {
+                        LOGGER.info("time sleep error");
+                    }
+
+                } else {
+                    // if response error, set the result as failed.
+                    LOGGER.info("query the progress infomation error");
+                    model.setResult(FieldConstant.QueryOperation.RESULT_ERROR);
+                    model.setReason(resp.getResponseContent());
+                    break;
+                }
+            }
+            if(timeOut >= TIME_OUT) {
+                // if time out, set the result as failed.
+                LOGGER.info("query the progress infomation timeout");
+                model.setResult(FieldConstant.QueryOperation.RESULT_ERROR);
+                model.setReason("query the progress infomation timeout");
+            }
+
+        } catch(ServiceException e) {
+            LOGGER.info("query operation failed", e);
+            model.setResult(FieldConstant.QueryOperation.RESULT_ERROR);
+            model.setReason("query operation inner error");
+        }
+        model.setFinishedTime(String.valueOf(new Date().getTime()));
+    }
+
+    /**
      * delete service in background
      * <br>
      * 
@@ -215,16 +229,17 @@ public class ProgressPool {
      * @param queryJobUri
      * @since GSO 0.5
      */
+    @SuppressWarnings("unchecked")
     private void dealNonGSODeleteProgress(final String operationId, final String serviceId, final String deleteUri,
             final String queryJobUri) {
         OperationModel model = addNewOpertaionModel(operationId);
         try {
             int timeOut = 0;
             while(timeOut <= TIME_OUT) {
+                LOGGER.info("query ns service job, job id:" + operationId);
                 RestfulResponse resp = HttpUtil.get(queryJobUri, new HashMap<String, String>());
-                if(resp.getStatus() == HttpCode.RESPOND_ACCEPTED || resp.getStatus() == HttpCode.RESPOND_OK
-                        || resp.getStatus() == HttpCode.CREATED_OK) {
-
+                CommonUtil.logTheResponseData("query ns service job", resp);
+                if(HttpCode.isSucess(resp.getStatus())) {
                     Map<String, Object> rspBody = JsonUtil.unMarshal(resp.getResponseContent(), Map.class);
                     Map<String, Object> responseDescriptor =
                             (Map<String, Object>)rspBody.get(FieldConstant.QueryJob.FIELD_RESPONSEDESCRIPTOR);
@@ -238,18 +253,18 @@ public class ProgressPool {
                     }
                     model.setOperationContent(
                             (String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_STATUSDESCRIPTION));
-                    model.setReason((String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_STATUSDESCRIPTION));
+                    // put the error code as reason
+                    model.setReason((String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_ERRORCODE));
                     // if finished, send delete msg
                     if(FieldConstant.QueryJob.STATUS_FINISHED.equals(status)) {
-                        RestfulResponse restfulRsp =
-                                RestfulFactory.getRestInstance("http").delete(deleteUri, getRestfulParameters(""));
-
-                        if(resp.getStatus() == HttpCode.RESPOND_ACCEPTED || resp.getStatus() == HttpCode.RESPOND_OK
-                                || resp.getStatus() == HttpCode.CREATED_OK) {
+                        LOGGER.info("start to delete service:" + deleteUri);
+                        RestfulResponse restfulRsp = HttpUtil.delete(deleteUri);
+                        CommonUtil.logTheResponseData("delete ns service", restfulRsp);
+                        if(HttpCode.isSucess(restfulRsp.getStatus())) {
                             model.setResult(FieldConstant.QueryJob.STATUS_FINISHED);
                         } else {
                             model.setResult(FieldConstant.QueryJob.STATUS_ERROR);
-                            model.setOperationContent("delete service failed");
+                            model.setOperationContent("delete service");
                             model.setReason("delete service failed");
                         }
                         break;
@@ -269,12 +284,19 @@ public class ProgressPool {
                     model.setReason("query progress failed");
                     break;
                 }
+                if(timeOut >= TIME_OUT) {
+                    // if time out, set the result as failed.
+                    LOGGER.info("query the progress infomation timeout");
+                    model.setResult(FieldConstant.QueryOperation.RESULT_ERROR);
+                    model.setReason("query the progress infomation timeout");
+                }
             }
 
         } catch(ServiceException e) {
             model.setResult(FieldConstant.QueryJob.STATUS_ERROR);
             model.setReason("query progress failed");
         }
+        model.setFinishedTime(String.valueOf(new Date().getTime()));
     }
 
     /**
@@ -287,17 +309,20 @@ public class ProgressPool {
      * @param queryJobUri
      * @since GSO 0.5
      */
+    @SuppressWarnings("unchecked")
     private void dealGSOProgress(final String operationId, final String queryJobUri) {
         OperationModel model = addNewOpertaionModel(operationId);
         try {
             int timeOut = 0;
             while(timeOut <= TIME_OUT) {
+                LOGGER.info("query GSO operation info start");
                 RestfulResponse resp = HttpUtil.get(queryJobUri, new HashMap<String, String>());
-                if(resp.getStatus() == HttpCode.RESPOND_ACCEPTED || resp.getStatus() == HttpCode.RESPOND_OK
-                        || resp.getStatus() == HttpCode.CREATED_OK) {
+                CommonUtil.logTheResponseData("query GSO operation info", resp);
+                if(HttpCode.isSucess(resp.getStatus())) {
                     Map<String, Object> rspBody = JsonUtil.unMarshal(resp.getResponseContent(), Map.class);
                     Map<String, Object> responseDescriptor =
                             (Map<String, Object>)rspBody.get(FieldConstant.QueryOperation.FIELD_OPERATION);
+                    // set the result to model
                     model.setProgress((String)responseDescriptor.get(FieldConstant.QueryOperation.FIELD_PROGRESS));
                     model.setUserId((String)responseDescriptor.get(FieldConstant.QueryOperation.FIELD_USERID));
                     String result = (String)responseDescriptor.get(FieldConstant.QueryOperation.FIELD_RESULT);
@@ -305,6 +330,8 @@ public class ProgressPool {
                     model.setOperationContent(
                             (String)responseDescriptor.get(FieldConstant.QueryOperation.FIELD_OPERATIONCONTENT));
                     model.setReason((String)responseDescriptor.get(FieldConstant.QueryOperation.FIELD_REASON));
+
+                    // if failed or error ,stop to query the progress
                     if(FieldConstant.QueryOperation.RESULT_FINISHED.equals(result)
                             || FieldConstant.QueryOperation.RESULT_ERROR.equals(result)) {
                         break;
@@ -317,30 +344,27 @@ public class ProgressPool {
                     }
 
                 } else {
+                    // if response error, set the result as failed.
+                    LOGGER.info("query the progress infomation error");
+                    model.setResult(FieldConstant.QueryOperation.RESULT_ERROR);
+                    model.setReason(resp.getResponseContent());
                     break;
                 }
             }
+            if(timeOut >= TIME_OUT) {
+                // if time out, set the result as failed.
+                LOGGER.info("query the progress infomation timeout");
+                model.setResult(FieldConstant.QueryOperation.RESULT_ERROR);
+                model.setReason("query the progress infomation timeout");
+            }
 
         } catch(ServiceException e) {
+            // if exception got , set the result as failed.
             LOGGER.info("query operation failed", e);
             model.setResult(FieldConstant.QueryOperation.RESULT_ERROR);
             model.setReason("query operation inner error");
         }
-    }
-
-    /**
-     * 
-     * <br>
-     * 
-     * @param bodyData
-     * @return
-     * @since  GSO 0.5
-     */
-    private RestfulParametes getRestfulParameters(final String bodyData) {
-        RestfulParametes param = new RestfulParametes();
-        param.putHttpContextHeader(Constant.HEAD_ERMAP_TYPE, Constant.HEAD_ERMAP_VALUE);
-        param.setRawData(bodyData);
-        return param;
+        model.setFinishedTime(String.valueOf(new Date().getTime()));
     }
 
     /**
@@ -355,7 +379,7 @@ public class ProgressPool {
         OperationModel model = new OperationModel();
         model.setOperationId(operationId);
         model.setProgress("0");
-        model.setResult("processing");
+        model.setResult(FieldConstant.QueryOperation.RESULT_PROCESSING);
         model.setStartTime(String.valueOf(new Date().getTime()));
         operationMap.put(operationId, model);
         return model;
@@ -373,6 +397,9 @@ public class ProgressPool {
         Iterator<Map.Entry<String, OperationModel>> it = operationMap.entrySet().iterator();
         while(it.hasNext()) {
             Map.Entry<String, OperationModel> entry = it.next();
+            if("".equals(entry.getValue().getStartTime()) || "".equals(entry.getValue().getFinishedTime())) {
+                continue;
+            }
             Long finishedTime = Long.valueOf(entry.getValue().getFinishedTime());
             // release the record which is 1 day atfter finished.
             if(curTime - finishedTime >= TIME_OPERATION_RELEASE) {

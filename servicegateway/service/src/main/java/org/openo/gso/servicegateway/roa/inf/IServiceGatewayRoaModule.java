@@ -18,6 +18,7 @@ package org.openo.gso.servicegateway.roa.inf;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -26,7 +27,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 
 /**
@@ -47,7 +47,7 @@ public interface IServiceGatewayRoaModule {
      * 
      * @param servletReq http request
      * @return response
-     * @throws ServiceException when operate database or parameter is wrong.
+     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @POST
@@ -62,10 +62,10 @@ public interface IServiceGatewayRoaModule {
      * @param serviceId service instance id
      * @param servletReq http request
      * @return response
-     * @throws ServiceException when operate database or parameter is wrong.
+     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
-    @POST
+    @DELETE
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/services/{serviceId}/terminate")
@@ -75,9 +75,9 @@ public interface IServiceGatewayRoaModule {
     /**
      * Query operation by operationId<br>
      * 
-     * @param servletReq
-     * @return
-     * @throws ApplicationException
+     * @param servletReq http request
+     * @return the operation progress model
+     * @throws ApplicationException when inner error
      * @since GSO 0.5
      */
     @GET
@@ -90,9 +90,9 @@ public interface IServiceGatewayRoaModule {
     /**
      * Query create parameters by templateId<br>
      * 
-     * @param servletReq
-     * @return
-     * @throws ApplicationException
+     * @param servletReq http request
+     * @return the parameters model for gui
+     * @throws ApplicationException  when inner error
      * @since GSO 0.5
      */
     @GET

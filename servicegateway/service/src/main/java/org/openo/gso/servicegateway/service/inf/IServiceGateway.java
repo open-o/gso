@@ -52,16 +52,16 @@ public interface IServiceGateway {
      * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    String deleteService(String serviceId, String reqContent, HttpServletRequest httpRequest)
+    String deleteService(String serviceId, HttpServletRequest httpRequest)
             throws ApplicationException;
 
     /**
      * query the operation information
      * <br>
      * 
-     * @param serviceId
-     * @param operationId
-     * @return
+     * @param serviceId the service id
+     * @param operationId the operation id
+     * @return the operation progress model
      * @throws ApplicationException
      * @since GSO 0.5
      */
@@ -71,9 +71,9 @@ public interface IServiceGateway {
     /**
      * <br>
      *  generate the parameters for create service
-     * @param templateId
-     * @param servletReq
-     * @return
+     * @param templateId the template id
+     * @param servletReq the http request
+     * @return the parameter model for gui
      * @throws ApplicationException
      * @since GSO 0.5
      */

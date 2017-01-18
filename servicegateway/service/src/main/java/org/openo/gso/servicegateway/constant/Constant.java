@@ -164,12 +164,12 @@ public class Constant {
     /**
      * the URL for template request.
      */
-    public static final String CATALOG_TEMPLATE_URL = "/openoapi/catalog/v1/servicetemplates/";
+    public static final String CATALOG_TEMPLATE_URL = "/openoapi/catalog/v1/servicetemplates/%s";
 
     /**
      * the URL for csar request.
      */
-    public static final String CATALOG_CSAR_URL = "/openoapi/catalog/v1/csars/";
+    public static final String CATALOG_CSAR_URL = "/openoapi/catalog/v1/csars/%s";
 
     /**
      * the URL for query node templates by template id
