@@ -52,5 +52,20 @@
     <update id="updateServiceStatus" parameterType="java.lang.String">
         update t_lcm_service set status = #{status} where serviceId = #{serviceId}
     </update>
-
+    
+    <select id="queryServiceByStatus" resultMap="serviceModelResultMap">
+        select serviceId,name,description,activeStatus,status,creator,createAt,segmentNumber from t_lcm_service where status = #{status}
+    </select>
+    
+    <update id="batchUpdate" parameterType="java.util.List" >  
+        <foreach collection="services" item="item" index="index" separator=";">  
+            update t_lcm_service 
+            <set>
+                <if test="item.status != null">
+                    status = #{item.status}
+                </if>
+            </set>
+            where serviceId = #{item.serviceId}  
+        </foreach>  
+    </update>
 </mapper>

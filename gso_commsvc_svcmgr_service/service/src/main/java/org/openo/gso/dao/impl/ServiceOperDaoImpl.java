@@ -16,6 +16,8 @@
 
 package org.openo.gso.dao.impl;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.inf.IServiceOperDao;
@@ -145,6 +147,59 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
 
         } catch(Exception exception) {
             LOGGER.error("Fail to update service operation. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+    }
+
+    /**
+     * Delete old operation records which are generated for 15 days.<br/>
+     * 
+     * @throws ApplicationException
+     * @since GSO 0.5
+     */
+    @Override
+    public void deleteHistory() throws ApplicationException {
+        try {
+            getMapper(ServiceOperMapper.class).deleteHistory();
+        } catch(Exception exception) {
+            LOGGER.error("Fail to delete old operation records. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+    }
+
+    /**
+     * Get operations by service progress type.<br/>
+     * 
+     * @param progress service progress type,finished|processing|error
+     * @return service operations
+     * @since GSO 0.5
+     */
+    @Override
+    public List<ServiceOperation> queryOperByIds(List<String> svcIds) throws ApplicationException {
+        try {
+            return getMapper(ServiceOperMapper.class).queryOperByIds(svcIds);
+
+        } catch(Exception exception) {
+            LOGGER.error("Fail to query operations by service instance ids. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+    }
+
+    /**
+     * Batch update service operations.<br/>
+     * 
+     * @param svcOperations service operations
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    @Override
+    public void batchUpdate(List<ServiceOperation> svcOperations) throws ApplicationException {
+        try {
+            LOGGER.info("Batch update service operations: {}", svcOperations);
+            ValidateUtil.assertObjectNotNull(svcOperations);
+            getMapper(ServiceOperMapper.class).batchUpdate(svcOperations);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to batch update service operations. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }

@@ -40,8 +40,6 @@ public interface IServiceSegmentDao {
      * @since GSO 0.5
      */
     void insertSegment(ServiceSegmentModel serviceSegment) throws ApplicationException;
-    
-    
 
     /**
      * Delete service segment instance by service ID.<br/>
@@ -61,7 +59,7 @@ public interface IServiceSegmentDao {
      * @since GSO 0.5
      */
     List<ServiceSegmentModel> queryServiceSegments(String serviceId) throws ApplicationException;
-    
+
     /**
      * query service segment by id and type<br>
      * 
@@ -69,24 +67,25 @@ public interface IServiceSegmentDao {
      * @param serviceSegmentType NFVO or SDNO
      * @return service segment
      * @throws ApplicationException when database exception or parameter is wrong
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
-    ServiceSegmentModel queryServiceSegmentByIdAndType(String serviceSegmentId, String serviceSegmentType) throws ApplicationException;
-    
+    ServiceSegmentModel queryServiceSegmentByIdAndType(String serviceSegmentId, String serviceSegmentType)
+            throws ApplicationException;
+
     /**
      * delete segment by segment id and segment type<br>
      * 
      * @param serviceSegment service segment
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     void deleteSegmentByIdAndType(ServiceSegmentModel serviceSegment) throws ApplicationException;
-    
+
     /**
      * Insert service segment operation<br>
      * 
      * @param svcSegmentOper service segment operation
      * @throws ApplicationException when database exception or parameter is wrong
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) throws ApplicationException;
 
@@ -95,7 +94,7 @@ public interface IServiceSegmentDao {
      * 
      * @param segmentOper service segment operation
      * @throws ApplicationException when database exception or parameter is wrong
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     void updateSegmentOper(ServiceSegmentOperation segmentOper) throws ApplicationException;
 
@@ -106,8 +105,19 @@ public interface IServiceSegmentDao {
      * @param segmentType segment type
      * @return service segment operation instance
      * @throws ApplicationException when database exception or parameter is wrong
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
-    ServiceSegmentOperation querySegmentOperByJobIdAndType(String jobId, String segmentType) throws ApplicationException;
-    
+    ServiceSegmentOperation querySegmentOperByJobIdAndType(String jobId, String segmentType)
+            throws ApplicationException;
+
+    /**
+     * Query segment operations by service instance ids.<br/>
+     * 
+     * @param svcIds service instance ids.
+     * @return service segment operations.
+     * @throws ApplicationException when database exception.
+     * @since GSO 0.5
+     */
+    List<ServiceSegmentOperation> querySegmentOperByIds(List<String> svcIds) throws ApplicationException;
+
 }

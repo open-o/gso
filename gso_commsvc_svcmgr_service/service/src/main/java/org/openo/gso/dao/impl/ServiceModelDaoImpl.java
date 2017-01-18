@@ -216,8 +216,8 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
     public ServiceModel queryServiceByInstanceId(String serviceId) throws ApplicationException {
         try {
             return getMapper(ServiceModelMapper.class).queryServiceByInstanceId(serviceId);
-        } catch(Exception e) {
-            LOGGER.error("Fail to query service instance by id : {}", e);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to query service instance by id : {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
@@ -234,10 +234,47 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
     public void updateServiceStatus(String serviceId, String status) throws ApplicationException {
         try {
             getMapper(ServiceModelMapper.class).updateServiceStatus(serviceId, status);
-        } catch(Exception e) {
-            LOGGER.error("fail to update the service : {}, result : {}", serviceId, e);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to update the service : {}, result : {}", serviceId, exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
 
+    }
+
+    /**
+     * Query service instances by status.<br/>
+     * 
+     * @param status service instance status, finished|processing|error
+     * @return service instances
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    @Override
+    public List<ServiceModel> queryServiceByStatus(String status) throws ApplicationException {
+        try {
+            return getMapper(ServiceModelMapper.class).queryServiceByStatus(status);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to query service instances by status: {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+    }
+
+    /**
+     * Batch update service instances.<br/>
+     * 
+     * @param services service instances
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    @Override
+    public void batchUpdate(List<ServiceModel> services) throws ApplicationException {
+        try {
+            LOGGER.info("Batch  update services: {}", services);
+            ValidateUtil.assertObjectNotNull(services);
+            getMapper(ServiceModelMapper.class).batchUpdate(services);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to batch update service instance. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
     }
 }

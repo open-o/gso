@@ -16,7 +16,11 @@
 
 package org.openo.gso.dao.inf;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.model.servicemo.InvServiceModel;
 
 /**
  * Interface to operate inventory DB.<br/>
@@ -60,4 +64,13 @@ public interface IInventoryDao {
      * @since GSO 0.5
      */
     void updateServiceStatus(String serviceId, String status) throws ApplicationException;
+
+    /**
+     * Batch update service instances.<br/>
+     * 
+     * @param services service instances
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    void batchUpdate(@Param("services") List<InvServiceModel> services) throws ApplicationException;
 }

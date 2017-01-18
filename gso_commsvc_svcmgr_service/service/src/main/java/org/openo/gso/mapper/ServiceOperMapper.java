@@ -16,6 +16,8 @@
 
 package org.openo.gso.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.openo.gso.model.servicemo.ServiceOperation;
 
@@ -62,4 +64,28 @@ public interface ServiceOperMapper {
      * @since GSO 0.5
      */
     void update(ServiceOperation serviceOperation);
+
+    /**
+     * Delete old operation records which are generated for 15 days.<br/>
+     * 
+     * @since GSO 0.5
+     */
+    void deleteHistory();
+
+    /**
+     * Get operations by service progress type.<br/>
+     * 
+     * @param svcIds service instance id
+     * @return service operations
+     * @since GSO 0.5
+     */
+    List<ServiceOperation> queryOperByIds(@Param("svcIds") List<String> svcIds);
+
+    /**
+     * Batch update service operations.<br/>
+     * 
+     * @param svcOperations service operations
+     * @since GSO 0.5
+     */
+    void batchUpdate(@Param("svcOperations") List<ServiceOperation> svcOperations);
 }

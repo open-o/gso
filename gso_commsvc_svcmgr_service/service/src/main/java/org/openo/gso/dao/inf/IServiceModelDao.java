@@ -18,6 +18,7 @@ package org.openo.gso.dao.inf;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServiceModel;
 
@@ -73,8 +74,27 @@ public interface IServiceModelDao {
      * 
      * @param serviceId service instance ID
      * @param status execution status
+     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     void updateServiceStatus(String serviceId, String status) throws ApplicationException;
 
+    /**
+     * Query service instances by status.<br/>
+     * 
+     * @param status service instance status, finished|processing|error
+     * @return service instances
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    List<ServiceModel> queryServiceByStatus(@Param("status") String status) throws ApplicationException;
+
+    /**
+     * Batch update service instances.<br/>
+     * 
+     * @param services service instances
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    void batchUpdate(@Param("services") List<ServiceModel> services) throws ApplicationException;
 }

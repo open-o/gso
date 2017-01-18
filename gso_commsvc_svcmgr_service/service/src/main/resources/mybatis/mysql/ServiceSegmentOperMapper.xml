@@ -63,4 +63,10 @@
         from t_lcm_svcsegment_operation where jobId = #{jobId} and serviceSegmentType = #{serviceSegmentType} 
     </select>
 
+<select id="querySegmentOperByIds" resultMap="ServiceSegmentOperationResultMap">
+        select serviceSegmentId,serviceSegmentType,serviceId,status,progress,errorCode,statusDescription from t_lcm_svcsegment_operation where serviceId in
+        <foreach item="item" index="index" collection="svcIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

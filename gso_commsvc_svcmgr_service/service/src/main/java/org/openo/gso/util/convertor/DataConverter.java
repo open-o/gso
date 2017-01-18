@@ -25,12 +25,15 @@ import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.model.catalogmo.OperationModel;
+import org.openo.gso.model.servicemo.InvServiceModel;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 import org.openo.gso.util.json.JsonUtil;
 import org.openo.gso.util.uuid.UuidUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sf.json.JSONObject;
 
 /**
  * Data converter.<br/>
@@ -174,5 +177,59 @@ public class DataConverter {
         resultMap.put(Constant.SERVICE_INDENTIFY, properties);
 
         return resultMap;
+    }
+
+    /**
+     * Assemble workflow parameters.<br/>
+     * 
+     * @param params service instance parameter
+     * @param model service instance model
+     * @return workflow parameters
+     * @since GSO 0.5
+     */
+    public static Object getWorkFlowParams(Map<String, Object> params, ServiceModel model) {
+        List<Object> workflowParam = new ArrayList<>();
+        if(null != params) {
+            Object segments = params.get(Constant.SERVICE_SEGMENTS);
+            if(segments instanceof List) {
+                List<Object> segmentLst = (List)segments;
+                for(Object segment : segmentLst) {
+                    JSONObject obj = JSONObject.fromObject(segment);
+                    if(null == obj) {
+                        continue;
+                    }
+
+                    // add fixed parameters
+                    obj.put(Constant.SERVICE_ID, model.getServiceId());
+                    obj.put(Constant.SERVICE_NAME,
+                            (model.getName() + "." + obj.getString(Constant.NODE_TEMPLATE_NAME)));
+                    obj.put(Constant.SERVICE_DESCRIPTION, model.getDescription());
+                    workflowParam.add(JSONObject.toBean(obj));
+                }
+            }
+        }
+
+        return (new HashMap<>()).put(Constant.SERVICE_SEGMENTS, workflowParam);
+    }
+
+    /**
+     * Convert gso data to inventory data.<br/>
+     * 
+     * @param service gso instance
+     * @return inventory instance
+     * @since GSO 0.5
+     */
+    public static InvServiceModel convertToInvData(ServiceModel service) {
+        InvServiceModel invService = new InvServiceModel();
+        invService.setServiceId(service.getServiceId());
+        invService.setName(service.getName());
+        invService.setServiceType(CommonConstant.SegmentType.GSO);
+        invService.setDescription(service.getDescription());
+        invService.setActiveStatus(service.getActiveStatus());
+        invService.setStatus(service.getStatus());
+        invService.setCreator(service.getCreator());
+        invService.setCreateAt(service.getCreateAt());
+
+        return invService;
     }
 }

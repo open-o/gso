@@ -73,4 +73,20 @@ public interface ServiceModelMapper {
      */
     void updateServiceStatus(@Param("serviceId") String serviceId, @Param("status") String status);
 
+    /**
+     * Query service instances by status.<br/>
+     * 
+     * @param status service instance status, finished|processing|error
+     * @return service instances
+     * @since GSO 0.5
+     */
+    List<ServiceModel> queryServiceByStatus(@Param("status") String status);
+
+    /**
+     * Batch update service instances.<br/>
+     * 
+     * @param services service instances
+     * @since GSO 0.5
+     */
+    void batchUpdate(@Param("services") List<ServiceModel> services);
 }
