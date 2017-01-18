@@ -550,8 +550,8 @@ public class DriverManagerImpl implements IDriverManager {
      * @since  GSO 0.5
      */
     private void parseDomainHost(String domainHost, Map<String, Object> paramsMap) {
-        if(StringUtils.isEmpty(domainHost)){
-            LOGGER.info("domainHost is empty");
+        if(StringUtils.isEmpty(domainHost) || CommonConstant.LOCAL_HOST.equals(domainHost)){
+            LOGGER.info("domainHost is {}", domainHost);
             return;
         }
         LOGGER.info("domainHost is {}", domainHost);
