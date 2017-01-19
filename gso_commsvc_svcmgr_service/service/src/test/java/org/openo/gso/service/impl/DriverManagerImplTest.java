@@ -123,9 +123,19 @@ public class DriverManagerImplTest {
         DriverManagerImpl impl = new DriverManagerImpl();
         impl.setServiceSegmentDao(serviceSegmentDao);
         impl.setServiceInf(serviceInf);
+        final String str =
+                "{\"nodeTemplateName\":\"POP\",\"segments\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
+
         final RestfulResponse restRsp = new RestfulResponse();
         restRsp.setStatus(200);
         try{
+            new MockUp<RestUtils>() {
+
+                @Mock
+                public String getRequestBody(HttpServletRequest request) {
+                    return str;
+                }
+            };
             new NonStrictExpectations() {
                 {
                     
@@ -133,7 +143,7 @@ public class DriverManagerImplTest {
                     returns(restRsp);
                 }
             };
-            impl.deleteNs("1", CommonConstant.SegmentType.NFVO);
+            impl.deleteNs(httpRequest, CommonConstant.SegmentType.NFVO);
         } catch(ApplicationException e) {
             e.printStackTrace();
         }
@@ -205,7 +215,7 @@ public class DriverManagerImplTest {
                 }
             };
                  
-            impl.terminateNs("1", httpRequest, CommonConstant.SegmentType.NFVO);
+            impl.terminateNs(httpRequest, CommonConstant.SegmentType.NFVO);
         } catch(ApplicationException e) {
 
         }

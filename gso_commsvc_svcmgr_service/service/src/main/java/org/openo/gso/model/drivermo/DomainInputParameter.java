@@ -28,6 +28,8 @@ public class DomainInputParameter {
     
     private String serviceId;
     
+    private String subServiceId;
+    
     private String subServiceName;
     
     private String subServiceDesc;
@@ -57,8 +59,21 @@ public class DomainInputParameter {
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
     }
-
     
+    /**
+     * @return Returns the subServiceId.
+     */
+    public String getSubServiceId() {
+        return subServiceId;
+    }
+    
+    /**
+     * @param subServiceId The subServiceId to set.
+     */
+    public void setSubServiceId(String subServiceId) {
+        this.subServiceId = subServiceId;
+    }
+
     /**
      * @return Returns the subServiceName.
      */

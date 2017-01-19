@@ -47,19 +47,18 @@ public interface IDriverManager {
     /**
      * terminate service instance.<br/>
      * 
-     * @param nsInstanceId uuid of service instance
      * @param httpRequest http request
      * @param domain SDNO or NFVO
      * @return restful response
      * @throws ApplicationException when fail to terminate network service
      * @since GSO 0.5
      */
-    RestfulResponse terminateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain) throws ApplicationException;
+    RestfulResponse terminateNs(HttpServletRequest httpRequest, String domain) throws ApplicationException;
 
     /**
      * create service<br>
      * 
-     * @param servletReq
+     * @param servletReq http request
      * @param domain SDNO or NFVO
      * @return response
      * @throws ApplicationException when fail to create network service
@@ -70,13 +69,13 @@ public interface IDriverManager {
     /**
      * delete service<br>
      * 
-     * @param nsInstanceId uuid of service instance
+     * @param servletReq http request
      * @param domain SDNO or NFVO
      * @return response
      * @throws ApplicationException when fail to delete network service
      * @since  GSO 0.5
      */
-    RestfulResponse deleteNs(String nsInstanceId, String domain) throws ApplicationException;
+    RestfulResponse deleteNs(HttpServletRequest servletReq, String domain) throws ApplicationException;
 
     /**
      * query service job status<br>

@@ -237,14 +237,16 @@ public class DriverManagerImpl implements IDriverManager {
     /**
      * delete network service<br>
      * 
-     * @param nsInstanceId instance id
+     * @param servletReq http request
      * @param segmentType NFVO or SDNO
      * @return response
      * @throws ApplicationException when fail to delete network service
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse deleteNs(String nsInstanceId, String segmentType) throws ApplicationException {
+    public RestfulResponse deleteNs(HttpServletRequest servletReq, String segmentType) throws ApplicationException {
+        DomainInputParameter currentInput = getParamsForCurrentNode(servletReq);
+        String nsInstanceId = currentInput.getSubServiceId();
         //Step 1: get service segment by segmentId and segmentType
         ServiceSegmentModel segment = serviceSegmentDao.queryServiceSegmentByIdAndType(nsInstanceId, segmentType);
         Map<String, Object> delParamMap = getDelParams(nsInstanceId, segment.getDomainHost());
@@ -348,11 +350,11 @@ public class DriverManagerImpl implements IDriverManager {
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse terminateNs(String nsInstanceId, HttpServletRequest httpRequest, String segmentType)
+    public RestfulResponse terminateNs(HttpServletRequest httpRequest, String segmentType)
             throws ApplicationException {
         //Step1: get input for current node
         DomainInputParameter input = getParamsForCurrentNode(httpRequest);
-        
+        String nsInstanceId = input.getSubServiceId();
         // save segment operation info for delete process
         LOGGER.info("save segment operation for delete process");
         ServiceSegmentOperation segmentOperInfo = new ServiceSegmentOperation(nsInstanceId, segmentType, CommonConstant.OperationType.DELETE, input.getServiceId(), CommonConstant.Status.PROCESSING);

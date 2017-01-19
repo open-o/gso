@@ -37,6 +37,17 @@ public class DomainInputParameterTest {
     public void testSetServiceId() {
         input.setServiceId("1");
     }
+    
+    @Test
+    public void testGetSubServiceId() {
+        input.getSubServiceId();
+    }
+
+    @Test
+    public void testSetSubServiceId() {
+        input.setSubServiceId("1");
+    }
+
 
     @Test
     public void testGetSubServiceName() {
