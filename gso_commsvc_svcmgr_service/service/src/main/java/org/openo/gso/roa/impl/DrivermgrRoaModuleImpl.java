@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
+import org.openo.gso.roa.inf.IGSODrivermgrRoaModule;
 import org.openo.gso.roa.inf.INFVODrivermgrRoaModule;
 import org.openo.gso.roa.inf.ISDNODrivermgrRoaModule;
 import org.openo.gso.service.inf.IDriverManager;
@@ -35,7 +36,7 @@ import org.openo.gso.service.inf.IDriverManager;
  * @author
  * @version GSO 0.5 2016/8/4
  */
-public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODrivermgrRoaModule {
+public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODrivermgrRoaModule,IGSODrivermgrRoaModule {
 
     /**
      * DriverManager.
@@ -214,5 +215,47 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
         ResponseBuilder rspBuilder = Response.status(rsp.getStatus());
         rspBuilder.entity(rsp.getResponseContent());
         return rspBuilder.build();
+    }
+
+    /**
+     * Create GSO Service<br>
+     * 
+     * @param servletReq http request
+     * @return response
+     * @throws ApplicationException when fail to create gso service
+     * @since   GSO 0.5
+     */
+    @Override
+    public Response createGsoNs(HttpServletRequest servletReq) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.createGsoNs(servletReq, CommonConstant.SegmentType.GSO);
+        return buildResponse(rsp);
+    }
+
+    /**
+     * Delete GSO Service<br>
+     * 
+     * @param servletReq http request
+     * @return response
+     * @throws ApplicationException when fail to delete gso service
+     * @since   GSO 0.5
+     */
+    @Override
+    public Response deleteGsoNs(HttpServletRequest servletReq) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.deleteGsoNs(servletReq, CommonConstant.SegmentType.GSO);
+        return buildResponse(rsp);
+    }
+
+    /**
+     * Query GSO Service Job Status<br>
+     * 
+     * @param jobId job id
+     * @return response
+     * @throws ApplicationException when fail to query gso service job status
+     * @since   GSO 0.5
+     */
+    @Override
+    public Response queryGsoJobStatus(String jobId) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.getGsoNsProgress(jobId, CommonConstant.SegmentType.GSO);
+        return buildResponse(rsp);
     }
 }

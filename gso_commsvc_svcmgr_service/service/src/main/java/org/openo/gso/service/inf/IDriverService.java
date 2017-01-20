@@ -105,4 +105,12 @@ public interface IDriverService {
      * @since  GSO 0.5
      */
     ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost) throws ApplicationException;
+
+    /**
+     * create gso service<br>
+     * 
+     * @param inputMap parameters map
+     * @since  GSO 0.5
+     */
+    RestfulResponse createGsoNs(Map<String, Object> inputMap);
 }

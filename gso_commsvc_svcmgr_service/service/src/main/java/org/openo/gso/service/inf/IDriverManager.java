@@ -88,4 +88,34 @@ public interface IDriverManager {
      */
     RestfulResponse getNsProgress(String jobId, String domain) throws ApplicationException;
 
+    /**
+     * create gso service<br>
+     * 
+     * @param servletReq http request
+     * @param domain GSO
+     * @return response
+     * @since  GSO 0.5
+     */
+    RestfulResponse createGsoNs(HttpServletRequest servletReq, String domain) throws ApplicationException;
+
+    /**
+     * delete gso service<br>
+     * 
+     * @param servletReq http request
+     * @param domain GSO
+     * @return response
+     * @since  GSO 0.5
+     */
+    RestfulResponse deleteGsoNs(HttpServletRequest servletReq, String domain) throws ApplicationException;
+
+    /**
+     * query gso service job status<br>
+     * 
+     * @param jobId job id 
+     * @param domain GSO
+     * @return response
+     * @since  GSO 0.5
+     */
+    RestfulResponse getGsoNsProgress(String jobId, String domain) throws ApplicationException;
+
 }
