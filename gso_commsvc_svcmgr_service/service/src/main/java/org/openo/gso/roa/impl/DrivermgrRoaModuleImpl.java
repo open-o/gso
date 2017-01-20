@@ -76,14 +76,14 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     /**
      * Delete NFVO service instance<br>
      *
-     * @param nsInstanceId uuid of service instance
+     * @param servletReq http request
      * @return response
      * @throws ApplicationException when fail to delete service instance
      * @since   GSO 0.5
      */
     @Override
-    public Response deleteNfvoNs(String nsInstanceId) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.deleteNs(nsInstanceId, CommonConstant.SegmentType.NFVO);
+    public Response deleteNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.deleteNs(servletReq, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
 
@@ -121,15 +121,14 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     /**
      * Terminate NFVO service instance.<br/>
      * 
-     * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return response
      * @throws ApplicationException when fail to terminate the service instance
      * @since GSO 0.5
      */
     @Override
-    public Response terminateNfvoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.terminateNs(nsInstanceId, servletReq, CommonConstant.SegmentType.NFVO);
+    public Response terminateNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.terminateNs(servletReq, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
     
@@ -150,14 +149,14 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     /**
      * Delete SDNO service instance<br>
      * 
-     * @param nsInstanceId uuid of service instance
+     * @param servletReq http request
      * @return response
      * @throws ApplicationException when fail to delete service instance
      * @since   GSO 0.5
      */
     @Override
-    public Response deleteSdnoNs(String nsInstanceId) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.deleteNs(nsInstanceId, CommonConstant.SegmentType.SDNO);
+    public Response deleteSdnoNs(HttpServletRequest servletReq) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.deleteNs(servletReq, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
 
@@ -193,15 +192,14 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     /**
      * Terminate NFVO service instance<br>
      * 
-     * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return response
      * @throws ApplicationException when fail to terminate the service instance
      * @since   GSO 0.5
      */
     @Override
-    public Response terminateSdnoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
-        RestfulResponse rsp = driverMgr.terminateNs(nsInstanceId, servletReq, CommonConstant.SegmentType.SDNO);
+    public Response terminateSdnoNs(HttpServletRequest servletReq) throws ApplicationException {
+        RestfulResponse rsp = driverMgr.terminateNs(servletReq, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
 

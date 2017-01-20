@@ -18,7 +18,6 @@ package org.openo.gso.roa.inf;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -56,16 +55,16 @@ public interface ISDNODrivermgrRoaModule {
     /**
      * Delete the SDNO instance<br>
      * 
-     * @param nsInstanceId uuid of service instance
+     * @param servletReq http request
      * @return response
      * @throws ApplicationException when fail to delete the network service
      * @since  GSO 0.5
      */
-    @DELETE
+    @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    @Path("/ns/{nsInstanceId}")
-    Response deleteSdnoNs(@PathParam("nsInstanceId") String nsInstanceId) throws ApplicationException;
+    @Path("/ns/delete")
+    Response deleteSdnoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
 
     /**
      * Query status of the SDNO instance<br>
@@ -100,7 +99,6 @@ public interface ISDNODrivermgrRoaModule {
     /**
      * Terminate the SDNO instance<br>
      * 
-     * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return response 
      * @throws ApplicationException when fail to terminate the SDNO instance
@@ -109,7 +107,7 @@ public interface ISDNODrivermgrRoaModule {
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    @Path("/{nsInstanceId}/terminate")
-    Response terminateSdnoNs(@PathParam("nsInstanceId") String nsInstanceId, @Context HttpServletRequest servletReq) throws ApplicationException;
+    @Path("/ns/terminate")
+    Response terminateSdnoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
 
 }

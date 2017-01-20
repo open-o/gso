@@ -57,14 +57,12 @@ public class DrivermgrRoaModuleImplTest {
     
     @Test
     public void testDeleteNFVONs() {
-        String nsInstanceId = "1";
-        impl.deleteNfvoNs(nsInstanceId);
+        impl.deleteNfvoNs(servletReq);
     }
     
     @Test
     public void testTerminateNFVONs() {
-        String nsInstanceId = "1";
-        impl.terminateNfvoNs(nsInstanceId, servletReq);
+        impl.terminateNfvoNs(servletReq);
     }
     
     @Test
@@ -86,14 +84,12 @@ public class DrivermgrRoaModuleImplTest {
     
     @Test
     public void testDeleteSDNONs() {
-        String nsInstanceId = "1";
-        impl.deleteSdnoNs(nsInstanceId);
+        impl.deleteSdnoNs(servletReq);
     }
     
     @Test
     public void testTerminateSDNONs() {
-        String nsInstanceId = "1";
-        impl.terminateSdnoNs(nsInstanceId, servletReq);
+        impl.terminateSdnoNs(servletReq);
     }
     
     @Test
