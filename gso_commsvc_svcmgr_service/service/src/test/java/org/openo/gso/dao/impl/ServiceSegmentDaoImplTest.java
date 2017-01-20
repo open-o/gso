@@ -78,6 +78,10 @@ public class ServiceSegmentDaoImplTest {
         reader = Resources.getResourceAsReader("ServiceSegment.sql");
         ScriptRunner runner = new ScriptRunner(conn);
         runner.runScript(reader);
+
+        reader = Resources.getResourceAsReader("Operation.sql");
+        runner.runScript(reader);
+
         reader.close();
 
         // mock session
@@ -167,7 +171,7 @@ public class ServiceSegmentDaoImplTest {
 
         serviceSegmentDao.insertSegment(serviceSegment);
     }
-    
+
     /**
      * Delete successfully.<br/>
      * 
@@ -206,12 +210,11 @@ public class ServiceSegmentDaoImplTest {
             }
         };
     }
-    
-   
+
     /**
      * Insert Service Segment Operation<br>
      * 
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     @Test
     public void testInsertSegmentOper() {
@@ -220,11 +223,11 @@ public class ServiceSegmentDaoImplTest {
         segOper.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
         serviceSegmentDao.insertSegmentOper(segOper);
     }
-    
+
     /**
      * Update Service Segment Operation<br>
      * 
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     @Test
     public void testUpdateSegmentOper() {
@@ -234,22 +237,22 @@ public class ServiceSegmentDaoImplTest {
         segOper.setJobId("1");
         serviceSegmentDao.updateSegmentOper(segOper);
     }
-    
+
     /**
      * Query Segment By Id And Type<br>
      * 
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     @Test
     public void testQuerySegmentByIdAndType() {
         String segmentId = "1";
         serviceSegmentDao.queryServiceSegmentByIdAndType(segmentId, CommonConstant.SegmentType.NFVO);
     }
-    
+
     /**
      * Delete Segment By Id And Type<br>
      * 
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     @Test
     public void testDeleteSegmentByIdAndType() {
@@ -258,11 +261,11 @@ public class ServiceSegmentDaoImplTest {
         seg.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
         serviceSegmentDao.deleteSegmentByIdAndType(seg);
     }
-    
+
     /**
      * Query Segment Oper By Job Id And Type<br>
      * 
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     @Test
     public void testQuerySegmentOperByJobIdAndType() {

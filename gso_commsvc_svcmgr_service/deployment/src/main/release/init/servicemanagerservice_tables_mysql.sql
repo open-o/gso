@@ -27,6 +27,7 @@ create table t_lcm_service
     status       varchar(20) not null,
     creator      varchar(50) not null,
     createAt     bigint(13)   not null,
+    segmentNumber     int default 0,
     primary key(serviceId)
 )
 engine=innodb;
@@ -68,7 +69,7 @@ create table t_lcm_service_segment
     nodeType varchar(255) not null,    
     topoSeqNumber int not null,
     domainHost varchar(100),
-    nodeTemplateName varchar(255) not nulll,
+    nodeTemplateName varchar(255) not null,
     constraint pk_t_segments primary key(serviceId, serviceSegmentId, serviceSegmentType)
 )
 engine=innodb;
@@ -104,9 +105,9 @@ create table t_lcm_service_operation
     operationContent varchar(255) ,
     progress int not null,
     reason varchar(255),
-    operationAt bigint(13) not null,
+    operateAt bigint(13) not null,
     finishedAt bigint(13) not null,
-    constraint pk_t_svc_operation primary key(serviceId, opertaionId)
+    constraint pk_t_svc_operation primary key(serviceId, operationId)
 )
 engine=innodb;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.dao.impl.InventoryDaoImpl;
 import org.openo.gso.dao.impl.ServiceModelDaoImpl;
+import org.openo.gso.dao.impl.ServiceOperDaoImpl;
 import org.openo.gso.dao.impl.ServicePackageDaoImpl;
 import org.openo.gso.dao.impl.ServiceSegmentDaoImpl;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
@@ -56,6 +57,7 @@ import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.restproxy.impl.CatalogProxyImpl;
 import org.openo.gso.restproxy.impl.WorkflowProxyImpl;
+import org.openo.gso.service.impl.OperationManager;
 import org.openo.gso.service.impl.ServiceManagerImpl;
 import org.openo.gso.util.http.HttpUtil;
 import org.openo.gso.util.http.ResponseUtils;
@@ -139,6 +141,16 @@ public class ServicemgrRoaModuleImplTest {
     DatabaseSessionHandler dbSessionHandler = new DatabaseSessionHandler();
 
     /**
+     * Operation manager.
+     */
+    OperationManager operationManager = new OperationManager();
+
+    /**
+     * Service operation DAO.
+     */
+    ServiceOperDaoImpl serviceOperDao = new ServiceOperDaoImpl();
+
+    /**
      * Before executing UT, start sql.<br/>
      * 
      * @since GSO 0.5
@@ -151,9 +163,12 @@ public class ServicemgrRoaModuleImplTest {
         serviceSegmentDao.setDbSessionHandler(dbSessionHandler);
         packageDao.setDbSessionHandler(dbSessionHandler);
         inventoryDao.setInvSessionHandler(dbSessionHandler);
+        serviceOperDao.setDbSessionHandler(dbSessionHandler);
 
         prepareSQL();
 
+        operationManager.setServiceOperDao(serviceOperDao);
+        serviceManager.setOperationManager(operationManager);
         serviceManager.setServiceModelDao(serviceDao);
         serviceManager.setServiceSegmentDao(serviceSegmentDao);
         serviceManager.setServicePackageDao(packageDao);
@@ -195,6 +210,9 @@ public class ServicemgrRoaModuleImplTest {
         reader = Resources.getResourceAsReader("inventory.sql");
         runner.runScript(reader);
 
+        reader = Resources.getResourceAsReader("Operation.sql");
+        runner.runScript(reader);
+
         reader.close();
 
         // mock session
@@ -221,6 +239,42 @@ public class ServicemgrRoaModuleImplTest {
     public void testCreateServiceSuccess() throws ApplicationException {
         // mock request body
         mockGetRequestBody(FILE_PATH + "createServiceInstance.json");
+
+        // mock get catalog parameters
+        new MockUp<CatalogProxyImpl>() {
+
+            @Mock
+            public List<CatalogParameterModel> getParamsByTemplateId(String templateId, HttpServletRequest request)
+                    throws ApplicationException {
+                return ResponseUtils.getDataModelFromRsp(getJsonString(FILE_PATH + "getTemplateParamters.json"),
+                        "inputs", CatalogParameterModel.class);
+            }
+
+        };
+
+        // mock get catalog plans
+        RestfulResponse responsePlan = new RestfulResponse();
+        responsePlan.setResponseJson(getJsonString(FILE_PATH + "getPlans.json"));
+        responsePlan.setStatus(HttpCode.RESPOND_OK);
+        mockGet(responsePlan);
+
+        // mock start workflow bpel workflow
+        mockPost(responseSuccess);
+
+        Response response = serviceRoa.createService(httpRequest);
+        assertEquals(HttpCode.RESPOND_ACCEPTED, response.getStatus());
+    }
+
+    /**
+     * Test to create service without segments successfully.<br/>
+     * 
+     * @throws ApplicationException when fail to operate database or parameter is wrong.
+     * @since GSO 0.5
+     */
+    @Test
+    public void testCreateServiceWithoutSegSuccess() throws ApplicationException {
+        // mock request body
+        mockGetRequestBody(FILE_PATH + "createServiceInstanceWithoutSegs.json");
 
         // mock get catalog parameters
         new MockUp<CatalogProxyImpl>() {

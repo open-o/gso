@@ -90,4 +90,17 @@ public class OperationManager implements IOperationManager {
         LOGGER.error("Update service operation data: {}", svcOperation);
         serviceOperDao.update(svcOperation);
     }
+
+    /**
+     * Delete service operation by service instance ID.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @throws ApplicationException when fail to operate database.
+     * @since GSO 0.5
+     */
+    @Override
+    public void delete(String serviceId) throws ApplicationException {
+        LOGGER.info("Delete service operation, the service instance ID: {}", serviceId);
+        serviceOperDao.delete(serviceId);
+    }
 }

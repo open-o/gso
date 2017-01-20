@@ -1,4 +1,4 @@
--- Copyright 2016 Huawei Technologies Co., Ltd.
+-- Copyright 2016-2017 Huawei Technologies Co., Ltd.
 --
 -- Licensed under the Apache License, Version 2.0 (the "License");
 -- you may not use this file except in compliance with the License.
@@ -15,15 +15,17 @@ drop table t_lcm_service_segment if exists;
 
 create table t_lcm_service_segment
 (
-    serviceId    varchar(255) not null,
-	serviceSegmentId varchar(255) not null,
-	serviceSegmentName  varchar(255) ,
-	templateId varchar(255) not null,
-	nodeType varchar(255) not null,	
-	topoSeqNumber int not null,
-	status varchar(20) not null,
+    serviceId    varchar(36) not null,
+    serviceSegmentId varchar(255) not null,
+    serviceSegmentType varchar(20) not null,
+    serviceSegmentName  varchar(255) ,
+    templateId varchar(255) not null,
+    nodeType varchar(255) not null,    
+    topoSeqNumber int not null,
+    domainHost varchar(100),
+    nodeTemplateName varchar(255) not null,
 	constraint pk_t_segments primary key(serviceId, serviceSegmentId)
 );
 
-insert into t_lcm_service_segment (serviceId,serviceSegmentId,serviceSegmentName,templateId,nodeType,topoSeqNumber,status) 
-VALUES('1', '12345_1', 'pop service', '12345', 'tosaca.nfv.node.POP', 1, 'createSucceed');
+insert into t_lcm_service_segment (serviceId,serviceSegmentId,serviceSegmentType,serviceSegmentName,templateId,nodeType,topoSeqNumber,domainHost,nodeTemplateName) 
+VALUES('1', '12345_1', 'NFVO', 'pop service', '12345', 'tosaca.nfv.node.POP', 1, 'localhost','TOSCA.NODE.NFVO.POP');

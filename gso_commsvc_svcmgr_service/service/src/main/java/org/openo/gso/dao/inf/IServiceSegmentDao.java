@@ -120,4 +120,12 @@ public interface IServiceSegmentDao {
      */
     List<ServiceSegmentOperation> querySegmentOperByIds(List<String> svcIds) throws ApplicationException;
 
+    /**
+     * Delete old segment operation records which are generated for 15 days.<br/>
+     * 
+     * @param svcIds service instance ids
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    void deleteHistory(List<String> svcIds) throws ApplicationException;
 }

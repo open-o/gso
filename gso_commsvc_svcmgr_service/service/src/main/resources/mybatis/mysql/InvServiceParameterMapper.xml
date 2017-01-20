@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2016 Huawei Technologies Co., Ltd.
+    Copyright 2016-2017 Huawei Technologies Co., Ltd.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -22,11 +22,14 @@
         <result property="paramName" column="inputKey" />
         <result property="paramValue" column="inputValue" />
     </resultMap>
-
-    <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServiceParameter">
-        insert into t_lcm_inputParam_mapping (serviceId,inputKey,inputValue) values(#{serviceId},#{paramName},#{paramValue})
+    
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into t_lcm_inputParam_mapping(serviceId,inputKey,inputValue)
+        values
+        <foreach collection="serviceParams" item="item" index="index" separator=",">(#{item.serviceId},#{item.paramName},#{item.paramValue})
+        </foreach>
     </insert>
-
+    
     <delete id="delete">
         delete from t_lcm_inputParam_mapping where serviceId = #{serviceId}
     </delete>

@@ -16,6 +16,8 @@
 
 package org.openo.gso.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.openo.gso.model.servicemo.ServiceParameter;
 
@@ -30,12 +32,12 @@ import org.openo.gso.model.servicemo.ServiceParameter;
 public interface InvServiceParameterMapper extends InventoryMapper {
 
     /**
-     * Insert service parameters.<br/>
+     * Batch insert service parameters.<br/>
      * 
      * @param serviceParams service parameters
      * @since GSO 0.5
      */
-    void insert(ServiceParameter serviceParam);
+    void batchInsert(@Param("serviceParams") List<ServiceParameter> serviceParams);
 
     /**
      * Delete service parameters by service ID.<br/>

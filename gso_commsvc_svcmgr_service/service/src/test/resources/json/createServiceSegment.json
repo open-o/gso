@@ -1,7 +1,11 @@
 {
 	"serviceId": "1",
 	"serviceSegmentId": "12345_2",
+	"serviceSegmentType": "NFVO",
+	"serviceSegmentName": "test",
 	"nodeType": "tosca.nodes.nfv.ext.NS.ns_pop",
 	"templateId": "1234567890",
-	"status": "success"
+	"topoSeqNumber" : 1,
+	"domainHost": "127.0.0.1",
+	"nodeTemplateName": "pop"
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2016 Huawei Technologies Co., Ltd.
+    Copyright 2016-2017 Huawei Technologies Co., Ltd.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,36 +20,47 @@
     <resultMap type="org.openo.gso.model.servicemo.ServiceSegmentModel" id="ServiceSegmentResultMap">
         <result property="serviceId" column="serviceId" />
         <result property="serviceSegmentId" column="serviceSegmentId" />
+        <result property="serviceSegmentType" column="serviceSegmentType" />
         <result property="serviceSegmentName" column="serviceSegmentName" />
         <result property="templateId" column="templateId" />
         <result property="nodeType" column="nodeType" />
         <result property="topoSeqNumber" column="topoSeqNumber" />
-        <result property="status" column="status" />
+        <result property="domainHost" column="domainHost" />
+        <result property="nodeTemplateName" column="nodeTemplateName"/>
     </resultMap>
 
     <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServiceSegmentModel">
         insert into
         t_lcm_service_segment
-        (serviceId,serviceSegmentId,serviceSegmentName,templateId,nodeType,topoSeqNumber,status)
-        values(#{serviceId},#{serviceSegmentId},#{serviceSegmentName},#{templateId},#{nodeType},#{topoSeqNumber},#{status})
+        (serviceId,serviceSegmentId,serviceSegmentType,serviceSegmentName,templateId,nodeType,topoSeqNumber,domainHost,nodeTemplateName)
+        values(#{serviceId},#{serviceSegmentId},#{serviceSegmentType},#{serviceSegmentName},#{templateId},#{nodeType},#{topoSeqNumber},#{domainHost},#{nodeTemplateName})
     </insert>
 
-    <insert id="batchInsert" parameterType="org.openo.gso.model.servicemo.ServiceSegmentModel">
+    <insert id="batchInsert" parameterType="java.util.List">
         insert into
-        t_lcm_service_segment(serviceId,serviceSegmentId,serviceSegmentName,templateId,nodeType,topoSeqNumber,status)
+        t_lcm_service_segment(serviceId,serviceSegmentId,serviceSegmentName,templateId,nodeType,topoSeqNumber,domainHost,nodeTemplateName)
         values
         <foreach collection="serviceSegments" item="item" index="index" separator=",">
-            (#{item.serviceId},#{item.serviceSegmentId},#{item.serviceSegmentName},#{item.templateId},#{item.nodeType},#{item.topoSeqNumber},#{item.status})
+            (#{item.serviceId},#{item.serviceSegmentId},#{item.serviceSegmentType}#{item.serviceSegmentName},#{item.templateId},#{item.nodeType},#{item.topoSeqNumber},#{item.domainHost},#{item.nodeTempalteName})
         </foreach>
     </insert>
 
-    <delete id="delete">
-        delete from t_lcm_service_segment where serviceId = #{serviceId}
+    <delete id="delete" parameterType="org.openo.gso.model.servicemo.ServiceSegmentModel">
+        delete from t_lcm_service_segment where serviceId = #{serviceId} and serviceSegmentId = #{serviceSegmentId} and serviceSegmentType = #{serviceSegmentType}
     </delete>
 
     <select id="queryServiceSegments" resultMap="ServiceSegmentResultMap">
-        select * from t_lcm_service_segment where serviceId =
+        select serviceId,serviceSegmentId,serviceSegmentType,serviceSegmentName,templateId,nodeType,topoSeqNumber,domainHost,nodeTemplateName from t_lcm_service_segment where serviceId =
         #{serviceId}
     </select>
+    
+    <select id="queryServiceSegmentByIdAndType" resultMap="ServiceSegmentResultMap">
+        select serviceId,serviceSegmentId,serviceSegmentType,serviceSegmentName,templateId,nodeType,topoSeqNumber,domainHost,nodeTemplateName from t_lcm_service_segment 
+        where serviceSegmentId = #{serviceSegmentId} and serviceSegmentType = #{serviceSegmentType}
+    </select>
+    
+    <delete id="deleteSegmentByIdAndType" parameterType="org.openo.gso.model.servicemo.ServiceSegmentModel">
+        delete from t_lcm_service_segment where serviceSegmentId = #{serviceSegmentId} and serviceSegmentType = #{serviceSegmentType}
+    </delete>
 
 </mapper>

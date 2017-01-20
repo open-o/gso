@@ -32,7 +32,8 @@
     <insert id="insert" parameterType="org.openo.gso.model.servicemo.InvServiceModel">
         insert into
         t_lcm_servicebaseinfo
-        (serviceId,serviceName,serviceType, description,activeStatus,status,creator,createTime)
+        (serviceId,serviceName,serviceType,
+        description,activeStatus,status,creator,createTime)
         values(#{serviceId},#{name},#{serviceType},#{description},#{activeStatus},#{status},#{creator},#{createAt})
     </insert>
 
@@ -41,18 +42,29 @@
     </delete>
 
     <update id="updateServiceStatus" parameterType="java.lang.String">
-        update t_lcm_servicebaseinfo set status = #{status} where serviceId = #{serviceId}
+        update t_lcm_servicebaseinfo set status = #{status} where
+        serviceId = #{serviceId}
     </update>
-    
-    <update id="batchUpdate" parameterType="java.util.List" >  
-        <foreach collection="services" item="item" index="index" separator=";">  
-            update t_lcm_servicebaseinfo 
+
+    <update id="batchUpdate" parameterType="java.util.List">
+        <foreach collection="services" item="item" index="index" separator=";">
+            update t_lcm_servicebaseinfo
             <set>
                 <if test="item.status != null">
                     status = #{item.status}
                 </if>
             </set>
-            where serviceId = #{item.serviceId}  
-        </foreach>  
+            where serviceId = #{item.serviceId}
+        </foreach>
     </update>
+    <delete id="batchDelete" parameterType="java.util.List">
+        delete svc, mapping, param from t_lcm_servicebaseinfo as svc left join t_lcm_defPackage_mapping as mapping on
+        svc.serviceId = mapping.serviceId
+        left join t_lcm_inputParam_mapping as param on svc.serviceId = param.serviceId
+        where svc.serviceId in
+        <foreach item="item" index="index" collection="svcIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+     </delete>
+    
 </mapper>

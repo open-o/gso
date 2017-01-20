@@ -24,6 +24,7 @@ import java.util.TimerTask;
 import org.apache.commons.collections.map.HashedMap;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
+import org.openo.gso.constant.Constant;
 import org.openo.gso.dao.inf.IInventoryDao;
 import org.openo.gso.dao.inf.IServiceModelDao;
 import org.openo.gso.dao.inf.IServiceOperDao;
@@ -117,7 +118,6 @@ public class UpdateStatusJob extends TimerTask {
 
             // Update service instances status and processing by service segments
             updateData(svcModels, segmentOpers);
-            // If not finishing operation for 2h, set service instance status to be error.
 
         } catch(Exception exception) {
             LOGGER.error("Fail to update status. {}", exception);
@@ -314,7 +314,7 @@ public class UpdateStatusJob extends TimerTask {
     private void calcServiceProgess(List<ServiceModel> services,
             Map<String, List<ServiceSegmentOperation>> svcSegmentOpers) throws ApplicationException {
         if(CollectionUtils.isEmpty(services)) {
-            LOGGER.info("There is no service instance which need to calculate progerss.");
+            LOGGER.info("There is no service instance which need to calculate progress.");
             return;
         }
 
@@ -324,6 +324,8 @@ public class UpdateStatusJob extends TimerTask {
         for(ServiceOperation oper : svcOperations) {
             svcOperMap.put(oper.getServiceId(), oper);
         }
+
+        List<String> delServiceIds = new LinkedList<>();
 
         // 2. Calculate progress and status
         int progress = 0;
@@ -337,9 +339,14 @@ public class UpdateStatusJob extends TimerTask {
             serviceOper = svcOperMap.get(service.getServiceId());
             // all service segments finish operation.
             if(isSvcFinished(segOperLst, service.getSegmentNumber())) {
-                service.setStatus(CommonConstant.Status.FINISHED);
-                updateSvc.add(service);
-                invServices.add(DataConverter.convertToInvData(service));
+
+                if(serviceOper.getOperation().equals(Constant.OPERATION_DELETE)) {
+                    delServiceIds.add(service.getServiceId());
+                } else {
+                    service.setStatus(CommonConstant.Status.FINISHED);
+                    updateSvc.add(service);
+                    invServices.add(DataConverter.convertToInvData(service));
+                }
 
                 serviceOper.setProgress(Integer.valueOf(CommonConstant.Progress.ONE_HUNDRED));
                 serviceOper.setFinishedAt(System.currentTimeMillis());
@@ -379,6 +386,12 @@ public class UpdateStatusJob extends TimerTask {
             invDao.batchUpdate(invServices);
             svcModelDao.batchUpdate(updateSvc);
         }
+
+        // 5. Delete service instances which are being deleted
+        if(CollectionUtils.isEmpty(delServiceIds)) {
+            svcModelDao.batchDelete(delServiceIds);
+            invDao.batchDelete(delServiceIds);
+        }
     }
 
     /**
@@ -414,7 +427,7 @@ public class UpdateStatusJob extends TimerTask {
     private int calculateProgerss(List<ServiceSegmentOperation> segOperLst, int allSegNum) {
         int progress = 0;
         for(ServiceSegmentOperation oper : segOperLst) {
-            progress += oper.getProcess();
+            progress += oper.getProgress();
         }
         return progress / allSegNum;
     }

@@ -1,0 +1,17 @@
+{
+    "service": {
+        "name": "gso_service",
+        "description": "siteToDc",
+        "serviceDefId": "78ede6f3-66cc-46ab-b748-38a6c010d272",
+        "templateId": "38a6c01-66cc-46ab-b748-38a6c010d272",
+        "parameters": {
+            "domainHost": "",
+            "nodeTemplateName": "",
+            "nodeType": "",
+            "segments": null,
+            "additionalParamForNS": {
+                
+            }
+        }
+    }
+}

@@ -24,11 +24,13 @@ import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.InvServiceModelMapper;
+import org.openo.gso.mapper.InvServiceParameterMapper;
 import org.openo.gso.mapper.InventoryMapper;
 import org.openo.gso.model.servicemo.InvServiceModel;
-import org.openo.gso.util.validate.ValidateUtil;
+import org.openo.gso.model.servicemo.ServiceParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Implement class of operating inventory database table.<br/>
@@ -145,12 +147,63 @@ public class InventoryDaoImpl implements IInventoryDao {
      */
     @Override
     public void batchUpdate(List<InvServiceModel> services) throws ApplicationException {
+        if(CollectionUtils.isEmpty(services)) {
+            LOGGER.info("There is no service which need to update.");
+            return;
+        }
+
         try {
             LOGGER.info("Batch  update inventory services: {}", services);
-            ValidateUtil.assertObjectNotNull(services);
             getMapper(InvServiceModelMapper.class).batchUpdate(services);
         } catch(Exception exception) {
             LOGGER.error("Fail to batch update inventory service instance. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+    }
+
+    /**
+     * Batch delete service data, including service instance, service parameters and package
+     * mapping.<br/>
+     * 
+     * @param svcIds service instance ids
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    @Override
+    public void batchDelete(List<String> svcIds) throws ApplicationException {
+        if(CollectionUtils.isEmpty(svcIds)) {
+            LOGGER.info("There is no service which need to delete.");
+            return;
+        }
+
+        try {
+            LOGGER.info("Batch delete inventory services, the service ids are: {}", svcIds);
+            getMapper(InvServiceModelMapper.class).batchDelete(svcIds);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to batch delete inventory service instance. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+    }
+
+    /**
+     * Batch insert service parameters.<br/>
+     * 
+     * @param serviceParams service parameters
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    @Override
+    public void batchInsert(List<ServiceParameter> serviceParams) {
+        if(CollectionUtils.isEmpty(serviceParams)) {
+            LOGGER.info("There is no service parameters which need to insert.");
+            return;
+        }
+
+        try {
+            LOGGER.info("Batch insert inventory service parameters, the service parameters are: {}", serviceParams);
+            getMapper(InvServiceParameterMapper.class).batchInsert(serviceParams);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to batch insert inventory service parameters. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }

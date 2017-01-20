@@ -1,4 +1,4 @@
--- Copyright 2016 Huawei Technologies Co., Ltd.
+-- Copyright 2016-2017 Huawei Technologies Co., Ltd.
 --
 -- Licensed under the Apache License, Version 2.0 (the "License");
 -- you may not use this file except in compliance with the License.
@@ -17,10 +17,9 @@ create table t_lcm_defPackage_mapping
 (
     serviceId    varchar(255) not null,
 	serviceDefId varchar(255) not null,
-	templateId  varchar(255)  not null,
-	templateName varchar(255) not null,
+	templateId  varchar(255)  not null,	
 	primary key(serviceId)
 );
 
-insert into t_lcm_defPackage_mapping (serviceId,serviceDefId,templateId,templateName) 
-VALUES('1', '12345', '123456', 'gso');
+insert into t_lcm_defPackage_mapping (serviceId,serviceDefId,templateId) 
+VALUES('1', '12345', 'gso');
