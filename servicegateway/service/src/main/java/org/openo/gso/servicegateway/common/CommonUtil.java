@@ -28,9 +28,12 @@ import org.openo.baseservice.util.impl.SystemEnvVariablesFactory;
 import org.openo.gso.servicegateway.constant.Constant;
 import org.openo.gso.servicegateway.constant.FieldConstant;
 import org.openo.gso.servicegateway.exception.HttpCode;
+import org.openo.gso.servicegateway.model.DomainModel;
 import org.openo.gso.servicegateway.model.EnumServiceType;
 import org.openo.gso.servicegateway.model.ParameterDefineModel;
 import org.openo.gso.servicegateway.model.SegmentTemplateModel;
+import org.openo.gso.servicegateway.model.ServiceModel;
+import org.openo.gso.servicegateway.model.ServiceParameterModel;
 import org.openo.gso.servicegateway.model.ServiceTemplateModel;
 import org.openo.gso.servicegateway.service.impl.ServiceGatewayImpl;
 import org.openo.gso.servicegateway.util.http.HttpUtil;
@@ -60,6 +63,7 @@ public class CommonUtil {
     /**
      * <br>
      * get the template model by template id
+     * 
      * @param templateId the template id
      * @return the Type of the Template
      * @since GSO 0.5
@@ -93,7 +97,7 @@ public class CommonUtil {
      * get service type by csar id
      * <br>
      * 
-     * @param csarId the csar id 
+     * @param csarId the csar id
      * @return the service type of the csar
      * @since GSO 0.5
      */
@@ -145,11 +149,11 @@ public class CommonUtil {
                 Map<String, Object> rspBody =
                         (Map<String, Object>)JsonUtil.unMarshal(resp.getResponseContent(), Map.class);
                 String serviceType = (String)rspBody.get("serviceType");
-                if("GSO".equals(serviceType)) {
+                if(FieldConstant.ServiceType.GSO.equals(serviceType)) {
                     return EnumServiceType.GSO;
-                } else if("SDNO".equals(serviceType)) {
+                } else if(FieldConstant.ServiceType.SDNO.equals(serviceType)) {
                     return EnumServiceType.SDNO;
-                } else if("NFVO".equals(serviceType)) {
+                } else if(FieldConstant.ServiceType.NFVO.equals(serviceType)) {
                     return EnumServiceType.NFVO;
                 } else {
                     return EnumServiceType.UNKNOWN;
@@ -162,10 +166,96 @@ public class CommonUtil {
     }
 
     /**
+     * query services
+     * <br>
+     * 
+     * @return the service list
+     * @since GSO 0.5
+     */
+    public static List<ServiceModel> getServicesFromInventory() {
+        try {
+            List<ServiceModel> serviceModels = new ArrayList<ServiceModel>();
+            LOGGER.info("query services from inventory start");
+            RestfulResponse resp = HttpUtil.post(Constant.INVENTORY_URL_QUERYSERVICES, "");
+            logTheResponseData("query services from inventory", resp);
+            if(HttpCode.isSucess(resp.getStatus())) {
+                JSONArray array = JSONArray.fromObject(resp.getResponseContent());
+                for(int i = 0, size = array.size(); i < size; i++) {
+                    JSONObject obj = array.getJSONObject(i);
+                    ServiceModel model = convertJsonToServiceModel(obj);
+                    serviceModels.add(model);
+                }
+                return serviceModels;
+            }
+        } catch(ServiceException e) {
+            LOGGER.info("query the services failed.", e);
+        }
+        return null;
+    }
+
+    /**
+     * query service model by service id
+     * <br>
+     * 
+     * @param serviceId the service id
+     * @return the service model
+     * @since GSO Mercury Release
+     */
+    public static ServiceModel getServiceFromInventory(String serviceId) {
+        try {
+            LOGGER.info("query data from inventory, service id:" + serviceId);
+            String url = String.format(Constant.INVENTORY_URL_QUERYSERVICE, serviceId);
+            RestfulResponse resp = HttpUtil.get(url, new HashMap<String, String>());
+            logTheResponseData("query service from inventory", resp);
+            if(HttpCode.isSucess(resp.getStatus())) {
+                JSONObject obj = JSONObject.fromObject(resp.getResponseContent());
+                ServiceModel model = convertJsonToServiceModel(obj);
+                return model;
+            }
+        } catch(ServiceException e) {
+            LOGGER.info("query the services failed.", e);
+        }
+        return null;
+    }
+
+    /**
+     * convert a service to model
+     * <br>
+     * 
+     * @param obj a service json object
+     * @return the service model
+     * @since GSO Mercury Release
+     */
+    @SuppressWarnings("unchecked")
+    private static ServiceModel convertJsonToServiceModel(JSONObject obj) {
+        ServiceModel model = new ServiceModel();
+        model.setServiceId((String)obj.get(FieldConstant.InventoryService.FIELD_SERVICEID));
+        model.setServiceName((String)obj.get(FieldConstant.InventoryService.FIELD_SERVICENAME));
+        model.setCreateTime((String)obj.get(FieldConstant.InventoryService.FIELD_CREATETIME));
+        model.setCreator((String)obj.get(FieldConstant.InventoryService.FIELD_CREATOR));
+        String serviceType = (String)obj.get(FieldConstant.InventoryService.FIELD_SERVICETYPE);
+        model.setServiceType(serviceType);
+        model.setTemplateName((String)obj.get(FieldConstant.InventoryService.FIELD_TEMPLATENAME));
+        if(FieldConstant.ServiceType.GSO.equalsIgnoreCase(serviceType)) {
+            ServiceParameterModel parameterModel =
+                    JsonUtil.unMarshal(obj.get(FieldConstant.InventoryService.FIELD_INPUTPARAMETERS).toString(),
+                            ServiceParameterModel.class);
+            model.setParameters(parameterModel);
+        } else {
+            Map<String, String> parameters = JsonUtil
+                    .unMarshal(obj.get(FieldConstant.InventoryService.FIELD_INPUTPARAMETERS).toString(), Map.class);
+            ServiceParameterModel parameterModel = new ServiceParameterModel();
+            parameterModel.setAdditionalParamForNs(parameters);
+            model.setParameters(parameterModel);
+        }
+        return model;
+    }
+
+    /**
      * query vim info
      * <br>
      * 
-     * @return the vim map, key is id ,value is nmae 
+     * @return the vim map, key is id ,value is nmae
      * @since GSO 0.5
      */
     public static Map<String, String> queryVimInfo() {
@@ -271,15 +361,14 @@ public class CommonUtil {
         String root = SystemEnvVariablesFactory.getInstance().getAppRoot();
         String serviceFilePath = root + File.separator + Constant.FILE_PATH_DOMAINSINFO;
         String jsonInfo = RegisterUtil.readFile(serviceFilePath);
-        if("".equals(jsonInfo))
-        {
+        if("".equals(jsonInfo)) {
             return null;
         }
         JSONArray array = JSONArray.fromObject(jsonInfo);
         Map<String, String> domainsInfo = new HashMap<String, String>();
         for(int i = 0, size = array.size(); i < size; i++) {
             JSONObject obj = array.getJSONObject(i);
-            domainsInfo.put((String)obj.get("name"), (String)obj.get("host"));
+            domainsInfo.put((String)obj.get("host"), (String)obj.get("name"));
         }
         // if only default "localhost" contained. no need to select domain.
         if(domainsInfo.size() == 1) {
@@ -292,6 +381,32 @@ public class CommonUtil {
         domainsParam.setRequired("true");
         domainsParam.setRange(domainsInfo);
         return domainsParam;
+    }
+
+    /**
+     * query the domains
+     * 
+     * @return the domains
+     * @since GSO Mercury Release
+     */
+    public static List<DomainModel> getDomains() {
+        // get the jsonString form the service file
+        String root = SystemEnvVariablesFactory.getInstance().getAppRoot();
+        String serviceFilePath = root + File.separator + Constant.FILE_PATH_DOMAINSINFO;
+        String jsonInfo = RegisterUtil.readFile(serviceFilePath);
+        if("".equals(jsonInfo)) {
+            return new ArrayList<DomainModel>(0);
+        }
+        JSONArray array = JSONArray.fromObject(jsonInfo);
+        List<DomainModel> domains = new ArrayList<DomainModel>();
+        for(int i = 0, size = array.size(); i < size; i++) {
+            JSONObject obj = array.getJSONObject(i);
+            DomainModel domain = new DomainModel();
+            domain.setName((String)obj.get("name"));
+            domain.setHost((String)obj.get("host"));
+            domains.add(domain);
+        }
+        return domains;
     }
 
     /**
@@ -401,7 +516,7 @@ public class CommonUtil {
      * <br>
      * 
      * @param oparation the operation description
-     * @param resp the response model 
+     * @param resp the response model
      * @since GSO 0.5
      */
     public static void logTheResponseData(String oparation, RestfulResponse resp) {

@@ -17,15 +17,23 @@
 package org.openo.gso.servicegateway.constant;
 
 /**
- * 
  * <br>
  * <p>
  * </p>
  * 
  * @author
- * @version     GSO 0.5  2017.1.11
+ * @version GSO 0.5 2017.1.11
  */
 public class FieldConstant {
+
+    public static class ServiceType {
+
+        public static final String GSO = "GSO";
+
+        public static final String NFVO = "NFVO";
+
+        public static final String SDNO = "SDNO";
+    }
 
     /**
      * field define for create json
@@ -38,154 +46,174 @@ public class FieldConstant {
      */
     public static class Create {
 
-        public static String FIELD_SERVICE = "service";
+        public static final String FIELD_SERVICE = "service";
 
-        public static String FIELD_NAME = "name";
+        public static final String FIELD_NAME = "name";
 
-        public static String FIELD_DESCRIPTION = "description";
+        public static final String FIELD_DESCRIPTION = "description";
 
-        public static String FIELD_SERVICEDEFID = "serviceDefId";
+        public static final String FIELD_SERVICEDEFID = "serviceDefId";
 
-        public static String FIELD_TEMPLATEID = "templateId";
+        public static final String FIELD_TEMPLATEID = "templateId";
 
-        public static String FIELD_TEMPLATENAME = "templateName";
+        public static final String FIELD_TEMPLATENAME = "templateName";
 
-        public static String FIELD_PARAMETERS = "parameters";
+        public static final String FIELD_PARAMETERS = "parameters";
 
-        public static String PARAM_FIELD_NAME_DOMAIN = "domainHost";
+        public static final String PARAM_FIELD_NAME_DOMAIN = "domainHost";
 
-        public static String PARAM_FIELD_NAME_NODETEMPLATENAME = "nodeTemplateName";
+        public static final String PARAM_FIELD_NAME_NODETEMPLATENAME = "nodeTemplateName";
 
-        public static String PARAM_FIELD_NAME_NODETYPE = "nodeType";
+        public static final String PARAM_FIELD_NAME_NODETYPE = "nodeType";
 
-        public static String PARAM_FIELD_NAME_NSPARAM = "additionalParamForNS";
+        public static final String PARAM_FIELD_NAME_NSPARAM = "additionalParamForNs";
 
-        public static String FIELD_RESPONSE_SERVICE = "service";
+        public static final String FIELD_RESPONSE_SERVICE = "service";
 
-        public static String FIELD_RESPONSE_SERVICEID = "serviceId";
+        public static final String FIELD_RESPONSE_SERVICEID = "serviceId";
 
-        public static String FIELD_RESPONSE_OPERATIONID = "operationId";
+        public static final String FIELD_RESPONSE_OPERATIONID = "operationId";
 
     }
 
     public static class Delete {
 
-        public static String FIELD_RESPONSE_OPERATIONID = "operationId";
+        public static final String FIELD_RESPONSE_OPERATIONID = "operationId";
     }
 
     public static class NSCreate {
 
-        public static String FIELD_NSDID = "nsdId";
+        public static final String FIELD_NSDID = "nsdId";
 
-        public static String FIELD_NSNAME = "nsName";
+        public static final String FIELD_NSNAME = "nsName";
 
-        public static String FIELD_DESCRIPTION = "description";
+        public static final String FIELD_DESCRIPTION = "description";
 
-        public static String FIELD_RESPONSE_NSINSTANCEID = "nsInstanceId";
+        public static final String FIELD_RESPONSE_NSINSTANCEID = "nsInstanceId";
     }
 
     public static class NSInstantiate {
 
-        public static String FIELD_NSINSTANCEID = "nsInstanceId";
+        public static final String FIELD_NSINSTANCEID = "nsInstanceId";
 
-        public static String FIELD_PARAMS = "additionalParamForNs";
+        public static final String FIELD_PARAMS = "additionalParamForNs";
 
-        public static String FIELD_RESPONSE_JOBID = "jobId";
+        public static final String FIELD_RESPONSE_JOBID = "jobId";
     }
 
     public static class NSTerminate {
 
-        public static String FIELD_NSINSTANCEID = "nsInstanceId";
+        public static final String FIELD_NSINSTANCEID = "nsInstanceId";
 
-        public static String FIELD_TERMINATIONTYPE = "terminationType";
+        public static final String FIELD_TERMINATIONTYPE = "terminationType";
 
-        public static String FIELD_TIMEOUT = "gracefulTerminationTimeout";
+        public static final String FIELD_TIMEOUT = "gracefulTerminationTimeout";
     }
 
     public static class QueryJob {
 
-        public static String FIELD_JOBID = "jobId";
+        public static final String FIELD_JOBID = "jobId";
 
-        public static String FIELD_RESPONSEDESCRIPTOR = "responseDescriptor";
+        public static final String FIELD_RESPONSEDESCRIPTOR = "responseDescriptor";
 
-        public static String FIELD_PROGRESS = "progress";
+        public static final String FIELD_PROGRESS = "progress";
 
-        public static String FIELD_STATUS = "status";
+        public static final String FIELD_STATUS = "status";
 
-        public static String FIELD_STATUSDESCRIPTION = "statusDescription";
+        public static final String FIELD_STATUSDESCRIPTION = "statusDescription";
 
-        public static String FIELD_ERRORCODE = "errorCode";
+        public static final String FIELD_ERRORCODE = "errorCode";
 
-        public static String STATUS_PROCESSING = "processing";
+        public static final String STATUS_PROCESSING = "processing";
 
-        public static String STATUS_FINISHED = "finished";
+        public static final String STATUS_FINISHED = "finished";
 
-        public static String STATUS_ERROR = "error";
+        public static final String STATUS_ERROR = "error";
     }
 
     public static class QueryOperation {
 
-        public static String FIELD_OPERATION = "operation";
+        public static final String FIELD_OPERATION = "operation";
 
-        public static String FIELD_OPERATIONID = "operationId";
+        public static final String FIELD_OPERATIONID = "operationId";
 
-        public static String FIELD_USERID = "userId";
+        public static final String FIELD_USERID = "userId";
 
-        public static String FIELD_OPERATIONCONTENT = "operationContent";
-        
-        public static String FIELD_RESULT = "result";
+        public static final String FIELD_OPERATIONCONTENT = "operationContent";
 
-        public static String FIELD_REASON = "reason";
+        public static final String FIELD_RESULT = "result";
 
-        public static String FIELD_PROGRESS = "progress";
+        public static final String FIELD_REASON = "reason";
 
-        public static String RESULT_PROCESSING = "processing";
+        public static final String FIELD_PROGRESS = "progress";
 
-        public static String RESULT_FINISHED = "finished";
+        public static final String RESULT_PROCESSING = "processing";
 
-        public static String RESULT_ERROR = "error";
+        public static final String RESULT_FINISHED = "finished";
+
+        public static final String RESULT_ERROR = "error";
 
     }
 
     public static class CatalogTemplate {
 
-        public static String FIELD_TEMPLATEID = "serviceTemplateId";
+        public static final String FIELD_TEMPLATEID = "serviceTemplateId";
 
-        public static String FIELD_ID = "id";
+        public static final String FIELD_ID = "id";
 
-        public static String FIELD_TEMPLATENAME = "templateName";
+        public static final String FIELD_TEMPLATENAME = "templateName";
 
-        public static String FIELD_CSARID = "csarId";
+        public static final String FIELD_CSARID = "csarId";
 
-        public static String FIELD_INPUTS = "inputs";
+        public static final String FIELD_INPUTS = "inputs";
 
-        public static String FIELD_SUBSTITUTION = "substitution";
+        public static final String FIELD_SUBSTITUTION = "substitution";
 
-        public static String FIELD_SUBSTITUTION_NODETYPE = "nodeType";
+        public static final String FIELD_SUBSTITUTION_NODETYPE = "nodeType";
 
     }
 
     public static class Vim {
 
-        public static String FIELD_VIMID = "vimId";
+        public static final String FIELD_VIMID = "vimId";
 
-        public static String FIELD_NAME = "name";
+        public static final String FIELD_NAME = "name";
     }
 
     public static class SDNController {
 
-        public static String FIELD_SDNCONTROLLERID = "sdnControllerId";
+        public static final String FIELD_SDNCONTROLLERID = "sdnControllerId";
 
-        public static String FIELD_NAME = "name";
+        public static final String FIELD_NAME = "name";
     }
 
     public static class NodeTemplates {
 
-        public static String FIELD_ID = "id";
+        public static final String FIELD_ID = "id";
 
-        public static String FIELD_NAME = "name";
+        public static final String FIELD_NAME = "name";
 
-        public static String FIELD_TYPE = "type";
+        public static final String FIELD_TYPE = "type";
 
     }
+
+    public static class InventoryService {
+
+        public static final String FIELD_SERVICEID = "serviceId";
+
+        public static final String FIELD_SERVICENAME = "serviceName";
+
+        public static final String FIELD_DESCRIPTION = "description";
+
+        public static final String FIELD_CREATETIME = "createTime";
+
+        public static final String FIELD_CREATOR = "creator";
+
+        public static final String FIELD_SERVICETYPE = "serviceType";
+
+        public static final String FIELD_TEMPLATENAME = "templateName";
+
+        public static final String FIELD_INPUTPARAMETERS = "inputParameters";
+    }
+
 }

@@ -17,6 +17,7 @@
 package org.openo.gso.servicegateway.roa.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,8 +29,10 @@ import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.servicegateway.constant.FieldConstant;
 import org.openo.gso.servicegateway.model.CreateParameterRspModel;
+import org.openo.gso.servicegateway.model.DomainModel;
 import org.openo.gso.servicegateway.model.OperationModel;
 import org.openo.gso.servicegateway.model.OperationResult;
+import org.openo.gso.servicegateway.model.ServiceModel;
 import org.openo.gso.servicegateway.roa.inf.IServiceGatewayRoaModule;
 import org.openo.gso.servicegateway.service.impl.ServiceGatewayImpl;
 import org.openo.gso.servicegateway.service.inf.IServiceGateway;
@@ -132,7 +135,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
      * @throws ApplicationException
      * @since GSO 0.5
      */
-    public Response getOperation(String serviceId, String operationId, @Context HttpServletRequest servletReq)
+    public Response getOperation(String serviceId, String operationId, HttpServletRequest servletReq)
             throws ApplicationException {
         LOGGER.info("query an operation, serviceId:" + serviceId + " operation id:" + operationId);
         OperationModel operation = serviceGateway.getOperation(serviceId, operationId, servletReq);
@@ -151,12 +154,60 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
      * @throws ApplicationException when inner error
      * @since GSO 0.5
      */
-    public Response generateCreateParameters(String templateId, @Context HttpServletRequest servletReq)
+    public Response generateCreateParameters(String templateId, HttpServletRequest servletReq)
             throws ApplicationException {
         LOGGER.info("generate create parameters, template id:" + templateId);
         CreateParameterRspModel result = serviceGateway.generateCreateParameters(templateId, servletReq);
         String jsonStr = JsonUtil.marshal(result);
         LOGGER.info("generate create parameters, rsp:" + jsonStr);
         return Response.accepted().entity(jsonStr).build();
+    }
+
+    /**
+     * query the service list
+     * <br>
+     * 
+     * @param servletReq http request
+     * @return the service list
+     * @throws ApplicationException when inner error
+     * @since GSO Mercury Release
+     */
+    public Response getServices(HttpServletRequest servletReq) throws ApplicationException {
+        LOGGER.info("querr services start");
+        List<ServiceModel> array = serviceGateway.getServices(servletReq);
+        LOGGER.info("querr services rsp:" + JsonUtil.marshal(array));
+        return Response.accepted().entity(array).build();
+    }
+
+    /**
+     * <br>
+     * 
+     * @param serviceId the service id
+     * @param servletReq the http request
+     * @return the service model
+     * @throws ApplicationException
+     * @since GSO Mercury Release
+     */
+    public Response getService(String serviceId, HttpServletRequest servletReq) throws ApplicationException {
+        LOGGER.info("querr service by service id start, service Id:" + serviceId);
+        ServiceModel service = serviceGateway.getService(serviceId, servletReq);
+        LOGGER.info("querr service rsp:" + JsonUtil.marshal(service));
+        return Response.accepted().entity(service).build();
+    }
+
+    /**
+     * query the domains
+     * <br>
+     * 
+     * @param servletReq the http request
+     * @return
+     * @throws ApplicationException
+     * @since GSO Mercury Release
+     */
+    public Response getDomains(@Context HttpServletRequest servletReq) throws ApplicationException {
+        LOGGER.info("querr domains start");
+        List<DomainModel> domains = serviceGateway.getDomains(servletReq);
+        LOGGER.info("querr domains rsp:" + JsonUtil.marshal(domains));
+        return Response.accepted().entity(domains).build();
     }
 }

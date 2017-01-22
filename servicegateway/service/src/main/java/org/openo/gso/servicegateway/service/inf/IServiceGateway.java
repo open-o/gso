@@ -16,12 +16,16 @@
 
 package org.openo.gso.servicegateway.service.inf;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.servicegateway.model.CreateParameterRspModel;
+import org.openo.gso.servicegateway.model.DomainModel;
 import org.openo.gso.servicegateway.model.OperationModel;
 import org.openo.gso.servicegateway.model.OperationResult;
+import org.openo.gso.servicegateway.model.ServiceModel;
 
 /**
  * Interface to operate service.<br/>
@@ -52,8 +56,7 @@ public interface IServiceGateway {
      * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    String deleteService(String serviceId, HttpServletRequest httpRequest)
-            throws ApplicationException;
+    String deleteService(String serviceId, HttpServletRequest httpRequest) throws ApplicationException;
 
     /**
      * query the operation information
@@ -70,7 +73,8 @@ public interface IServiceGateway {
 
     /**
      * <br>
-     *  generate the parameters for create service
+     * generate the parameters for create service
+     * 
      * @param templateId the template id
      * @param servletReq the http request
      * @return the parameter model for gui
@@ -79,4 +83,37 @@ public interface IServiceGateway {
      */
     CreateParameterRspModel generateCreateParameters(String templateId, HttpServletRequest servletReq)
             throws ApplicationException;
+
+    /**
+     * <br>
+     *  get the services
+     * @param servletReq http request
+     * @return the services array
+     * @throws ApplicationException
+     * @since GSO Mercury Release
+     */
+    List<ServiceModel>  getServices(HttpServletRequest servletReq) throws ApplicationException;
+
+    /**
+     * get the service from inventory by service id
+     * <br>
+     * 
+     * @param serviceId the service id
+     * @param servletReq http request
+     * @return
+     * @throws ApplicationException
+     * @since GSO Mercury Release
+     */
+    ServiceModel getService(String serviceId, HttpServletRequest servletReq) throws ApplicationException;
+    
+    /**
+     * get the domains
+     * <br>
+     * 
+     * @param servletReq the http request
+     * @return
+     * @throws ApplicationException
+     * @since  GSO Mercury Release
+     */
+    List<DomainModel> getDomains(HttpServletRequest servletReq) throws ApplicationException;
 }

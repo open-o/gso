@@ -39,6 +39,7 @@ import org.openo.gso.servicegateway.exception.HttpCode;
 import org.openo.gso.servicegateway.service.impl.ServiceGatewayImpl;
 import org.openo.gso.servicegateway.util.http.HttpUtil;
 import org.openo.gso.servicegateway.util.json.JsonUtil;
+import org.openo.gso.servicegateway.util.register.RegisterUtil;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -123,7 +124,7 @@ public class ServiceGatewayRoaModuleImplTest {
      * <br>
      * 
      * @throws ServiceException
-     * @since GSO Mecury Release
+     * @since GSO Mercury Release
      */
     @Test
     public void testCreateNFVOService() throws ServiceException {
@@ -160,17 +161,59 @@ public class ServiceGatewayRoaModuleImplTest {
     }
 
     /**
-     * test generate create prarameters
+     * test generate create parameters
      * <br>
      * 
      * @throws ServiceException
-     * @since GSO Mecury Release
+     * @since GSO Mercury Release
      */
     @Test
     public void testGenerateCreateParameters() throws ServiceException {
         mockHttpUtil();
         serviceRoa.generateCreateParameters("592f9437-a9c0-4303-b9f6-c445bb7e9814", httpRequest);
     }
+    
+
+    /**
+     * test query services
+     * <br>
+     * 
+     * @throws ServiceException
+     * @since GSO Mercury Release
+     */
+    @Test
+    public void testQueryServices() throws ServiceException {
+        mockHttpUtil();
+        serviceRoa.getServices(httpRequest);
+    }
+    
+
+    /**
+     * test query one services
+     * <br>
+     * 
+     * @throws ServiceException
+     * @since GSO Mercury Release
+     */
+    @Test
+    public void testQuerySingleService() throws ServiceException {
+        mockHttpUtil();
+        serviceRoa.getService("5212b49f-fe70-414f-9519-88bec35b3191", httpRequest);
+    }
+    
+    /**
+     * test query domains
+     * <br>
+     * 
+     * @throws ServiceException
+     * @since GSO Mercury Release
+     */
+    @Test
+    public void testQueryDomains() throws ServiceException {
+        mockHttpUtil();
+        serviceRoa.getDomains(httpRequest);
+    }
+    
 
     /**
      * Mock to get request body.<br/>
@@ -200,10 +243,10 @@ public class ServiceGatewayRoaModuleImplTest {
             @Mock
             public RestfulResponse delete(final String url) {
                 if(url.contains("/openoapi/gso/v1/services/5212b49f-fe70-414f-9519-88bec35b3190")) {
-                    // moke delete gso rsp
+                    // mock delete gso rsp
                     return getResponse("deleteGSOInstanceRsp.json");
                 } else if(url.contains("/openoapi/nslcm/v1/ns/5212b49f-fe70-414f-9519-88bec35b3191")) {
-                    // moke instantiate nfov rsp
+                    // mock instantiate nfov rsp
                     return getResponse(null);
                 }
                 return null;
@@ -212,17 +255,20 @@ public class ServiceGatewayRoaModuleImplTest {
             @Mock
             public RestfulResponse post(final String url, Object sendObj) {
                 if(url.contains("/openoapi/gso/v1/services")) {
-                    // moke create gso rsp.
+                    // mock create gso rsp.
                     return getResponse("createGSOInstanceRsp.json");
                 } else if(url.equals("/openoapi/nslcm/v1/ns")) {
-                    // moke create nfvo rsp
+                    // mock create nfvo rsp
                     return getResponse("createNFVOInstanceRsp.json");
                 } else if(url.contains("/openoapi/nslcm/v1/ns/5212b49f-fe70-414f-9519-88bec35b3191/instantiate")) {
-                    // moke instantiate nfov rsp
+                    // mock instantiate nfov rsp
                     return getResponse("instantiateNFVOInstanceRsp.json");
                 } else if(url.contains("/openoapi/nslcm/v1/ns/5212b49f-fe70-414f-9519-88bec35b3191/terminate")) {
-                    // moke instantiate nfov rsp
+                    // mock instantiate nfov rsp
                     return getResponse("terminateNFVOInstanceRsp.json");
+                }else if(url.contains("/openoapi/inventory/v1/services")){
+                    // mock query services
+                    return getResponse("queryServices.json");
                 }
                 return null;
             }
@@ -237,35 +283,35 @@ public class ServiceGatewayRoaModuleImplTest {
                     return getResponse("createNFVOTemplate.json");
                 } else if(url.contains(
                         "/openoapi/gso/v1/services/5212b49f-fe70-414f-9519-88bec35b3190/operations/5212b49f-fe70-414f-9519-88bec35b3191")) {
-                    // moke query gso create progress
-                    return mokeGSOProgress("5212b49f-fe70-414f-9519-88bec35b3191");
+                    // mock query gso create progress
+                    return mockGSOProgress("5212b49f-fe70-414f-9519-88bec35b3191");
                 } else if(url.contains("/openoapi/nslcm/v1/jobs/5212b49f-fe70-414f-9519-88bec35b3192")) {
-                    // moke query nvo create progress
+                    // mock query nvo create progress
                     return modeNonGSOProgress("5212b49f-fe70-414f-9519-88bec35b3192");
                 } else if(url.contains(
                         "/openoapi/gso/v1/services/5212b49f-fe70-414f-9519-88bec35b3190/operations/5212b49f-fe70-414f-9519-88bec35b3193")) {
-                    // moke query gso delete progress
-                    return mokeGSOProgress("5212b49f-fe70-414f-9519-88bec35b3193");
+                    // mock query gso delete progress
+                    return mockGSOProgress("5212b49f-fe70-414f-9519-88bec35b3193");
                 } else if(url.contains("/openoapi/nslcm/v1/jobs/5212b49f-fe70-414f-9519-88bec35b3194")) {
-                    // moke query nfvo delete progress
+                    // mock query nfvo delete progress
                     return modeNonGSOProgress("5212b49f-fe70-414f-9519-88bec35b3194");
                 } else if(url.contains("/openoapi/catalog/v1/csars/8937a94d-1799-47a5-971d-58ff7d35def6")) {
-                    // moke gso csar msg
+                    // mock gso csar msg
                     return getResponse("createGSOCsar.json");
                 } else if(url.contains("/openoapi/catalog/v1/csars/eea33156-514b-48ad-b165-0a38d0baa623")) {
-                    // moke nfvo csar msg
+                    // mock nfvo csar msg
                     return getResponse("createNFVOCsar.json");
                 } else if(url.contains("/openoapi/inventory/v1/services/5212b49f-fe70-414f-9519-88bec35b3190")) {
-                    // moke query gso service from inventory
+                    // mock query gso service from inventory
                     return getResponse("queryGSOService.json");
                 } else if(url.contains("/openoapi/inventory/v1/services/5212b49f-fe70-414f-9519-88bec35b3191")) {
-                    // moke query nfvo service from inventory
+                    // mock query nfvo service from inventory
                     return getResponse("queryNFVOService.json");
                 } else if(url.contains("/openoapi/extsys/v1/vims")) {
-                    // moke query vims
+                    // mock query vims
                     return getResponse("queryVims.json");
                 } else if(url.contains("/openoapi/extsys/v1/sdncontrollers")) {
-                    // moke query sdncontrollers
+                    // mock query sdncontrollers
                     return getResponse("querySDNControllers.json");
                 } else if(url.contains(
                         "/openoapi/catalog/v1/servicetemplates/592f9437-a9c0-4303-b9f6-c445bb7e9814/nodetemplates")) {
@@ -277,19 +323,30 @@ public class ServiceGatewayRoaModuleImplTest {
                 return null;
             }
         };
+
+        new MockUp<RegisterUtil>() {
+
+            @Mock
+            public String readFile(String path) {
+                if(path.contains("domainsInfo.json")) {
+                    return getJsonString(FILE_PATH + "domainsInfo.json");
+                }
+                return null;
+            }
+        };
     }
 
     /**
-     * moke gso operation query
+     * mock gso operation query
      * <br>
      * 
      * @param operationId the operation id
      * @return response model
-     * @since GSO Mecury Release
+     * @since GSO Mercury Release
      */
     @SuppressWarnings("unchecked")
-    private RestfulResponse mokeGSOProgress(String operationId) {
-        // moke query gso operations, step + 10 every time
+    private RestfulResponse mockGSOProgress(String operationId) {
+        // mock query gso operations, step + 10 every time
         String jsonStr = getJsonString(FILE_PATH + "queryGSOOperation.json");
         Map<String, Object> rspModel = JsonUtil.unMarshal(jsonStr, Map.class);
         Map<String, String> operation = (Map<String, String>)rspModel.get(FieldConstant.QueryOperation.FIELD_OPERATION);
@@ -309,16 +366,16 @@ public class ServiceGatewayRoaModuleImplTest {
     }
 
     /**
-     * moke sdno,nfvo job query
+     * mock sdno,nfvo job query
      * <br>
      * 
      * @param jobId the job id
      * @return response model
-     * @since GSO Mecury Release
+     * @since GSO Mercury Release
      */
     @SuppressWarnings("unchecked")
     private RestfulResponse modeNonGSOProgress(String jobId) {
-        // moke query nfvo job, step + 10 every time
+        // mock query nfvo job, step + 10 every time
         String jsonStr = getJsonString(FILE_PATH + "queryNSJob.json");
         Map<String, Object> rspModel = JsonUtil.unMarshal(jsonStr, Map.class);
         Map<String, String> descriptor =
@@ -368,7 +425,7 @@ public class ServiceGatewayRoaModuleImplTest {
      * 
      * @param fileName
      * @return
-     * @since GSO Mecury Release
+     * @since GSO Mercury Release
      */
     private RestfulResponse getResponse(String fileName) {
         RestfulResponse responseSuccess = new RestfulResponse();
