@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openo.gso.model.servicemo;
 
 import static org.junit.Assert.assertEquals;
@@ -20,15 +21,15 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.openo.gso.constant.CommonConstant;
 
-
 public class ServiceSegmentOperationTest {
 
     @Test
     public void test() {
         ServiceSegmentOperation svcOper0 = new ServiceSegmentOperation("segmentId", "segmentType", "operType");
         ServiceSegmentOperation svcOper1 = new ServiceSegmentOperation("segmentId", "segmentType", "operType", "jobId");
-        ServiceSegmentOperation svcOper2 = new ServiceSegmentOperation("segmentId", "segmentType", "operType", "serviceId", "status");
-        
+        ServiceSegmentOperation svcOper2 =
+                new ServiceSegmentOperation("segmentId", "segmentType", "operType", "serviceId", "status");
+
         ServiceSegmentOperation segOper = new ServiceSegmentOperation();
         segOper.setServiceSegmentId("1");
         segOper.setServiceSegmentType(CommonConstant.SegmentType.NFVO);
@@ -36,7 +37,7 @@ public class ServiceSegmentOperationTest {
         segOper.setServiceId("s1");
         segOper.setJobId("2");
         segOper.setErrorCode(200);
-        segOper.setProcess(50);
+        segOper.setProgress(50);
         segOper.setStatus(CommonConstant.Status.PROCESSING);
         segOper.setStatusDescription("desc");
 
@@ -46,7 +47,7 @@ public class ServiceSegmentOperationTest {
         assertEquals("s1", segOper.getServiceId());
         assertEquals("2", segOper.getJobId());
         assertEquals(200, segOper.getErrorCode());
-        assertEquals(50, segOper.getProcess());
+        assertEquals(50, segOper.getProgress());
         assertEquals(CommonConstant.Status.PROCESSING, segOper.getStatus());
         assertEquals("desc", segOper.getStatusDescription());
     }

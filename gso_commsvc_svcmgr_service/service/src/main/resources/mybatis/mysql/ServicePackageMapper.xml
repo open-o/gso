@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2016 Huawei Technologies Co., Ltd.
+    Copyright 2016-2017 Huawei Technologies Co., Ltd.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,15 +21,14 @@
     <resultMap type="org.openo.gso.model.servicemo.ServicePackageMapping" id="servicePackageMappingResultMap">
         <result property="serviceId" column="serviceId" />
         <result property="serviceDefId" column="serviceDefId" />
-        <result property="templateId" column="templateId" />
-        <result property="templateName" column="templateName" />
+        <result property="templateId" column="templateId" />        
     </resultMap>
 
     <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServicePackageMapping">
         insert into
         t_lcm_defPackage_mapping
-        (serviceId,serviceDefId,templateId,templateName)
-        values(#{serviceId},#{serviceDefId},#{templateId},#{templateName})
+        (serviceId,serviceDefId,templateId)
+        values(#{serviceId},#{serviceDefId},#{templateId})
     </insert>
 
     <delete id="delete">
@@ -37,15 +36,15 @@
     </delete>
 
     <select id="queryAllMappings" resultMap="servicePackageMappingResultMap">
-        select serviceId,serviceDefId,templateId,templateName from t_lcm_defPackage_mapping
+        select serviceId,serviceDefId,templateId from t_lcm_defPackage_mapping
     </select>
     
     <select id="queryPackageMapping" resultMap="servicePackageMappingResultMap">
-        select serviceId,serviceDefId,templateId,templateName from t_lcm_defPackage_mapping where serviceId = #{serviceId}
+        select serviceId,serviceDefId,templateId from t_lcm_defPackage_mapping where serviceId = #{serviceId}
     </select>
     
     <select id="queryPackageMappings" resultMap="servicePackageMappingResultMap">
-        select serviceId,serviceDefId,templateId,templateName from t_lcm_defPackage_mapping where serviceDefId = #{serviceDefId}
+        select serviceId,serviceDefId,templateId from t_lcm_defPackage_mapping where serviceDefId = #{serviceDefId}
     </select>
 
 </mapper>

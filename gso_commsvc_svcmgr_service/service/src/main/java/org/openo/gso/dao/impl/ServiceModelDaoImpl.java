@@ -268,12 +268,39 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      */
     @Override
     public void batchUpdate(List<ServiceModel> services) throws ApplicationException {
+        if(CollectionUtils.isEmpty(services)) {
+            LOGGER.info("There is no service which need to update.");
+            return;
+        }
+
         try {
             LOGGER.info("Batch  update services: {}", services);
-            ValidateUtil.assertObjectNotNull(services);
             getMapper(ServiceModelMapper.class).batchUpdate(services);
         } catch(Exception exception) {
             LOGGER.error("Fail to batch update service instance. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+    }
+
+    /**
+     * Batch delete service data, including service instance, service parameters and package
+     * mapping.<br/>
+     * 
+     * @param svcIds service instance ids
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    @Override
+    public void batchDelete(List<String> svcIds) throws ApplicationException {
+        if(CollectionUtils.isEmpty(svcIds)) {
+            LOGGER.info("There is no service which need to delete.");
+            return;
+        }
+        try {
+            LOGGER.info("Batch delete services, the service ids are: {}", svcIds);
+            getMapper(ServiceModelMapper.class).batchDelete(svcIds);
+        } catch(Exception exception) {
+            LOGGER.error("Fail to batch delete service instance. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }

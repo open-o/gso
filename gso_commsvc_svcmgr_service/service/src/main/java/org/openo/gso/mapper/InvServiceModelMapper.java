@@ -63,4 +63,13 @@ public interface InvServiceModelMapper extends InventoryMapper {
      * @since GSO 0.5
      */
     void batchUpdate(@Param("services") List<InvServiceModel> services);
+
+    /**
+     * Batch delete service data, including service instance, service parameters and package
+     * mapping.<br/>
+     * 
+     * @param svcIds service instance ids
+     * @since GSO 0.5
+     */
+    void batchDelete(@Param("svcIds") List<String> svcIds);
 }

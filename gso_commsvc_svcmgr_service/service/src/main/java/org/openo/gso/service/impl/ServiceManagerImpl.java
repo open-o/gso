@@ -174,18 +174,20 @@ public class ServiceManagerImpl implements IServiceManager {
         } catch(ApplicationException exception) {
             LOGGER.error("Fail to create service instance. {}", exception);
             // update service instance status
-            model.setStatus(CommonConstant.Status.ERROR);
-            if(null != svcOperation) {
-                svcOperation.setResult(CommonConstant.Status.ERROR);
-                svcOperation.setProgress(100);
-                svcOperation.setReason(exception.getMessage());
-            }
+            setStatus(model, svcOperation, CommonConstant.Status.ERROR, exception.getMessage());
             updateData(model, svcOperation);
             throw exception;
         } finally {
 
             // Delete csar ID from cache
             PackageOperationSingleton.getInstance().removeBeingUsedCsarId(csarId);
+        }
+
+        // If there is no service segment, operation is finished when gso-lcm finishes.
+        if(0 == model.getSegmentNumber()) {
+            // update service instance status
+            setStatus(model, svcOperation, CommonConstant.Status.FINISHED, null);
+            updateData(model, svcOperation);
         }
 
         // Assemble return data
@@ -205,29 +207,46 @@ public class ServiceManagerImpl implements IServiceManager {
      */
     @Override
     public void deleteService(String serviceId, HttpServletRequest httpRequest) throws ApplicationException {
-        List<ServiceSegmentModel> serviceSegments = serviceSegmentDao.queryServiceSegments(serviceId);
-        if(!CollectionUtils.isEmpty(serviceSegments)) {
+        // Firstly delete the old operation record of this service instance
+        // If not delete old operation record, it will influence timing task
+        operationManager.delete(serviceId);
 
-            // Get template id of service instance
-            ServicePackageMapping servicePackage = servicePackageDao.queryPackageMapping(serviceId);
-            ValidateUtil.assertObjectNotNull(servicePackage);
-            String templateId = servicePackage.getTemplateId();
-            ValidateUtil.assertStringNotNull(templateId);
+        ServiceOperation svcOperation = null;
+        try {
+            // 1. Create operation record
+            svcOperation = operationManager.createOperation(serviceId, Constant.OPERATION_DELETE);
+            // 2. Get service segments for workflow
+            List<ServiceSegmentModel> serviceSegments = serviceSegmentDao.queryServiceSegments(serviceId);
+            if(!CollectionUtils.isEmpty(serviceSegments)) {
 
-            // Fill in input parameters
-            Map<String, String> inputParam = new HashMap<String, String>();
-            inputParam.put(Constant.SERVICE_ID, serviceId);
-            addServiceSegment(inputParam, serviceSegments);
+                // 2.1 Get template id of service instance
+                ServicePackageMapping servicePackage = servicePackageDao.queryPackageMapping(serviceId);
+                ValidateUtil.assertObjectNotNull(servicePackage);
+                String templateId = servicePackage.getTemplateId();
+                ValidateUtil.assertStringNotNull(templateId);
 
-            // Start delete workflow
-            startWorkFlow(templateId, Constant.WORK_FLOW_PLAN_DELETE, httpRequest, inputParam);
+                // 2.2 Fill in input parameters
+                Map<String, String> inputParam = new HashMap<String, String>();
+                inputParam.put(Constant.SERVICE_ID, serviceId);
+                addServiceSegment(inputParam, serviceSegments);
 
-        } else {
-            LOGGER.error("There is no service segment. The service ID is {}", serviceId);
+                // 2.3 Start delete workflow
+                startWorkFlow(templateId, Constant.WORK_FLOW_PLAN_DELETE, httpRequest, inputParam);
+
+            } else {
+                LOGGER.error("There is no service segment. The service ID is {}", serviceId);
+                // 3. Update service operation record
+                setStatus(null, svcOperation, CommonConstant.Status.FINISHED, null);
+                updateData(null, svcOperation);
+                // 4. Directly delete service which has no service segments.
+                deleteDataFromDb(serviceId);
+            }
+        } catch(ApplicationException exception) {
+            LOGGER.error("Fail to delete service. {}", exception);
+            setStatus(null, svcOperation, CommonConstant.Status.ERROR, exception.getMessage());
+            updateData(null, svcOperation);
+            throw exception;
         }
-
-        // Delete data from DB
-        deleteDataFromDb(serviceId);
     }
 
     /**
@@ -341,9 +360,7 @@ public class ServiceManagerImpl implements IServiceManager {
         // insert inventory data
         inventoryDao.insert(DataConverter.convertToInvData(model), InvServiceModelMapper.class);
         inventoryDao.insert(model.getServicePackage(), InvServicePackageMapper.class);
-        for(ServiceParameter param : parameters) {
-            inventoryDao.insert(param, InvServiceParameterMapper.class);
-        }
+        inventoryDao.batchInsert(parameters);
     }
 
     /**
@@ -415,6 +432,7 @@ public class ServiceManagerImpl implements IServiceManager {
     private int startWorkFlow(String templateId, String key, HttpServletRequest request, Object parameters)
             throws ApplicationException {
         OperationModel operation = getOperation(templateId, key, request);
+        LOGGER.info("Start workflow. Operations from catalog: {} ", operation);
         ValidateUtil.assertObjectNotNull(operation);
         Map<String, Object> workflowBody = DataConverter.constructWorkflowBody(operation, parameters);
         return workflowProxy.startWorkFlow(workflowBody, request);
@@ -585,10 +603,35 @@ public class ServiceManagerImpl implements IServiceManager {
      * @since GSO 0.5
      */
     private void updateData(ServiceModel svcModel, ServiceOperation operation) throws ApplicationException {
-        serviceModelDao.updateServiceStatus(svcModel.getServiceId(), svcModel.getStatus());
-        inventoryDao.updateServiceStatus(svcModel.getServiceId(), svcModel.getStatus());
+        if(null != svcModel) {
+            serviceModelDao.updateServiceStatus(svcModel.getServiceId(), svcModel.getStatus());
+            inventoryDao.updateServiceStatus(svcModel.getServiceId(), svcModel.getStatus());
+        }
+
         if(null != operation) {
             operationManager.updateOperation(operation);
+        }
+    }
+
+    /**
+     * Set status of service and operation when progress is 100.<br/>
+     * 
+     * @param model service instance
+     * @param svcOperation service operation
+     * @param status service and operation status
+     * @param reason why status is error
+     * @since GSO 0.5
+     */
+    private void setStatus(ServiceModel model, ServiceOperation svcOperation, String status, String reason) {
+        if(null != model) {
+            model.setStatus(status);
+        }
+
+        if(null != svcOperation) {
+            svcOperation.setResult(status);
+            svcOperation.setProgress(100);
+            svcOperation.setReason(reason);
+            svcOperation.setFinishedAt(System.currentTimeMillis());
         }
     }
 }

@@ -64,7 +64,7 @@ public class Constant {
     /**
      * Create workflow name.
      */
-    public static final String WORK_FLOW_PLAN_CREATE = "init";
+    public static final String WORK_FLOW_PLAN_CREATE = "create";
 
     /**
      * Delete workflow name.

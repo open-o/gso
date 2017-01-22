@@ -68,9 +68,10 @@ public interface ServiceOperMapper {
     /**
      * Delete old operation records which are generated for 15 days.<br/>
      * 
+     * @param svcIds service instance id
      * @since GSO 0.5
      */
-    void deleteHistory();
+    void deleteHistory(@Param("svcIds") List<String> svcIds);
 
     /**
      * Get operations by service progress type.<br/>
@@ -88,4 +89,12 @@ public interface ServiceOperMapper {
      * @since GSO 0.5
      */
     void batchUpdate(@Param("svcOperations") List<ServiceOperation> svcOperations);
+
+    /**
+     * Query old operations<br/>
+     * 
+     * @return service operations
+     * @since GSO 0.5
+     */
+    List<ServiceOperation> queryHistory();
 }

@@ -18,7 +18,6 @@ package org.openo.gso.dao.inf;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServiceOperation;
 
@@ -42,13 +41,13 @@ public interface IServiceOperDao {
     void insert(ServiceOperation serviceOperation) throws ApplicationException;
 
     /**
-     * Delete service operation.<br/>
+     * Delete operations of service.<br/>
      * 
      * @param serviceId service instance ID
      * @throws ApplicationException when failing to operation database.
      * @since GSO 0.5
      */
-    void delete(@Param("serviceId") String serviceId) throws ApplicationException;
+    void delete(String serviceId) throws ApplicationException;
 
     /**
      * Query service operation progress by service ID and operation ID.<br/>
@@ -59,8 +58,7 @@ public interface IServiceOperDao {
      * @throws ApplicationException when failing to operation database.
      * @since GSO 0.5
      */
-    ServiceOperation queryOperationById(@Param("serviceId") String serviceId, @Param("operationId") String operationId)
-            throws ApplicationException;
+    ServiceOperation queryOperationById(String serviceId, String operationId) throws ApplicationException;
 
     /**
      * Update service operation.<br/>
@@ -74,16 +72,18 @@ public interface IServiceOperDao {
     /**
      * Delete old operation records which are generated for 15 days.<br/>
      * 
-     * @throws ApplicationException
+     * @param svcIds service instance ids
+     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    void deleteHistory() throws ApplicationException;
+    void deleteHistory(List<String> svcIds) throws ApplicationException;
 
     /**
      * Get operations by service progress type.<br/>
      * 
      * @param svcIds service instance ID
      * @return service operations
+     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     List<ServiceOperation> queryOperByIds(List<String> svcIds) throws ApplicationException;
@@ -95,5 +95,14 @@ public interface IServiceOperDao {
      * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    void batchUpdate(@Param("svcOperations") List<ServiceOperation> svcOperations) throws ApplicationException;
+    void batchUpdate(List<ServiceOperation> svcOperations) throws ApplicationException;
+
+    /**
+     * Query old operations.<br/>
+     * 
+     * @return service operations
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    List<ServiceOperation> queryHistory() throws ApplicationException;
 }

@@ -47,4 +47,13 @@ public interface IOperationManager {
      * @since GSO 0.5
      */
     void updateOperation(ServiceOperation svcOperation) throws ApplicationException;
+
+    /**
+     * Delete service operation by service instance ID.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @throws ApplicationException when fail to operate database.
+     * @since GSO 0.5
+     */
+    void delete(String serviceId) throws ApplicationException;
 }

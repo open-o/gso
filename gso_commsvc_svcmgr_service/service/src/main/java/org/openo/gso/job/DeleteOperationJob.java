@@ -16,9 +16,14 @@
 
 package org.openo.gso.job;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TimerTask;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openo.gso.dao.inf.IServiceOperDao;
+import org.openo.gso.dao.inf.IServiceSegmentDao;
+import org.openo.gso.model.servicemo.ServiceOperation;
 import org.openo.gso.util.service.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +52,21 @@ public class DeleteOperationJob extends TimerTask {
     public void run() {
         try {
 
-            IServiceOperDao operDao = (IServiceOperDao)SpringContextUtil.getBeanById("serviceOperDao");
-            operDao.deleteHistory();
+            IServiceOperDao svcOperDao = (IServiceOperDao)SpringContextUtil.getBeanById("serviceOperDao");
+            List<ServiceOperation> svcOperations = svcOperDao.queryHistory();
+            if(CollectionUtils.isEmpty(svcOperations)) {
+                return;
+            }
+
+            List<String> svcIds = new LinkedList<>();
+            for(ServiceOperation svcOperation : svcOperations) {
+                svcIds.add(svcOperation.getServiceId());
+            }
+
+            LOGGER.info("Start to delete history operations: {}", svcOperations);
+            IServiceSegmentDao segmengtDao = (IServiceSegmentDao)SpringContextUtil.getBeanById("serviceSegmentDao");
+            segmengtDao.deleteHistory(svcIds);
+            svcOperDao.deleteHistory(svcIds);
         } catch(Exception exception) {
             LOGGER.error("Delete operation job exception. {}", exception);
         }

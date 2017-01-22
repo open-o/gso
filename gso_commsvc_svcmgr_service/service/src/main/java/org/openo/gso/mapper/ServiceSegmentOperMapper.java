@@ -64,7 +64,7 @@ public interface ServiceSegmentOperMapper {
      * @param serviceId service instance ID
      * @since GSO 0.5
      */
-    void deleteByServiceId(@Param("serviceId") String serviceId);
+    void delete(@Param("serviceId") String serviceId);
 
     /**
      * Query segment operations by service instance ids.<br/>
@@ -74,4 +74,12 @@ public interface ServiceSegmentOperMapper {
      * @since GSO 0.5
      */
     List<ServiceSegmentOperation> querySegmentOperByIds(@Param("svcIds") List<String> svcIds);
+
+    /**
+     * Delete old segment operation records which are generated for 15 days.<br/>
+     * 
+     * @param svcIds service instance id
+     * @since GSO 0.5
+     */
+    void deleteHistory(@Param("svcIds") List<String> svcIds);
 }

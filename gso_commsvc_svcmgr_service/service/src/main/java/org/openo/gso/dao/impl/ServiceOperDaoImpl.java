@@ -25,10 +25,12 @@ import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.ServiceOperMapper;
+import org.openo.gso.mapper.ServiceSegmentOperMapper;
 import org.openo.gso.model.servicemo.ServiceOperation;
 import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Service operation implementation class.<br/>
@@ -83,7 +85,7 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
     }
 
     /**
-     * Delete service operation.<br/>
+     * Delete operations of service.<br/>
      * 
      * @param serviceId service instance ID
      * @throws ApplicationException when failing to operation database.
@@ -92,8 +94,9 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
     @Override
     public void delete(String serviceId) throws ApplicationException {
         try {
-            ServiceOperMapper mapper = getMapper(ServiceOperMapper.class);
-            mapper.delete(serviceId);
+            getMapper(ServiceSegmentOperMapper.class).delete(serviceId);
+            getMapper(ServiceOperMapper.class).delete(serviceId);
+
         } catch(Exception exception) {
             LOGGER.error("Fail to delete service operation by service instance ID. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
@@ -144,7 +147,6 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
         try {
             ValidateUtil.assertObjectNotNull(serviceOperation);
             getMapper(ServiceOperMapper.class).update(serviceOperation);
-
         } catch(Exception exception) {
             LOGGER.error("Fail to update service operation. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
@@ -154,13 +156,14 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
     /**
      * Delete old operation records which are generated for 15 days.<br/>
      * 
-     * @throws ApplicationException
+     * @param svcIds service instance ids
+     * @throws ApplicationException when database exception.
      * @since GSO 0.5
      */
     @Override
-    public void deleteHistory() throws ApplicationException {
+    public void deleteHistory(List<String> svcIds) throws ApplicationException {
         try {
-            getMapper(ServiceOperMapper.class).deleteHistory();
+            getMapper(ServiceOperMapper.class).deleteHistory(svcIds);
         } catch(Exception exception) {
             LOGGER.error("Fail to delete old operation records. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
@@ -172,13 +175,13 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
      * 
      * @param progress service progress type,finished|processing|error
      * @return service operations
+     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
     public List<ServiceOperation> queryOperByIds(List<String> svcIds) throws ApplicationException {
         try {
             return getMapper(ServiceOperMapper.class).queryOperByIds(svcIds);
-
         } catch(Exception exception) {
             LOGGER.error("Fail to query operations by service instance ids. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
@@ -194,12 +197,33 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
      */
     @Override
     public void batchUpdate(List<ServiceOperation> svcOperations) throws ApplicationException {
+        if(CollectionUtils.isEmpty(svcOperations)) {
+            LOGGER.info("There is no service operation which need to update.");
+        }
+
         try {
             LOGGER.info("Batch update service operations: {}", svcOperations);
-            ValidateUtil.assertObjectNotNull(svcOperations);
             getMapper(ServiceOperMapper.class).batchUpdate(svcOperations);
         } catch(Exception exception) {
             LOGGER.error("Fail to batch update service operations. {}", exception);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
+        }
+    }
+
+    /**
+     * Query old operations.<br/>
+     * 
+     * @return service operations
+     * @throws ApplicationException when database exception
+     * @since GSO 0.5
+     */
+    @Override
+    public List<ServiceOperation> queryHistory() throws ApplicationException {
+        try {
+            return getMapper(ServiceOperMapper.class).queryHistory();
+
+        } catch(Exception exception) {
+            LOGGER.error("Fail to query old service operations. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
