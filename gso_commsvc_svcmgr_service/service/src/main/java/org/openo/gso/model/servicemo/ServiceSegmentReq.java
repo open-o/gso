@@ -13,100 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openo.gso.model.drivermo;
+
+package org.openo.gso.model.servicemo;
 
 import java.util.List;
 import java.util.Map;
 
-import org.openo.gso.model.servicemo.ServiceSegmentReq;
-
 /**
- * Input Parameter For Each Domain<br>
+ * service segment request model<br>
  * <p>
  * </p>
- * @version     GSO 0.5  2017/1/7
+ * 
+ * @author
+ * @version     GSO 0.5  2017/1/20
  */
-public class DomainInputParameter {
-    
-    private String serviceId;
-    
-    private String subServiceId;
-    
-    private String subServiceName;
-    
-    private String subServiceDesc;
-    
+public class ServiceSegmentReq {
+
+    /**
+     * ip and port for the current domain
+     */
     private String domainHost;
     
+    /**
+     * node template name
+     */
     private String nodeTemplateName;
     
+    /**
+     * node type
+     */
     private String nodeType;
     
+    /**
+     * sub segment list
+     */
     private List<ServiceSegmentReq> segments;
     
+    /**
+     * additional parameters for network service
+     */
     private Map<String, String> additionalParamForNs;
-
-    
-    /**
-     * @return Returns the serviceId.
-     */
-    public String getServiceId() {
-        return serviceId;
-    }
-
-    
-    /**
-     * @param serviceId The serviceId to set.
-     */
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
-    
-    /**
-     * @return Returns the subServiceId.
-     */
-    public String getSubServiceId() {
-        return subServiceId;
-    }
-    
-    /**
-     * @param subServiceId The subServiceId to set.
-     */
-    public void setSubServiceId(String subServiceId) {
-        this.subServiceId = subServiceId;
-    }
-
-    /**
-     * @return Returns the subServiceName.
-     */
-    public String getSubServiceName() {
-        return subServiceName;
-    }
-
-    
-    /**
-     * @param subServiceName The subServiceName to set.
-     */
-    public void setSubServiceName(String subServiceName) {
-        this.subServiceName = subServiceName;
-    }
-
-    
-    /**
-     * @return Returns the subServiceDesc.
-     */
-    public String getSubServiceDesc() {
-        return subServiceDesc;
-    }
-
-    
-    /**
-     * @param subServiceDesc The subServiceDesc to set.
-     */
-    public void setSubServiceDesc(String subServiceDesc) {
-        this.subServiceDesc = subServiceDesc;
-    }
-
     
     /**
      * @return Returns the domainHost.
@@ -114,7 +60,6 @@ public class DomainInputParameter {
     public String getDomainHost() {
         return domainHost;
     }
-
     
     /**
      * @param domainHost The domainHost to set.
@@ -122,7 +67,6 @@ public class DomainInputParameter {
     public void setDomainHost(String domainHost) {
         this.domainHost = domainHost;
     }
-
     
     /**
      * @return Returns the nodeTemplateName.
@@ -130,7 +74,6 @@ public class DomainInputParameter {
     public String getNodeTemplateName() {
         return nodeTemplateName;
     }
-
     
     /**
      * @param nodeTemplateName The nodeTemplateName to set.
@@ -138,7 +81,6 @@ public class DomainInputParameter {
     public void setNodeTemplateName(String nodeTemplateName) {
         this.nodeTemplateName = nodeTemplateName;
     }
-
     
     /**
      * @return Returns the nodeType.
@@ -146,7 +88,6 @@ public class DomainInputParameter {
     public String getNodeType() {
         return nodeType;
     }
-
     
     /**
      * @param nodeType The nodeType to set.
@@ -168,14 +109,13 @@ public class DomainInputParameter {
     public void setSegments(List<ServiceSegmentReq> segments) {
         this.segments = segments;
     }
-
+    
     /**
      * @return Returns the additionalParamForNs.
      */
     public Map<String, String> getAdditionalParamForNs() {
         return additionalParamForNs;
     }
-
     
     /**
      * @param additionalParamForNs The additionalParamForNs to set.
@@ -184,6 +124,4 @@ public class DomainInputParameter {
         this.additionalParamForNs = additionalParamForNs;
     }
     
-    
-
 }

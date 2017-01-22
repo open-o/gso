@@ -41,6 +41,8 @@ public class DriverExceptionID {
 
     public static final String FAIL_TO_CREATE_NS = "Fail to create ns";
 
+    public static final String FAIL_TO_CREATE_GSO_NS = "Fail to create gso ns";
+
     private DriverExceptionID() {
 
     }

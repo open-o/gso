@@ -32,9 +32,9 @@ public class CommonConstant {
 
     public static final String SDNO_INSTANTIATE_URL = "/openoapi/sdnonslcm/v1/ns/%s/instantiate";
 
-    public static final String SDNO_TERMINATE_URL = "/openoapi/sdnonslcm/v1/sss/%s/terminate";
+    public static final String SDNO_TERMINATE_URL = "/openoapi/sdnonslcm/v1/ns/%s/terminate";
 
-    public static final String SDNO_DELETE_URL = "/openoapi/sdnonslcm/v1/sss/%s";
+    public static final String SDNO_DELETE_URL = "/openoapi/sdnonslcm/v1/ns/%s";
 
     public static final String SDNO_QUERY_URL = "/openoapi/sdnonslcm/v1/jobs/%s";
 
@@ -47,6 +47,12 @@ public class CommonConstant {
     public static final String NFVO_DELETE_URL = "/openoapi/nslcm/v1/ns/%s";
 
     public static final String NFVO_QUERY_URL = "/openoapi/nslcm/v1/jobs/%s";
+    
+    public static final String GSO_CREATE_URL = "/openoapi/gso/v1/services";
+    
+    public static final String GSO_DELETE_URL = "/openoapi/gso/v1/services/%s";
+    
+    public static final String GSO_QUERY_URL = "/openoapi/gso/v1/services/%s/operations/%s";
 
     /**
      * <br>
@@ -69,6 +75,8 @@ public class CommonConstant {
         public static final String IP = "ip";
 
         public static final String PORT = "port";
+
+        public static final String RAW_DATA = "rawData";
 
         private HttpContext() {
 

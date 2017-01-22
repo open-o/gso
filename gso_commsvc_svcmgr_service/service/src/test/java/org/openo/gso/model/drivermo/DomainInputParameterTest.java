@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.openo.gso.constant.CommonConstant;
+import org.openo.gso.model.servicemo.ServiceSegmentReq;
 
 
 public class DomainInputParameterTest {
@@ -101,12 +102,12 @@ public class DomainInputParameterTest {
 
     @Test
     public void testGetParameters() {
-        List<Object> segments = input.getSegments();
+        List<ServiceSegmentReq> segments = input.getSegments();
     }
 
     @Test
     public void testSetSegments() {
-        List<Object> segments = new ArrayList<Object>();
+        List<ServiceSegmentReq> segments = new ArrayList<ServiceSegmentReq>();
         input.setSegments(segments);
     }
 

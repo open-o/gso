@@ -32,6 +32,7 @@ import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
+import org.openo.gso.constant.Constant;
 import org.openo.gso.constant.DriverExceptionID;
 import org.openo.gso.dao.inf.IServiceModelDao;
 import org.openo.gso.dao.inf.IServicePackageDao;
@@ -42,8 +43,11 @@ import org.openo.gso.model.drivermo.NsProgressStatus;
 import org.openo.gso.model.drivermo.ResponseDescriptor;
 import org.openo.gso.model.drivermo.ServiceNode;
 import org.openo.gso.model.drivermo.ServiceTemplate;
+import org.openo.gso.model.servicemo.ServiceCreateReq;
+import org.openo.gso.model.servicemo.ServiceCreateReqDetail;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.model.servicemo.ServiceSegmentOperation;
+import org.openo.gso.model.servicemo.ServiceSegmentReq;
 import org.openo.gso.restproxy.inf.ICatalogProxy;
 import org.openo.gso.service.inf.IDriverManager;
 import org.openo.gso.service.inf.IDriverService;
@@ -677,6 +681,135 @@ public class DriverManagerImpl implements IDriverManager {
         serviceSegment.setServiceSegmentId(segmentId);
         serviceSegment.setServiceSegmentType(segmentType);
         serviceSegmentDao.deleteSegmentByIdAndType(serviceSegment);
+    }
+
+    /**
+     * create gso service<br>
+     * 
+     * @param servletReq http request
+     * @param segmentType GSO
+     * @return response
+     * @since   GSO 0.5
+     */
+    @Override
+    public RestfulResponse createGsoNs(HttpServletRequest servletReq, String segmentType) {
+        // Step1 get input parameters for current node
+        DomainInputParameter cInput = getParamsForCurrentNode(servletReq);
+        // Step2 get service template id and csar id by node type
+        if(null == serviceInf) {
+            LOGGER.error("Service interface not initialised");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
+        }
+        serviceInf.setSegmentType(segmentType);
+        ServiceTemplate svcTmpl = serviceInf.getSvcTmplByNodeType(cInput.getNodeType(), cInput.getDomainHost());
+        if(null == svcTmpl) {
+            LOGGER.error("Failed to get service template from catalogue module");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+                    DriverExceptionID.FAILED_TO_SVCTMPL_CATALOGUE);
+        }
+        LOGGER.info("create gso ns -> begin");
+        Map<String, Object> inputMap = getCreateGsoParams(cInput, svcTmpl);
+        // Step3 invoke lcm
+        serviceInf.setSegmentType(segmentType);
+        RestfulResponse resp = serviceInf.createGsoNs(inputMap);
+        JSONObject obj = JSONObject.fromObject(resp.getResponseContent());
+        Object service = obj.get(Constant.SERVICES_INDENTIRY);
+        JSONObject jsonSvc = JSONObject.fromObject(service);
+        String serviceId = jsonSvc.getString(Constant.SERVICE_INSTANCE_ID);
+        String opertionId = jsonSvc.getString(Constant.SERVICE_OPERATION_ID);
+        if(StringUtils.isEmpty(serviceId) || StringUtils.isEmpty(opertionId)) {
+            LOGGER.error("Invalid response from create operation");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_RESPONSEE_FROM_CREATE_OPERATION);
+        }
+        LOGGER.info("create gso ns -> end");
+        LOGGER.info("save segment and operaton info -> begin");
+        //Step 4: save segment information 
+        ServiceSegmentModel segmentInfo = buildSegmentInfo(cInput, serviceId, segmentType, svcTmpl.getServiceTemplateId());
+        serviceSegmentDao.insertSegment(segmentInfo);
+        //Step 5: and segment operation information
+        ServiceSegmentOperation segmentOperInfo = new ServiceSegmentOperation(serviceId, segmentType, CommonConstant.OperationType.CREATE, cInput.getServiceId(), CommonConstant.Status.PROCESSING);
+        serviceSegmentDao.insertSegmentOper(segmentOperInfo);
+        LOGGER.info("save segment and operation info -> end");
+        
+        if(!HttpCode.isSucess(resp.getStatus())){
+            LOGGER.error("update segment operation status : fail to create ns");
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(serviceId, segmentType, CommonConstant.OperationType.CREATE);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, resp.getStatus(), CommonConstant.StatusDesc.CREATE_NS_FAILED);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_CREATE_GSO_NS);
+        }
+        return resp;
+    }
+
+    /**
+     * get input parameters map for create gso service<br>
+     * 
+     * @param cInput input parameters for current node
+     * @param svcTmpl service tempalte
+     * @return input parameters map for create gso service
+     * @since  GSO 0.5
+     */
+    private Map<String, Object> getCreateGsoParams(DomainInputParameter cInput, ServiceTemplate svcTmpl) {
+        //build sub segments
+        List<ServiceSegmentReq> segments = cInput.getSegments();
+        // build parameters
+        ServiceSegmentReq parameters = new ServiceSegmentReq();
+        parameters.setDomainHost(cInput.getDomainHost());
+        parameters.setNodeTemplateName(cInput.getNodeTemplateName());
+        parameters.setNodeType(cInput.getNodeType());
+        parameters.setSegments(segments);
+        parameters.setAdditionalParamForNs(cInput.getAdditionalParamForNs());
+        
+        //build request detail
+        ServiceCreateReqDetail service = new ServiceCreateReqDetail();
+        service.setName(cInput.getSubServiceName());
+        service.setDescription(cInput.getSubServiceDesc());
+        service.setServiceDefId(svcTmpl.getCsarId());
+        service.setTemplateId(svcTmpl.getServiceTemplateId());
+        service.setParameters(parameters);
+        
+        //build request
+        ServiceCreateReq req = new ServiceCreateReq();
+        req.setService(service);
+        
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(CommonConstant.HttpContext.RAW_DATA, JsonUtil.marshal(req));
+        
+        parseDomainHost(cInput.getDomainHost(), map);
+        
+        return map;
+    }
+
+    /**
+     * delete gso service<br>
+     * 
+     * @param servletReq http request
+     * @param domain GSO
+     * @return response
+     * @since   GSO 0.5
+     */
+    @Override
+    public RestfulResponse deleteGsoNs(HttpServletRequest servletReq, String domain) {
+        // Step1 get input parameters for current node
+        DomainInputParameter dInput = getParamsForCurrentNode(servletReq);
+        // Step2 invoke lcm
+        
+        // Step 3 save operation info
+        
+        return null;
+    }
+
+    /**
+     * query gso service job status<br>
+     * 
+     * @param jobId job id
+     * @param domain GSO
+     * @return response
+     * @since   GSO 0.5
+     */
+    @Override
+    public RestfulResponse getGsoNsProgress(String jobId, String domain) {
+        // TODO Auto-generated method stub
+        return null;
     }
     
     

@@ -311,4 +311,27 @@ public class DriverServiceImpl implements IDriverService {
         paramsMap.put(CommonConstant.HttpContext.PORT, port);
     }
 
+    /**
+     * create gso service<br>
+     * 
+     * @param inputMap input parameters map
+     * @return restful response
+     * @since   GSO 0.5
+     */
+    @Override
+    public RestfulResponse createGsoNs(Map<String, Object> inputMap) {
+        Map<String, Object> paramsMap = new HashMap<String, Object>();
+        paramsMap.put(CommonConstant.HttpContext.URL, CommonConstant.GSO_CREATE_URL);
+        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
+        paramsMap.put(CommonConstant.HttpContext.IP, inputMap.get(CommonConstant.HttpContext.IP));
+        paramsMap.put(CommonConstant.HttpContext.PORT, inputMap.get(CommonConstant.HttpContext.PORT));
+        
+        String req = (String) inputMap.get(CommonConstant.HttpContext.RAW_DATA);
+        RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, req, null);
+        LOGGER.info("create gso ns response status is : {}", rsp.getStatus());
+        LOGGER.info("create gso ns response content is : {}", rsp.getResponseContent());
+
+        return rsp;
+    }
+
 }
