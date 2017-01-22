@@ -79,13 +79,12 @@ public interface IDriverService {
      * <br>
      * query the progress of the instantiate operation
      * 
-     * @param jobId job id
      * @param map paramters map
      * @return progress detail
      * @throws ApplicationException when fail to query the progress
      * @since GSO 0.5
      */
-    RestfulResponse getNsProgress(String jobId, Map<String, Object> map) throws ApplicationException;
+    RestfulResponse getNsProgress(Map<String, Object> map) throws ApplicationException;
 
     /**
      * <br>
@@ -110,7 +109,17 @@ public interface IDriverService {
      * create gso service<br>
      * 
      * @param inputMap parameters map
+     * @return restful response
      * @since  GSO 0.5
      */
-    RestfulResponse createGsoNs(Map<String, Object> inputMap);
+    RestfulResponse createGsoNs(Map<String, Object> inputMap) throws ApplicationException;
+
+    /**
+     * delete gso service<br>
+     * 
+     * @param inputMap parameters map
+     * @return restful response
+     * @since  GSO 0.5
+     */
+    RestfulResponse deleteGsoNs(Map<String, Object> inputMap) throws ApplicationException;
 }

@@ -26,9 +26,6 @@ public class ServiceSegmentOperationTest {
     @Test
     public void test() {
         ServiceSegmentOperation svcOper0 = new ServiceSegmentOperation("segmentId", "segmentType", "operType");
-        ServiceSegmentOperation svcOper1 = new ServiceSegmentOperation("segmentId", "segmentType", "operType", "jobId");
-        ServiceSegmentOperation svcOper2 =
-                new ServiceSegmentOperation("segmentId", "segmentType", "operType", "serviceId", "status");
 
         ServiceSegmentOperation segOper = new ServiceSegmentOperation();
         segOper.setServiceSegmentId("1");

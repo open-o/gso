@@ -241,11 +241,17 @@ public class DriverServiceImpl implements IDriverService {
      * @since GSO 0.5
      */
     @Override
-    public RestfulResponse getNsProgress(String jobId, Map<String, Object> inputMap) throws ApplicationException {
+    public RestfulResponse getNsProgress(Map<String, Object> inputMap) throws ApplicationException {
 
         // Get url based on node type
+        String url = StringUtils.EMPTY;
+        if(CommonConstant.SegmentType.GSO.equals(segmentType)) {
+            url = String.format(CommonConstant.GSO_QUERY_URL, inputMap.get(CommonConstant.NS_INSTANCE_ID), inputMap.get(CommonConstant.JOB_ID));
+        } else {
+            url = getUrl(segmentType, (String) inputMap.get(CommonConstant.JOB_ID), CommonConstant.Step.QUERY);
+        }
         Map<String, Object> paramMap = new HashMap<String, Object>();
-        paramMap.put(CommonConstant.HttpContext.URL, getUrl(segmentType, jobId, CommonConstant.Step.QUERY));
+        paramMap.put(CommonConstant.HttpContext.URL, url);
         paramMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
         paramMap.put(CommonConstant.HttpContext.IP, inputMap.get(CommonConstant.HttpContext.IP));
         paramMap.put(CommonConstant.HttpContext.PORT, inputMap.get(CommonConstant.HttpContext.PORT));
@@ -316,10 +322,11 @@ public class DriverServiceImpl implements IDriverService {
      * 
      * @param inputMap input parameters map
      * @return restful response
+     * @throws ApplicationException when fail to delete gso serivce
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse createGsoNs(Map<String, Object> inputMap) {
+    public RestfulResponse createGsoNs(Map<String, Object> inputMap) throws ApplicationException {
         Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(CommonConstant.HttpContext.URL, CommonConstant.GSO_CREATE_URL);
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
@@ -330,6 +337,29 @@ public class DriverServiceImpl implements IDriverService {
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, req, null);
         LOGGER.info("create gso ns response status is : {}", rsp.getStatus());
         LOGGER.info("create gso ns response content is : {}", rsp.getResponseContent());
+
+        return rsp;
+    }
+
+    /**
+     * delete gso service<br>
+     * 
+     * @param inputMap input parameters map
+     * @return restful response
+     * @throws ApplicationException when fail to delete gso serivce
+     * @since   GSO 0.5
+     */
+    @Override
+    public RestfulResponse deleteGsoNs(Map<String, Object> inputMap) throws ApplicationException {
+        Map<String, Object> paramsMap = new HashMap<String, Object>();
+        paramsMap.put(CommonConstant.HttpContext.URL, String.format(CommonConstant.GSO_DELETE_URL, inputMap.get(CommonConstant.NS_INSTANCE_ID)));
+        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.DELETE);
+        paramsMap.put(CommonConstant.HttpContext.IP, inputMap.get(CommonConstant.HttpContext.IP));
+        paramsMap.put(CommonConstant.HttpContext.PORT, inputMap.get(CommonConstant.HttpContext.PORT));
+        
+        RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, null, null);
+        LOGGER.info("delete gso ns response status is : {}", rsp.getStatus());
+        LOGGER.info("delete gso ns response content is : {}", rsp.getResponseContent());
 
         return rsp;
     }

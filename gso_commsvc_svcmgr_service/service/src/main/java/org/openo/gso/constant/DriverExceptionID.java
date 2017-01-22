@@ -43,6 +43,12 @@ public class DriverExceptionID {
 
     public static final String FAIL_TO_CREATE_GSO_NS = "Fail to create gso ns";
 
+    public static final String INVALID_RESPONSEE_FROM_DELETE_OPERATION = "Invalid response from delete operation";
+
+    public static final String INVALID_RESPONSE_FROM_TERMINATE_OPERATION = "Invalid response from terminate operation";
+
+    public static final String FAIL_TO_DELETE_GSO_NS = "Fail to delete gso ns";
+
     private DriverExceptionID() {
 
     }

@@ -120,7 +120,7 @@ public class DriverServiceImplTest {
             return rsp;
             }
         };
-        impl.getNsProgress("1", inputMap);
+        impl.getNsProgress(inputMap);
 
     }
     

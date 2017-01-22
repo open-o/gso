@@ -61,20 +61,6 @@ public class ServiceSegmentOperation {
     private int progress;
 
     /**
-     * @return Returns the progress.
-     */
-    public int getProgress() {
-        return progress;
-    }
-
-    /**
-     * @param progress The progress to set.
-     */
-    public void setProgress(int progress) {
-        this.progress = progress;
-    }
-
-    /**
      * error code of the operation
      */
     private int errorCode;
@@ -113,6 +99,7 @@ public class ServiceSegmentOperation {
 
     }
 
+
     /**
      * Service Segment Operation Constructor<br>
      * <p>
@@ -121,37 +108,17 @@ public class ServiceSegmentOperation {
      * @param segmentId service segment id
      * @param segmentType service segment type
      * @param operType operation type
-     * @param serviceId service id
-     * @status status service segment operation status
+     * @param serviceId service instance id
+     * @param status processing | error | finished
      * @since GSO 0.5
      */
     public ServiceSegmentOperation(String segmentId, String segmentType, String operType, String serviceId,
             String status) {
-
         this.serviceSegmentId = segmentId;
         this.serviceSegmentType = segmentType;
         this.operationType = operType;
         this.serviceId = serviceId;
         this.status = status;
-
-    }
-
-    /**
-     * Service Segment Operation Constructor<br>
-     * <p>
-     * </p>
-     * 
-     * @param segmentId service segment id
-     * @param segmentType service segment type
-     * @param operType operation type
-     * @param jobId job id
-     * @since GSO 0.5
-     */
-    public ServiceSegmentOperation(String segmentId, String segmentType, String operType, String jobId) {
-        this.serviceSegmentId = segmentId;
-        this.serviceSegmentType = segmentType;
-        this.operationType = operType;
-        this.jobId = jobId;
     }
 
     /**
@@ -236,6 +203,21 @@ public class ServiceSegmentOperation {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+    
+
+    /**
+     * @return Returns the progress.
+     */
+    public int getProgress() {
+        return progress;
+    }
+
+    /**
+     * @param progress The progress to set.
+     */
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 
     /**
