@@ -1,0 +1,14 @@
+[
+    {
+        "name":"localhost",
+        "host":"localhost"
+    },
+    {
+        "name":"beijing",
+        "host":"10.10.10.1:80"
+    },
+    {
+        "name":"shenzhen",
+        "host":"10.10.10.2:80"
+    }
+]

@@ -34,11 +34,13 @@ import org.openo.gso.servicegateway.constant.FieldConstant;
 import org.openo.gso.servicegateway.exception.HttpCode;
 import org.openo.gso.servicegateway.model.CreateParameterModel;
 import org.openo.gso.servicegateway.model.CreateParameterRspModel;
+import org.openo.gso.servicegateway.model.DomainModel;
 import org.openo.gso.servicegateway.model.EnumServiceType;
 import org.openo.gso.servicegateway.model.OperationModel;
 import org.openo.gso.servicegateway.model.OperationResult;
 import org.openo.gso.servicegateway.model.ParameterDefineModel;
 import org.openo.gso.servicegateway.model.SegmentTemplateModel;
+import org.openo.gso.servicegateway.model.ServiceModel;
 import org.openo.gso.servicegateway.model.ServiceTemplateModel;
 import org.openo.gso.servicegateway.service.inf.IServiceGateway;
 import org.openo.gso.servicegateway.util.http.HttpUtil;
@@ -264,13 +266,15 @@ public class ServiceGatewayImpl implements IServiceGateway {
             case SDNO: {
                 String deleteUri = String.format(Constant.SDNO_URL_DELETE, serviceId);
                 String terminateUri = String.format(Constant.SDNO_URL_TERMINATE, serviceId);
-                operationId =deleteNonGSOService(serviceType, serviceId, deleteUri, terminateUri, Constant.SDNO_URL_QUERYJOB);
+                operationId = deleteNonGSOService(serviceType, serviceId, deleteUri, terminateUri,
+                        Constant.SDNO_URL_QUERYJOB);
                 break;
             }
             case NFVO: {
                 String deleteUri = String.format(Constant.NFVO_URL_DELETE, serviceId);
                 String terminateUri = String.format(Constant.NFVO_URL_TERMINATE, serviceId);
-                operationId =deleteNonGSOService(serviceType, serviceId, deleteUri, terminateUri, Constant.NFVO_URL_QUERYJOB);
+                operationId = deleteNonGSOService(serviceType, serviceId, deleteUri, terminateUri,
+                        Constant.NFVO_URL_QUERYJOB);
                 break;
             }
             default: {
@@ -531,4 +535,52 @@ public class ServiceGatewayImpl implements IServiceGateway {
         return parameters;
     }
 
+    /**
+     * query the services
+     * <br>
+     * 
+     * @param servletReq http request
+     * @return the json arrray of services
+     * @throws ApplicationException
+     * @since GSO Mercury Release
+     */
+    public List<ServiceModel> getServices(HttpServletRequest servletReq) throws ApplicationException {
+        List<ServiceModel> serviceArray = CommonUtil.getServicesFromInventory();
+        if(null == serviceArray) {
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "query services from inventory failed");
+        }
+        return serviceArray;
+    }
+
+    /**
+     * <br>
+     * 
+     * @param serviceId the service id
+     * @param servletReq the http request
+     * @return
+     * @throws ApplicationException
+     * @since GSO Mercury Release
+     */
+    @Override
+    public ServiceModel getService(String serviceId, HttpServletRequest servletReq) throws ApplicationException {
+        ServiceModel model = CommonUtil.getServiceFromInventory(serviceId);
+        if(null == model) {
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "query service from inventory failed");
+        }
+        return model;
+    }
+
+    /**
+     * get the domains
+     * <br>
+     * 
+     * @param servletReq the http request
+     * @return
+     * @throws ApplicationException
+     * @since GSO Mercury Release
+     */
+    public List<DomainModel> getDomains(HttpServletRequest servletReq) throws ApplicationException {
+        List<DomainModel> domains = CommonUtil.getDomains();
+        return domains;
+    }
 }

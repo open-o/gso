@@ -68,7 +68,7 @@ public interface IServiceGatewayRoaModule {
     @DELETE
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    @Path("/services/{serviceId}/terminate")
+    @Path("/services/{serviceId}")
     Response deleteService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq)
             throws ApplicationException;
 
@@ -92,14 +92,60 @@ public interface IServiceGatewayRoaModule {
      * 
      * @param servletReq http request
      * @return the parameters model for gui
-     * @throws ApplicationException  when inner error
+     * @throws ApplicationException when inner error
      * @since GSO 0.5
      */
     @GET
     @Path("/createparameters/{tepmlateId}")
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    Response generateCreateParameters(@PathParam("tepmlateId") String tepmlateId, @Context HttpServletRequest servletReq)
-            throws ApplicationException;
+    Response generateCreateParameters(@PathParam("tepmlateId") String tepmlateId,
+            @Context HttpServletRequest servletReq) throws ApplicationException;
 
+    /**
+     * query the services list
+     * <br>
+     * 
+     * @param servletReq
+     * @return
+     * @throws ApplicationException
+     * @since GSO Mercury Release
+     */
+    @GET
+    @Path("/services")
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+    Response getServices(@Context HttpServletRequest servletReq) throws ApplicationException;
+
+    /**
+     * query the service
+     * <br>
+     * 
+     * @param service Id the service id
+     * @param servletReq the http request
+     * @return
+     * @throws ApplicationException
+     * @since GSO Mercury Release
+     */
+    @GET
+    @Path("/services/{serviceId}")
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+    Response getService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq)
+            throws ApplicationException;
+    
+    /**
+     * query the domains
+     * <br>
+     * 
+     * @param servletReq the http request
+     * @return
+     * @throws ApplicationException
+     * @since GSO Mercury Release
+     */
+    @GET
+    @Path("/domains")
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+    Response getDomains(@Context HttpServletRequest servletReq) throws ApplicationException;
 }

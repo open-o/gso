@@ -276,6 +276,11 @@ public class Constant {
      * URL for query service
      */
     public static final String INVENTORY_URL_QUERYSERVICE = "/openoapi/inventory/v1/services/%s";
+    
+    /**
+     * URL for query services
+     */
+    public static final String INVENTORY_URL_QUERYSERVICES = "/openoapi/inventory/v1/services";
 
     /**
      * URL for query vims
