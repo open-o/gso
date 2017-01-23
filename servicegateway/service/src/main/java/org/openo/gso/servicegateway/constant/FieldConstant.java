@@ -216,4 +216,11 @@ public class FieldConstant {
         public static final String FIELD_INPUTPARAMETERS = "inputParameters";
     }
 
+    public static class Domain {
+
+        public static final String FIELD_NAME = "name";
+
+        public static final String FIELD_HOST = "host";
+    }
+
 }

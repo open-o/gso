@@ -67,7 +67,7 @@ public class ProgressPool {
     /**
      * time sleep: 10 second
      */
-    private static final int TIME_SLEEP = 3000;
+    private static final int TIME_SLEEP = 10000;
 
     /**
      * release data time:1 day

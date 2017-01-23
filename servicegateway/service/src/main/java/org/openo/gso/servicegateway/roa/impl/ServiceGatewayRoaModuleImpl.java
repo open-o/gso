@@ -173,9 +173,9 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
      * @since GSO Mercury Release
      */
     public Response getServices(HttpServletRequest servletReq) throws ApplicationException {
-        LOGGER.info("querr services start");
+        LOGGER.info("query services start");
         List<ServiceModel> array = serviceGateway.getServices(servletReq);
-        LOGGER.info("querr services rsp:" + JsonUtil.marshal(array));
+        LOGGER.info("query services rsp:" + JsonUtil.marshal(array));
         return Response.accepted().entity(array).build();
     }
 
@@ -189,9 +189,9 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
      * @since GSO Mercury Release
      */
     public Response getService(String serviceId, HttpServletRequest servletReq) throws ApplicationException {
-        LOGGER.info("querr service by service id start, service Id:" + serviceId);
+        LOGGER.info("query service by service id start, service Id:" + serviceId);
         ServiceModel service = serviceGateway.getService(serviceId, servletReq);
-        LOGGER.info("querr service rsp:" + JsonUtil.marshal(service));
+        LOGGER.info("query service rsp:" + JsonUtil.marshal(service));
         return Response.accepted().entity(service).build();
     }
 
@@ -205,9 +205,9 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
      * @since GSO Mercury Release
      */
     public Response getDomains(@Context HttpServletRequest servletReq) throws ApplicationException {
-        LOGGER.info("querr domains start");
+        LOGGER.info("query domains start");
         List<DomainModel> domains = serviceGateway.getDomains(servletReq);
-        LOGGER.info("querr domains rsp:" + JsonUtil.marshal(domains));
+        LOGGER.info("query domains rsp:" + JsonUtil.marshal(domains));
         return Response.accepted().entity(domains).build();
     }
 }

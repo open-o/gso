@@ -368,7 +368,7 @@ public class CommonUtil {
         Map<String, String> domainsInfo = new HashMap<String, String>();
         for(int i = 0, size = array.size(); i < size; i++) {
             JSONObject obj = array.getJSONObject(i);
-            domainsInfo.put((String)obj.get("host"), (String)obj.get("name"));
+            domainsInfo.put((String)obj.get(FieldConstant.Domain.FIELD_HOST), (String)obj.get(FieldConstant.Domain.FIELD_NAME));
         }
         // if only default "localhost" contained. no need to select domain.
         if(domainsInfo.size() == 1) {
@@ -402,8 +402,8 @@ public class CommonUtil {
         for(int i = 0, size = array.size(); i < size; i++) {
             JSONObject obj = array.getJSONObject(i);
             DomainModel domain = new DomainModel();
-            domain.setName((String)obj.get("name"));
-            domain.setHost((String)obj.get("host"));
+            domain.setName((String)obj.get(FieldConstant.Domain.FIELD_NAME));
+            domain.setHost((String)obj.get(FieldConstant.Domain.FIELD_HOST));
             domains.add(domain);
         }
         return domains;
