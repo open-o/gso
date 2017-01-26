@@ -16,8 +16,8 @@
 
 package org.openo.gso.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -125,13 +125,11 @@ public class ServiceManagerImpl implements IServiceManager {
      * 
      * @param reqContent content of request
      * @param httpRequest http request
-     * @throws ApplicationException when operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
     @Override
-    public ServiceDetailModel createService(String reqContent, HttpServletRequest httpRequest)
-            throws ApplicationException {
+    public ServiceDetailModel createService(String reqContent, HttpServletRequest httpRequest) {
 
         // Parse request
         Map<String, Object> requestBody = JsonUtil.unMarshal(reqContent, Map.class);
@@ -150,9 +148,7 @@ public class ServiceManagerImpl implements IServiceManager {
         ServiceModel model = convertData(service);
         model.setName((String)service.get(Constant.SERVICE_NAME));
         model.setDescription((String)service.get(Constant.SERVICE_DESCRIPTION));
-
-        List<ServiceParameter> paramList = convertParam(model.getServiceId(), paramsMap);
-        model.setParameters(paramList);
+        model.setParameter(convertParam(model.getServiceId(), paramsMap));
 
         // Cache csar ID. When operating csar, need to check csar status.
         String csarId = (String)service.get(Constant.SERVICE_DEF_ID);
@@ -163,7 +159,7 @@ public class ServiceManagerImpl implements IServiceManager {
         ServiceOperation svcOperation = null;
         try {
             // Insert data into DB
-            insertDB(model, paramList);
+            insertDB(model);
 
             // Create operation record
             svcOperation = operationManager.createOperation(model.getServiceId(), Constant.OPERATION_CREATE);
@@ -202,11 +198,10 @@ public class ServiceManagerImpl implements IServiceManager {
      * 
      * @param serviceId service instance ID
      * @param httpRequest http request
-     * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public void deleteService(String serviceId, HttpServletRequest httpRequest) throws ApplicationException {
+    public void deleteService(String serviceId, HttpServletRequest httpRequest) {
         // Firstly delete the old operation record of this service instance
         // If not delete old operation record, it will influence timing task
         operationManager.delete(serviceId);
@@ -226,9 +221,9 @@ public class ServiceManagerImpl implements IServiceManager {
                 ValidateUtil.assertStringNotNull(templateId);
 
                 // 2.2 Fill in input parameters
-                Map<String, String> inputParam = new HashMap<String, String>();
-                inputParam.put(Constant.SERVICE_ID, serviceId);
-                addServiceSegment(inputParam, serviceSegments);
+                List<Object> segLst = addServiceSegment(serviceSegments);
+                Map<String, Object> inputParam = new HashMap<>();
+                inputParam.put(Constant.SERVICE_SEGMENTS, segLst);
 
                 // 2.3 Start delete workflow
                 startWorkFlow(templateId, Constant.WORK_FLOW_PLAN_DELETE, httpRequest, inputParam);
@@ -253,11 +248,10 @@ public class ServiceManagerImpl implements IServiceManager {
      * Query all service instances.<br/>
      * 
      * @return service instances
-     * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public List<ServiceModel> getAllInstances() throws ApplicationException {
+    public List<ServiceModel> getAllInstances() {
         return this.serviceModelDao.queryAllServices();
     }
 
@@ -266,11 +260,10 @@ public class ServiceManagerImpl implements IServiceManager {
      * 
      * @param serviceId service instance ID
      * @return service segment instances
-     * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public List<ServiceSegmentModel> getServiceSegments(String serviceId) throws ApplicationException {
+    public List<ServiceSegmentModel> getServiceSegments(String serviceId) {
         return serviceSegmentDao.queryServiceSegments(serviceId);
     }
 
@@ -348,11 +341,9 @@ public class ServiceManagerImpl implements IServiceManager {
      * Insert data into DB.<br/>
      * 
      * @param model service instance data
-     * @param parameters which are used to create service instance
-     * @throws ApplicationException when fail to operate database.
      * @since GSO 0.5
      */
-    private void insertDB(ServiceModel model, List<ServiceParameter> parameters) throws ApplicationException {
+    private void insertDB(ServiceModel model) {
 
         // insert gso data
         serviceModelDao.insert(model);
@@ -360,7 +351,8 @@ public class ServiceManagerImpl implements IServiceManager {
         // insert inventory data
         inventoryDao.insert(DataConverter.convertToInvData(model), InvServiceModelMapper.class);
         inventoryDao.insert(model.getServicePackage(), InvServicePackageMapper.class);
-        inventoryDao.batchInsert(parameters);
+        inventoryDao.insert(model.getParameter(), InvServiceParameterMapper.class);
+        ;
     }
 
     /**
@@ -398,11 +390,9 @@ public class ServiceManagerImpl implements IServiceManager {
      * @param key operation name
      * @param request http request
      * @return operation object
-     * @throws ApplicationException when operations is invalid.
      * @since GSO 0.5
      */
-    private OperationModel getOperation(String templateId, String key, HttpServletRequest request)
-            throws ApplicationException {
+    private OperationModel getOperation(String templateId, String key, HttpServletRequest request) {
         List<OperationModel> operations = catalogProxy.getOperationsByTemplateId(templateId, request);
         if(CollectionUtils.isEmpty(operations)) {
             LOGGER.error("There is no execution plan.");
@@ -426,11 +416,9 @@ public class ServiceManagerImpl implements IServiceManager {
      * @param request http request
      * @param parameters request parameters
      * @return response status code
-     * @throws ApplicationException when fail to execute.
      * @since GSO 0.5
      */
-    private int startWorkFlow(String templateId, String key, HttpServletRequest request, Object parameters)
-            throws ApplicationException {
+    private int startWorkFlow(String templateId, String key, HttpServletRequest request, Object parameters) {
         OperationModel operation = getOperation(templateId, key, request);
         LOGGER.info("Start workflow. Operations from catalog: {} ", operation);
         ValidateUtil.assertObjectNotNull(operation);
@@ -444,21 +432,15 @@ public class ServiceManagerImpl implements IServiceManager {
      * @param serviceId service instance ID
      * @param params service parameter
      * @return parameters in the form of list
-     * @throws ApplicationException when type of inputParams are wrong
      * @since GSO 0.5
      */
-    private List<ServiceParameter> convertParam(String serviceId, Map<String, Object> params)
-            throws ApplicationException {
-        List<ServiceParameter> paramsList = new LinkedList<ServiceParameter>();
-        for(Map.Entry<String, Object> entry : params.entrySet()) {
-            ServiceParameter param = new ServiceParameter();
-            param.setServiceId(serviceId);
-            param.setParamName(entry.getKey());
-            param.setParamValue(entry.getValue());
-            paramsList.add(param);
-        }
+    private ServiceParameter convertParam(String serviceId, Map<String, Object> params) {
+        ServiceParameter parameter = new ServiceParameter();
+        parameter.setServiceId(serviceId);
+        parameter.setParamName(Constant.SERVICE_PARAMETERS);
+        parameter.setParamValue(JsonUtil.marshal(params));
 
-        return paramsList;
+        return parameter;
     }
 
     /**
@@ -466,11 +448,10 @@ public class ServiceManagerImpl implements IServiceManager {
      * 
      * @param reqContent content of request
      * @param httpRequest http request
-     * @throws ApplicationException when operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public void createServiceSegment(String reqContent, HttpServletRequest httpRequest) throws ApplicationException {
+    public void createServiceSegment(String reqContent, HttpServletRequest httpRequest) {
         ServiceSegmentModel serviceSegment = JsonUtil.unMarshal(reqContent, ServiceSegmentModel.class);
         String serviceId = serviceSegment.getServiceId();
         ValidateUtil.assertStringNotNull(serviceId);
@@ -497,12 +478,10 @@ public class ServiceManagerImpl implements IServiceManager {
      * @param nodes which are defined in template
      * @param seviceSegment service segment of some service instance
      * @return sequence
-     * @throws ApplicationException when there is something wrong with data.
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
-    private int getSequenceOfNode(List<NodeTemplateModel> nodes, ServiceSegmentModel seviceSegment)
-            throws ApplicationException {
+    private int getSequenceOfNode(List<NodeTemplateModel> nodes, ServiceSegmentModel seviceSegment) {
 
         // Check data
         if(CollectionUtils.isEmpty(nodes)) {
@@ -550,28 +529,31 @@ public class ServiceManagerImpl implements IServiceManager {
     /**
      * Add service segments into workflow input parameters.<br/>
      * 
-     * @param inputParam workflow's input paramters
      * @param segments service segments
+     * @return collection of service segments for workflow's input parameters
      * @since GSO 0.5
      */
-    private void addServiceSegment(Map<String, String> inputParam, List<ServiceSegmentModel> segments) {
-        String segmentId = null;
+    private List<Object> addServiceSegment(List<ServiceSegmentModel> segments) {
+        List<Object> segLst = new ArrayList<>();
         for(ServiceSegmentModel segment : segments) {
-            StringBuilder builder =
-                    new StringBuilder(segment.getNodeType()).append(".").append(Constant.SERVICE_SEGMENT_INSTANCE_ID);
-            segmentId = builder.toString();
-            inputParam.put(segmentId, segment.getServiceSegmentId());
+            Map<String, String> segMap = new HashMap<>();
+            segMap.put(Constant.SERVICE_ID, segment.getServiceId());
+            segMap.put(Constant.SERVICE_SEGMENT_DOMAINHOST, segment.getServiceSegmentId());
+            segMap.put(Constant.NODE_TEMPLATE_NAME, segment.getNodeTemplateName());
+            segMap.put(Constant.SERVICE_SEGMENT_DOMAINHOST, segment.getDomainHost());
+            segLst.add(segMap);
         }
+
+        return segLst;
     }
 
     /**
      * Delete data from database.<br/>
      * 
      * @param key delete key
-     * @throws ApplicationException when fail to operate database
      * @since GSO 0.5
      */
-    private void deleteDataFromDb(String key) throws ApplicationException {
+    private void deleteDataFromDb(String key) {
 
         // Delete data from gso DB
         serviceModelDao.delete(key);
@@ -602,7 +584,7 @@ public class ServiceManagerImpl implements IServiceManager {
      * @param status
      * @since GSO 0.5
      */
-    private void updateData(ServiceModel svcModel, ServiceOperation operation) throws ApplicationException {
+    private void updateData(ServiceModel svcModel, ServiceOperation operation) {
         if(null != svcModel) {
             serviceModelDao.updateServiceStatus(svcModel.getServiceId(), svcModel.getStatus());
             inventoryDao.updateServiceStatus(svcModel.getServiceId(), svcModel.getStatus());
@@ -633,5 +615,18 @@ public class ServiceManagerImpl implements IServiceManager {
             svcOperation.setReason(reason);
             svcOperation.setFinishedAt(System.currentTimeMillis());
         }
+    }
+
+    /**
+     * Query service operation by service instance ID and operation ID.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @param operationId service operation ID
+     * @return service operation
+     * @since GSO 0.5
+     */
+    @Override
+    public ServiceOperation getServiceOperation(String serviceId, String operationId) {
+        return operationManager.queryOperation(serviceId, operationId);
     }
 }

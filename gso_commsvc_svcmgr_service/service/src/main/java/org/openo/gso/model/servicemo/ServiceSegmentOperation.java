@@ -248,4 +248,18 @@ public class ServiceSegmentOperation {
         this.statusDescription = statusDescription;
     }
 
+    /**
+     * Add for log.<br/>
+     * 
+     * @return model data
+     * @since GSO 0.5
+     */
+    @Override
+    public String toString() {
+        return "ServiceSegmentOperation [serviceSegmentId=" + serviceSegmentId + ", serviceSegmentType="
+                + serviceSegmentType + ", jobId=" + jobId + ", serviceId=" + serviceId + ", operationType="
+                + operationType + ", status=" + status + ", progress=" + progress + ", errorCode=" + errorCode
+                + ", statusDescription=" + statusDescription + "]";
+    }
+
 }

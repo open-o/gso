@@ -20,10 +20,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
-import org.openo.gso.model.servicemo.ServiceModel;
-import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.model.servicemo.ServiceDetailModel;
+import org.openo.gso.model.servicemo.ServiceModel;
+import org.openo.gso.model.servicemo.ServiceOperation;
+import org.openo.gso.model.servicemo.ServiceSegmentModel;
 
 /**
  * Interface to operate service.<br/>
@@ -41,55 +41,61 @@ public interface IServiceManager {
      * @param reqContent content of request
      * @param httpRequest http request
      * @return service instance
-     * @throws ApplicationException when operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    ServiceDetailModel createService(String reqContent, HttpServletRequest httpRequest) throws ApplicationException;
+    ServiceDetailModel createService(String reqContent, HttpServletRequest httpRequest);
 
     /**
      * Delete service instances.<br/>
      * 
      * @param serviceId service instance ID
      * @param httpRequest http request
-     * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    void deleteService(String serviceId, HttpServletRequest httpRequest) throws ApplicationException;
+    void deleteService(String serviceId, HttpServletRequest httpRequest);
 
     /**
      * Query all service instances.<br/>
      * 
      * @return service instances
-     * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    List<ServiceModel> getAllInstances() throws ApplicationException;
+    List<ServiceModel> getAllInstances();
 
     /**
      * Query all service segments instances.<br/>
      * 
      * @param serviceId service instance ID
      * @return sub-service instances
-     * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    List<ServiceSegmentModel> getServiceSegments(String serviceId) throws ApplicationException;
+    List<ServiceSegmentModel> getServiceSegments(String serviceId);
 
     /**
      * Create service segment.<br/>
      * 
      * @param reqContent content of request
      * @param httpRequest http request
-     * @throws ApplicationException when operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    void createServiceSegment(String reqContent, HttpServletRequest httpRequest) throws ApplicationException;
+    void createServiceSegment(String reqContent, HttpServletRequest httpRequest);
 
     /**
-     * <br>
+     * Query service instance.<br/>
      * 
-     * @return
-     * @since SDNO 0.5
+     * @param serviceId service instance ID
+     * @return service instance
+     * @since GSO 0.5
      */
     ServiceModel getInstanceByInstanceId(String serviceId);
+
+    /**
+     * Query service operation by service instance ID and operation ID.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @param operationId service operation ID
+     * @return service operation
+     * @since GSO 0.5
+     */
+    ServiceOperation getServiceOperation(String serviceId, String operationId);
 }

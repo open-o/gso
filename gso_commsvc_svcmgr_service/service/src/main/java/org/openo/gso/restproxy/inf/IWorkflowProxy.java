@@ -18,8 +18,6 @@ package org.openo.gso.restproxy.inf;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
-
 /**
  * Interface for interaction with workflow.<br/>
  * <p>
@@ -36,8 +34,7 @@ public interface IWorkflowProxy {
      * @param sendBody content of request
      * @param request http request
      * @return response status code
-     * @throws ApplicationException when workflow fails to start work flow.
      * @since GSO 0.5
      */
-    int startWorkFlow(Object sendBody, HttpServletRequest request) throws ApplicationException;
+    int startWorkFlow(Object sendBody, HttpServletRequest request);
 }

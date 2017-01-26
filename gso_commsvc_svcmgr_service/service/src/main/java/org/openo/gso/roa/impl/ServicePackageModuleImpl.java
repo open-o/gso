@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,6 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
      * 
      * @param httpRequest http request
      * @return response
-     * @throws ApplicationException when fail to set
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
@@ -93,7 +92,6 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
      * @param serviceDefId GSAR ID
      * @param httpRequest http request
      * @return response
-     * @throws ApplicationException when fail to delete GSAR package.
      * @since GSO 0.5
      */
     @Override

@@ -34,4 +34,11 @@
         delete from t_lcm_inputParam_mapping where serviceId = #{serviceId}
     </delete>
 
+    <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServiceParameter">
+        insert into
+        t_lcm_inputParam_mapping
+        (serviceId,inputKey,inputValue)
+        values(#{serviceId},#{paramName},#{paramValue})
+    </insert>
+    
 </mapper>

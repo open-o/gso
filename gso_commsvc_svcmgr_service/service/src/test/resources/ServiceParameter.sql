@@ -22,7 +22,7 @@ create table t_lcm_service_parameter
 );
 
 insert into t_lcm_service_parameter (serviceId,paramName,paramValue) 
-VALUES('1', 'pop.name', 'testPop');
+VALUES('1', 'parameters', '{"pop.name":"pop1"}');
 
 insert into t_lcm_service_parameter (serviceId,paramName,paramValue)
-VALUES('3', 'dc.name', 'testDc');
+VALUES('3', 'parameters', '{"pop.name":"pop3"}');

@@ -182,6 +182,56 @@ public class Constant {
     public static final String NODE_TEMPLATE_NAME = "nodeTemplateName";
 
     /**
+     * Service segment ID.
+     */
+    public static final String SERVICE_SEGMENT_ID_DIRVER = "subServiceId";
+
+    /**
+     * Service segment name.
+     */
+    public static final String SERVICE_SEGMENT_NAME_DIRVER = "subServiceName";
+
+    /**
+     * Service segment description.
+     */
+    public static final String SERVICE_SEGMENT_DES_DIRVER = "subServiceDesc";
+
+    /**
+     * Service segment domain host
+     */
+    public static final String SERVICE_SEGMENT_DOMAINHOST = "domainHost";
+
+    /**
+     * Service package identify
+     */
+    public static final String SERVICE_PACKAGE_IDENTIFY = "servicePackage";
+
+    /**
+     * Operation identify.
+     */
+    public static final String OPERATION_IDENTIFY = "operation";
+
+    /**
+     * Service segment name
+     */
+    public static final String SEGMENT_PROPERTY_NAME = "serviceSegmentName";
+
+    /**
+     * Node name which is defined in template
+     */
+    public static final String SEGMENT_PROPERTY_NODENAME = "nodeTemplateName";
+
+    /**
+     * Template ID
+     */
+    public static final String SEGMENT_PROPERTY_TEMPLATEID = "templateId";
+
+    /**
+     * Node type
+     */
+    public static final String SEGMENT_PROPERTY_NODETYPE = "nodeType";
+
+    /**
      * Constructor<br/>
      * <p>
      * </p>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,21 @@ public class ServiceParameter {
     /**
      * Parameter value;
      */
-    private Object paramValue;
+    private String paramValue;
+
+    /**
+     * @return Returns the paramValue.
+     */
+    public String getParamValue() {
+        return paramValue;
+    }
+
+    /**
+     * @param paramValue The paramValue to set.
+     */
+    public void setParamValue(String paramValue) {
+        this.paramValue = paramValue;
+    }
 
     /**
      * @return Returns the serviceId.
@@ -69,17 +83,4 @@ public class ServiceParameter {
         this.paramName = paramName;
     }
 
-    /**
-     * @return Returns the paramValue.
-     */
-    public Object getParamValue() {
-        return paramValue;
-    }
-
-    /**
-     * @param paramValue The paramValue to set.
-     */
-    public void setParamValue(Object paramValue) {
-        this.paramValue = paramValue;
-    }
 }

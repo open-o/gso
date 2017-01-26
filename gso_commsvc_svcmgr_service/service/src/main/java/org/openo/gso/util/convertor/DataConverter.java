@@ -28,12 +28,16 @@ import org.openo.gso.model.catalogmo.OperationModel;
 import org.openo.gso.model.servicemo.InvServiceModel;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
+import org.openo.gso.model.servicemo.ServiceParameter;
+import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.util.json.JsonUtil;
 import org.openo.gso.util.uuid.UuidUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import net.sf.json.JSONObject;
+import net.sf.json.util.JSONUtils;
 
 /**
  * Data converter.<br/>
@@ -148,7 +152,6 @@ public class DataConverter {
             Map<String, Object> properties = null;
             for(ServiceModel model : services) {
                 properties = JsonUtil.unMarshal(JsonUtil.marshal(model), Map.class);
-                properties.remove(Constant.MODEL_COLUMN_SEGMENT_NUMBER);
                 resultLst.add(properties);
             }
         }
@@ -169,9 +172,19 @@ public class DataConverter {
     public static Object getSvcInstanceResult(ServiceModel service) {
         Map<String, Object> resultMap = new HashMap<>();
         Map<String, Object> properties = null;
+        Map<String, Object> paramMap = null;
         if(null != service) {
+
+            // Deal service properties
             properties = JsonUtil.unMarshal(JsonUtil.marshal(service), Map.class);
-            properties.remove(Constant.MODEL_COLUMN_SEGMENT_NUMBER);
+            if(null != service.getServicePackage()) {
+                properties.put(Constant.SERVICE_DEF_ID, service.getServicePackage().getServiceDefId());
+                properties.put(Constant.SERVICE_TEMPLATE_ID, service.getServicePackage().getTemplateId());
+            }
+
+            // Deal service parameters
+            properties.put(Constant.SERVICE_PARAMETERS,
+                    JsonUtil.unMarshal(service.getParameter().getParamValue(), Map.class));
             resultMap.put(Constant.SERVICE_INDENTIFY, properties);
         }
         resultMap.put(Constant.SERVICE_INDENTIFY, properties);
@@ -201,9 +214,9 @@ public class DataConverter {
 
                     // add fixed parameters
                     obj.put(Constant.SERVICE_ID, model.getServiceId());
-                    obj.put(Constant.SERVICE_NAME,
+                    obj.put(Constant.SERVICE_SEGMENT_NAME_DIRVER,
                             (model.getName() + "." + obj.getString(Constant.NODE_TEMPLATE_NAME)));
-                    obj.put(Constant.SERVICE_DESCRIPTION, model.getDescription());
+                    obj.put(Constant.SERVICE_SEGMENT_DES_DIRVER, model.getDescription());
                     workflowParam.add(JSONObject.toBean(obj));
                 }
             }
@@ -231,5 +244,67 @@ public class DataConverter {
         invService.setCreateAt(service.getCreateAt());
 
         return invService;
+    }
+
+    /**
+     * Convert service parameter.<br/>
+     * 
+     * @param svcParams list of service parameter
+     * @return map of service parameter
+     * @since GSO 0.5
+     */
+    private static Map convertParam(List<ServiceParameter> svcParams) {
+        Map<String, Object> paramMap = new HashMap<>();
+        if(CollectionUtils.isEmpty(svcParams)) {
+            return paramMap;
+        }
+
+        for(ServiceParameter param : svcParams) {
+            JSONObject obj = JSONObject.fromObject(JsonUtil.unMarshal(param.getParamValue(), Object.class));
+            if(JSONUtils.isArray(obj)) {
+                paramMap.put(param.getParamName(), JsonUtil.unMarshal(param.getParamValue(), List.class));
+            } else if(JSONUtils.isString(obj)) {
+                paramMap.put(param.getParamName(), param.getParamValue());
+            } else {
+                paramMap.put(param.getParamName(), JsonUtil.unMarshal(param.getParamValue(), Map.class));
+            }
+        }
+        return paramMap;
+    }
+
+    /**
+     * Convert segments response data.<br/>
+     * 
+     * @param segments service segments
+     * @param serviceId service instance ID
+     * @return response object
+     * @since GSO 0.5
+     */
+    public static Object getSegments(List<ServiceSegmentModel> segments, String serviceId) {
+
+        // service instance ID
+        Map<String, Object> rspBody = new HashMap<>();
+        rspBody.put(Constant.SERVICE_ID, serviceId);
+
+        // segments list
+        List<Object> segmentLst = new ArrayList<>();
+        if(!CollectionUtils.isEmpty(segments)) {
+            Map<String, String> segParamRsp = null;
+            for(ServiceSegmentModel segModel : segments) {
+                segParamRsp = JsonUtil.unMarshal(JsonUtil.marshal(segModel), Map.class);
+                segParamRsp.remove(Constant.SERVICE_ID);
+                segParamRsp.remove(Constant.SEGMENT_PROPERTY_NAME);
+                segParamRsp.remove(Constant.SEGMENT_PROPERTY_NODENAME);
+                segParamRsp.remove(Constant.SEGMENT_PROPERTY_NODETYPE);
+                segParamRsp.remove(Constant.SEGMENT_PROPERTY_TEMPLATEID);
+                segmentLst.add(segParamRsp);
+            }
+            rspBody.put(Constant.SERVICE_SEGMENTS, segmentLst);
+        }
+
+        // response body
+        Map<String, Object> segMap = new HashMap<>();
+        segMap.put(Constant.SERVICE_INDENTIFY, rspBody);
+        return segMap;
     }
 }

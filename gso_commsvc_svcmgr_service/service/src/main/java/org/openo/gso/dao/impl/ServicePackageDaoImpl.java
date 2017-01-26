@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,11 +68,10 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
      * Insert relation instance.<br/>
      * 
      * @param packageMapping service package mapping data
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void insert(ServicePackageMapping packageMapping) throws ApplicationException {
+    public void insert(ServicePackageMapping packageMapping) {
         try {
             // 1. Check data validation.
             if(null == packageMapping) {
@@ -92,11 +91,10 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
      * Delete relation instance by service ID.<br/>
      * 
      * @param serviceId service ID
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void delete(String serviceId) throws ApplicationException {
+    public void delete(String serviceId) {
         try {
             // 1. Check data validation.
             if(StringUtils.isEmpty(serviceId)) {
@@ -116,11 +114,10 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
      * Query all relation instances.<br/>
      * 
      * @return service instances
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public List<ServicePackageMapping> queryAllMappings() throws ApplicationException {
+    public List<ServicePackageMapping> queryAllMappings() {
         try {
             ServicePackageMapper packageMapper = getMapper(ServicePackageMapper.class);
             return packageMapper.queryAllMappings();
@@ -147,11 +144,11 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
      * 
      * @param serviceId service instance ID.
      * @return service package
-     * @throws ApplicationException when fail to query.
+     *         .
      * @since GSO 0.5
      */
     @Override
-    public ServicePackageMapping queryPackageMapping(String serviceId) throws ApplicationException {
+    public ServicePackageMapping queryPackageMapping(String serviceId) {
         try {
             ServicePackageMapper packageMapper = getMapper(ServicePackageMapper.class);
             return packageMapper.queryPackageMapping(serviceId);
@@ -166,11 +163,10 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
      * 
      * @param serviceDefId service package ID
      * @return service packages
-     * @throws ApplicationException when fail to query
      * @since GSO 0.5
      */
     @Override
-    public List<ServicePackageMapping> queryPackageMappings(String serviceDefId) throws ApplicationException {
+    public List<ServicePackageMapping> queryPackageMappings(String serviceDefId) {
         try {
             ServicePackageMapper packageMapper = getMapper(ServicePackageMapper.class);
             return packageMapper.queryPackageMappings(serviceDefId);

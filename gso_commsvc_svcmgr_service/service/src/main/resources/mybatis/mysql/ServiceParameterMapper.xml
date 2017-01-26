@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2016 Huawei Technologies Co., Ltd.
+    Copyright 2016-2017 Huawei Technologies Co., Ltd.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,6 +23,13 @@
         <result property="paramValue" column="paramValue" />
     </resultMap>
 
+    <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServiceParameter">
+        insert into
+        t_lcm_service_parameter
+        (serviceId,paramName,paramValue)
+        values(#{serviceId},#{paramName},#{paramValue})
+    </insert>
+    
     <insert id="batchInsert" parameterType="java.util.List">
         insert into t_lcm_service_parameter(serviceId,paramName,paramValue)
         values
@@ -33,5 +40,9 @@
     <delete id="delete">
         delete from t_lcm_service_parameter where serviceId = #{serviceId}
     </delete>
+    
+    <select id="query" resultMap="ServiceParamResultMap">
+        select serviceId,paramName,paramValue from t_lcm_service_parameter where serviceId = #{serviceId}
+    </select>
 
 </mapper>

@@ -73,11 +73,10 @@ public class InventoryDaoImpl implements IInventoryDao {
      * @param <M> mapper type
      * @param data which is insert into database table.
      * @param mapperType class type
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public <T, M> void insert(T data, Class<M> mapperType) throws ApplicationException {
+    public <T, M> void insert(T data, Class<M> mapperType) {
         try {
             InventoryMapper mapper = (InventoryMapper)getMapper(mapperType);
             mapper.insert(data);
@@ -93,11 +92,10 @@ public class InventoryDaoImpl implements IInventoryDao {
      * @param <M> mapper type
      * @param key delete key
      * @param mapperType class type
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public <M> void delete(String key, Class<M> mapperType) throws ApplicationException {
+    public <M> void delete(String key, Class<M> mapperType) {
         try {
             InventoryMapper mapper = (InventoryMapper)getMapper(mapperType);
             mapper.delete(key);
@@ -124,11 +122,10 @@ public class InventoryDaoImpl implements IInventoryDao {
      * 
      * @param serviceId service instance ID.
      * @param status service instance status
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void updateServiceStatus(String serviceId, String status) throws ApplicationException {
+    public void updateServiceStatus(String serviceId, String status) {
         try {
             InvServiceModelMapper mapper = getMapper(InvServiceModelMapper.class);
             mapper.updateServiceStatus(serviceId, status);
@@ -142,11 +139,10 @@ public class InventoryDaoImpl implements IInventoryDao {
      * Batch update service instances.<br/>
      * 
      * @param services service instances
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public void batchUpdate(List<InvServiceModel> services) throws ApplicationException {
+    public void batchUpdate(List<InvServiceModel> services) {
         if(CollectionUtils.isEmpty(services)) {
             LOGGER.info("There is no service which need to update.");
             return;
@@ -166,11 +162,10 @@ public class InventoryDaoImpl implements IInventoryDao {
      * mapping.<br/>
      * 
      * @param svcIds service instance ids
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public void batchDelete(List<String> svcIds) throws ApplicationException {
+    public void batchDelete(List<String> svcIds) {
         if(CollectionUtils.isEmpty(svcIds)) {
             LOGGER.info("There is no service which need to delete.");
             return;
@@ -189,7 +184,6 @@ public class InventoryDaoImpl implements IInventoryDao {
      * Batch insert service parameters.<br/>
      * 
      * @param serviceParams service parameters
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override

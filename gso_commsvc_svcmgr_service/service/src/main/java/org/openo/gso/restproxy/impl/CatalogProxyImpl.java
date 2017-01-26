@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.codehaus.jackson.type.TypeReference;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.model.catalogmo.OperationModel;
@@ -106,25 +105,15 @@ public class CatalogProxyImpl implements ICatalogProxy {
     private static final String URI_PATH_NODETEMPLATES = "/nodetemplates";
 
     /**
-     * Query input parameters of service template.<br/>
-     * 
-     * @param templateId id of service template
-     * @return input parameters
-     * @throws ApplicationException when catalog fails to query data.
-     * @since GSO 0.5
-     */
-    /**
      * <br/>
      * 
-     * @param templateId
-     * @param request
-     * @return
-     * @throws ApplicationException
+     * @param templateId template UD
+     * @param request http request
+     * @return template parameters
      * @since GSO 0.5
      */
     @Override
-    public List<CatalogParameterModel> getParamsByTemplateId(String templateId, HttpServletRequest request)
-            throws ApplicationException {
+    public List<CatalogParameterModel> getParamsByTemplateId(String templateId, HttpServletRequest request) {
         LOGGER.info("Get input parameters from catalog.");
         String url = new StringBuilder().append(CATALOG_REST_URI_SERVICETEMPALTE).append(templateId)
                 .append(FORWARD_FLASH).append(URI_PATH_PARAMETERS).toString();
@@ -142,12 +131,10 @@ public class CatalogProxyImpl implements ICatalogProxy {
      * 
      * @param templateId id of service template.
      * @return operations
-     * @throws ApplicationException when catalog fails to query data.
      * @since GSO 0.5
      */
     @Override
-    public List<OperationModel> getOperationsByTemplateId(String templateId, HttpServletRequest request)
-            throws ApplicationException {
+    public List<OperationModel> getOperationsByTemplateId(String templateId, HttpServletRequest request) {
         LOGGER.info("Get list of operations from catalog.");
         String url = new StringBuilder().append(CATALOG_REST_URI_SERVICETEMPALTE).append(templateId)
                 .append(FORWARD_FLASH).append(URI_PATH_OPERATIONS).toString();
@@ -165,12 +152,10 @@ public class CatalogProxyImpl implements ICatalogProxy {
      * 
      * @param nodeTypeId id of node type
      * @return service template data
-     * @throws ApplicationException when catalog fails to query data.
      * @since GSO 0.5
      */
     @Override
-    public List<ServiceTemplateModel> getTemplateByNodeTypeId(String nodeTypeId, HttpServletRequest request)
-            throws ApplicationException {
+    public List<ServiceTemplateModel> getTemplateByNodeTypeId(String nodeTypeId, HttpServletRequest request) {
         LOGGER.info("Get basic information of template by node type ID from catalog.");
         String url = new StringBuilder().append(CATALOG_REST_URI_SERVICETEMPALTE).append(URI_PATH_NESTING).toString();
         Map<String, String> httpHeaders = new HashMap<String, String>();
@@ -187,11 +172,10 @@ public class CatalogProxyImpl implements ICatalogProxy {
      * 
      * @param csarId package ID
      * @param request http request
-     * @throws ApplicationException when fail to delete
      * @since GSO 0.5
      */
     @Override
-    public void deleteGsarPackage(String csarId, HttpServletRequest request) throws ApplicationException {
+    public void deleteGsarPackage(String csarId, HttpServletRequest request) {
         LOGGER.info("Notify catalog to delete GSAR package.");
         String url = new StringBuilder().append(CATALOG_REST_URI_CSAR).append(csarId).toString();
         RestfulResponse response = HttpUtil.delete(url, request);
@@ -203,11 +187,10 @@ public class CatalogProxyImpl implements ICatalogProxy {
      * 
      * @param csarId package ID
      * @param request http request
-     * @throws ApplicationException when fail to update
      * @since GSO 0.5
      */
     @Override
-    public void updateGsarStatus(String csarId, HttpServletRequest request) throws ApplicationException {
+    public void updateGsarStatus(String csarId, HttpServletRequest request) {
         LOGGER.info("Notify catalog to set GSAR status.");
         String url = new StringBuilder().append(CATALOG_REST_URI_CSAR).append(csarId).append("?")
                 .append(URI_PATH_QUERY_ONBOARDSTATE).append("=").append(PACKAGE_STATE_ONBOARDED).toString();
@@ -223,12 +206,10 @@ public class CatalogProxyImpl implements ICatalogProxy {
      * @param templateId template ID
      * @param request http request
      * @return nodes data
-     * @throws ApplicationException when catalog fails to query data.
      * @since GSO 0.5
      */
     @Override
-    public List<NodeTemplateModel> getNodeTemplate(String templateId, HttpServletRequest request)
-            throws ApplicationException {
+    public List<NodeTemplateModel> getNodeTemplate(String templateId, HttpServletRequest request) {
         LOGGER.info("Get nodes of template from catalog. Template id is {}", templateId);
         String url = new StringBuilder().append(CATALOG_REST_URI_SERVICETEMPALTE).append(templateId)
                 .append(URI_PATH_NODETEMPLATES).toString();

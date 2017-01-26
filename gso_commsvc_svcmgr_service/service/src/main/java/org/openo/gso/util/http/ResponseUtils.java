@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,11 +63,9 @@ public class ResponseUtils {
      * 
      * @param response rest response
      * @param function function name
-     * @throws ApplicationException when the result of rest request is failure.
      * @since GSO 0.5
      */
-    public static void checkResonseAndThrowException(RestfulResponse response, String function)
-            throws ApplicationException {
+    public static void checkResonseAndThrowException(RestfulResponse response, String function) {
         if(!HttpCode.isSucess(response.getStatus())) {
             ApplicationException appException = null;
             try {
@@ -93,12 +91,10 @@ public class ResponseUtils {
      * @param key key
      * @param type type
      * @return model data
-     * @throws ApplicationException when transfer failed
      * @since SDNO 0.5
      */
     @SuppressWarnings("unchecked")
-    public static <T> List<T> getDataModelFromRsp(String request, String key, Class<T> type)
-            throws ApplicationException {
+    public static <T> List<T> getDataModelFromRsp(String request, String key, Class<T> type) {
         ValidateUtil.assertStringNotNull(request);
         Map<String, Object> requestMap = JsonUtil.unMarshal(request, Map.class);
         Object data = requestMap.get(key);
@@ -123,10 +119,9 @@ public class ResponseUtils {
      * @param request restful request
      * @param type type
      * @return model data
-     * @throws ApplicationException when transfer failed
      * @since SDNO 0.5
      */
-    public static <T> T getDataModelFromRspList(String request, TypeReference<T> type) throws ApplicationException {
+    public static <T> T getDataModelFromRspList(String request, TypeReference<T> type) {
         ValidateUtil.assertStringNotNull(request);
         return JsonUtil.unMarshal(request, type);
     }
@@ -136,7 +131,6 @@ public class ResponseUtils {
      * 
      * @param exception operation exception
      * @param description
-     * @return exception object
      * @since GSO 0.5
      */
     public static ApplicationException getException(ApplicationException exception, String description) {

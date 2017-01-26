@@ -18,7 +18,6 @@ package org.openo.gso.dao.inf;
 
 import java.util.List;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.InvServiceModel;
 import org.openo.gso.model.servicemo.ServiceParameter;
 
@@ -39,10 +38,9 @@ public interface IInventoryDao {
      * @param <M> mapper type
      * @param data which is insert into database table.
      * @param mapperType class type
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    <T, M> void insert(T data, Class<M> mapperType) throws ApplicationException;
+    <T, M> void insert(T data, Class<M> mapperType);
 
     /**
      * Delete data by key.<br/>
@@ -50,45 +48,40 @@ public interface IInventoryDao {
      * @param <M> mapper type
      * @param key delete key
      * @param mapperType class type
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    <M> void delete(String key, Class<M> mapperType) throws ApplicationException;
+    <M> void delete(String key, Class<M> mapperType);
 
     /**
      * Update service instance status.<br/>
      * 
      * @param serviceId service instance ID
      * @param status service execution status. finished
-     * @throws ApplicationException
      * @since GSO 0.5
      */
-    void updateServiceStatus(String serviceId, String status) throws ApplicationException;
+    void updateServiceStatus(String serviceId, String status);
 
     /**
      * Batch update service instances.<br/>
      * 
      * @param services service instances
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    void batchUpdate(List<InvServiceModel> services) throws ApplicationException;
+    void batchUpdate(List<InvServiceModel> services);
 
     /**
      * Batch delete service data, including service instance, service parameters and package
      * mapping.<br/>
      * 
      * @param svcIds service instance ids
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    void batchDelete(List<String> svcIds) throws ApplicationException;
+    void batchDelete(List<String> svcIds);
 
     /**
      * Batch insert service parameters.<br/>
      * 
      * @param serviceParams service parameters
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     void batchInsert(List<ServiceParameter> serviceParams);

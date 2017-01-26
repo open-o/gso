@@ -70,11 +70,10 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
      * Insert service operation.<br/>
      * 
      * @param serviceOperation operation record
-     * @throws ApplicationException when failing to operation database.
      * @since GSO 0.5
      */
     @Override
-    public void insert(ServiceOperation serviceOperation) throws ApplicationException {
+    public void insert(ServiceOperation serviceOperation) {
         try {
             ServiceOperMapper mapper = getMapper(ServiceOperMapper.class);
             mapper.insert(serviceOperation);
@@ -88,11 +87,10 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
      * Delete operations of service.<br/>
      * 
      * @param serviceId service instance ID
-     * @throws ApplicationException when failing to operation database.
      * @since GSO 0.5
      */
     @Override
-    public void delete(String serviceId) throws ApplicationException {
+    public void delete(String serviceId) {
         try {
             getMapper(ServiceSegmentOperMapper.class).delete(serviceId);
             getMapper(ServiceOperMapper.class).delete(serviceId);
@@ -109,11 +107,10 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
      * @param serviceId service instance ID
      * @param operationId operation ID
      * @return service operation Detail
-     * @throws ApplicationException when failing to operation database.
      * @since GSO 0.5
      */
     @Override
-    public ServiceOperation queryOperationById(String serviceId, String operationId) throws ApplicationException {
+    public ServiceOperation queryOperationById(String serviceId, String operationId) {
         try {
             ServiceOperMapper mapper = getMapper(ServiceOperMapper.class);
             return mapper.queryOperationById(serviceId, operationId);
@@ -139,11 +136,10 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
      * Update service operation.<br/>
      * 
      * @param serviceOperation service operation
-     * @throws ApplicationException when parameter error or fail to operate DB.
      * @since GSO 0.5
      */
     @Override
-    public void update(ServiceOperation serviceOperation) throws ApplicationException {
+    public void update(ServiceOperation serviceOperation) {
         try {
             ValidateUtil.assertObjectNotNull(serviceOperation);
             getMapper(ServiceOperMapper.class).update(serviceOperation);
@@ -157,11 +153,10 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
      * Delete old operation records which are generated for 15 days.<br/>
      * 
      * @param svcIds service instance ids
-     * @throws ApplicationException when database exception.
      * @since GSO 0.5
      */
     @Override
-    public void deleteHistory(List<String> svcIds) throws ApplicationException {
+    public void deleteHistory(List<String> svcIds) {
         try {
             getMapper(ServiceOperMapper.class).deleteHistory(svcIds);
         } catch(Exception exception) {
@@ -175,11 +170,10 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
      * 
      * @param progress service progress type,finished|processing|error
      * @return service operations
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public List<ServiceOperation> queryOperByIds(List<String> svcIds) throws ApplicationException {
+    public List<ServiceOperation> queryOperByIds(List<String> svcIds) {
         try {
             return getMapper(ServiceOperMapper.class).queryOperByIds(svcIds);
         } catch(Exception exception) {
@@ -192,11 +186,10 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
      * Batch update service operations.<br/>
      * 
      * @param svcOperations service operations
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public void batchUpdate(List<ServiceOperation> svcOperations) throws ApplicationException {
+    public void batchUpdate(List<ServiceOperation> svcOperations) {
         if(CollectionUtils.isEmpty(svcOperations)) {
             LOGGER.info("There is no service operation which need to update.");
         }
@@ -214,11 +207,10 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
      * Query old operations.<br/>
      * 
      * @return service operations
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public List<ServiceOperation> queryHistory() throws ApplicationException {
+    public List<ServiceOperation> queryHistory() {
         try {
             return getMapper(ServiceOperMapper.class).queryHistory();
 

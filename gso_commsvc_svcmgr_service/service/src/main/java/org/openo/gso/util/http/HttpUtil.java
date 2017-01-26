@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,11 +62,10 @@ public class HttpUtil {
      * @param httpHeaders request headers
      * @param httpRequest http request
      * @return response
-     * @throws ApplicationException when request is failure.
      * @since GSO 0.5
      */
     public static RestfulResponse get(final String url, final Map<String, String> httpHeaders,
-            HttpServletRequest httpRequest) throws ApplicationException {
+            HttpServletRequest httpRequest) {
         final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
         for(Map.Entry<String, String> entry : httpHeaders.entrySet()) {
             restfulParametes.put(entry.getKey(), entry.getValue());
@@ -90,11 +89,9 @@ public class HttpUtil {
      * @param sendObj request body
      * @param httpRequest http request
      * @return response
-     * @throws ApplicationException when request is failure.
      * @since GSO 0.5
      */
-    public static RestfulResponse post(final String url, Object sendObj, HttpServletRequest httpRequest)
-            throws ApplicationException {
+    public static RestfulResponse post(final String url, Object sendObj, HttpServletRequest httpRequest) {
 
         final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
         if(sendObj != null) {
@@ -120,10 +117,9 @@ public class HttpUtil {
      * @param url request location
      * @param httpRequest http request
      * @return response
-     * @throws ApplicationException when request is failure.
      * @since GSO 0.5
      */
-    public static RestfulResponse delete(final String url, HttpServletRequest httpRequest) throws ApplicationException {
+    public static RestfulResponse delete(final String url, HttpServletRequest httpRequest) {
         final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
         RestfulResponse response = null;
         try {
@@ -143,11 +139,10 @@ public class HttpUtil {
      * @param httpHeaders request headers
      * @param httpRequest http request
      * @return response
-     * @throws ApplicationException when request is failure.
      * @since GSO 0.5
      */
     public static RestfulResponse put(final String url, final Map<String, String> httpHeaders,
-            HttpServletRequest httpRequest) throws ApplicationException {
+            HttpServletRequest httpRequest) {
         final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
         for(Map.Entry<String, String> entry : httpHeaders.entrySet()) {
             restfulParametes.put(entry.getKey(), entry.getValue());

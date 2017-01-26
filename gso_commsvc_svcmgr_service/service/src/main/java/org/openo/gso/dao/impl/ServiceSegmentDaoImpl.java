@@ -25,7 +25,6 @@ import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.exception.HttpCode;
-import org.openo.gso.mapper.ServiceOperMapper;
 import org.openo.gso.mapper.ServiceSegmentMapper;
 import org.openo.gso.mapper.ServiceSegmentOperMapper;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
@@ -72,11 +71,10 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * Insert service segment instances.<br/>
      * 
      * @param serviceSegments service segment instances
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void insertSegment(ServiceSegmentModel serviceSegment) throws ApplicationException {
+    public void insertSegment(ServiceSegmentModel serviceSegment) {
         try {
             ValidateUtil.assertObjectNotNull(serviceSegment);
             ServiceSegmentMapper serviceSegmentMapper = getMapper(ServiceSegmentMapper.class);
@@ -91,11 +89,10 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * Delete service segment instance by service ID.<br/>
      * 
      * @param serviceSegment service segment information
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void delete(ServiceSegmentModel serviceSegment) throws ApplicationException {
+    public void delete(ServiceSegmentModel serviceSegment) {
         try {
             // Check data validation.
             if(StringUtils.isEmpty(serviceSegment.getServiceId())
@@ -116,11 +113,10 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * delete service segment by segment id and segment type<br>
      * 
      * @param serviceSegment service segment
-     * @throws ApplicationException when fail to delete service segment
      * @since GSO 0.5
      */
     @Override
-    public void deleteSegmentByIdAndType(ServiceSegmentModel serviceSegment) throws ApplicationException {
+    public void deleteSegmentByIdAndType(ServiceSegmentModel serviceSegment) {
         try {
             ValidateUtil.assertObjectNotNull(serviceSegment);
             ServiceSegmentMapper segmentMapper = getMapper(ServiceSegmentMapper.class);
@@ -137,11 +133,10 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * 
      * @param serviceId service instance ID
      * @return service segment instances.
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public List<ServiceSegmentModel> queryServiceSegments(String serviceId) throws ApplicationException {
+    public List<ServiceSegmentModel> queryServiceSegments(String serviceId) {
         try {
             // 1. Check data validation.
             if(StringUtils.isEmpty(serviceId)) {
@@ -163,13 +158,10 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * @param segmentId instance id
      * @param segmentType NFVO or SDNO
      * @return service segment
-     * @throws ApplicationException when fail to query service segment by segment id and segment
-     *             type
      * @since GSO 0.5
      */
     @Override
-    public ServiceSegmentModel queryServiceSegmentByIdAndType(String segmentId, String segmentType)
-            throws ApplicationException {
+    public ServiceSegmentModel queryServiceSegmentByIdAndType(String segmentId, String segmentType) {
         try {
             ValidateUtil.assertObjectNotNull(segmentId);
             ValidateUtil.assertObjectNotNull(segmentType);
@@ -197,11 +189,10 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * Insert service segment operation<br>
      * 
      * @param svcSegmentOper service segment operation
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) throws ApplicationException {
+    public void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) {
         try {
             ValidateUtil.assertObjectNotNull(svcSegmentOper);
             ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
@@ -220,7 +211,7 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * @since GSO 0.5
      */
     @Override
-    public void updateSegmentOper(ServiceSegmentOperation segmentOper) throws ApplicationException {
+    public void updateSegmentOper(ServiceSegmentOperation segmentOper) {
         try {
             ValidateUtil.assertObjectNotNull(segmentOper);
             ServiceSegmentOperMapper svcSegmentOperMapper = getMapper(ServiceSegmentOperMapper.class);
@@ -238,12 +229,10 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * @param jobId job id
      * @param segmentType segment type
      * @return service segment operation instance
-     * @throws ApplicationException when fail to query service segmetn operation
      * @since GSO 0.5
      */
     @Override
-    public ServiceSegmentOperation querySegmentOperByJobIdAndType(String jobId, String segmentType)
-            throws ApplicationException {
+    public ServiceSegmentOperation querySegmentOperByJobIdAndType(String jobId, String segmentType) {
         try {
             ValidateUtil.assertObjectNotNull(jobId);
             ValidateUtil.assertObjectNotNull(segmentType);
@@ -260,11 +249,10 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * 
      * @param svcIds service instance ids.
      * @return service segment operations.
-     * @throws ApplicationException when database exception.
      * @since GSO 0.5
      */
     @Override
-    public List<ServiceSegmentOperation> querySegmentOperByIds(List<String> svcIds) throws ApplicationException {
+    public List<ServiceSegmentOperation> querySegmentOperByIds(List<String> svcIds) {
         try {
             return getMapper(ServiceSegmentOperMapper.class).querySegmentOperByIds(svcIds);
         } catch(Exception exception) {
@@ -277,13 +265,12 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
      * Delete old segment operation records which are generated for 15 days.<br/>
      * 
      * @param svcIds service instance ids
-     * @throws ApplicationException when database exception.
      * @since GSO 0.5
      */
     @Override
-    public void deleteHistory(List<String> svcIds) throws ApplicationException {
+    public void deleteHistory(List<String> svcIds) {
         try {
-            getMapper(ServiceOperMapper.class).deleteHistory(svcIds);
+            getMapper(ServiceSegmentOperMapper.class).deleteHistory(svcIds);
         } catch(Exception exception) {
             LOGGER.error("Fail to delete old segment operation records. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 /**
- * <br/>
+ * Package manager for catalog.<br/>
  * <p>
  * </p>
  * 
@@ -61,11 +61,10 @@ public class PackageManagerImpl implements IPackageManager {
      * 
      * @param serviceDefId ID of service package
      * @param request http request
-     * @throws ApplicationException when fail to set status
      * @since GSO 0.5
      */
     @Override
-    public void updateOnBoardStatus(String serviceDefId, HttpServletRequest request) throws ApplicationException {
+    public void updateOnBoardStatus(String serviceDefId, HttpServletRequest request) {
         if(PackageOperationSingleton.getInstance().isCsarBeingDeleted(serviceDefId)) {
             LOGGER.error("CSAR package is being deleted.");
             throw new ApplicationException(HttpCode.RESPOND_CONFLICT, "CSAR package is being deleted.");
@@ -78,11 +77,10 @@ public class PackageManagerImpl implements IPackageManager {
      * 
      * @param serviceDefId ID of service package
      * @param request http request
-     * @throws ApplicationException when fail to delete service package
      * @since GSO 0.5
      */
     @Override
-    public void deletePackage(String serviceDefId, HttpServletRequest request) throws ApplicationException {
+    public void deletePackage(String serviceDefId, HttpServletRequest request) {
 
         // 1. Check whether service instance exists.
         List<ServicePackageMapping> mappings = servicePackageDao.queryPackageMappings(serviceDefId);

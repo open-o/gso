@@ -61,6 +61,7 @@ import org.openo.gso.service.impl.OperationManager;
 import org.openo.gso.service.impl.ServiceManagerImpl;
 import org.openo.gso.util.http.HttpUtil;
 import org.openo.gso.util.http.ResponseUtils;
+import org.openo.gso.util.json.JsonUtil;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -464,5 +465,31 @@ public class ServicemgrRoaModuleImplTest {
                 return session;
             }
         };
+    }
+
+    /**
+     * Test that query service instance by service instance ID.<br/>
+     * 
+     * @since GSO 0.5
+     */
+    @Test
+    public void testGetInstanceByInstanceId() {
+        Response rsp = serviceRoa.getInstanceByInstanceId("1", httpRequest);
+        String strExpect = JsonUtil
+                .marshal(JsonUtil.unMarshal(getJsonString(FILE_PATH + "getServiceInstanceById.json"), Map.class));
+        Assert.assertTrue(strExpect.equals(JsonUtil.marshal(rsp.getEntity())));
+    }
+
+    /**
+     * Test service operation.<br/>
+     * 
+     * @since GSO 0.5
+     */
+    @Test
+    public void testGetServiceOperation() {
+        Response rsp = serviceRoa.getServiceOperation("1", "123", httpRequest);
+        String strExpect =
+                JsonUtil.marshal(JsonUtil.unMarshal(getJsonString(FILE_PATH + "queryOperationById.json"), Map.class));
+        Assert.assertTrue(strExpect.equals(JsonUtil.marshal(rsp.getEntity())));
     }
 }

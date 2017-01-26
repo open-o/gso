@@ -1,0 +1,16 @@
+{
+	"service": {
+		"serviceId": "1",
+		"name": "siteToDC",
+		"description": "site to DC",
+		"activeStatus": "active",
+		"status": "createSucceed",
+		"creator": "admin",
+		"createAt": 1234567890123,
+		"serviceDefId": "12345",
+		"templateId": "gso",
+		"parameters": {
+			"pop.name": "pop1"
+		}
+	}
+}

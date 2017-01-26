@@ -18,7 +18,6 @@ package org.openo.gso.dao.inf;
 
 import java.util.List;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServiceModel;
 
 /**
@@ -35,75 +34,67 @@ public interface IServiceModelDao {
      * Insert service instance.<br/>
      * 
      * @param serviceModel service package mapping data
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void insert(ServiceModel serviceModel) throws ApplicationException;
+    void insert(ServiceModel serviceModel);
 
     /**
      * Delete service instance by service ID.<br/>
      * 
      * @param serviceId service ID
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void delete(String serviceId) throws ApplicationException;
+    void delete(String serviceId);
 
     /**
      * Query all service instances.<br/>
      * 
      * @return service instances
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    List<ServiceModel> queryAllServices() throws ApplicationException;
+    List<ServiceModel> queryAllServices();
 
     /**
      * Query some service instance.<br/>
      * 
      * @param serviceId service instance ID
      * @return service instance
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    ServiceModel queryServiceByInstanceId(String serviceId) throws ApplicationException;
+    ServiceModel queryServiceByInstanceId(String serviceId);
 
     /**
      * Update service instance execution status.<br>
      * 
      * @param serviceId service instance ID
      * @param status execution status
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    void updateServiceStatus(String serviceId, String status) throws ApplicationException;
+    void updateServiceStatus(String serviceId, String status);
 
     /**
      * Query service instances by status.<br/>
      * 
      * @param status service instance status, finished|processing|error
      * @return service instances
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    List<ServiceModel> queryServiceByStatus(String status) throws ApplicationException;
+    List<ServiceModel> queryServiceByStatus(String status);
 
     /**
      * Batch update service instances.<br/>
      * 
      * @param services service instances
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    void batchUpdate(List<ServiceModel> services) throws ApplicationException;
+    void batchUpdate(List<ServiceModel> services);
 
     /**
      * Batch delete service data, including service instance, service parameters and package
      * mapping.<br/>
      * 
      * @param svcIds service instance ids
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    void batchDelete(List<String> svcIds) throws ApplicationException;
+    void batchDelete(List<String> svcIds);
 }

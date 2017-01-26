@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,4 +46,21 @@ public interface ServiceParameterMapper {
      * @since GSO 0.5
      */
     void delete(@Param("serviceId") String serviceId);
+
+    /**
+     * Query service parameters by service instance ID.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @return service parameter
+     * @since GSO 0.5
+     */
+    ServiceParameter query(@Param("serviceId") String serviceId);
+
+    /**
+     * Insert service parameter.<br/>
+     * 
+     * @param parameter service parameter
+     * @since GSO 0.5
+     */
+    void insert(ServiceParameter parameter);
 }
