@@ -26,8 +26,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
-
 /**
  * API for restful interface.<br/>
  * 
@@ -43,42 +41,39 @@ public interface INFVODrivermgrRoaModule {
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to create network service.
      * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns")
-    Response createNfvoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response createNfvoNs(@Context HttpServletRequest servletReq);
     
     /**
      * Delete the NFVO instance<br>
      
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to delete the network service
      * @since  GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns/delete")
-    Response deleteNfvoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response deleteNfvoNs(@Context HttpServletRequest servletReq);
 
     /**
      * Query status of the NFVO instance<br>
      * 
      * @param jobId uuid of NFVO job
      * @return status of the NFVO instance
-     * @throws ApplicationException when fail to query status of the NFVO instance
      * @since  GSO 0.5
      */
     @GET
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/jobs/{jobId}")
-    Response queryNfvoJobStatus(@PathParam("jobId") String jobId) throws ApplicationException;
+    Response queryNfvoJobStatus(@PathParam("jobId") String jobId);
     
     /**
      * <br>
@@ -87,27 +82,25 @@ public interface INFVODrivermgrRoaModule {
      * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return Response
-     * @throws ApplicationException when fail to instantiate network service
      * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/{nsInstanceId}/instantiate")
-    Response instantiateNfvoNs(@PathParam("nsInstanceId") String nsInstanceId, @Context HttpServletRequest servletReq) throws ApplicationException;
+    Response instantiateNfvoNs(@PathParam("nsInstanceId") String nsInstanceId, @Context HttpServletRequest servletReq);
 
     /**
      * Terminate the NFVO instance<br>
      * 
      * @param servletReq http request
      * @return response 
-     * @throws ApplicationException when fail to terminate the NFVO instance
      * @since  GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns/terminate")
-    Response terminateNfvoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response terminateNfvoNs(@Context HttpServletRequest servletReq);
 
 }

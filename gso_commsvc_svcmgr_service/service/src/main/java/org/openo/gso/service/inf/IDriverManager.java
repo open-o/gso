@@ -19,7 +19,6 @@ package org.openo.gso.service.inf;
 import javax.servlet.http.HttpServletRequest;
 
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
 
 /**
  * Interface to operate service.<br/>
@@ -39,10 +38,9 @@ public interface IDriverManager {
      * @param httpRequest - http request
      * @param domain SDNO or NFVO
      * @return restful response
-     * @throws ApplicationException when fail to instantiate network service
      * @since GSO 0.5
      */
-    RestfulResponse instantiateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain) throws ApplicationException;
+    RestfulResponse instantiateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain);
     
     /**
      * terminate service instance.<br/>
@@ -50,10 +48,9 @@ public interface IDriverManager {
      * @param httpRequest http request
      * @param domain SDNO or NFVO
      * @return restful response
-     * @throws ApplicationException when fail to terminate network service
      * @since GSO 0.5
      */
-    RestfulResponse terminateNs(HttpServletRequest httpRequest, String domain) throws ApplicationException;
+    RestfulResponse terminateNs(HttpServletRequest httpRequest, String domain);
 
     /**
      * create service<br>
@@ -61,10 +58,9 @@ public interface IDriverManager {
      * @param servletReq http request
      * @param domain SDNO or NFVO
      * @return response
-     * @throws ApplicationException when fail to create network service
      * @since  GSO 0.5
      */
-    RestfulResponse createNs(HttpServletRequest servletReq, String domain) throws ApplicationException;
+    RestfulResponse createNs(HttpServletRequest servletReq, String domain);
 
     /**
      * delete service<br>
@@ -72,10 +68,9 @@ public interface IDriverManager {
      * @param servletReq http request
      * @param domain SDNO or NFVO
      * @return response
-     * @throws ApplicationException when fail to delete network service
      * @since  GSO 0.5
      */
-    RestfulResponse deleteNs(HttpServletRequest servletReq, String domain) throws ApplicationException;
+    RestfulResponse deleteNs(HttpServletRequest servletReq, String domain);
 
     /**
      * query service job status<br>
@@ -83,10 +78,9 @@ public interface IDriverManager {
      * @param jobId uuid for service job
      * @param domain SDNO or NFVO
      * @return response
-     * @throws ApplicationException when fail to query service job status
      * @since  GSO 0.5
      */
-    RestfulResponse getNsProgress(String jobId, String domain) throws ApplicationException;
+    RestfulResponse getNsProgress(String jobId, String domain);
 
     /**
      * create gso service<br>
@@ -96,7 +90,7 @@ public interface IDriverManager {
      * @return response
      * @since  GSO 0.5
      */
-    RestfulResponse createGsoNs(HttpServletRequest servletReq, String domain) throws ApplicationException;
+    RestfulResponse createGsoNs(HttpServletRequest servletReq, String domain);
 
     /**
      * delete gso service<br>
@@ -106,7 +100,7 @@ public interface IDriverManager {
      * @return response
      * @since  GSO 0.5
      */
-    RestfulResponse deleteGsoNs(HttpServletRequest servletReq, String domain) throws ApplicationException;
+    RestfulResponse deleteGsoNs(HttpServletRequest servletReq, String domain);
 
     /**
      * query gso service job status<br>
@@ -116,6 +110,6 @@ public interface IDriverManager {
      * @return response
      * @since  GSO 0.5
      */
-    RestfulResponse getGsoNsProgress(String jobId, String domain) throws ApplicationException;
+    RestfulResponse getGsoNsProgress(String jobId, String domain);
 
 }

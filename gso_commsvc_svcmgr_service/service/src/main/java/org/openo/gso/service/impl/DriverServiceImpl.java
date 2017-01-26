@@ -20,9 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.CommonConstant.Step;
 import org.openo.gso.model.drivermo.NsCreateReq;
@@ -83,11 +81,10 @@ public class DriverServiceImpl implements IDriverService {
      * @param nodeType type of the node instance
      * @param instanceId id of the sub-service instance
      * @return restful response for the action
-     * @throws ApplicationException when fail to complete the action
      * @since GSO 0.5
      */
     @Override
-    public RestfulResponse terminateNs(Map<String, Object> inputMap) throws ApplicationException {
+    public RestfulResponse terminateNs(Map<String, Object> inputMap) {
         // terminate action
         String nsInstanceId = (String) inputMap.get(CommonConstant.NS_INSTANCE_ID);
         Map<String, Object> paramsMap = new HashMap<String, Object>();
@@ -108,11 +105,10 @@ public class DriverServiceImpl implements IDriverService {
      * delete the service instance
      * @param instanceId id of the sub service instance
      * @return result response for the action
-     * @throws ApplicationException when fail to complete the action
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse deleteNs(Map<String, Object> inputMap) throws ApplicationException {
+    public RestfulResponse deleteNs(Map<String, Object> inputMap) {
         String nsInstanceId = (String) inputMap.get(CommonConstant.NS_INSTANCE_ID);
         Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(CommonConstant.HttpContext.URL, getUrl(segmentType, nsInstanceId, CommonConstant.Step.DELETE));
@@ -141,7 +137,7 @@ public class DriverServiceImpl implements IDriverService {
     private String getUrl(String domain, String variable, String step) {
 
         String url = StringUtils.EMPTY;
-        String originalUrl = StringUtils.EMPTY;
+        String originalUrl;
 
         if(CommonConstant.SegmentType.NFVO.equals(domain)) {
             originalUrl = (String) nfvoUrlMap.get(step);
@@ -162,11 +158,10 @@ public class DriverServiceImpl implements IDriverService {
      * 
      * @param svcTmpl - Service template
      * @return InstanceId
-     * @throws ServiceException -when workflow engine do not return instanceId
      * @since GSO 0.5
      */
     @Override
-    public RestfulResponse createNs(Map<String, Object> inputMap) throws ApplicationException {
+    public RestfulResponse createNs(Map<String, Object> inputMap) {
 
         Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(CommonConstant.HttpContext.URL, getUrl(segmentType, null, CommonConstant.Step.CREATE));
@@ -181,8 +176,7 @@ public class DriverServiceImpl implements IDriverService {
         oRequest.setDescription((String) inputMap.get(CommonConstant.DESC));
 
         // Step 2: Send Network Service Request
-        String req = "";
-        req = JsonUtil.marshal(oRequest);
+        String req = JsonUtil.marshal(oRequest);
 
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, req, null);
         LOGGER.info("create ns response status is : {}", rsp.getStatus());
@@ -197,12 +191,11 @@ public class DriverServiceImpl implements IDriverService {
      * @param instanceId - Network service to be instantiated
      * @param lstParams - List of user input parameters
      * @return jobId
-     * @throws ApplicationException - when workflow engine returns invalid value
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
     @Override
-    public RestfulResponse instantiateNs(Map<String, Object> inputMap) throws ApplicationException {
+    public RestfulResponse instantiateNs(Map<String, Object> inputMap) {
 
         // Step 1: Prepare Network Service Instantiate Request
         NsInstantiateReq oRequest = new NsInstantiateReq();
@@ -220,8 +213,7 @@ public class DriverServiceImpl implements IDriverService {
         paramsMap.put(CommonConstant.HttpContext.PORT, inputMap.get(CommonConstant.HttpContext.PORT));
 
         // Step 2: Send Network Service Instantiate Request
-        String networkSvcReq = "";
-        networkSvcReq = JsonUtil.marshal(oRequest);
+        String networkSvcReq = JsonUtil.marshal(oRequest);
 
         RestfulResponse rsp = RestfulUtil.getRemoteResponse(paramsMap, networkSvcReq, null);
         LOGGER.info("instantiate ns response status is : {}", rsp.getStatus());
@@ -237,14 +229,13 @@ public class DriverServiceImpl implements IDriverService {
      * @param jobId - jobId of instantiation
      * @param inputMap parameters map
      * @return - Progress information
-     * @throws ApplicationException - when the workflow returns invalid information
      * @since GSO 0.5
      */
     @Override
-    public RestfulResponse getNsProgress(Map<String, Object> inputMap) throws ApplicationException {
+    public RestfulResponse getNsProgress(Map<String, Object> inputMap) {
 
         // Get url based on node type
-        String url = StringUtils.EMPTY;
+        String url;
         if(CommonConstant.SegmentType.GSO.equals(segmentType)) {
             url = String.format(CommonConstant.GSO_QUERY_URL, inputMap.get(CommonConstant.NS_INSTANCE_ID), inputMap.get(CommonConstant.JOB_ID));
         } else {
@@ -273,10 +264,10 @@ public class DriverServiceImpl implements IDriverService {
      * 
      * @param nodeType node type
      * @return service template
-     * @throws ApplicationException when fail to get service template
      * @since  GSO 0.5
      */
-    public ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost) throws ApplicationException {
+    @Override
+    public ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost) {
 
         // Step 1: Prepare url and method type
         Map<String, Object> paramsMap = new HashMap<String, Object>();
@@ -322,11 +313,10 @@ public class DriverServiceImpl implements IDriverService {
      * 
      * @param inputMap input parameters map
      * @return restful response
-     * @throws ApplicationException when fail to delete gso serivce
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse createGsoNs(Map<String, Object> inputMap) throws ApplicationException {
+    public RestfulResponse createGsoNs(Map<String, Object> inputMap) {
         Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(CommonConstant.HttpContext.URL, CommonConstant.GSO_CREATE_URL);
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.POST);
@@ -346,11 +336,10 @@ public class DriverServiceImpl implements IDriverService {
      * 
      * @param inputMap input parameters map
      * @return restful response
-     * @throws ApplicationException when fail to delete gso serivce
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse deleteGsoNs(Map<String, Object> inputMap) throws ApplicationException {
+    public RestfulResponse deleteGsoNs(Map<String, Object> inputMap) {
         Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(CommonConstant.HttpContext.URL, String.format(CommonConstant.GSO_DELETE_URL, inputMap.get(CommonConstant.NS_INSTANCE_ID)));
         paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.DELETE);

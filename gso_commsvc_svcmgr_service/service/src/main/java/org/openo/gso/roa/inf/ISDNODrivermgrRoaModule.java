@@ -26,8 +26,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
-
 /**
  * API for restful interface.<br/>
  * 
@@ -43,42 +41,39 @@ public interface ISDNODrivermgrRoaModule {
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to create network service.
      * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns")
-    Response createSdnoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response createSdnoNs(@Context HttpServletRequest servletReq);
     
     /**
      * Delete the SDNO instance<br>
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to delete the network service
      * @since  GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns/delete")
-    Response deleteSdnoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response deleteSdnoNs(@Context HttpServletRequest servletReq);
 
     /**
      * Query status of the SDNO instance<br>
      * 
      * @param jobId uuid for SDNO job
      * @return status of the SDNO instance
-     * @throws ApplicationException when fail to query status of the SDNO instance
      * @since  GSO 0.5
      */
     @GET
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/jobs/{jobId}")
-    Response querySdnoJobStatus(@PathParam("jobId") String jobId) throws ApplicationException;
+    Response querySdnoJobStatus(@PathParam("jobId") String jobId);
     
     /**
      * <br>
@@ -87,27 +82,25 @@ public interface ISDNODrivermgrRoaModule {
      * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return Response
-     * @throws ApplicationException when fail to instantiate network service
      * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/{nsInstanceId}/instantiate")
-    Response instantiateSdnoNs(@PathParam("nsInstanceId") String nsInstanceId, @Context HttpServletRequest servletReq) throws ApplicationException;
+    Response instantiateSdnoNs(@PathParam("nsInstanceId") String nsInstanceId, @Context HttpServletRequest servletReq);
 
     /**
      * Terminate the SDNO instance<br>
      * 
      * @param servletReq http request
      * @return response 
-     * @throws ApplicationException when fail to terminate the SDNO instance
      * @since  GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns/terminate")
-    Response terminateSdnoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response terminateSdnoNs(@Context HttpServletRequest servletReq);
 
 }

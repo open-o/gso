@@ -19,7 +19,6 @@ package org.openo.gso.service.inf;
 import java.util.Map;
 
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.drivermo.ServiceTemplate;
 
 /**
@@ -38,20 +37,18 @@ public interface IDriverService {
      * 
      * @param paramMap parameters map
      * @return job id of the terminate operation
-     * @throws ApplicationException when fail to delete the sub-service
      * @since GSO 0.5
      */
-    RestfulResponse terminateNs(Map<String, Object> paramMap) throws ApplicationException;
+    RestfulResponse terminateNs(Map<String, Object> paramMap);
 
     /**
      * <br>
      * delete the network service
      * @param paramMap map of the input parameters
      * @return response
-     * @throws ApplicationException when fail to delete the network service
      * @since  GSO 0.5
      */
-    RestfulResponse deleteNs(Map<String, Object> paramMap) throws ApplicationException;
+    RestfulResponse deleteNs(Map<String, Object> paramMap);
     
     /**
      * <br>
@@ -59,10 +56,9 @@ public interface IDriverService {
      * 
      * @param paramMap map of the input parameters
      * @return nsInstanceId
-     * @throws ApplicationException when fail to creat the network service
      * @since GSO 0.5
      */
-    RestfulResponse createNs(Map<String, Object> paramMap) throws ApplicationException;
+    RestfulResponse createNs(Map<String, Object> paramMap);
 
     /**
      * <br>
@@ -70,21 +66,19 @@ public interface IDriverService {
      * 
      * @param mapParams input parameters
      * @return jobId of the instantiate operation
-     * @throws ApplicationException when fail to instantiate
      * @since GSO 0.5
      */
-    RestfulResponse instantiateNs(Map<String, Object> mapParams) throws ApplicationException;
+    RestfulResponse instantiateNs(Map<String, Object> mapParams);
 
     /**
      * <br>
      * query the progress of the instantiate operation
      * 
-     * @param map paramters map
+     * @param map parameters map
      * @return progress detail
-     * @throws ApplicationException when fail to query the progress
      * @since GSO 0.5
      */
-    RestfulResponse getNsProgress(Map<String, Object> map) throws ApplicationException;
+    RestfulResponse getNsProgress(Map<String, Object> map);
 
     /**
      * <br>
@@ -100,10 +94,9 @@ public interface IDriverService {
      * 
      * @param nodeType node type
      * @return service template
-     * @throws ApplicationException when fail to get service template
      * @since  GSO 0.5
      */
-    ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost) throws ApplicationException;
+    ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost);
 
     /**
      * create gso service<br>
@@ -112,7 +105,7 @@ public interface IDriverService {
      * @return restful response
      * @since  GSO 0.5
      */
-    RestfulResponse createGsoNs(Map<String, Object> inputMap) throws ApplicationException;
+    RestfulResponse createGsoNs(Map<String, Object> inputMap);
 
     /**
      * delete gso service<br>
@@ -121,5 +114,5 @@ public interface IDriverService {
      * @return restful response
      * @since  GSO 0.5
      */
-    RestfulResponse deleteGsoNs(Map<String, Object> inputMap) throws ApplicationException;
+    RestfulResponse deleteGsoNs(Map<String, Object> inputMap);
 }

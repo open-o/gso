@@ -74,7 +74,7 @@ public class DriverManagerImpl implements IDriverManager {
     /**
      * 10s
      */
-    private static final long TEN_SECONDS = 10 * 1000;
+    private static final long TEN_SECONDS = 10 * 1000L;
     
     private String svcSegmentType;
 
@@ -179,11 +179,10 @@ public class DriverManagerImpl implements IDriverManager {
      * @param servletReq http request
      * @param segmentType NFVO or SDNO
      * @return restfulResponse
-     * @throws ApplicationException when fail to create network service
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse createNs(HttpServletRequest servletReq, String segmentType) throws ApplicationException {
+    public RestfulResponse createNs(HttpServletRequest servletReq, String segmentType) {
         // Step 1: get parameters from request for current node
         DomainInputParameter currentInput = getParamsForCurrentNode(servletReq);
 
@@ -202,7 +201,7 @@ public class DriverManagerImpl implements IDriverManager {
 
         //nsdId for NFVO is "id" in the response, while for SDNO is "servcice template id"
         LOGGER.info("serviceTemplateId is {}, id is {}", svcTmpl.getServiceTemplateId(), svcTmpl.getId());
-        String nsdId = StringUtils.EMPTY;
+        String nsdId;
         if(CommonConstant.SegmentType.NFVO.equals(segmentType)){
             nsdId = svcTmpl.getId();
         }else {
@@ -246,11 +245,10 @@ public class DriverManagerImpl implements IDriverManager {
      * @param servletReq http request
      * @param segmentType NFVO or SDNO
      * @return response
-     * @throws ApplicationException when fail to delete network service
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse deleteNs(HttpServletRequest servletReq, String segmentType) throws ApplicationException {
+    public RestfulResponse deleteNs(HttpServletRequest servletReq, String segmentType) {
         DomainInputParameter currentInput = getParamsForCurrentNode(servletReq);
         String segmentId = currentInput.getSubServiceId();
         //Step 1: get service segment by segmentId and segmentType
@@ -299,12 +297,10 @@ public class DriverManagerImpl implements IDriverManager {
      * @param httpRequest http request
      * @param segmentType NFVO or SDNO
      * @return response
-     * @throws ApplicationException when fail to instantiate network service
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse instantiateNs(String segmentId, HttpServletRequest httpRequest, String segmentType)
-            throws ApplicationException {
+    public RestfulResponse instantiateNs(String segmentId, HttpServletRequest httpRequest, String segmentType) {
         // Step 1: get parameters from request for current node
         DomainInputParameter currentInput = getParamsForCurrentNode(httpRequest);
         // Step 2: Call the NFVO or SDNO service to instantiate service
@@ -353,12 +349,10 @@ public class DriverManagerImpl implements IDriverManager {
      * @param httpRequest http request
      * @param segmentType NFVO or SDNO
      * @return response
-     * @throws ApplicationException when fail to terminate network service
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse terminateNs(HttpServletRequest httpRequest, String segmentType)
-            throws ApplicationException {
+    public RestfulResponse terminateNs(HttpServletRequest httpRequest, String segmentType) {
         //Step1: get input for current node
         DomainInputParameter input = getParamsForCurrentNode(httpRequest);
         String segmentId = input.getSubServiceId();
@@ -413,11 +407,10 @@ public class DriverManagerImpl implements IDriverManager {
      * @param jobId job id
      * @param segmentType NFVO or SDNO
      * @return ns progress
-     * @throws ApplicationException when fail to get ns progress
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse getNsProgress(String jobId, String segmentType) throws ApplicationException {
+    public RestfulResponse getNsProgress(String jobId, String segmentType) {
         ServiceSegmentOperation segmentOper = serviceSegmentDao.querySegmentOperByJobIdAndType(jobId, segmentType);
         String segmentId = segmentOper.getServiceSegmentId();
         String operType = segmentOper.getOperationType();
@@ -452,8 +445,7 @@ public class DriverManagerImpl implements IDriverManager {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
         }
         // Step 4: Process Network Service Instantiate Response
-        NsProgressStatus nsProgress = null;
-        nsProgress = JsonUtil.unMarshal(rsp.getResponseContent(), NsProgressStatus.class);
+        NsProgressStatus nsProgress = JsonUtil.unMarshal(rsp.getResponseContent(), NsProgressStatus.class);
         ResponseDescriptor rspDesc = nsProgress.getResponseDescriptor();
         // Step 5: update segment operation progress
         ServiceSegmentOperation progressSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
@@ -512,8 +504,7 @@ public class DriverManagerImpl implements IDriverManager {
         LOGGER.info("body from request is {}", body);
         String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}").replaceAll("\"\\[", "\\[").replaceAll("\\]\"", "\\]");
         LOGGER.warn("json body from request is {}", jsonBody);
-        ServiceNode serviceNode = null;
-        serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
+        ServiceNode serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
 
         // Step 1:Validate input parameters
         if((null == serviceNode.getNodeTemplateName()) || (null == serviceNode.getSegments())) {
@@ -693,11 +684,10 @@ public class DriverManagerImpl implements IDriverManager {
      * @param servletReq http request
      * @param segmentType GSO
      * @return response
-     * @throws ApplicationException when fail to create gso service
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse createGsoNs(HttpServletRequest servletReq, String segmentType) throws ApplicationException {
+    public RestfulResponse createGsoNs(HttpServletRequest servletReq, String segmentType) {
         // Step1 get input parameters for current node
         DomainInputParameter cInput = getParamsForCurrentNode(servletReq);
         // Step2 get service template id and csar id by node type
@@ -791,11 +781,10 @@ public class DriverManagerImpl implements IDriverManager {
      * @param servletReq http request
      * @param segmentType GSO
      * @return response
-     * @throws ApplicationException when fail to delete gso service
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse deleteGsoNs(HttpServletRequest servletReq, String segmentType) throws ApplicationException {
+    public RestfulResponse deleteGsoNs(HttpServletRequest servletReq, String segmentType) {
         // Step1 get input parameters for current node
         DomainInputParameter dInput = getParamsForCurrentNode(servletReq);
         if(null == serviceInf) {
@@ -854,7 +843,7 @@ public class DriverManagerImpl implements IDriverManager {
      * @since   GSO 0.5
      */
     @Override
-    public RestfulResponse getGsoNsProgress(String jobId, String segmentType) throws ApplicationException {
+    public RestfulResponse getGsoNsProgress(String jobId, String segmentType) {
         ServiceSegmentOperation segmentOperation = serviceSegmentDao.querySegmentOperByJobIdAndType(jobId, segmentType);
         String segmentId = segmentOperation.getServiceSegmentId();
         String operType = segmentOperation.getOperationType();
@@ -891,12 +880,11 @@ public class DriverManagerImpl implements IDriverManager {
         }
 
         // Step 4: Process Response
-        ServiceOperationRsp svcOperRsp = null;
-        svcOperRsp = JsonUtil.unMarshal(rsp.getResponseContent(), ServiceOperationRsp.class);
+        ServiceOperationRsp svcOperRsp = JsonUtil.unMarshal(rsp.getResponseContent(), ServiceOperationRsp.class);
         ServiceOperation svcOper = svcOperRsp.getOperation();
         // Step 5: update segment operation progress
         ServiceSegmentOperation progressSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
-        progressSegOper.setProgress(Integer.valueOf(svcOper.getProgress()));
+        progressSegOper.setProgress(svcOper.getProgress());
         serviceSegmentDao.updateSegmentOper(progressSegOper);
 
         // Step 6: update segment operation status

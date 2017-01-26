@@ -25,8 +25,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
-
 /**
  * API for restful interface.<br/>
  * 
@@ -42,41 +40,38 @@ public interface IGSODrivermgrRoaModule {
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to create gso service
      * @since  GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns/create")
-    Response createGsoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response createGsoNs(@Context HttpServletRequest servletReq);
     
     /**
      * delete gso service<br>
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to delete gso service
      * @since  GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/ns/delete")
-    Response deleteGsoNs(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response deleteGsoNs(@Context HttpServletRequest servletReq);
     
     /**
      * query gso service job status<br>
      * 
      * @param jobId job id
      * @return response
-     * @throws ApplicationException when fail to query gso service job status
      * @since  GSO 0.5
      */
     @GET
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/jobs/{jobId}")
-    Response queryGsoJobStatus(@PathParam("jobId") String jobId) throws ApplicationException;
+    Response queryGsoJobStatus(@PathParam("jobId") String jobId);
 
 }

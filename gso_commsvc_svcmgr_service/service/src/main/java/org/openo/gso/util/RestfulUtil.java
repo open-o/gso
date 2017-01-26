@@ -91,7 +91,11 @@ public class RestfulUtil {
         } catch(ServiceException e) {
             LOGGER.error("function=getRemoteResponse, get restful response catch exception {}", e);
         }
-        LOGGER.warn("responseContent is {}", rsp.getResponseContent());
+        if(rsp != null) {
+            LOGGER.info("responseContent is {}", rsp.getResponseContent());
+        } else {
+            LOGGER.error("Invalid restful response");
+        }
         return rsp;
     }
 

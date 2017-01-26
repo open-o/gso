@@ -21,7 +21,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.roa.inf.IGSODrivermgrRoaModule;
 import org.openo.gso.roa.inf.INFVODrivermgrRoaModule;
@@ -63,11 +62,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to create service instance
      * @since   GSO 0.5
      */
     @Override
-    public Response createNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
+    public Response createNfvoNs(HttpServletRequest servletReq) {
         RestfulResponse rsp = driverMgr.createNs(servletReq, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
@@ -79,11 +77,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      *
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to delete service instance
      * @since   GSO 0.5
      */
     @Override
-    public Response deleteNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
+    public Response deleteNfvoNs(HttpServletRequest servletReq) {
         RestfulResponse rsp = driverMgr.deleteNs(servletReq, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
@@ -93,11 +90,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param jobId uuid of NFVO job
      * @return response 
-     * @throws ApplicationException fail to query job status
      * @since   GSO 0.5
      */
     @Override
-    public Response queryNfvoJobStatus(String jobId) throws ApplicationException {
+    public Response queryNfvoJobStatus(String jobId) {
         RestfulResponse rsp = driverMgr.getNsProgress(jobId, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
@@ -108,11 +104,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to instantiate the service instance
      * @since   GSO 0.5
      */
     @Override
-    public Response instantiateNfvoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
+    public Response instantiateNfvoNs(String nsInstanceId, HttpServletRequest servletReq) {
 
         RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, servletReq, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
@@ -124,11 +119,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to terminate the service instance
      * @since GSO 0.5
      */
     @Override
-    public Response terminateNfvoNs(HttpServletRequest servletReq) throws ApplicationException {
+    public Response terminateNfvoNs(HttpServletRequest servletReq) {
         RestfulResponse rsp = driverMgr.terminateNs(servletReq, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
@@ -138,11 +132,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to create service instance
      * @since   GSO 0.5
      */
     @Override
-    public Response createSdnoNs(HttpServletRequest servletReq) throws ApplicationException {
+    public Response createSdnoNs(HttpServletRequest servletReq) {
         RestfulResponse rsp = driverMgr.createNs(servletReq, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
@@ -152,11 +145,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to delete service instance
      * @since   GSO 0.5
      */
     @Override
-    public Response deleteSdnoNs(HttpServletRequest servletReq) throws ApplicationException {
+    public Response deleteSdnoNs(HttpServletRequest servletReq) {
         RestfulResponse rsp = driverMgr.deleteNs(servletReq, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
@@ -166,11 +158,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param jobId uuid of SDNO service job
      * @return response
-     * @throws ApplicationException when fail to query job status
      * @since   GSO 0.5
      */
     @Override
-    public Response querySdnoJobStatus(String jobId) throws ApplicationException {
+    public Response querySdnoJobStatus(String jobId) {
         RestfulResponse rsp = driverMgr.getNsProgress(jobId, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
@@ -181,11 +172,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to instantiate the service instance
      * @since   GSO 0.5
      */
     @Override
-    public Response instantiateSdnoNs(String nsInstanceId, HttpServletRequest servletReq) throws ApplicationException {
+    public Response instantiateSdnoNs(String nsInstanceId, HttpServletRequest servletReq) {
         RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, servletReq, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
@@ -195,11 +185,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to terminate the service instance
      * @since   GSO 0.5
      */
     @Override
-    public Response terminateSdnoNs(HttpServletRequest servletReq) throws ApplicationException {
+    public Response terminateSdnoNs(HttpServletRequest servletReq) {
         RestfulResponse rsp = driverMgr.terminateNs(servletReq, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
@@ -222,11 +211,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to create gso service
      * @since   GSO 0.5
      */
     @Override
-    public Response createGsoNs(HttpServletRequest servletReq) throws ApplicationException {
+    public Response createGsoNs(HttpServletRequest servletReq) {
         RestfulResponse rsp = driverMgr.createGsoNs(servletReq, CommonConstant.SegmentType.GSO);
         return buildResponse(rsp);
     }
@@ -236,11 +224,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to delete gso service
      * @since   GSO 0.5
      */
     @Override
-    public Response deleteGsoNs(HttpServletRequest servletReq) throws ApplicationException {
+    public Response deleteGsoNs(HttpServletRequest servletReq) {
         RestfulResponse rsp = driverMgr.deleteGsoNs(servletReq, CommonConstant.SegmentType.GSO);
         return buildResponse(rsp);
     }
@@ -250,11 +237,10 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param jobId job id
      * @return response
-     * @throws ApplicationException when fail to query gso service job status
      * @since   GSO 0.5
      */
     @Override
-    public Response queryGsoJobStatus(String jobId) throws ApplicationException {
+    public Response queryGsoJobStatus(String jobId) {
         RestfulResponse rsp = driverMgr.getGsoNsProgress(jobId, CommonConstant.SegmentType.GSO);
         return buildResponse(rsp);
     }

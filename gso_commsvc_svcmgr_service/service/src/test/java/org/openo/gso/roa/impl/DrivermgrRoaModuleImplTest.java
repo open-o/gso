@@ -103,5 +103,21 @@ public class DrivermgrRoaModuleImplTest {
         String jobId = "1";
         impl.querySdnoJobStatus(jobId);
     }
+    
+    @Test
+    public void testCreateGSONs() {
+        impl.createGsoNs(servletReq);
+    }
+    
+    @Test
+    public void testDeleteGSONs() {
+        impl.deleteGsoNs(servletReq);
+    }
+    
+    @Test
+    public void testQueryGSONsProgress() {
+        String jobId = "1";
+        impl.queryGsoJobStatus(jobId);
+    }
 
 }
