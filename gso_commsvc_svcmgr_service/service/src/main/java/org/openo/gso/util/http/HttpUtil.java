@@ -66,7 +66,7 @@ public class HttpUtil {
      */
     public static RestfulResponse get(final String url, final Map<String, String> httpHeaders,
             HttpServletRequest httpRequest) {
-        final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
+        final RestfulParametes restfulParametes = getRestfulParametes();
         for(Map.Entry<String, String> entry : httpHeaders.entrySet()) {
             restfulParametes.put(entry.getKey(), entry.getValue());
         }
@@ -93,7 +93,7 @@ public class HttpUtil {
      */
     public static RestfulResponse post(final String url, Object sendObj, HttpServletRequest httpRequest) {
 
-        final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
+        final RestfulParametes restfulParametes = getRestfulParametes();
         if(sendObj != null) {
             String strJsonReq = JsonUtil.marshal(sendObj);
             restfulParametes.setRawData(strJsonReq);
@@ -120,7 +120,7 @@ public class HttpUtil {
      * @since GSO 0.5
      */
     public static RestfulResponse delete(final String url, HttpServletRequest httpRequest) {
-        final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
+        final RestfulParametes restfulParametes = getRestfulParametes();
         RestfulResponse response = null;
         try {
             response = RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP).delete(url, restfulParametes);
@@ -143,7 +143,7 @@ public class HttpUtil {
      */
     public static RestfulResponse put(final String url, final Map<String, String> httpHeaders,
             HttpServletRequest httpRequest) {
-        final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
+        final RestfulParametes restfulParametes = getRestfulParametes();
         for(Map.Entry<String, String> entry : httpHeaders.entrySet()) {
             restfulParametes.put(entry.getKey(), entry.getValue());
         }
@@ -166,7 +166,7 @@ public class HttpUtil {
      * @return rest parameters
      * @since GSO 0.5
      */
-    public static RestfulParametes getRestfulParametes(HttpServletRequest httpRequest) {
+    public static RestfulParametes getRestfulParametes() {
         final RestfulParametes restfulParametes = new RestfulParametes();
         restfulParametes.putHttpContextHeader("Content-Type", "application/json;charset=UTF-8");
         return restfulParametes;

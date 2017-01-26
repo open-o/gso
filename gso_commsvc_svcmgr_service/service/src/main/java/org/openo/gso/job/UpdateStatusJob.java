@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.TimerTask;
 
 import org.apache.commons.collections.map.HashedMap;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.dao.inf.IInventoryDao;
@@ -78,12 +77,12 @@ public class UpdateStatusJob extends TimerTask {
     /**
      * Operation of service without segment not update for 5m
      */
-    private static final long SERVICE_WITHOUT_SEG_NOT_UPDATE = 5 * 60 * 1000;
+    private static final long SERVICE_WITHOUT_SEG_NOT_UPDATE = 5 * 60 * 1000L;
 
     /**
      * Operation of service with segment not update for 2h.
      */
-    private static final long SERVICE_WITH_SEG_NOT_UPDATE = 2 * 60 * 60 * 1000;
+    private static final long SERVICE_WITH_SEG_NOT_UPDATE = 2 * 60 * 60 * 1000L;
 
     /**
      * The action to be performed by this timer task.<br/>
@@ -165,7 +164,7 @@ public class UpdateStatusJob extends TimerTask {
      * @param svcModels service instances.
      * @since GSO 0.5
      */
-    private void dealSvcWithoutSegOpers(List<String> svcIds, List<ServiceModel> svcModels) throws ApplicationException {
+    private void dealSvcWithoutSegOpers(List<String> svcIds, List<ServiceModel> svcModels) {
         List<String> unnormalSvcIds = new LinkedList<>();
         // Query unnormal service operation
         List<ServiceOperation> unnormalOper =
@@ -205,9 +204,8 @@ public class UpdateStatusJob extends TimerTask {
      * @param segmentOpers service operations
      * @since GSO 0.5
      */
-    private void updateData(List<ServiceModel> services, List<ServiceSegmentOperation> segmentOpers)
-            throws ApplicationException {
-        String serviceId = null;
+    private void updateData(List<ServiceModel> services, List<ServiceSegmentOperation> segmentOpers) {
+        String serviceId;
         Map<String, List<ServiceSegmentOperation>> svcSegMaybeNormal = new HashedMap();
         Map<String, ServiceSegmentOperation> svcSegError = new HashedMap();
 
@@ -271,7 +269,7 @@ public class UpdateStatusJob extends TimerTask {
      * @since GSO 0.5
      */
     private void dealSvcWithErrorSeg(List<ServiceModel> svcWithErrorSegs,
-            Map<String, ServiceSegmentOperation> svcSegError) throws ApplicationException {
+            Map<String, ServiceSegmentOperation> svcSegError) {
         if(CollectionUtils.isEmpty(svcWithErrorSegs)) {
             LOGGER.info("There is no service instance to update.");
             return;
@@ -312,7 +310,7 @@ public class UpdateStatusJob extends TimerTask {
      * @since GSO 0.5
      */
     private void calcServiceProgess(List<ServiceModel> services,
-            Map<String, List<ServiceSegmentOperation>> svcSegmentOpers) throws ApplicationException {
+            Map<String, List<ServiceSegmentOperation>> svcSegmentOpers) {
         if(CollectionUtils.isEmpty(services)) {
             LOGGER.info("There is no service instance which need to calculate progress.");
             return;
@@ -328,9 +326,9 @@ public class UpdateStatusJob extends TimerTask {
         List<String> delServiceIds = new LinkedList<>();
 
         // 2. Calculate progress and status
-        int progress = 0;
-        ServiceOperation serviceOper = null;
-        List<ServiceSegmentOperation> segOperLst = null;
+        int progress;
+        ServiceOperation serviceOper;
+        List<ServiceSegmentOperation> segOperLst;
         List<InvServiceModel> invServices = new LinkedList<>();
         List<ServiceModel> updateSvc = new LinkedList<>();
         List<ServiceOperation> updateSvcOper = new LinkedList<>();

@@ -16,6 +16,7 @@
 
 package org.openo.gso.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -141,10 +142,11 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
     @Override
     public List<ServiceModel> queryAllServices() {
         try {
+            List<ServiceModel> services = new ArrayList<ServiceModel>();
             // 1. Query basic information of service instance.
-            List<ServiceModel> services = getMapper(ServiceModelMapper.class).queryAllServices();
+            services = getMapper(ServiceModelMapper.class).queryAllServices();
             if(CollectionUtils.isEmpty(services)) {
-                return null;
+                return services;
             }
 
             // 2. Query relation data.
@@ -211,7 +213,7 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
         try {
             ServiceModel model = getMapper(ServiceModelMapper.class).queryServiceByInstanceId(serviceId);
             model.setServicePackage(getMapper(ServicePackageMapper.class).queryPackageMapping(serviceId));
-            model.setParameter((getMapper(ServiceParameterMapper.class).query(serviceId)));
+            model.setParameter(getMapper(ServiceParameterMapper.class).query(serviceId));
             return model;
         } catch(Exception exception) {
             LOGGER.error("Fail to query service instance by id : {}", exception);

@@ -93,6 +93,5 @@ public class ValidateUtil {
             LOGGER.error("The format of input parameters is wrong.");
             throw new ApplicationException(HttpCode.BAD_REQUEST, "The format of input parameters is wrong.");
         }
-        // todo
     }
 }

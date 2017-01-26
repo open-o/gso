@@ -50,7 +50,7 @@ public class ServiceTimeTaskUtil {
     /**
      * Delay 7 * 24 * 3600 to delete history operations.
      */
-    private static final long DELETE_HISTORY_OPERATION_DELAY = 7 * 24 * 3600;
+    private static final long DELETE_HISTORY_OPERATION_DELAY = 7 * 24 * 3600L;
 
     /**
      * Startup task.<br/>

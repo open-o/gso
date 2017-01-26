@@ -39,6 +39,17 @@ public class ServiceModel extends BaseServiceModel {
      */
     @JsonIgnore
     private ServiceParameter parameter;
+    
+    /**
+     * Constructor<br/>
+     * <p>
+     * </p>
+     * 
+     * @since GSO 0.5
+     */
+    public ServiceModel() {
+        super();
+    }
 
     /**
      * @return Returns the parameter.
@@ -52,17 +63,6 @@ public class ServiceModel extends BaseServiceModel {
      */
     public void setParameter(ServiceParameter parameter) {
         this.parameter = parameter;
-    }
-
-    /**
-     * Constructor<br/>
-     * <p>
-     * </p>
-     * 
-     * @since GSO 0.5
-     */
-    public ServiceModel() {
-        super();
     }
 
     /**

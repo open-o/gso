@@ -518,8 +518,8 @@ public class DriverManagerImpl implements IDriverManager {
         for(DomainInputParameter input : inputList) {
             map.put(input.getNodeTemplateName(), input);
         }
-        DomainInputParameter currentInput = map.get(serviceNode.getNodeTemplateName());
-        return currentInput;
+        
+        return map.get(serviceNode.getNodeTemplateName());
     }
     
 

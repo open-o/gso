@@ -109,6 +109,7 @@ public class PackageManagerImpl implements IPackageManager {
         try {
             catalogProxy.deleteGsarPackage(serviceDefId, request);
         } catch(ApplicationException exception) {
+            LOGGER.error("fail to delete gsar package", exception);
             throw exception;
         } finally {
             PackageOperationSingleton.getInstance().removeDeletedCsarIds(serviceDefId);

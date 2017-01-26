@@ -78,6 +78,8 @@ public class ServiceSegmentOperation {
      * @since GSO 0.5
      */
     public ServiceSegmentOperation() {
+        
+        //do nothing
 
     }
 

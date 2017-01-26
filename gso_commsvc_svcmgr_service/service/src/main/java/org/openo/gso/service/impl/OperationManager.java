@@ -66,7 +66,7 @@ public class OperationManager implements IOperationManager {
      * @since GSO 0.5
      */
     @Override
-    public ServiceOperation createOperation(String serviceId, String operationType) throws ApplicationException {
+    public ServiceOperation createOperation(String serviceId, String operationType) {
 
         // construct data
         ServiceOperation operation = new ServiceOperation(serviceId, operationType, null);
@@ -86,7 +86,7 @@ public class OperationManager implements IOperationManager {
      * @since GSO 0.5
      */
     @Override
-    public void updateOperation(ServiceOperation svcOperation) throws ApplicationException {
+    public void updateOperation(ServiceOperation svcOperation) {
         LOGGER.error("Update service operation data: {}", svcOperation);
         serviceOperDao.update(svcOperation);
     }
@@ -99,7 +99,7 @@ public class OperationManager implements IOperationManager {
      * @since GSO 0.5
      */
     @Override
-    public void delete(String serviceId) throws ApplicationException {
+    public void delete(String serviceId) {
         LOGGER.info("Delete service operation, the service instance ID: {}", serviceId);
         serviceOperDao.delete(serviceId);
     }
@@ -114,7 +114,7 @@ public class OperationManager implements IOperationManager {
      * @since GSO 0.5
      */
     @Override
-    public ServiceOperation queryOperation(String serviceId, String operationId) throws ApplicationException {
+    public ServiceOperation queryOperation(String serviceId, String operationId) {
         LOGGER.info("query service operation, the service instance ID: {}", serviceId);
         return serviceOperDao.queryOperationById(serviceId, operationId);
     }

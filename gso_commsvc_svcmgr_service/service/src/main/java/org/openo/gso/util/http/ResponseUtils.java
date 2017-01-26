@@ -134,7 +134,7 @@ public class ResponseUtils {
      * @since GSO 0.5
      */
     public static ApplicationException getException(ApplicationException exception, String description) {
-        ExceptionArgs args = null;
+        ExceptionArgs args;
         Object exceptionObject = exception.getResponse().getEntity();
         if(exceptionObject instanceof ExceptionArgs) {
             args = (ExceptionArgs)exceptionObject;
@@ -143,8 +143,8 @@ public class ResponseUtils {
             args.setDescription(description);
             args.setReason(exception.getResponse().getEntity());
         }
-        ApplicationException appException = new ApplicationException(exception.getResponse().getStatus(), args);
+        
 
-        return appException;
+        return new ApplicationException(exception.getResponse().getStatus(), args);
     }
 }
