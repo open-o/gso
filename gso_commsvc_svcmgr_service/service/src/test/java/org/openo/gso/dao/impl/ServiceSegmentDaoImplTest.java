@@ -151,6 +151,7 @@ public class ServiceSegmentDaoImplTest {
     @Test(expected = ApplicationException.class)
     public void testInsertIsNull2() {
         ServiceSegmentModel serviceSegment = new ServiceSegmentModel();
+        serviceSegmentDao.setDbSessionHandler(null);
         serviceSegmentDao.insertSegment(serviceSegment);
     }
 

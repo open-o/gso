@@ -35,7 +35,7 @@ public class ServiceSegmentModel {
      * Service segment instance ID.
      */
     private String serviceSegmentId;
-    
+
     /**
      * Service segment type
      */
@@ -65,7 +65,7 @@ public class ServiceSegmentModel {
      * domain host
      */
     private String domainHost;
-    
+
     /**
      * node template name
      */
@@ -98,14 +98,14 @@ public class ServiceSegmentModel {
     public void setServiceSegmentId(String serviceSegmentId) {
         this.serviceSegmentId = serviceSegmentId;
     }
-    
+
     /**
      * @return Returns the serviceSegmentType.
      */
     public String getServiceSegmentType() {
         return serviceSegmentType;
     }
-    
+
     /**
      * @param serviceSegmentType The serviceSegmentType to set.
      */
@@ -168,33 +168,47 @@ public class ServiceSegmentModel {
     public void setTopoSeqNumber(int topoSeqNumber) {
         this.topoSeqNumber = topoSeqNumber;
     }
-    
+
     /**
      * @return Returns the domainHost.
      */
     public String getDomainHost() {
         return domainHost;
     }
-    
+
     /**
      * @param domainHost The domainHost to set.
      */
     public void setDomainHost(String domainHost) {
         this.domainHost = domainHost;
     }
-    
+
     /**
      * @return Returns the nodeTemplateName.
      */
     public String getNodeTemplateName() {
         return nodeTemplateName;
     }
-    
+
     /**
      * @param nodeTemplateName The nodeTemplateName to set.
      */
     public void setNodeTemplateName(String nodeTemplateName) {
         this.nodeTemplateName = nodeTemplateName;
+    }
+
+    /**
+     * Add for log.<br/>
+     * 
+     * @return model data
+     * @since GSO 0.5
+     */
+    @Override
+    public String toString() {
+        return "ServiceSegmentModel [serviceId=" + serviceId + ", serviceSegmentId=" + serviceSegmentId
+                + ", serviceSegmentType=" + serviceSegmentType + ", serviceSegmentName=" + serviceSegmentName
+                + ", templateId=" + templateId + ", nodeType=" + nodeType + ", topoSeqNumber=" + topoSeqNumber
+                + ", domainHost=" + domainHost + ", nodeTemplateName=" + nodeTemplateName + "]";
     }
 
 }

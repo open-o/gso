@@ -27,6 +27,9 @@ create table t_lcm_service_operation
     constraint pk_t_svc_operation primary key(serviceId, operationId)
 );
 
+insert into t_lcm_service_operation(serviceId,operationId,operationType,userId,result,operationContent,progress,reason,operateAt,finishedAt)
+values ('1','123','create','--','finished','',100,'',1234567890,1234567890);
+
 drop table if exists t_lcm_svcsegment_operation;
 create table t_lcm_svcsegment_operation
 (

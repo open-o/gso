@@ -93,7 +93,7 @@ public class UpdateStatusJob extends TimerTask {
     @Override
     public void run() {
         try {
-            ValidateUtil.assertObjectNotNull(segmentsDao);
+            ValidateUtil.assertObjectNotNull(svcModelDao);
             ValidateUtil.assertObjectNotNull(segmentsDao);
             ValidateUtil.assertObjectNotNull(serviceOperDao);
             ValidateUtil.assertObjectNotNull(invDao);
@@ -246,7 +246,7 @@ public class UpdateStatusJob extends TimerTask {
             if(svcSegError.containsKey(serviceId)) {
                 model.setStatus(CommonConstant.Status.ERROR);
                 svcWithErrorSegs.add(model);
-            } else if(svcMaybeNormal.contains(serviceId)) {
+            } else if(svcSegMaybeNormal.containsKey(serviceId)) {
                 svcMaybeNormal.add(model);
             } else {
                 svcWithoutSegs.add(model);

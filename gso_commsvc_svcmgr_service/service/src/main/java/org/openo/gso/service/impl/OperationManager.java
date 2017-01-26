@@ -103,4 +103,19 @@ public class OperationManager implements IOperationManager {
         LOGGER.info("Delete service operation, the service instance ID: {}", serviceId);
         serviceOperDao.delete(serviceId);
     }
+
+    /**
+     * Query service operation by service instance ID and operation ID.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @param operationId service operation ID
+     * @return service operation
+     * @throws ApplicationException when operate DB or parameter is wrong.
+     * @since GSO 0.5
+     */
+    @Override
+    public ServiceOperation queryOperation(String serviceId, String operationId) throws ApplicationException {
+        LOGGER.info("query service operation, the service instance ID: {}", serviceId);
+        return serviceOperDao.queryOperationById(serviceId, operationId);
+    }
 }

@@ -45,7 +45,6 @@
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
         </jaxrs:providers>
     </jaxrs:server>
-    <bean id="Activator" class="org.openo.gso.activator.Activator" init-method="start"></bean>
     <bean id="SwaggerRoa" class="org.openo.gso.roa.inf.SwaggerRoa"></bean>
     <bean id="gsodb" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="com.mysql.jdbc.Driver" />
@@ -93,9 +92,10 @@
         <constructor-arg index="1" value="SIMPLE" />
     </bean>
 
-    <bean class="org.openo.gso.activator.Activator"></bean>
-
-    <bean id="Activator" class="org.openo.gso.activator.Activator" init-method="start" destroy-method="stop">
+    <bean id="SpringContextUtil" class="org.openo.gso.util.service.SpringContextUtil">
+    </bean>
+    
+    <bean id="activatorBean" class="org.openo.gso.activator.Activator" init-method="start" destroy-method="stop">
     </bean>
 
     <bean id="ServicemgrRoaModuleImpl" class="org.openo.gso.roa.impl.ServicemgrRoaModuleImpl">

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,8 @@ package org.openo.gso.model.servicemo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
-import org.openo.gso.model.servicemo.ServiceModel;
-import org.openo.gso.model.servicemo.ServicePackageMapping;
-import org.openo.gso.model.servicemo.ServiceParameter;
 
 /**
  * <br/>
@@ -49,9 +43,7 @@ public class ServiceModelTest {
         serviceModel.setCreator("tester");
         serviceModel.setCreateAt(Long.valueOf(123456));
         ServiceParameter parameter = new ServiceParameter();
-        List<ServiceParameter> lstParam = new LinkedList<ServiceParameter>();
-        lstParam.add(parameter);
-        serviceModel.setParameters(lstParam);
+        serviceModel.setParameter(parameter);
 
         ServicePackageMapping servicePackage = new ServicePackageMapping();
         servicePackage.setServiceDefId("12345");
@@ -69,7 +61,7 @@ public class ServiceModelTest {
         assertEquals(String.valueOf(123456), String.valueOf(serviceModel.getCreateAt()));
 
         assertTrue(serviceModel.getServicePackage().equals(servicePackage));
-        Assert.assertNotNull(serviceModel.getParameters());
+        Assert.assertNotNull(serviceModel.getParameter());
     }
 
 }

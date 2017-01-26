@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,13 @@ import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.model.servicemo.ServiceDetailModel;
 import org.openo.gso.model.servicemo.ServiceModel;
+import org.openo.gso.model.servicemo.ServiceOperation;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.roa.inf.IServicemgrRoaModule;
 import org.openo.gso.service.inf.IServiceManager;
 import org.openo.gso.util.convertor.DataConverter;
 import org.openo.gso.util.http.ResponseUtils;
+import org.openo.gso.util.json.JsonUtil;
 import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +78,6 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
@@ -117,7 +118,6 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      * @param serviceId service instance id
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
@@ -143,7 +143,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      * @since GSO 0.5
      */
     @Override
-    public Response getAllInstances(HttpServletRequest servletReq) throws ApplicationException {
+    public Response getAllInstances(HttpServletRequest servletReq) {
         LOGGER.error("Start to get all service instances.");
         List<ServiceModel> services = serviceManager.getAllInstances();
         return Response.accepted(DataConverter.getAllSvcIntancesResult(services)).build();
@@ -155,7 +155,6 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      * @param serviceId service instance ID
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
@@ -169,19 +168,18 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
             throw ResponseUtils.getException(exception, "Fail to query the sequence of topology.");
         }
 
-        return Response.accepted().entity(serviceSegments).build();
+        return Response.accepted().entity(DataConverter.getSegments(serviceSegments, serviceId)).build();
     }
 
     /**
      * Create service segment instance.<br/>
      * 
      * @param servletReq http request
-     * @return response
-     * @throws ApplicationException when fail to storage sub-service instance.
+     * @return response service segments
      * @since GSO 0.5
      */
     @Override
-    public Response createServiceSegment(HttpServletRequest servletReq) throws ApplicationException {
+    public Response createServiceSegment(HttpServletRequest servletReq) {
         LOGGER.error("Start to create service segment.");
         Map<String, Object> result = null;
         try {
@@ -199,11 +197,36 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
         return Response.accepted().entity(result).build();
     }
 
+    /**
+     * Get service instance by service instance ID.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @param servletReq request
+     * @return service instance detail
+     * @since GSO 0.5
+     */
     @Override
-    public Response getInstanceByInstanceId(String serviceId, HttpServletRequest servletReq)
-            throws ApplicationException {
+    public Response getInstanceByInstanceId(String serviceId, HttpServletRequest servletReq) {
         LOGGER.error("Start to get service instance by instanceId.");
         ServiceModel service = serviceManager.getInstanceByInstanceId(serviceId);
         return Response.accepted(DataConverter.getSvcInstanceResult(service)).build();
+    }
+
+    /**
+     * Query service operation result.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @param operationId service operation ID
+     * @param servletReq http request
+     * @return response
+     * @since GSO 0.5
+     */
+    @Override
+    public Response getServiceOperation(String serviceId, String operationId, HttpServletRequest servletReq) {
+        LOGGER.error("Start to get service operation result by instanceId and opertionId.");
+        ServiceOperation svcOperation = serviceManager.getServiceOperation(serviceId, operationId);
+        Map<String, Object> operMap = new HashMap<>();
+        operMap.put(Constant.OPERATION_IDENTIFY, JsonUtil.unMarshal(JsonUtil.marshal(svcOperation), Map.class));
+        return Response.accepted(operMap).build();
     }
 }

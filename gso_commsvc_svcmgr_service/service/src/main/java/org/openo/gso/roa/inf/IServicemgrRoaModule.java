@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
-
 /**
  * API for restful interface.<br/>
  * <p>
@@ -47,14 +45,13 @@ public interface IServicemgrRoaModule {
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @POST
     @Path("/services")
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    Response createService(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response createService(@Context HttpServletRequest servletReq);
 
     /**
      * Delete service instance.<br/>
@@ -62,71 +59,80 @@ public interface IServicemgrRoaModule {
      * @param serviceId service instance id
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @DELETE
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/services/{serviceId}")
-    Response deleteService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq)
-            throws ApplicationException;
+    Response deleteService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq);
 
     /**
      * Query all service instances.<br/>
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when operate database.
      * @since GSO 0.5
      */
     @GET
     @Path("/services")
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    Response getAllInstances(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response getAllInstances(@Context HttpServletRequest servletReq);
 
     /**
      * Query service instance by instanceId<br>
      * 
-     * @param servletReq
-     * @return
-     * @throws ApplicationException
-     * @since  GSO 0.5
+     * @param servletReq http request
+     * @return service instance
+     * @since GSO 0.5
      */
     @GET
     @Path("/services/{serviceId}")
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    Response getInstanceByInstanceId(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq) throws ApplicationException;
-    
+    Response getInstanceByInstanceId(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq);
+
     /**
      * Query represent sequence in topology.<br/>
      * 
      * @param serviceId service instance ID
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @GET
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/services/toposequence/{serviceId}")
-    Response getTopoSequence(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq)
-            throws ApplicationException;
+    Response getTopoSequence(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq);
 
     /**
      * Create service segment instance.<br/>
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when fail to storage service segment instance.
      * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/services/service-segments")
-    Response createServiceSegment(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response createServiceSegment(@Context HttpServletRequest servletReq);
+
+    /**
+     * Query service operation result.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @param operationId service operation ID
+     * @param servletReq http request
+     * @return response
+     * @since GSO 0.5
+     */
+    @GET
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+    @Path("/services/{serviceId}/operations/{operationId}")
+    Response getServiceOperation(@PathParam("serviceId") String serviceId, @PathParam("operationId") String operationId,
+            @Context HttpServletRequest servletReq);
 }

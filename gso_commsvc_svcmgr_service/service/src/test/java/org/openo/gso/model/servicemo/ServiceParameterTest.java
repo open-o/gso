@@ -18,7 +18,6 @@ package org.openo.gso.model.servicemo;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openo.gso.model.servicemo.ServiceParameter;
 
 /**
  * Test ServiceParameter.<br/>

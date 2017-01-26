@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package org.openo.gso.service.inf;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
-
 /**
  * Interface of managing service package.<br/>
  * <p>
@@ -35,18 +33,16 @@ public interface IPackageManager {
      * 
      * @param serviceDefId ID of service package
      * @param request http request
-     * @throws ApplicationException when fail to set status
      * @since GSO 0.5
      */
-    void updateOnBoardStatus(String serviceDefId, HttpServletRequest request) throws ApplicationException;
+    void updateOnBoardStatus(String serviceDefId, HttpServletRequest request);
 
     /**
      * Delete service package.<br/>
      * 
      * @param serviceDefId ID of service package
      * @param request http request
-     * @throws ApplicationException when fail to delete service package
      * @since GSO 0.5
      */
-    void deletePackage(String serviceDefId, HttpServletRequest request) throws ApplicationException;
+    void deletePackage(String serviceDefId, HttpServletRequest request);
 }

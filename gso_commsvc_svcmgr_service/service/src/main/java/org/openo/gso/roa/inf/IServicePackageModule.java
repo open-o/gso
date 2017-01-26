@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,6 @@ public interface IServicePackageModule {
      * 
      * @param httpRequest http request
      * @return response
-     * @throws ApplicationException when fail to set
      * @since GSO 0.5
      */
     @POST
@@ -59,7 +58,6 @@ public interface IServicePackageModule {
      * @param serviceDefId GSAR ID
      * @param httpRequest http request
      * @return response
-     * @throws ApplicationException when fail to delete GSAR package.
      * @since GSO 0.5
      */
     @DELETE

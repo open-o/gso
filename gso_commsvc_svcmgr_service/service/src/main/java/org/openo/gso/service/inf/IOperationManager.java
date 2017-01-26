@@ -16,7 +16,6 @@
 
 package org.openo.gso.service.inf;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServiceOperation;
 
 /**
@@ -34,26 +33,33 @@ public interface IOperationManager {
      * 
      * @param serviceId service instance ID.
      * @param operationType service operation type, create|delete
-     * @throws ApplicationException when fail to operate database.
      * @since GSO 0.5
      */
-    ServiceOperation createOperation(String serviceId, String operationType) throws ApplicationException;
+    ServiceOperation createOperation(String serviceId, String operationType);
 
     /**
      * Update service operation.<br/>
      * 
      * @param svcOperation service operation data.
-     * @throws ApplicationException when fail to operate database.
      * @since GSO 0.5
      */
-    void updateOperation(ServiceOperation svcOperation) throws ApplicationException;
+    void updateOperation(ServiceOperation svcOperation);
 
     /**
      * Delete service operation by service instance ID.<br/>
      * 
      * @param serviceId service instance ID
-     * @throws ApplicationException when fail to operate database.
      * @since GSO 0.5
      */
-    void delete(String serviceId) throws ApplicationException;
+    void delete(String serviceId);
+
+    /**
+     * Query service operation result.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @param operationId service operation ID
+     * @return service operation result
+     * @since GSO 0.5
+     */
+    ServiceOperation queryOperation(String serviceId, String operationId);
 }

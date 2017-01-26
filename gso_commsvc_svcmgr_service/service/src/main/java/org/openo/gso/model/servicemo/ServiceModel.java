@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.openo.gso.model.servicemo;
 
-import java.util.List;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * Service model class<br/>
@@ -31,12 +31,28 @@ public class ServiceModel extends BaseServiceModel {
     /**
      * Mapping relation object.
      */
+    @JsonIgnore
     private ServicePackageMapping servicePackage;
 
     /**
      * Parameters of service instance.
      */
-    private List<ServiceParameter> parameters;
+    @JsonIgnore
+    private ServiceParameter parameter;
+
+    /**
+     * @return Returns the parameter.
+     */
+    public ServiceParameter getParameter() {
+        return parameter;
+    }
+
+    /**
+     * @param parameter The parameter to set.
+     */
+    public void setParameter(ServiceParameter parameter) {
+        this.parameter = parameter;
+    }
 
     /**
      * Constructor<br/>
@@ -64,16 +80,18 @@ public class ServiceModel extends BaseServiceModel {
     }
 
     /**
-     * @return Returns the parameters.
+     * Add it for log.<br/>
+     * 
+     * @return property String
+     * @since GSO 0.5
      */
-    public List<ServiceParameter> getParameters() {
-        return parameters;
+    @Override
+    public String toString() {
+        return "ServiceModel [getSegmentNumber()=" + getSegmentNumber() + ", getServiceId()=" + getServiceId()
+                + ", getName()=" + getName() + ", getDescription()=" + getDescription() + ", getActiveStatus()="
+                + getActiveStatus() + ", getStatus()=" + getStatus() + ", getCreator()=" + getCreator()
+                + ", getCreateAt()=" + getCreateAt() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
+                + ", toString()=" + super.toString() + "]";
     }
 
-    /**
-     * @param parameters The parameters to set.
-     */
-    public void setParameters(List<ServiceParameter> parameters) {
-        this.parameters = parameters;
-    }
 }

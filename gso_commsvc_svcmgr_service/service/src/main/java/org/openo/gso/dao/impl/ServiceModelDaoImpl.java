@@ -32,7 +32,6 @@ import org.openo.gso.mapper.ServicePackageMapper;
 import org.openo.gso.mapper.ServiceParameterMapper;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
-import org.openo.gso.model.servicemo.ServiceParameter;
 import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,11 +74,10 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * Insert service stances.<br/>
      * 
      * @param serviceModel service instance
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void insert(ServiceModel serviceModel) throws ApplicationException {
+    public void insert(ServiceModel serviceModel) {
         try {
             // 1. Check data validation.
             if((null == serviceModel) || (null == serviceModel.getServicePackage())) {
@@ -95,11 +93,10 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
             servicePackageMapper.insert(serviceModel.getServicePackage());
 
             // 4. Insert service parameters
-            List<ServiceParameter> parameters = serviceModel.getParameters();
-            if(!CollectionUtils.isEmpty(parameters)) {
-                ServiceParameterMapper paramMapper = getMapper(ServiceParameterMapper.class);
-                paramMapper.batchInsert(parameters);
+            if(null != serviceModel.getParameter()) {
+                getMapper(ServiceParameterMapper.class).insert(serviceModel.getParameter());
             }
+
         } catch(Exception exception) {
             LOGGER.error("Fail to insert service instance. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
@@ -110,11 +107,10 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * Delete service instance.<br/>
      * 
      * @param serviceId service instance ID
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
     @Override
-    public void delete(String serviceId) throws ApplicationException {
+    public void delete(String serviceId) {
         try {
             ValidateUtil.assertStringNotNull(serviceId);
 
@@ -140,11 +136,10 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * Query all service instances.<br/>
      * 
      * @return service instance
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public List<ServiceModel> queryAllServices() throws ApplicationException {
+    public List<ServiceModel> queryAllServices() {
         try {
             // 1. Query basic information of service instance.
             List<ServiceModel> services = getMapper(ServiceModelMapper.class).queryAllServices();
@@ -209,13 +204,15 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * 
      * @param serviceId service instance ID
      * @return service instance
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public ServiceModel queryServiceByInstanceId(String serviceId) throws ApplicationException {
+    public ServiceModel queryServiceByInstanceId(String serviceId) {
         try {
-            return getMapper(ServiceModelMapper.class).queryServiceByInstanceId(serviceId);
+            ServiceModel model = getMapper(ServiceModelMapper.class).queryServiceByInstanceId(serviceId);
+            model.setServicePackage(getMapper(ServicePackageMapper.class).queryPackageMapping(serviceId));
+            model.setParameter((getMapper(ServiceParameterMapper.class).query(serviceId)));
+            return model;
         } catch(Exception exception) {
             LOGGER.error("Fail to query service instance by id : {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
@@ -227,11 +224,10 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * 
      * @param serviceId service instance ID
      * @param status service instance execution status
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public void updateServiceStatus(String serviceId, String status) throws ApplicationException {
+    public void updateServiceStatus(String serviceId, String status) {
         try {
             getMapper(ServiceModelMapper.class).updateServiceStatus(serviceId, status);
         } catch(Exception exception) {
@@ -246,11 +242,10 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * 
      * @param status service instance status, finished|processing|error
      * @return service instances
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public List<ServiceModel> queryServiceByStatus(String status) throws ApplicationException {
+    public List<ServiceModel> queryServiceByStatus(String status) {
         try {
             return getMapper(ServiceModelMapper.class).queryServiceByStatus(status);
         } catch(Exception exception) {
@@ -263,11 +258,10 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * Batch update service instances.<br/>
      * 
      * @param services service instances
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public void batchUpdate(List<ServiceModel> services) throws ApplicationException {
+    public void batchUpdate(List<ServiceModel> services) {
         if(CollectionUtils.isEmpty(services)) {
             LOGGER.info("There is no service which need to update.");
             return;
@@ -287,11 +281,10 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
      * mapping.<br/>
      * 
      * @param svcIds service instance ids
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
     @Override
-    public void batchDelete(List<String> svcIds) throws ApplicationException {
+    public void batchDelete(List<String> svcIds) {
         if(CollectionUtils.isEmpty(svcIds)) {
             LOGGER.info("There is no service which need to delete.");
             return;

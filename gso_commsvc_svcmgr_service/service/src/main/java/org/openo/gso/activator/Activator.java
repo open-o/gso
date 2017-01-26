@@ -84,6 +84,6 @@ public class Activator {
      * @since GSO 0.5, 2016-8-10
      */
     public void stop() {
-        // no operation
+        ServiceTimeTaskUtil.endTask();
     }
 }

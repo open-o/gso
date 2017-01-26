@@ -19,7 +19,6 @@ package org.openo.gso.restproxy.impl;
 import javax.servlet.http.HttpServletRequest;
 
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.restproxy.inf.IWorkflowProxy;
 import org.openo.gso.util.http.HttpUtil;
 import org.openo.gso.util.http.ResponseUtils;
@@ -52,11 +51,10 @@ public class WorkflowProxyImpl implements IWorkflowProxy {
      * @param sendBody content of request
      * @param request http request
      * @return response content
-     * @throws ApplicationException when workflow fails to start work flow.
      * @since GSO 0.5
      */
     @Override
-    public int startWorkFlow(Object sendBody, HttpServletRequest request) throws ApplicationException {
+    public int startWorkFlow(Object sendBody, HttpServletRequest request) {
         LOGGER.info("Notify workflow to startup bpel workflow.");
         RestfulResponse response = HttpUtil.post(WSO_URI, sendBody, request);
         ResponseUtils.checkResonseAndThrowException(response, "start to bpel workflow.");

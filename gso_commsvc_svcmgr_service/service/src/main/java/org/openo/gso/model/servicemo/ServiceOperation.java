@@ -251,4 +251,18 @@ public class ServiceOperation {
         this.finishedAt = finishedAt;
     }
 
+    /**
+     * Add for log.<br/>
+     * 
+     * @return model data
+     * @since GSO 0.5
+     */
+    @Override
+    public String toString() {
+        return "ServiceOperation [serviceId=" + serviceId + ", operationId=" + operationId + ", operation=" + operation
+                + ", result=" + result + ", reason=" + reason + ", userId=" + userId + ", operationContent="
+                + operationContent + ", progress=" + progress + ", operateAt=" + operateAt + ", finishedAt="
+                + finishedAt + "]";
+    }
+
 }

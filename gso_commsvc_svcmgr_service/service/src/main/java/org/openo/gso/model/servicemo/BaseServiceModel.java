@@ -16,6 +16,8 @@
 
 package org.openo.gso.model.servicemo;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * Service model class.<br/>
  * <p>
@@ -65,21 +67,8 @@ public class BaseServiceModel {
     /**
      * Service segment number
      */
-    private int segmentNumber;
-
-    /**
-     * @return Returns the segmentNumber.
-     */
-    public int getSegmentNumber() {
-        return segmentNumber;
-    }
-
-    /**
-     * @param segmentNumber The segmentNumber to set.
-     */
-    public void setSegmentNumber(int segmentNumber) {
-        this.segmentNumber = segmentNumber;
-    }
+    @JsonIgnore
+    private Integer segmentNumber;
 
     /**
      * Constructor<br/>
@@ -188,5 +177,19 @@ public class BaseServiceModel {
      */
     public void setCreateAt(Long createAt) {
         this.createAt = createAt;
+    }
+
+    /**
+     * @return Returns the segmentNumber.
+     */
+    public Integer getSegmentNumber() {
+        return segmentNumber;
+    }
+
+    /**
+     * @param segmentNumber The segmentNumber to set.
+     */
+    public void setSegmentNumber(Integer segmentNumber) {
+        this.segmentNumber = segmentNumber;
     }
 }

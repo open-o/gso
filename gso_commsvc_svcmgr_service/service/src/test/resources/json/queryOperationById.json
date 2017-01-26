@@ -1,0 +1,14 @@
+{
+	"operation": {
+		"serviceId": "1",
+		"operationId": "123",
+		"operation": "create",
+		"result": "finished",
+		"reason": "",
+		"userId": "--",
+		"operationContent": "",
+		"progress": 100,
+		"operateAt": 1234567890,
+		"finishedAt": 1234567890
+	}
+}

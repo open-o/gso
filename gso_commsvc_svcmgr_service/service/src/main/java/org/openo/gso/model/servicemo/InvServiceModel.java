@@ -22,10 +22,10 @@ package org.openo.gso.model.servicemo;
  * </p>
  * 
  * @author
- * @version     GSO 0.5  2016/9/19
+ * @version GSO 0.5 2016/9/19
  */
-public class InvServiceModel extends BaseServiceModel{
-    
+public class InvServiceModel extends BaseServiceModel {
+
     /**
      * Service type.
      */
@@ -43,5 +43,20 @@ public class InvServiceModel extends BaseServiceModel{
      */
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
+    }
+
+    /**
+     * Add for log.<br/>
+     * 
+     * @return model data
+     * @since GSO 0.5
+     */
+    @Override
+    public String toString() {
+        return "InvServiceModel [serviceType=" + serviceType + ", getSegmentNumber()=" + getSegmentNumber()
+                + ", getServiceId()=" + getServiceId() + ", getName()=" + getName() + ", getDescription()="
+                + getDescription() + ", getActiveStatus()=" + getActiveStatus() + ", getStatus()=" + getStatus()
+                + ", getCreator()=" + getCreator() + ", getCreateAt()=" + getCreateAt() + ", toString()="
+                + super.toString() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + "]";
     }
 }

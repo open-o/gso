@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.openo.gso.dao.inf;
 
 import java.util.List;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 
 /**
@@ -35,46 +34,41 @@ public interface IServicePackageDao {
      * Insert relation instance.<br/>
      * 
      * @param packageMapping service package mapping data
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void insert(ServicePackageMapping packageMapping) throws ApplicationException;
+    void insert(ServicePackageMapping packageMapping);
 
     /**
      * Delete relation instance by service ID.<br/>
      * 
      * @param serviceId service ID
-     * @throws ApplicationException when database exception or parameter is wrong
      * @since GSO 0.5
      */
-    void delete(String serviceId) throws ApplicationException;
+    void delete(String serviceId);
 
     /**
      * Query all relation instances.<br/>
      * 
      * @return service instances
-     * @throws ApplicationException when database exception
      * @since GSO 0.5
      */
-    List<ServicePackageMapping> queryAllMappings() throws ApplicationException;
+    List<ServicePackageMapping> queryAllMappings();
 
     /**
      * Query service package by service instance ID.<br/>
      * 
      * @param serviceId service instance ID.
      * @return service package
-     * @throws ApplicationException when fail to query.
      * @since GSO 0.5
      */
-    ServicePackageMapping queryPackageMapping(String serviceId) throws ApplicationException;
+    ServicePackageMapping queryPackageMapping(String serviceId);
 
     /**
      * Query service package by package ID.<br/>
      * 
      * @param serviceDefId service package ID
      * @return service packages
-     * @throws ApplicationException when fail to query
      * @since GSO 0.5
      */
-    List<ServicePackageMapping> queryPackageMappings(String serviceDefId) throws ApplicationException;
+    List<ServicePackageMapping> queryPackageMappings(String serviceDefId);
 }
