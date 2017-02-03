@@ -25,6 +25,7 @@ import java.util.Map;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.impl.SystemEnvVariablesFactory;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.servicegateway.constant.Constant;
 import org.openo.gso.servicegateway.constant.FieldConstant;
 import org.openo.gso.servicegateway.exception.HttpCode;
@@ -60,6 +61,18 @@ public class CommonUtil {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceGatewayImpl.class);
 
+    /**
+     * 
+     * Constructor<br>
+     * <p>
+     * </p>
+     * 
+     * @since  GSO Mercury Release
+     */
+    private CommonUtil()
+    {        
+    }
+    
     /**
      * <br>
      * get the template model by template id
@@ -190,7 +203,7 @@ public class CommonUtil {
         } catch(ServiceException e) {
             LOGGER.info("query the services failed.", e);
         }
-        return null;
+        throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "query services from inventory failed");
     }
 
     /**
@@ -427,7 +440,7 @@ public class CommonUtil {
             RestfulResponse resp = HttpUtil.get(queryNodeTypeUrl, new HashMap<String, String>());
             logTheResponseData("query nodetypes from catalog", resp);
             if(HttpCode.isSucess(resp.getStatus())) {
-                StringBuffer queryNodeTemplateUri = new StringBuffer();
+                StringBuilder queryNodeTemplateUri = new StringBuilder();
                 JSONArray array = JSONArray.fromObject(resp.getResponseContent());
                 for(int i = 0, size = array.size(); i < size; i++) {
                     JSONObject object = array.getJSONObject(i);

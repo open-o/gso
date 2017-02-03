@@ -71,10 +71,9 @@ public class JsonUtil {
      * @param jsonstr json string.
      * @param type that convert json string to
      * @return
-     * @throws ApplicationException
      * @since GSO 0.5
      */
-    public static <T> T unMarshal(String jsonstr, Class<T> type) throws ApplicationException {
+    public static <T> T unMarshal(String jsonstr, Class<T> type) {
         try {
             return MAPPER.readValue(jsonstr, type);
         } catch(IOException e) {
@@ -89,10 +88,9 @@ public class JsonUtil {
      * @param jsonstr json string.
      * @param type that convert json string to
      * @return
-     * @throws ApplicationException
      * @since GSO 0.5
      */
-    public static <T> T unMarshal(String jsonstr, TypeReference<T> type) throws ApplicationException {
+    public static <T> T unMarshal(String jsonstr, TypeReference<T> type) {
         try {
             return MAPPER.readValue(jsonstr, type);
         } catch(IOException e) {
@@ -106,10 +104,9 @@ public class JsonUtil {
      * 
      * @param srcObj data object
      * @return json string
-     * @throws ApplicationException when fail to convert.
      * @since GSO 0.5
      */
-    public static String marshal(Object srcObj) throws ApplicationException {
+    public static String marshal(Object srcObj) {
         if(srcObj instanceof JSON) {
             return srcObj.toString();
         }

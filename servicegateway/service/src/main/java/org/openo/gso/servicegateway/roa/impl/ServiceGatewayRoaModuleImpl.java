@@ -132,11 +132,10 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
      * @param operationId the operation id
      * @param servletReq http request
      * @return the operation model
-     * @throws ApplicationException
      * @since GSO 0.5
      */
-    public Response getOperation(String serviceId, String operationId, HttpServletRequest servletReq)
-            throws ApplicationException {
+    @Override
+    public Response getOperation(String serviceId, String operationId, HttpServletRequest servletReq) {
         LOGGER.info("query an operation, serviceId:" + serviceId + " operation id:" + operationId);
         OperationModel operation = serviceGateway.getOperation(serviceId, operationId, servletReq);
         Map<String, Map<String, String>> result = operation.toResultMap();
@@ -151,11 +150,10 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
      * @param tepmlateId the template id
      * @param servletReq http request
      * @return the parameters model for gui
-     * @throws ApplicationException when inner error
      * @since GSO 0.5
      */
-    public Response generateCreateParameters(String templateId, HttpServletRequest servletReq)
-            throws ApplicationException {
+    @Override
+    public Response generateCreateParameters(String templateId, HttpServletRequest servletReq) {
         LOGGER.info("generate create parameters, template id:" + templateId);
         CreateParameterRspModel result = serviceGateway.generateCreateParameters(templateId, servletReq);
         String jsonStr = JsonUtil.marshal(result);
@@ -169,10 +167,10 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
      * 
      * @param servletReq http request
      * @return the service list
-     * @throws ApplicationException when inner error
      * @since GSO Mercury Release
      */
-    public Response getServices(HttpServletRequest servletReq) throws ApplicationException {
+    @Override
+    public Response getServices(HttpServletRequest servletReq) {
         LOGGER.info("query services start");
         List<ServiceModel> array = serviceGateway.getServices(servletReq);
         LOGGER.info("query services rsp:" + JsonUtil.marshal(array));
@@ -185,10 +183,10 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
      * @param serviceId the service id
      * @param servletReq the http request
      * @return the service model
-     * @throws ApplicationException
      * @since GSO Mercury Release
      */
-    public Response getService(String serviceId, HttpServletRequest servletReq) throws ApplicationException {
+    @Override
+    public Response getService(String serviceId, HttpServletRequest servletReq) {
         LOGGER.info("query service by service id start, service Id:" + serviceId);
         ServiceModel service = serviceGateway.getService(serviceId, servletReq);
         LOGGER.info("query service rsp:" + JsonUtil.marshal(service));
@@ -201,10 +199,10 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
      * 
      * @param servletReq the http request
      * @return
-     * @throws ApplicationException
      * @since GSO Mercury Release
      */
-    public Response getDomains(@Context HttpServletRequest servletReq) throws ApplicationException {
+    @Override
+    public Response getDomains(@Context HttpServletRequest servletReq) {
         LOGGER.info("query domains start");
         List<DomainModel> domains = serviceGateway.getDomains(servletReq);
         LOGGER.info("query domains rsp:" + JsonUtil.marshal(domains));

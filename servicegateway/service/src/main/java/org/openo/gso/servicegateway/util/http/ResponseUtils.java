@@ -65,11 +65,9 @@ public class ResponseUtils {
      * 
      * @param response rest response
      * @param function function name
-     * @throws ApplicationException when the result of rest request is failure.
      * @since GSO 0.5
      */
-    public static void checkResonseAndThrowException(RestfulResponse response, String function)
-            throws ApplicationException {
+    public static void checkResonseAndThrowException(RestfulResponse response, String function) {
         if(!HttpCode.isSucess(response.getStatus())) {
             ApplicationException roaExceptionInfo = null;
             try {
@@ -94,13 +92,10 @@ public class ResponseUtils {
      * @param key key
      * @param type type
      * @return model data
-     * @throws ApplicationException when transfer failed
      * @since SDNO 0.5
      */
     @SuppressWarnings("unchecked")
-    public static <T> List<T> getDataModelFromRsp(String request, String key, Class<T> type)
-            throws ApplicationException {
-        // ValidateUtil.assertStringNotNull(request);
+    public static <T> List<T> getDataModelFromRsp(String request, String key, Class<T> type) {
         Map<String, Object> requestMap = JsonUtil.unMarshal(request, Map.class);
         Object data = requestMap.get(key);
         List<T> dataModelList = new LinkedList<T>();
@@ -128,10 +123,8 @@ public class ResponseUtils {
      * @since SDNO 0.5
      */
     public static <T> T getDataModelFromRspList(String request, TypeReference<T> type) throws ServiceException {
-        // ValidateUtil.assertStringNotNull(request);
         return JsonUtil.unMarshal(request, type);
     }
-   
 
     /**
      * Get exception information.<br/>

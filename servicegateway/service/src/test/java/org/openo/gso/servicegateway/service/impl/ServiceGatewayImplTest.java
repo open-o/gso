@@ -16,7 +16,6 @@
 
 package org.openo.gso.servicegateway.service.impl;
 
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Before;
@@ -51,11 +50,10 @@ public class ServiceGatewayImplTest {
     /**
      * Invalid parameter.<br/>
      * 
-     * @throws ApplicationException when parameter is wrong.
      * @since GSO 0.5
      */
     @Test(expected = ApplicationException.class)
-    public void testCreateServiceFail() throws ApplicationException {
+    public void testCreateServiceFail() {
         serviceManager.createService(null, httpRequest);
     }
 
@@ -66,7 +64,7 @@ public class ServiceGatewayImplTest {
      * @since GSO 0.5
      */
     @Test(expected = ApplicationException.class)
-    public void testDeleteServiceFail() throws ApplicationException {    	
+    public void testDeleteServiceFail() {
         serviceManager.deleteService(null, httpRequest);
     }
 

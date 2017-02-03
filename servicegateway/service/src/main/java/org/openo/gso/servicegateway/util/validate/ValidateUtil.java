@@ -53,10 +53,9 @@ public class ValidateUtil {
      * Assert String parameter.<br/>
      * 
      * @param param parameter data
-     * @throws ApplicationException when parameter is null or empty.
      * @since GSO 0.5
      */
-    public static void assertStringNotNull(String param) throws ApplicationException {
+    public static void assertStringNotNull(String param) {
         if(StringUtils.hasLength(param)) {
             return;
         }
@@ -69,10 +68,9 @@ public class ValidateUtil {
      * Assert object is null.<br/>
      * 
      * @param object data object
-     * @throws ApplicationException when object is null.
      * @since GSO 0.5
      */
-    public static void assertObjectNotNull(Object object) throws ApplicationException {
+    public static void assertObjectNotNull(Object object) {
         if(null == object) {
             LOGGER.error("Object is null.");
             throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM);

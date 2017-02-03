@@ -27,8 +27,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
-
 /**
  * API for restful interface.<br/>
  * <p>
@@ -47,14 +45,13 @@ public interface IServiceGatewayRoaModule {
      * 
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/services")
-    Response createService(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response createService(@Context HttpServletRequest servletReq);
 
     /**
      * Delete service instance.<br/>
@@ -62,22 +59,19 @@ public interface IServiceGatewayRoaModule {
      * @param serviceId service instance id
      * @param servletReq http request
      * @return response
-     * @throws ApplicationException when operate database or parameter is wrong.
      * @since GSO 0.5
      */
     @DELETE
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/services/{serviceId}")
-    Response deleteService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq)
-            throws ApplicationException;
+    Response deleteService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq);
 
     /**
      * Query operation by operationId<br>
      * 
      * @param servletReq http request
      * @return the operation progress model
-     * @throws ApplicationException when inner error
      * @since GSO 0.5
      */
     @GET
@@ -85,14 +79,13 @@ public interface IServiceGatewayRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     Response getOperation(@PathParam("serviceId") String serviceId, @PathParam("operationId") String operationId,
-            @Context HttpServletRequest servletReq) throws ApplicationException;
+            @Context HttpServletRequest servletReq);
 
     /**
      * Query create parameters by templateId<br>
      * 
      * @param servletReq http request
      * @return the parameters model for gui
-     * @throws ApplicationException when inner error
      * @since GSO 0.5
      */
     @GET
@@ -100,7 +93,7 @@ public interface IServiceGatewayRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     Response generateCreateParameters(@PathParam("tepmlateId") String tepmlateId,
-            @Context HttpServletRequest servletReq) throws ApplicationException;
+            @Context HttpServletRequest servletReq);
 
     /**
      * query the services list
@@ -108,14 +101,13 @@ public interface IServiceGatewayRoaModule {
      * 
      * @param servletReq
      * @return
-     * @throws ApplicationException
      * @since GSO Mercury Release
      */
     @GET
     @Path("/services")
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    Response getServices(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response getServices(@Context HttpServletRequest servletReq);
 
     /**
      * query the service
@@ -124,28 +116,25 @@ public interface IServiceGatewayRoaModule {
      * @param service Id the service id
      * @param servletReq the http request
      * @return
-     * @throws ApplicationException
      * @since GSO Mercury Release
      */
     @GET
     @Path("/services/{serviceId}")
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    Response getService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq)
-            throws ApplicationException;
-    
+    Response getService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq);
+
     /**
      * query the domains
      * <br>
      * 
      * @param servletReq the http request
      * @return
-     * @throws ApplicationException
      * @since GSO Mercury Release
      */
     @GET
     @Path("/domains")
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    Response getDomains(@Context HttpServletRequest servletReq) throws ApplicationException;
+    Response getDomains(@Context HttpServletRequest servletReq);
 }

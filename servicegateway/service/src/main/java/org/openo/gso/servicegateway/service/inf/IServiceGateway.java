@@ -20,7 +20,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.servicegateway.model.CreateParameterRspModel;
 import org.openo.gso.servicegateway.model.DomainModel;
 import org.openo.gso.servicegateway.model.OperationModel;
@@ -43,20 +42,18 @@ public interface IServiceGateway {
      * @param reqContent content of request
      * @param httpRequest http request
      * @return service instance
-     * @throws ApplicationException when operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    OperationResult createService(String reqContent, HttpServletRequest httpRequest) throws ApplicationException;
+    OperationResult createService(String reqContent, HttpServletRequest httpRequest);
 
     /**
      * Delete service instances.<br/>
      * 
      * @param serviceId service instance ID
      * @param httpRequest http request
-     * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
-    String deleteService(String serviceId, HttpServletRequest httpRequest) throws ApplicationException;
+    String deleteService(String serviceId, HttpServletRequest httpRequest);
 
     /**
      * query the operation information
@@ -65,11 +62,9 @@ public interface IServiceGateway {
      * @param serviceId the service id
      * @param operationId the operation id
      * @return the operation progress model
-     * @throws ApplicationException
      * @since GSO 0.5
      */
-    OperationModel getOperation(String serviceId, String operationId, HttpServletRequest httpRequest)
-            throws ApplicationException;
+    OperationModel getOperation(String serviceId, String operationId, HttpServletRequest httpRequest);
 
     /**
      * <br>
@@ -78,21 +73,19 @@ public interface IServiceGateway {
      * @param templateId the template id
      * @param servletReq the http request
      * @return the parameter model for gui
-     * @throws ApplicationException
      * @since GSO 0.5
      */
-    CreateParameterRspModel generateCreateParameters(String templateId, HttpServletRequest servletReq)
-            throws ApplicationException;
+    CreateParameterRspModel generateCreateParameters(String templateId, HttpServletRequest servletReq);
 
     /**
      * <br>
-     *  get the services
+     * get the services
+     * 
      * @param servletReq http request
      * @return the services array
-     * @throws ApplicationException
      * @since GSO Mercury Release
      */
-    List<ServiceModel>  getServices(HttpServletRequest servletReq) throws ApplicationException;
+    List<ServiceModel> getServices(HttpServletRequest servletReq);
 
     /**
      * get the service from inventory by service id
@@ -101,19 +94,17 @@ public interface IServiceGateway {
      * @param serviceId the service id
      * @param servletReq http request
      * @return
-     * @throws ApplicationException
      * @since GSO Mercury Release
      */
-    ServiceModel getService(String serviceId, HttpServletRequest servletReq) throws ApplicationException;
-    
+    ServiceModel getService(String serviceId, HttpServletRequest servletReq);
+
     /**
      * get the domains
      * <br>
      * 
      * @param servletReq the http request
      * @return
-     * @throws ApplicationException
-     * @since  GSO Mercury Release
+     * @since GSO Mercury Release
      */
-    List<DomainModel> getDomains(HttpServletRequest servletReq) throws ApplicationException;
+    List<DomainModel> getDomains(HttpServletRequest servletReq);
 }

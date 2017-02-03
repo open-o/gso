@@ -70,13 +70,11 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * 
      * @param reqContent content of request
      * @param httpRequest http request
-     * @throws ApplicationException when operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
     @Override
-    public OperationResult createService(String reqContent, HttpServletRequest httpRequest)
-            throws ApplicationException {
+    public OperationResult createService(String reqContent, HttpServletRequest httpRequest) {
         // check the value
         if(StringUtils.isEmpty(reqContent)) {
             LOGGER.error("ServiceGatewayImpl createService reqContent is null.");
@@ -130,11 +128,10 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * 
      * @param reqBody request body
      * @return operation id for GSO
-     * @throws ApplicationException when inner error
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
-    private OperationResult createGSOService(Map<String, Object> reqBody) throws ApplicationException {
+    private OperationResult createGSOService(Map<String, Object> reqBody) {
         // for GSO， the request body is same as servicegateway.
         OperationResult result = new OperationResult();
         try {
@@ -177,7 +174,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
      */
     @SuppressWarnings({"unchecked"})
     private OperationResult createNonGSOService(EnumServiceType serviceType, String nsdId, String createUri,
-            String instantUri, String queryJobUri, Map<String, Object> reqBody) throws ApplicationException {
+            String instantUri, String queryJobUri, Map<String, Object> reqBody) {
 
         OperationResult result = new OperationResult();
         // create service params
@@ -248,11 +245,10 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * 
      * @param serviceId service instance ID
      * @param httpRequest http request
-     * @throws ApplicationException operate DB or parameter is wrong.
      * @since GSO 0.5
      */
     @Override
-    public String deleteService(String serviceId, HttpServletRequest httpRequest) throws ApplicationException {
+    public String deleteService(String serviceId, HttpServletRequest httpRequest) {
 
         // get the serviceType
         EnumServiceType serviceType = CommonUtil.getServiceTypeByServiceId(serviceId);
@@ -294,7 +290,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
-    private String deleteGSOService(String serviceId) throws ApplicationException {
+    private String deleteGSOService(String serviceId) {
         String operationId = "";
         try {
             LOGGER.info("delete gso service:" + serviceId);
@@ -306,14 +302,13 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 operationId = (String)rspBody.get(FieldConstant.Delete.FIELD_RESPONSE_OPERATIONID);
                 String operationUri = String.format(Constant.GSO_URL_QUERY_OPRATION, serviceId, operationId);
                 // use progress pool to start a new thread to query the progress
-                ProgressPool.getInstance().dealDeleteProgress(EnumServiceType.GSO, operationId, serviceId, "",
-                        operationUri);
+                ProgressPool.getInstance().dealDeleteProgress(EnumServiceType.GSO, operationId, "", operationUri);
             } else {
                 LOGGER.info("delete gso service failed.");
                 throw new ApplicationException(restfulRsp.getStatus(), "delete gso service failed.");
             }
         } catch(ServiceException e) {
-            LOGGER.info("delete gso service failed.");
+            LOGGER.info("delete gso service failed.", e);
             throw new ApplicationException(e.getHttpCode(), e.getExceptionArgs());
         }
         return operationId;
@@ -325,12 +320,11 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * 
      * @param serviceId the service id
      * @return the operation id for delete sdno/nfvo service
-     * @throws ApplicationException
      * @since GSO 0.5
      */
     @SuppressWarnings("unchecked")
     private String deleteNonGSOService(EnumServiceType serviceType, final String serviceId, final String deleteUri,
-            final String terminateUri, final String queryJobUri) throws ApplicationException {
+            final String terminateUri, final String queryJobUri) {
         try {
             Map<String, String> reqBody = new HashMap<String, String>();
             reqBody.put(FieldConstant.NSTerminate.FIELD_NSINSTANCEID, serviceId);
@@ -345,14 +339,14 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 String jobId = (String)rspBody.get(Constant.JOB_ID);
                 // start query progress and delete the service after terminate
                 String uri = String.format(queryJobUri, jobId);
-                ProgressPool.getInstance().dealDeleteProgress(serviceType, jobId, serviceId, deleteUri, uri);
+                ProgressPool.getInstance().dealDeleteProgress(serviceType, jobId, deleteUri, uri);
                 return jobId;
             } else {
                 LOGGER.info("delete ns service failed.");
                 throw new ApplicationException(restfulRsp.getStatus(), "delete ns service failed.");
             }
         } catch(ServiceException e) {
-            LOGGER.info("delete ns service failed.");
+            LOGGER.info("delete ns service failed.", e);
             throw new ApplicationException(e.getHttpCode(), e.getExceptionArgs());
         }
     }
@@ -364,11 +358,10 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * @param serviceId the service id
      * @param operationId the operation id
      * @return the operation model
-     * @throws ApplicationException
      * @since GSO 0.5
      */
-    public OperationModel getOperation(String serviceId, String operationId, HttpServletRequest httpRequest)
-            throws ApplicationException {
+    @Override
+    public OperationModel getOperation(String serviceId, String operationId, HttpServletRequest httpRequest) {
         OperationModel operation = ProgressPool.getInstance().getOperation(operationId);
         if(null == operation) {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "the operation does not exist");
@@ -383,11 +376,10 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * @param templateId the template id
      * @param servletReq the http req
      * @return the parameter model
-     * @throws ApplicationException
      * @since GSO 0.5
      */
-    public CreateParameterRspModel generateCreateParameters(String templateId, HttpServletRequest servletReq)
-            throws ApplicationException {
+    @Override
+    public CreateParameterRspModel generateCreateParameters(String templateId, HttpServletRequest servletReq) {
 
         CreateParameterRspModel rspModel = new CreateParameterRspModel();
         rspModel.setTemplateId(templateId);
@@ -433,8 +425,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * @return the parameter model
      * @since GSO 0.5
      */
-    private CreateParameterModel generateGSOTemplateParameters(ServiceTemplateModel template, boolean needHostParam)
-            throws ApplicationException {
+    private CreateParameterModel generateGSOTemplateParameters(ServiceTemplateModel template, boolean needHostParam) {
         // generate gso's own inputs
         CreateParameterModel param = generateTemplateParameters(template);
 
@@ -541,14 +532,11 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * 
      * @param servletReq http request
      * @return the json arrray of services
-     * @throws ApplicationException
      * @since GSO Mercury Release
      */
-    public List<ServiceModel> getServices(HttpServletRequest servletReq) throws ApplicationException {
+    @Override
+    public List<ServiceModel> getServices(HttpServletRequest servletReq) {
         List<ServiceModel> serviceArray = CommonUtil.getServicesFromInventory();
-        if(null == serviceArray) {
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "query services from inventory failed");
-        }
         return serviceArray;
     }
 
@@ -558,11 +546,10 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * @param serviceId the service id
      * @param servletReq the http request
      * @return
-     * @throws ApplicationException
      * @since GSO Mercury Release
      */
     @Override
-    public ServiceModel getService(String serviceId, HttpServletRequest servletReq) throws ApplicationException {
+    public ServiceModel getService(String serviceId, HttpServletRequest servletReq) {
         ServiceModel model = CommonUtil.getServiceFromInventory(serviceId);
         if(null == model) {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "query service from inventory failed");
@@ -576,10 +563,10 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * 
      * @param servletReq the http request
      * @return
-     * @throws ApplicationException
      * @since GSO Mercury Release
      */
-    public List<DomainModel> getDomains(HttpServletRequest servletReq) throws ApplicationException {
+    @Override
+    public List<DomainModel> getDomains(HttpServletRequest servletReq) {
         List<DomainModel> domains = CommonUtil.getDomains();
         return domains;
     }

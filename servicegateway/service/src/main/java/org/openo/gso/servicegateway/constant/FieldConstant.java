@@ -26,7 +26,22 @@ package org.openo.gso.servicegateway.constant;
  */
 public class FieldConstant {
 
+    /**
+     * Constructor<br>
+     * <p>
+     * </p>
+     * 
+     * @since GSO Mercury Release
+     */
+    private FieldConstant() {
+
+    }
+
     public static class ServiceType {
+
+        private ServiceType() {
+
+        }
 
         public static final String GSO = "GSO";
 
@@ -45,6 +60,10 @@ public class FieldConstant {
      * @version GSO 0.5 2017.1.4
      */
     public static class Create {
+
+        private Create() {
+
+        }
 
         public static final String FIELD_SERVICE = "service";
 
@@ -78,10 +97,18 @@ public class FieldConstant {
 
     public static class Delete {
 
+        private Delete() {
+
+        }
+
         public static final String FIELD_RESPONSE_OPERATIONID = "operationId";
     }
 
     public static class NSCreate {
+
+        private NSCreate() {
+
+        }
 
         public static final String FIELD_NSDID = "nsdId";
 
@@ -94,6 +121,10 @@ public class FieldConstant {
 
     public static class NSInstantiate {
 
+        private NSInstantiate() {
+
+        }
+
         public static final String FIELD_NSINSTANCEID = "nsInstanceId";
 
         public static final String FIELD_PARAMS = "additionalParamForNs";
@@ -103,6 +134,10 @@ public class FieldConstant {
 
     public static class NSTerminate {
 
+        private NSTerminate() {
+
+        }
+
         public static final String FIELD_NSINSTANCEID = "nsInstanceId";
 
         public static final String FIELD_TERMINATIONTYPE = "terminationType";
@@ -111,6 +146,10 @@ public class FieldConstant {
     }
 
     public static class QueryJob {
+
+        private QueryJob() {
+
+        }
 
         public static final String FIELD_JOBID = "jobId";
 
@@ -132,6 +171,10 @@ public class FieldConstant {
     }
 
     public static class QueryOperation {
+
+        private QueryOperation() {
+
+        }
 
         public static final String FIELD_OPERATION = "operation";
 
@@ -157,6 +200,10 @@ public class FieldConstant {
 
     public static class CatalogTemplate {
 
+        private CatalogTemplate() {
+
+        }
+
         public static final String FIELD_TEMPLATEID = "serviceTemplateId";
 
         public static final String FIELD_ID = "id";
@@ -175,6 +222,10 @@ public class FieldConstant {
 
     public static class Vim {
 
+        private Vim() {
+
+        }
+
         public static final String FIELD_VIMID = "vimId";
 
         public static final String FIELD_NAME = "name";
@@ -182,12 +233,20 @@ public class FieldConstant {
 
     public static class SDNController {
 
+        private SDNController() {
+
+        }
+
         public static final String FIELD_SDNCONTROLLERID = "sdnControllerId";
 
         public static final String FIELD_NAME = "name";
     }
 
     public static class NodeTemplates {
+
+        private NodeTemplates() {
+
+        }
 
         public static final String FIELD_ID = "id";
 
@@ -198,6 +257,10 @@ public class FieldConstant {
     }
 
     public static class InventoryService {
+
+        private InventoryService() {
+
+        }
 
         public static final String FIELD_SERVICEID = "serviceId";
 
@@ -217,6 +280,10 @@ public class FieldConstant {
     }
 
     public static class Domain {
+
+        private Domain() {
+
+        }
 
         public static final String FIELD_NAME = "name";
 

@@ -36,6 +36,8 @@ import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.servicegateway.constant.FieldConstant;
 import org.openo.gso.servicegateway.exception.HttpCode;
+import org.openo.gso.servicegateway.model.OperationModel;
+import org.openo.gso.servicegateway.service.impl.ProgressPool;
 import org.openo.gso.servicegateway.service.impl.ServiceGatewayImpl;
 import org.openo.gso.servicegateway.util.http.HttpUtil;
 import org.openo.gso.servicegateway.util.json.JsonUtil;
@@ -214,7 +216,26 @@ public class ServiceGatewayRoaModuleImplTest {
         serviceRoa.getDomains(httpRequest);
     }
     
+    /**
+     * test query operation
+     * <br>
+     * 
+     * @throws ServiceException
+     * @since GSO Mercury Release
+     */
+    @Test
+    public void testQueryOperation() throws ServiceException {
+        new MockUp<ProgressPool>() {
 
+            @Mock
+            public OperationModel getOperation(String operationId) {
+                return new OperationModel();
+            }
+        };        
+        serviceRoa.getOperation("5212b49f-fe70-414f-9519-88bec35b3191", "5212b49f-fe70-414f-9519-88bec35b3191", httpRequest);
+    }
+    
+    
     /**
      * Mock to get request body.<br/>
      * 
