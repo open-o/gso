@@ -95,29 +95,27 @@ public class ServiceGatewayImpl implements IServiceGateway {
         // check the template type
         OperationResult result = null;
         switch(templateDetail.getTemplateType()) {
-            case GSO: {
+            case GSO:
                 // for GSO， the request body is same as servicegateway.
                 result = createGSOService(service);
                 break;
-            }
-            case SDNO: {
+            case SDNO:
                 // for sdno, nsdId is templateId
                 String nsdId = templateId;
                 result = createNonGSOService(EnumServiceType.SDNO, nsdId, Constant.SDNO_URL_CREATE,
                         Constant.SDNO_URL_INSTANTIATE, Constant.SDNO_URL_QUERYJOB, service);
                 break;
-            }
-            case NFVO: {
+            case NFVO:
                 // for nfvo, nsdId is the id of the template(it is not the templateId,a template
                 // contains id and templateId)
-                String nsdId = (String)templateDetail.getTemplateDetail().get(FieldConstant.CatalogTemplate.FIELD_ID);
-                result = createNonGSOService(EnumServiceType.NFVO, nsdId, Constant.NFVO_URL_CREATE,
+                String nfvNsdId =
+                        (String)templateDetail.getTemplateDetail().get(FieldConstant.CatalogTemplate.FIELD_ID);
+                result = createNonGSOService(EnumServiceType.NFVO, nfvNsdId, Constant.NFVO_URL_CREATE,
                         Constant.NFVO_URL_INSTANTIATE, Constant.NFVO_URL_QUERYJOB, service);
                 break;
-            }
-            default: {
+            default:
                 throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "query template information failed");
-            }
+
         }
         return result;
     }
@@ -254,29 +252,25 @@ public class ServiceGatewayImpl implements IServiceGateway {
         EnumServiceType serviceType = CommonUtil.getServiceTypeByServiceId(serviceId);
         String operationId = "";
         switch(serviceType) {
-            case GSO: {
+            case GSO:
                 // for GSO， the request body is same as servicegateway.
                 operationId = deleteGSOService(serviceId);
                 break;
-            }
-            case SDNO: {
+            case SDNO:
                 String deleteUri = String.format(Constant.SDNO_URL_DELETE, serviceId);
                 String terminateUri = String.format(Constant.SDNO_URL_TERMINATE, serviceId);
                 operationId = deleteNonGSOService(serviceType, serviceId, deleteUri, terminateUri,
                         Constant.SDNO_URL_QUERYJOB);
                 break;
-            }
-            case NFVO: {
-                String deleteUri = String.format(Constant.NFVO_URL_DELETE, serviceId);
-                String terminateUri = String.format(Constant.NFVO_URL_TERMINATE, serviceId);
-                operationId = deleteNonGSOService(serviceType, serviceId, deleteUri, terminateUri,
+            case NFVO:
+                String nfvDeleteUri = String.format(Constant.NFVO_URL_DELETE, serviceId);
+                String nfvTerminateUri = String.format(Constant.NFVO_URL_TERMINATE, serviceId);
+                operationId = deleteNonGSOService(serviceType, serviceId, nfvDeleteUri, nfvTerminateUri,
                         Constant.NFVO_URL_QUERYJOB);
                 break;
-            }
-            default: {
+            default:
                 throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
                         "query service data from inventory failed");
-            }
         }
         return operationId;
     }
@@ -391,25 +385,22 @@ public class ServiceGatewayImpl implements IServiceGateway {
         }
         // generate params
         switch(template.getTemplateType()) {
-            case GSO: {
+            case GSO: 
                 // gso support multi domain
-                CreateParameterModel param = generateGSOTemplateParameters(template, true);
-                rspModel.setParameters(param);
+                CreateParameterModel gsoParam = generateGSOTemplateParameters(template, true);
+                rspModel.setParameters(gsoParam);
                 break;
-            }
-            case SDNO: {
+            case SDNO: 
                 // for sdno , only parameters defined in the template needed.
-                CreateParameterModel param = generateTemplateParameters(template);
-                rspModel.setParameters(param);
+                CreateParameterModel sdnoParam = generateTemplateParameters(template);
+                rspModel.setParameters(sdnoParam);
                 break;
-            }
-            case NFVO: {
+            case NFVO: 
                 // for nfvo, parameters defined in the template, location param, sdn controller
                 // param need.
-                CreateParameterModel param = generateNFVOTemplateParameters(template);
-                rspModel.setParameters(param);
+                CreateParameterModel nfvoParam = generateNFVOTemplateParameters(template);
+                rspModel.setParameters(nfvoParam);
                 break;
-            }
             default: {
                 break;
             }
