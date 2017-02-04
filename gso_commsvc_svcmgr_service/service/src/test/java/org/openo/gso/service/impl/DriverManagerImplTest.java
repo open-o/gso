@@ -16,8 +16,6 @@
 
 package org.openo.gso.service.impl;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
@@ -28,10 +26,10 @@ import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.dao.inf.IServiceModelDao;
 import org.openo.gso.dao.inf.IServicePackageDao;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
+import org.openo.gso.model.drivermo.SegmentInputParameter;
 import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.model.servicemo.ServiceSegmentOperation;
 import org.openo.gso.restproxy.inf.ICatalogProxy;
-import org.openo.gso.service.inf.IDriverService;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -39,9 +37,6 @@ import mockit.Mocked;
 import mockit.NonStrictExpectations;
 
 public class DriverManagerImplTest {
-
-    @Mocked
-    IDriverService serviceInf;
 
     @Mocked
     IServiceSegmentDao serviceSegmentDao;
@@ -54,29 +49,25 @@ public class DriverManagerImplTest {
     
     @Mocked
     ICatalogProxy catalogProxy;
-
-    HttpServletRequest httpRequest;
-    
+   
     @Test
     public void test() {
         DriverManagerImpl impl = new DriverManagerImpl();
-        impl.setServiceInf(serviceInf);
         impl.setServiceSegmentDao(serviceSegmentDao);
         impl.setServiceModelDao(serviceModelDao);
         impl.setServicePackageDao(servicePackageDao);
         impl.setCatalogProxy(catalogProxy);
-        impl.getServiceInf();
         impl.getServiceSegmentDao();
         impl.getServiceModelDao();
         impl.getServicePackageDao();
         impl.getCatalogProxy();
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testCreateService() {
         DriverManagerImpl impl = new DriverManagerImpl();
         impl.setServiceSegmentDao(serviceSegmentDao);
-        impl.setServiceInf(serviceInf);
         final String str =
                 "{\"nodeTemplateName\":\"POP\",\"segments\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
         
@@ -99,30 +90,22 @@ public class DriverManagerImplTest {
             new NonStrictExpectations() {
                 {
                     
-                    serviceInf.getSvcTmplByNodeType(anyString, anyString);
+                    catalogProxy.getSvcTmplByNodeType(anyString, anyString);
                     returns(svcTmpl);
                 }
             }; 
-            
-            new NonStrictExpectations() {
-                {
-                    
-                    serviceInf.createNs((Map<String, Object>)any);
-                    returns(restRsp);
-                }
-            }; 
 
-            impl.createNs(httpRequest, CommonConstant.SegmentType.NFVO);
+            impl.createNs(new SegmentInputParameter(), CommonConstant.SegmentType.NFVO);
         } catch(ApplicationException e) {
             e.printStackTrace();
         }
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void testDeleteService() {
         DriverManagerImpl impl = new DriverManagerImpl();
         impl.setServiceSegmentDao(serviceSegmentDao);
-        impl.setServiceInf(serviceInf);
         final String str =
                 "{\"nodeTemplateName\":\"POP\",\"segments\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
 
@@ -136,14 +119,7 @@ public class DriverManagerImplTest {
                     return str;
                 }
             };
-            new NonStrictExpectations() {
-                {
-                    
-                    serviceInf.deleteNs((Map<String, Object>)any);
-                    returns(restRsp);
-                }
-            };
-            impl.deleteNs(httpRequest, CommonConstant.SegmentType.NFVO);
+            impl.deleteNs(new SegmentInputParameter(), CommonConstant.SegmentType.NFVO);
         } catch(ApplicationException e) {
             e.printStackTrace();
         }
@@ -152,12 +128,12 @@ public class DriverManagerImplTest {
         
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testInstantiateService() {
 
         DriverManagerImpl impl = new DriverManagerImpl();
         impl.setServiceSegmentDao(serviceSegmentDao);
-        impl.setServiceInf(serviceInf);
         final String str =
                 "{\"nodeTemplateName\":\"POP\",\"segments\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
         final RestfulResponse rsp = new RestfulResponse();
@@ -172,26 +148,18 @@ public class DriverManagerImplTest {
                     return str;
                 }
             };
-            
-            new NonStrictExpectations() {
-                {
-                    
-                    serviceInf.instantiateNs((Map<String, Object>)any);
-                    returns(rsp);
-                }
-            };
                  
-            impl.instantiateNs("1", httpRequest, CommonConstant.SegmentType.NFVO);
+            impl.instantiateNs("1", new SegmentInputParameter(), CommonConstant.SegmentType.NFVO);
         } catch(ApplicationException e) {
 
         }
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void testTerminateService() {
         DriverManagerImpl impl = new DriverManagerImpl();
         impl.setServiceSegmentDao(serviceSegmentDao);
-        impl.setServiceInf(serviceInf);
         final String str =
                 "{\"nodeTemplateName\":\"POP\",\"segments\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
         final RestfulResponse rsp = new RestfulResponse();
@@ -206,16 +174,8 @@ public class DriverManagerImplTest {
                     return str;
                 }
             };
-            
-            new NonStrictExpectations() {
-                {
-                    
-                    serviceInf.terminateNs((Map<String, Object>)any);
-                    returns(rsp);
-                }
-            };
                  
-            impl.terminateNs(httpRequest, CommonConstant.SegmentType.NFVO);
+            impl.terminateNs(new SegmentInputParameter(), CommonConstant.SegmentType.NFVO);
         } catch(ApplicationException e) {
 
         }
@@ -225,7 +185,6 @@ public class DriverManagerImplTest {
     public void testGetNsProgress() {
         DriverManagerImpl impl = new DriverManagerImpl();
         impl.setServiceSegmentDao(serviceSegmentDao);
-        impl.setServiceInf(serviceInf);
         ServiceSegmentOperation svcSegOper = new ServiceSegmentOperation("1", CommonConstant.SegmentType.NFVO, CommonConstant.OperationType.CREATE);
         try {
             new NonStrictExpectations() {
@@ -244,7 +203,6 @@ public class DriverManagerImplTest {
     public void testCreateGsoNs() {
         DriverManagerImpl impl = new DriverManagerImpl();
         impl.setServiceSegmentDao(serviceSegmentDao);
-        impl.setServiceInf(serviceInf);
         final String str =
                 "{\"nodeTemplateName\":\"POP\",\"segments\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
         try {
@@ -254,7 +212,7 @@ public class DriverManagerImplTest {
                     return str;
                 }
             };
-            impl.createGsoNs(httpRequest, CommonConstant.SegmentType.NFVO);
+            impl.createGsoNs(new SegmentInputParameter(), CommonConstant.SegmentType.NFVO);
         } catch (ApplicationException e) {
             //handle exception
         }
@@ -266,7 +224,6 @@ public class DriverManagerImplTest {
     public void testDeleteGsoNs() {
         DriverManagerImpl impl = new DriverManagerImpl();
         impl.setServiceSegmentDao(serviceSegmentDao);
-        impl.setServiceInf(serviceInf);
         final String str =
                 "{\"nodeTemplateName\":\"POP\",\"segments\":\"[{\"serviceId\":\"1\",\"subServiceName\":\"name\",\"subServiceDesc\":\"desc\",\"domainHost\":\"10.11.11.1:80\",\"nodeTemplateName\":\"POP\",\"nodeType\":\"tosca.nodes.nfv.NS.POP_NS\"}]\"}";
         try {
@@ -276,7 +233,7 @@ public class DriverManagerImplTest {
                     return str;
                 }
             };
-            impl.deleteGsoNs(httpRequest, CommonConstant.SegmentType.NFVO);
+            impl.deleteGsoNs(new SegmentInputParameter(), CommonConstant.SegmentType.NFVO);
         } catch (ApplicationException e) {
             //handle exception
         }
@@ -286,7 +243,6 @@ public class DriverManagerImplTest {
     public void testQueryGsoNsProgress() {
         DriverManagerImpl impl = new DriverManagerImpl();
         impl.setServiceSegmentDao(serviceSegmentDao);
-        impl.setServiceInf(serviceInf);
         impl.getGsoNsProgress("j2", CommonConstant.SegmentType.NFVO);
     }
 

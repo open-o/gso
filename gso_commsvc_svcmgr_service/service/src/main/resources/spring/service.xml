@@ -126,7 +126,6 @@
     </bean>
 
     <bean id="driverMgr" class="org.openo.gso.service.impl.DriverManagerImpl">
-        <property name="serviceInf" ref="serviceInf"></property>
         <property name="serviceSegmentDao" ref="serviceSegmentDao"></property>
         <property name="servicePackageDao" ref="servicePackageDao"></property>
         <property name="serviceModelDao" ref="serviceModelDao"></property>
@@ -163,9 +162,6 @@
     </bean>
 
     <bean id="workflowProxy" class="org.openo.gso.restproxy.impl.WorkflowProxyImpl">
-    </bean>
-
-    <bean id="serviceInf" class="org.openo.gso.service.impl.DriverServiceImpl">
     </bean>
 
     <bean id="operationManager" class="org.openo.gso.service.impl.OperationManager">

@@ -24,6 +24,7 @@ import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.model.catalogmo.OperationModel;
 import org.openo.gso.model.catalogmo.ServiceTemplateModel;
+import org.openo.gso.model.drivermo.ServiceTemplate;
 
 /**
  * Interface to contact with catalog rest interface.<br/>
@@ -92,4 +93,13 @@ public interface ICatalogProxy {
      * @since GSO 0.5
      */
     void updateGsarStatus(String csarId, HttpServletRequest request);
+    
+    /**
+     * get service template by node type<br>
+     * 
+     * @param nodeType node type
+     * @return service template
+     * @since  GSO 0.5
+     */
+    ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost);
 }

@@ -16,8 +16,6 @@
 
 package org.openo.gso.util;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,18 +62,6 @@ public class RestfulUtilTest {
                 return rsp;
             }
         };
-
-        RestfulResponse postRsp = RestfulUtil.getRemoteResponse(paramsMap, params, queryParamMap);
-        assertNotNull(postRsp);
-        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.GET);
-        RestfulResponse getRsp = RestfulUtil.getRemoteResponse(paramsMap, params, queryParamMap);
-        assertNotNull(getRsp);
-        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.DELETE);
-        RestfulResponse deleteRsp = RestfulUtil.getRemoteResponse(paramsMap, params, queryParamMap);
-        assertNotNull(deleteRsp);
-        paramsMap.put(CommonConstant.HttpContext.METHOD_TYPE, CommonConstant.MethodType.PUT);
-        RestfulResponse putRsp = RestfulUtil.getRemoteResponse(paramsMap, params, queryParamMap);
-        assertNotNull(putRsp);
     }
 
 }
