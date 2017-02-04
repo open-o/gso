@@ -16,7 +16,7 @@
 
 package org.openo.gso.servicegateway.util.validate;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.servicegateway.exception.ErrorCode;
 import org.openo.gso.servicegateway.exception.HttpCode;
 import org.slf4j.Logger;

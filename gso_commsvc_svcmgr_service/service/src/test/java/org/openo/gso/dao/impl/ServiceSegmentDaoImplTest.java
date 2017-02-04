@@ -32,7 +32,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;

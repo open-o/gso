@@ -29,7 +29,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openo.baseservice.roa.util.restclient.RestfulOptions;
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.CommonConstant.Step;
 import org.openo.gso.constant.Constant;

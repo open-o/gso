@@ -26,7 +26,7 @@ import javax.ws.rs.core.Response;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.util.RestUtils;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.servicegateway.constant.FieldConstant;
 import org.openo.gso.servicegateway.model.CreateParameterRspModel;
 import org.openo.gso.servicegateway.model.DomainModel;

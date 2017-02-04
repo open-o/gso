@@ -19,7 +19,7 @@ package org.openo.gso.util.validate;
 import java.util.List;
 import java.util.Map;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.slf4j.Logger;

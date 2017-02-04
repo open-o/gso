@@ -22,8 +22,8 @@ import java.util.Map;
 
 import org.codehaus.jackson.type.TypeReference;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
-import org.openo.gso.commsvc.common.Exception.ExceptionArgs;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ExceptionArgs;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.util.json.JsonUtil;
 import org.openo.gso.util.validate.ValidateUtil;

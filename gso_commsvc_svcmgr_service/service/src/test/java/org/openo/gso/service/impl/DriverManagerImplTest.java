@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.junit.Test;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.dao.inf.IServiceModelDao;
 import org.openo.gso.dao.inf.IServicePackageDao;

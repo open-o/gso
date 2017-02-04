@@ -18,7 +18,7 @@ package org.openo.gso.dao.impl;
 
 import java.util.List;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.dao.inf.IInventoryDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;

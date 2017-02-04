@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -134,25 +134,33 @@ public class RegisterUtil {
         }
 
         File file = new File(path);
-        BufferedReader reader = null;
+        FileReader fileReader = null;
+        BufferedReader bufReader = null;
         String laststr = "";
         try {
-            reader = new BufferedReader(new FileReader(file));
+            fileReader = new FileReader(file);
+            bufReader = new BufferedReader(fileReader);
             String tempString = null;
             // Read one line at a time until the end of the null file.
-            while ((tempString = reader.readLine()) != null) {
+            while ((tempString = bufReader.readLine()) != null) {
                 // add the line
                 laststr = laststr + tempString;
             }
-            reader.close();
         } catch (IOException e) {
             LOGGER.error("GSO ReadFile fail.", e);
         } finally {
-            if (reader != null) {
+            if (bufReader != null) {
                 try {
-                    reader.close();
+                    bufReader.close();
                 } catch (IOException e1) {
-                    LOGGER.error("GSO ReadFile reader close fail.", e1);
+                    LOGGER.error("GSO ReadFile bufReader close fail.", e1);
+                }
+            }
+            if(fileReader != null) {
+                try {
+                    fileReader.close();
+                } catch(IOException e) {
+                    LOGGER.error("GSO ReadFile fileReader close fail.", e);
                 }
             }
         }

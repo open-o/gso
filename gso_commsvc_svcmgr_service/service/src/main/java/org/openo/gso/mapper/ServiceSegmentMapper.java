@@ -19,7 +19,7 @@ package org.openo.gso.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 
 /**

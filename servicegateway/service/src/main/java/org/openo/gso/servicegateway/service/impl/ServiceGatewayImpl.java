@@ -27,7 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openo.baseservice.remoteservice.exception.ExceptionArgs;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.servicegateway.common.CommonUtil;
 import org.openo.gso.servicegateway.constant.Constant;
 import org.openo.gso.servicegateway.constant.FieldConstant;

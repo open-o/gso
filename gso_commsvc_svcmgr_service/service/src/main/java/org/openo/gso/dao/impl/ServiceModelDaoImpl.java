@@ -16,14 +16,13 @@
 
 package org.openo.gso.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.ibatis.session.SqlSession;
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.dao.inf.IServiceModelDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;
@@ -142,7 +141,7 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
     @Override
     public List<ServiceModel> queryAllServices() {
         try {
-            List<ServiceModel> services = new ArrayList<ServiceModel>();
+            List<ServiceModel> services;
             // 1. Query basic information of service instance.
             services = getMapper(ServiceModelMapper.class).queryAllServices();
             if(CollectionUtils.isEmpty(services)) {

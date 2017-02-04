@@ -16,7 +16,7 @@
 
 package org.openo.gso.service.impl;
 
-import org.openo.gso.commsvc.common.Exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.dao.inf.IServiceOperDao;
 import org.openo.gso.model.servicemo.ServiceOperation;
 import org.openo.gso.service.inf.IOperationManager;
