@@ -176,7 +176,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
 
         OperationResult result = new OperationResult();
         // create service params
-        Map<String, Object> paramsForCreate = new HashMap<String, Object>();
+        Map<String, Object> paramsForCreate = new HashMap<>();
         paramsForCreate.put(FieldConstant.NSCreate.FIELD_NSDID, nsdId);
         paramsForCreate.put(FieldConstant.NSCreate.FIELD_NSNAME, reqBody.get(FieldConstant.Create.FIELD_NAME));
         paramsForCreate.put(FieldConstant.NSCreate.FIELD_DESCRIPTION,
@@ -202,7 +202,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 String nsInstanceId = (String)rspBody.get(FieldConstant.NSCreate.FIELD_RESPONSE_NSINSTANCEID);
 
                 // instantiate Service
-                Map<String, Object> paramsForInstantiate = new HashMap<String, Object>();
+                Map<String, Object> paramsForInstantiate = new HashMap<>();
                 paramsForInstantiate.put(FieldConstant.NSInstantiate.FIELD_NSINSTANCEID, nsInstanceId);
                 paramsForInstantiate.put(FieldConstant.NSInstantiate.FIELD_PARAMS, nsParams);
                 // sent instantiate msg
@@ -320,7 +320,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
     private String deleteNonGSOService(EnumServiceType serviceType, final String serviceId, final String deleteUri,
             final String terminateUri, final String queryJobUri) {
         try {
-            Map<String, String> reqBody = new HashMap<String, String>();
+            Map<String, String> reqBody = new HashMap<>();
             reqBody.put(FieldConstant.NSTerminate.FIELD_NSINSTANCEID, serviceId);
             reqBody.put(FieldConstant.NSTerminate.FIELD_TERMINATIONTYPE, "graceful");
             reqBody.put(FieldConstant.NSTerminate.FIELD_TIMEOUT, "60");
@@ -421,7 +421,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
         CreateParameterModel param = generateTemplateParameters(template);
 
         // generate gso's subobjects.
-        List<CreateParameterModel> segmentParams = new ArrayList<CreateParameterModel>();
+        List<CreateParameterModel> segmentParams = new ArrayList<>();
         String templateId = (String)template.getTemplateDetail().get(FieldConstant.CatalogTemplate.FIELD_TEMPLATEID);
         List<SegmentTemplateModel> segments = CommonUtil.getSegmentTemplatesByGSOTemplateId(templateId);
         if(null == segments || segments.isEmpty()) {

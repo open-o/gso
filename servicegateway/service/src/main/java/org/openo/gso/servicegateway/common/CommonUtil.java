@@ -187,7 +187,7 @@ public class CommonUtil {
      */
     public static List<ServiceModel> getServicesFromInventory() {
         try {
-            List<ServiceModel> serviceModels = new ArrayList<ServiceModel>();
+            List<ServiceModel> serviceModels = new ArrayList<>();
             LOGGER.info("query services from inventory start");
             RestfulResponse resp = HttpUtil.post(Constant.INVENTORY_URL_QUERYSERVICES, "");
             logTheResponseData("query services from inventory", resp);
@@ -272,7 +272,7 @@ public class CommonUtil {
      * @since GSO 0.5
      */
     public static Map<String, String> queryVimInfo() {
-        Map<String, String> vims = new HashMap<String, String>();
+        Map<String, String> vims = new HashMap<>();
         try {
             LOGGER.info("query vims from extsys start");
             RestfulResponse resp = HttpUtil.get(Constant.EXTSYS_URL_QUERYVIMS, new HashMap<String, String>());
@@ -303,7 +303,7 @@ public class CommonUtil {
      * @since GSO 0.5
      */
     public static Map<String, String> querySDNControllerInfo() {
-        Map<String, String> sdncontrollers = new HashMap<String, String>();
+        Map<String, String> sdncontrollers = new HashMap<>();
         try {
             LOGGER.info("query sdn controllers from extsys start");
             RestfulResponse resp = HttpUtil.get(Constant.EXTSYS_URL_QUERYSDNCONTROLLERS, new HashMap<String, String>());
@@ -378,7 +378,7 @@ public class CommonUtil {
             return null;
         }
         JSONArray array = JSONArray.fromObject(jsonInfo);
-        Map<String, String> domainsInfo = new HashMap<String, String>();
+        Map<String, String> domainsInfo = new HashMap<>();
         for(int i = 0, size = array.size(); i < size; i++) {
             JSONObject obj = array.getJSONObject(i);
             domainsInfo.put((String)obj.get(FieldConstant.Domain.FIELD_HOST), (String)obj.get(FieldConstant.Domain.FIELD_NAME));
@@ -408,10 +408,10 @@ public class CommonUtil {
         String serviceFilePath = root + File.separator + Constant.FILE_PATH_DOMAINSINFO;
         String jsonInfo = RegisterUtil.readFile(serviceFilePath);
         if("".equals(jsonInfo)) {
-            return new ArrayList<DomainModel>(0);
+            return new ArrayList<>(0);
         }
         JSONArray array = JSONArray.fromObject(jsonInfo);
-        List<DomainModel> domains = new ArrayList<DomainModel>();
+        List<DomainModel> domains = new ArrayList<>();
         for(int i = 0, size = array.size(); i < size; i++) {
             JSONObject obj = array.getJSONObject(i);
             DomainModel domain = new DomainModel();
@@ -432,7 +432,7 @@ public class CommonUtil {
      */
     @SuppressWarnings("unchecked")
     public static List<SegmentTemplateModel> getSegmentTemplatesByGSOTemplateId(String templateId) {
-        List<SegmentTemplateModel> segments = new ArrayList<SegmentTemplateModel>();
+        List<SegmentTemplateModel> segments = new ArrayList<>();
         try {
             // query nodetypes by template id
             String queryNodeTypeUrl = String.format(Constant.CATALOG_NODETYPE_URL, templateId);

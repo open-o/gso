@@ -58,7 +58,7 @@ public class ParameterDefineModel {
     /**
      * the range of the enum. key is the value to be sent, value is the show name for the ui
      */
-    private Map<String, String> range = new HashMap<String, String>();
+    private Map<String, String> range = new HashMap<>();
 
     /**
      * @return Returns the name.

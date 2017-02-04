@@ -52,7 +52,7 @@ public class ProgressPool {
     /**
      * operation map
      */
-    private Map<String, OperationModel> operationMap = new HashMap<String, OperationModel>();
+    private Map<String, OperationModel> operationMap = new HashMap<>();
 
     /**
      * single instance

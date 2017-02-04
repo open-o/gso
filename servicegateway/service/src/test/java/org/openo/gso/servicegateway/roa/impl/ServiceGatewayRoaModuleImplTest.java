@@ -79,7 +79,7 @@ public class ServiceGatewayRoaModuleImplTest {
     /**
      * for query job
      */
-    private Map<String, Integer> queryStepMap = new HashMap<String, Integer>();
+    private Map<String, Integer> queryStepMap = new HashMap<>();
 
     /**
      * Before executing UT, start sql.<br/>

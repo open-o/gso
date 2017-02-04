@@ -65,8 +65,8 @@ public class OperationResult {
      */
     public Map<String,Map<String,String>> toResultMap()
     {
-        Map<String,Map<String,String>> result = new HashMap<String,Map<String,String>>();
-        Map<String,String> serviceRspInfo = new HashMap<String,String>();
+        Map<String,Map<String,String>> result = new HashMap<>();
+        Map<String,String> serviceRspInfo = new HashMap<>();
         serviceRspInfo.put(FieldConstant.Create.FIELD_RESPONSE_SERVICEID, serviceId);
         serviceRspInfo.put(FieldConstant.Create.FIELD_RESPONSE_OPERATIONID,operationId);
         result.put(FieldConstant.Create.FIELD_RESPONSE_SERVICE, serviceRspInfo);
