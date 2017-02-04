@@ -26,7 +26,7 @@ import org.openo.gso.model.servicemo.ServiceSegmentReq;
  * </p>
  * @version     GSO 0.5  2017/1/7
  */
-public class DomainInputParameter {
+public class SegmentInputParameter {
     
     private String serviceId;
     

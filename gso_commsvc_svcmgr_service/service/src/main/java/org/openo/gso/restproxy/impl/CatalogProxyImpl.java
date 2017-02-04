@@ -23,16 +23,24 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.codehaus.jackson.type.TypeReference;
+import org.openo.baseservice.roa.util.restclient.RestfulOptions;
+import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.model.catalogmo.OperationModel;
 import org.openo.gso.model.catalogmo.ServiceTemplateModel;
+import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.restproxy.inf.ICatalogProxy;
+import org.openo.gso.util.RestfulUtil;
 import org.openo.gso.util.http.HttpUtil;
 import org.openo.gso.util.http.ResponseUtils;
+import org.openo.gso.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sf.json.JSONArray;
 
 /**
  * Implement class of calling catalog rest interface.<br/>
@@ -218,5 +226,34 @@ public class CatalogProxyImpl implements ICatalogProxy {
 
         return ResponseUtils.getDataModelFromRspList(response.getResponseContent(),
                 new TypeReference<List<NodeTemplateModel>>() {});
+    }
+
+    /**
+     * get service template by node type<br>
+     * 
+     * @param nodeType node type
+     * @return service template
+     * @since  GSO 0.5
+     */
+    @Override
+    public ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost) {
+        // Step 1: Prepare url and method type
+        String url = CommonConstant.CATALOGUE_QUERY_SVC_TMPL_NODETYPE_URL;
+        String methodType = CommonConstant.MethodType.GET;
+
+        // Step 2: Prepare the restful parameters and options
+        LOGGER.info("node Type is {}", nodeType);
+        Map<String, String> queryParam = new HashMap<String, String>();
+        queryParam.put("nodeTypeIds", nodeType);
+
+        RestfulParametes restfulParameters = RestfulUtil.setRestfulParameters(null, queryParam);
+        RestfulOptions options = RestfulUtil.setRestfulOptions(domainHost);
+
+        // Step 4:Send the request and get response
+        RestfulResponse rsp = RestfulUtil.getRemoteResponse(url, methodType, restfulParameters, options);
+        LOGGER.info("response status is {}", rsp.getStatus());
+        LOGGER.info("response content is {}", rsp.getResponseContent());
+        JSONArray array = JSONArray.fromObject(rsp.getResponseContent());
+        return JsonUtil.unMarshal(array.getString(0), ServiceTemplate.class);
     }
 }

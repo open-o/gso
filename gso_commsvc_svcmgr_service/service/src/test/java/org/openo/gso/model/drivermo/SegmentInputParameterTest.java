@@ -25,9 +25,9 @@ import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.model.servicemo.ServiceSegmentReq;
 
 
-public class DomainInputParameterTest {
+public class SegmentInputParameterTest {
     
-    DomainInputParameter input = new DomainInputParameter();
+    SegmentInputParameter input = new SegmentInputParameter();
 
     @Test
     public void testGetServiceId() {

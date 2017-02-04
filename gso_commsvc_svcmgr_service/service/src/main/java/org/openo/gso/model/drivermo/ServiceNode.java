@@ -36,7 +36,7 @@ public class ServiceNode {
     /**
      * input parameters
      */
-    private List<DomainInputParameter> segments;
+    private List<SegmentInputParameter> segments;
     
     /**
      * @return Returns the nodeTemplateName.
@@ -55,14 +55,14 @@ public class ServiceNode {
     /**
      * @return Returns the segments.
      */
-    public List<DomainInputParameter> getSegments() {
+    public List<SegmentInputParameter> getSegments() {
         return segments;
     }
     
     /**
      * @param segments The segments to set.
      */
-    public void setSegments(List<DomainInputParameter> segments) {
+    public void setSegments(List<SegmentInputParameter> segments) {
         this.segments = segments;
     }
 

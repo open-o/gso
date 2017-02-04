@@ -16,9 +16,8 @@
 
 package org.openo.gso.service.inf;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.gso.model.drivermo.SegmentInputParameter;
 
 /**
  * Interface to operate service.<br/>
@@ -35,42 +34,42 @@ public interface IDriverManager {
      * instantiate service <br/>
      * 
      * @param nsInstanceId uuid of service instance
-     * @param httpRequest - http request
+     * @param segInput input parameters for current node from http request
      * @param domain SDNO or NFVO
      * @return restful response
      * @since GSO 0.5
      */
-    RestfulResponse instantiateNs(String nsInstanceId, HttpServletRequest httpRequest, String domain);
+    RestfulResponse instantiateNs(String nsInstanceId, SegmentInputParameter segInput, String domain);
     
     /**
      * terminate service instance.<br/>
      * 
-     * @param httpRequest http request
+     * @param segInput input parameters for current node from http request
      * @param domain SDNO or NFVO
      * @return restful response
      * @since GSO 0.5
      */
-    RestfulResponse terminateNs(HttpServletRequest httpRequest, String domain);
+    RestfulResponse terminateNs(SegmentInputParameter segInput, String domain);
 
     /**
      * create service<br>
      * 
-     * @param servletReq http request
+     * @param segInput input parameters for current node from http request
      * @param domain SDNO or NFVO
      * @return response
      * @since  GSO 0.5
      */
-    RestfulResponse createNs(HttpServletRequest servletReq, String domain);
+    RestfulResponse createNs(SegmentInputParameter segInput, String domain);
 
     /**
      * delete service<br>
      * 
-     * @param servletReq http request
+     * @param segInput input parameters for current node from http request
      * @param domain SDNO or NFVO
      * @return response
      * @since  GSO 0.5
      */
-    RestfulResponse deleteNs(HttpServletRequest servletReq, String domain);
+    RestfulResponse deleteNs(SegmentInputParameter segInput, String domain);
 
     /**
      * query service job status<br>
@@ -85,22 +84,22 @@ public interface IDriverManager {
     /**
      * create gso service<br>
      * 
-     * @param servletReq http request
+     * @param segInput input parameters for current node from http request
      * @param domain GSO
      * @return response
      * @since  GSO 0.5
      */
-    RestfulResponse createGsoNs(HttpServletRequest servletReq, String domain);
+    RestfulResponse createGsoNs(SegmentInputParameter segInput, String domain);
 
     /**
      * delete gso service<br>
      * 
-     * @param servletReq http request
+     * @param segInput input parameters for current node from http request
      * @param domain GSO
      * @return response
      * @since  GSO 0.5
      */
-    RestfulResponse deleteGsoNs(HttpServletRequest servletReq, String domain);
+    RestfulResponse deleteGsoNs(SegmentInputParameter segInput, String domain);
 
     /**
      * query gso service job status<br>

@@ -16,16 +16,29 @@
 
 package org.openo.gso.roa.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.baseservice.util.RestUtils;
+import org.openo.gso.commsvc.common.Exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
+import org.openo.gso.constant.DriverExceptionID;
+import org.openo.gso.exception.HttpCode;
+import org.openo.gso.model.drivermo.SegmentInputParameter;
+import org.openo.gso.model.drivermo.ServiceNode;
 import org.openo.gso.roa.inf.IGSODrivermgrRoaModule;
 import org.openo.gso.roa.inf.INFVODrivermgrRoaModule;
 import org.openo.gso.roa.inf.ISDNODrivermgrRoaModule;
 import org.openo.gso.service.inf.IDriverManager;
+import org.openo.gso.util.json.JsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implement class for restful interface.<br/>
@@ -36,6 +49,11 @@ import org.openo.gso.service.inf.IDriverManager;
  * @version GSO 0.5 2016/8/4
  */
 public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODrivermgrRoaModule,IGSODrivermgrRoaModule {
+    
+    /**
+     * logger
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(DrivermgrRoaModuleImpl.class);
 
     /**
      * DriverManager.
@@ -66,7 +84,9 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response createNfvoNs(HttpServletRequest servletReq) {
-        RestfulResponse rsp = driverMgr.createNs(servletReq, CommonConstant.SegmentType.NFVO);
+        // Step 1: get parameters from request for current node
+        SegmentInputParameter nfvSegInput = getParamsForCurrentNode(servletReq);
+        RestfulResponse rsp = driverMgr.createNs(nfvSegInput, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
 
@@ -81,7 +101,9 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response deleteNfvoNs(HttpServletRequest servletReq) {
-        RestfulResponse rsp = driverMgr.deleteNs(servletReq, CommonConstant.SegmentType.NFVO);
+        // Step 1: get parameters from request for current node
+        SegmentInputParameter nfvSegInput = getParamsForCurrentNode(servletReq);
+        RestfulResponse rsp = driverMgr.deleteNs(nfvSegInput, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
 
@@ -108,8 +130,9 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response instantiateNfvoNs(String nsInstanceId, HttpServletRequest servletReq) {
-
-        RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, servletReq, CommonConstant.SegmentType.NFVO);
+        // Step 1: get parameters from request for current node
+        SegmentInputParameter nfvSegInput = getParamsForCurrentNode(servletReq);
+        RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, nfvSegInput, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
     
@@ -123,7 +146,9 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response terminateNfvoNs(HttpServletRequest servletReq) {
-        RestfulResponse rsp = driverMgr.terminateNs(servletReq, CommonConstant.SegmentType.NFVO);
+        // Step 1: get parameters from request for current node
+        SegmentInputParameter nfvSegInput = getParamsForCurrentNode(servletReq);
+        RestfulResponse rsp = driverMgr.terminateNs(nfvSegInput, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
     
@@ -136,7 +161,9 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response createSdnoNs(HttpServletRequest servletReq) {
-        RestfulResponse rsp = driverMgr.createNs(servletReq, CommonConstant.SegmentType.SDNO);
+        // Step 1: get parameters from request for current node
+        SegmentInputParameter sdnSegInput = getParamsForCurrentNode(servletReq);
+        RestfulResponse rsp = driverMgr.createNs(sdnSegInput, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
 
@@ -149,7 +176,9 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response deleteSdnoNs(HttpServletRequest servletReq) {
-        RestfulResponse rsp = driverMgr.deleteNs(servletReq, CommonConstant.SegmentType.SDNO);
+        // Step 1: get parameters from request for current node
+        SegmentInputParameter sdnSegInput = getParamsForCurrentNode(servletReq);
+        RestfulResponse rsp = driverMgr.deleteNs(sdnSegInput, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
 
@@ -176,7 +205,9 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response instantiateSdnoNs(String nsInstanceId, HttpServletRequest servletReq) {
-        RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, servletReq, CommonConstant.SegmentType.SDNO);
+        // Step 1: get parameters from request for current node
+        SegmentInputParameter sdnSegInput = getParamsForCurrentNode(servletReq);
+        RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, sdnSegInput, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
 
@@ -189,7 +220,9 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response terminateSdnoNs(HttpServletRequest servletReq) {
-        RestfulResponse rsp = driverMgr.terminateNs(servletReq, CommonConstant.SegmentType.SDNO);
+        // Step 1: get parameters from request for current node
+        SegmentInputParameter sdnSegInput = getParamsForCurrentNode(servletReq);
+        RestfulResponse rsp = driverMgr.terminateNs(sdnSegInput, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
 
@@ -215,7 +248,9 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response createGsoNs(HttpServletRequest servletReq) {
-        RestfulResponse rsp = driverMgr.createGsoNs(servletReq, CommonConstant.SegmentType.GSO);
+        // Step 1: get parameters from request for current node
+        SegmentInputParameter gsoSegInput = getParamsForCurrentNode(servletReq);
+        RestfulResponse rsp = driverMgr.createGsoNs(gsoSegInput, CommonConstant.SegmentType.GSO);
         return buildResponse(rsp);
     }
 
@@ -228,7 +263,9 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      */
     @Override
     public Response deleteGsoNs(HttpServletRequest servletReq) {
-        RestfulResponse rsp = driverMgr.deleteGsoNs(servletReq, CommonConstant.SegmentType.GSO);
+        // Step 1: get parameters from request for current node
+        SegmentInputParameter gsoSegInput = getParamsForCurrentNode(servletReq);
+        RestfulResponse rsp = driverMgr.deleteGsoNs(gsoSegInput, CommonConstant.SegmentType.GSO);
         return buildResponse(rsp);
     }
 
@@ -243,5 +280,36 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
     public Response queryGsoJobStatus(String jobId) {
         RestfulResponse rsp = driverMgr.getGsoNsProgress(jobId, CommonConstant.SegmentType.GSO);
         return buildResponse(rsp);
+    }
+    
+    /**
+     * private method 1:get input parameters for current node<br>
+     * 
+     * @param servletReq http request
+     * @return input parameters for current node
+     * @since  GSO 0.5
+     */
+    private SegmentInputParameter getParamsForCurrentNode(HttpServletRequest servletReq) {
+        // Step 0: get request model
+        String body = RestUtils.getRequestBody(servletReq);
+        LOGGER.info("body from request is {}", body);
+        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}").replaceAll("\"\\[", "\\[").replaceAll("\\]\"", "\\]");
+        LOGGER.info("json body from request is {}", jsonBody);
+        ServiceNode serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
+
+        // Step 1:Validate input parameters
+        if((null == serviceNode.getNodeTemplateName()) || (null == serviceNode.getSegments())) {
+            LOGGER.error("Input parameters from lcm/workflow are empty");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
+        }
+        
+        // Step 2:Get input parameters for current node
+        List<SegmentInputParameter> inputList = serviceNode.getSegments();
+        Map<String, SegmentInputParameter> map = new HashMap<String, SegmentInputParameter>();
+        for(SegmentInputParameter input : inputList) {
+            map.put(input.getNodeTemplateName(), input);
+        }
+        
+        return map.get(serviceNode.getNodeTemplateName());
     }
 }

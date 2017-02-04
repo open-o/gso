@@ -41,7 +41,7 @@ public class ServiceNodeTest {
 
     @Test
     public void testSetSegments() {
-        List<DomainInputParameter> paramsList= new ArrayList<DomainInputParameter>();
+        List<SegmentInputParameter> paramsList= new ArrayList<SegmentInputParameter>();
         node.setSegments(paramsList);
     }
 
