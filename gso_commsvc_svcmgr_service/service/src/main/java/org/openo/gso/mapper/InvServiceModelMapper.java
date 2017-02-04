@@ -45,6 +45,7 @@ public interface InvServiceModelMapper extends InventoryMapper {
      * @param serviceId service ID
      * @since GSO 0.5
      */
+    @Override
     void delete(@Param("serviceId") String serviceId);
 
     /**
