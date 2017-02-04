@@ -97,11 +97,11 @@ public class FieldConstant {
 
     public static class Delete {
 
+        public static final String FIELD_RESPONSE_OPERATIONID = "operationId";
+        
         private Delete() {
 
-        }
-
-        public static final String FIELD_RESPONSE_OPERATIONID = "operationId";
+        }        
     }
 
     public static class NSCreate {

@@ -110,7 +110,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
             LOGGER.error("Fail to delete service instance.");
             throw ResponseUtils.getException(exception, "Fail to delete service instance");
         }
-        Map<String, String> result = new HashMap<String, String>();
+        Map<String, String> result = new HashMap<>();
         result.put(FieldConstant.Delete.FIELD_RESPONSE_OPERATIONID, operationId);
         LOGGER.info("delete a service, rsp:" + JsonUtil.marshal(result));
         return Response.accepted().entity(result).build();

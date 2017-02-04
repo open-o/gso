@@ -168,8 +168,8 @@ public class OperationModel {
      * @since GSO 0.5
      */
     public Map<String, Map<String, String>> toResultMap() {
-        Map<String, Map<String, String>> resultMap = new HashMap<String, Map<String, String>>();
-        Map<String, String> operationRst = new HashMap<String, String>();
+        Map<String, Map<String, String>> resultMap = new HashMap<>();
+        Map<String, String> operationRst = new HashMap<>();
         operationRst.put(FieldConstant.QueryOperation.FIELD_OPERATIONID, operationId);
         operationRst.put(FieldConstant.QueryOperation.FIELD_USERID, userId);
         operationRst.put(FieldConstant.QueryOperation.FIELD_OPERATIONCONTENT, operationContent);

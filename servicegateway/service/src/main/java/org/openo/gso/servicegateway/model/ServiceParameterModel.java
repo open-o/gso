@@ -49,13 +49,13 @@ public class ServiceParameterModel {
     /**
      * if the subobject is gso. the parameters is used for its all subobjects
      */
-    private List<ServiceParameterModel> segments = new ArrayList<ServiceParameterModel>();
+    private List<ServiceParameterModel> segments = new ArrayList<>();
 
     /**
      * the additionalParamForNs is used for the ns itself, both gso,sdno, nfvo
      * this params is defined in the template. and both with the location and sdn controller.
      */
-    private Map<String, String> additionalParamForNs = new HashMap<String, String>();
+    private Map<String, String> additionalParamForNs = new HashMap<>();
 
     /**
      * @return Returns the domainHost.

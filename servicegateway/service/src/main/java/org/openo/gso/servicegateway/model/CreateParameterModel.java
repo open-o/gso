@@ -47,13 +47,13 @@ public class CreateParameterModel {
     /**
      * if the subobject is gso. the parameters is used for its all subobjects
      */
-    private List<CreateParameterModel> segments = new ArrayList<CreateParameterModel>();
+    private List<CreateParameterModel> segments = new ArrayList<>();
 
     /**
      * the additionalParamForNs is used for the ns itself, both gso,sdno, nfvo
      * this params is defined in the template. and both with the location and sdn controller.
      */
-    private List<ParameterDefineModel> additionalParamForNs = new ArrayList<ParameterDefineModel>();
+    private List<ParameterDefineModel> additionalParamForNs = new ArrayList<>();
 
     /**
      * @return Returns the domainHost.
