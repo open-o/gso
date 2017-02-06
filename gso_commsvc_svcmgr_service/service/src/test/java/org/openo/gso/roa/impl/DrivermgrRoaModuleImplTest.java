@@ -16,108 +16,231 @@
 
 package org.openo.gso.roa.impl;
 
-import javax.servlet.http.HttpServletRequest;
+import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openo.baseservice.roa.util.restclient.RestfulOptions;
+import org.openo.baseservice.roa.util.restclient.RestfulParametes;
+import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.baseservice.util.RestUtils;
+import org.openo.gso.dao.impl.ServiceSegmentDaoImpl;
+import org.openo.gso.model.drivermo.ServiceTemplate;
+import org.openo.gso.model.servicemo.ServiceSegmentModel;
+import org.openo.gso.model.servicemo.ServiceSegmentOperation;
+import org.openo.gso.restproxy.impl.CatalogProxyImpl;
 import org.openo.gso.service.impl.DriverManagerImpl;
-import org.openo.gso.service.inf.IDriverManager;
+import org.openo.gso.util.RestfulUtil;
 
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.Mocked;
+import net.sf.json.JSONObject;
 
 public class DrivermgrRoaModuleImplTest {
 
-    @Mocked
-    IDriverManager driver;
-
+    /**
+     * File path
+     */
+    private static final String FILE_PATH = "src/test/resources/json/";
+    
     @Mocked
     HttpServletRequest servletReq;
 
+    ServiceSegmentDaoImpl serviceSegmentDao;
+
+    DriverManagerImpl driverMgr;
+    
     DrivermgrRoaModuleImpl impl;
+    
+    CatalogProxyImpl catalogProxy;
 
     @Before
     public void init() {
         impl = new DrivermgrRoaModuleImpl();
+        driverMgr = new DriverManagerImpl();
+        catalogProxy = new CatalogProxyImpl();
+        serviceSegmentDao = new ServiceSegmentDaoImpl();
+        impl.setDriverMgr(driverMgr);
+        driverMgr.setCatalogProxy(catalogProxy);
+        driverMgr.setServiceSegmentDao(serviceSegmentDao);
     }
 
     @Test
     public void testGetDriver() {
-        impl.getDriverMgr();
+        assertNotNull(impl.getDriverMgr());
     }
 
     @Test
     public void testSetDriver() {
-        impl.setDriverMgr(new DriverManagerImpl());
+        impl.setDriverMgr(driverMgr);
     }
 
     @Test
     public void testCreateNFVONs() {
-        impl.createNfvoNs(servletReq);
+        // get request
+        mockGetRequestBody(FILE_PATH + "createNfvoNsReq.json");
+        // get service template
+        ServiceTemplate svcTmpl = new ServiceTemplate();
+        svcTmpl.setId("id");
+        svcTmpl.setServiceTemplateId("svcTmplId");
+        new MockUp<CatalogProxyImpl>() {
+            @Mock
+            public ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost){
+                return svcTmpl;
+            }
+        };
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "createNfvoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        // insert data
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public void insertSegment(ServiceSegmentModel serviceSegment) {
+                // do nothing
+            }
+            @Mock
+            public void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        Response rsp = impl.createNfvoNs(servletReq);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        Assert.assertSame(1, Integer.valueOf(obj.getString("nsInstanceId")));
     }
     
     @Test
     public void testDeleteNFVONs() {
-        impl.deleteNfvoNs(servletReq);
+        //impl.deleteNfvoNs(servletReq);
     }
     
     @Test
     public void testTerminateNFVONs() {
-        impl.terminateNfvoNs(servletReq);
+       //impl.terminateNfvoNs(servletReq);
     }
     
     @Test
     public void testInstantiateNFVONs() {
         String nsInstanceId = "1";
-        impl.instantiateNfvoNs(nsInstanceId, servletReq);
+        //impl.instantiateNfvoNs(nsInstanceId, servletReq);
     }
     
     @Test
     public void testQueryNFVONsProgress() {
         String jobId = "1";
-        impl.queryNfvoJobStatus(jobId);
+        //impl.queryNfvoJobStatus(jobId);
     }
     
     @Test
     public void testCreateSDNONs() {
-        impl.createSdnoNs(servletReq);
+        //impl.createSdnoNs(servletReq);
     }
     
     @Test
     public void testDeleteSDNONs() {
-        impl.deleteSdnoNs(servletReq);
+        //impl.deleteSdnoNs(servletReq);
     }
     
     @Test
     public void testTerminateSDNONs() {
-        impl.terminateSdnoNs(servletReq);
+        //impl.terminateSdnoNs(servletReq);
     }
     
     @Test
     public void testInstantiateSDNONs() {
         String nsInstanceId = "1";
-        impl.instantiateSdnoNs(nsInstanceId, servletReq);
+        //impl.instantiateSdnoNs(nsInstanceId, servletReq);
     }
     
     @Test
     public void testQuerySDNONsProgress() {
         String jobId = "1";
-        impl.querySdnoJobStatus(jobId);
+        //impl.querySdnoJobStatus(jobId);
     }
     
     @Test
     public void testCreateGSONs() {
-        impl.createGsoNs(servletReq);
+        //impl.createGsoNs(servletReq);
     }
     
     @Test
     public void testDeleteGSONs() {
-        impl.deleteGsoNs(servletReq);
+        //impl.deleteGsoNs(servletReq);
     }
     
     @Test
     public void testQueryGSONsProgress() {
         String jobId = "1";
-        impl.queryGsoJobStatus(jobId);
+        //impl.queryGsoJobStatus(jobId);
+    }
+    
+    /**
+     * Mock to get request body.<br/>
+     * 
+     * @param file json file path.
+     * @since GSO 0.5
+     */
+    private void mockGetRequestBody(final String file) {
+        new MockUp<RestUtils>() {
+
+            @Mock
+            public String getRequestBody(HttpServletRequest request) {
+                return getJsonString(file);
+            }
+        };
+    }
+    
+    /**
+     * Mock to get rsp<br>
+     * 
+     * @param rsp restful response
+     * @since  GSO 0.5
+     */
+    private void mockGetRestfulRsp(final RestfulResponse rsp) {
+        new MockUp<RestfulUtil>() {
+            @Mock
+            public RestfulResponse getRemoteResponse(String url, String methodType,
+                    RestfulParametes restfulParametes, RestfulOptions options) {
+                return rsp;
+            }
+        };
+    }
+
+    /**
+     * Get json string from file.<br/>
+     * 
+     * @param file the path of file
+     * @return json string
+     * @throws IOException when fail to read
+     * @since GSO 0.5
+     */
+    private String getJsonString(final String file) {
+        if(StringUtils.isEmpty(file)) {
+            return "";
+        }
+
+        String json = null;
+        try {
+            FileInputStream fileStream = new FileInputStream(new File(file));
+            json = IOUtils.toString(fileStream);
+        } catch(Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        return json;
     }
 
 }
