@@ -611,7 +611,7 @@ public class DriverManagerImpl implements IDriverManager {
         LOGGER.info("create gso ns response content is : {}", createGsoRsp.getResponseContent());
 
         JSONObject obj = JSONObject.fromObject(createGsoRsp.getResponseContent());
-        Object service = obj.get(Constant.SERVICES_INDENTIRY);
+        String service = obj.getString(Constant.SERVICE_INDENTIFY);
         JSONObject jsonSvc = JSONObject.fromObject(service);
         String subServiceId = jsonSvc.getString(Constant.SERVICE_INSTANCE_ID);
         String opertionId = jsonSvc.getString(Constant.SERVICE_OPERATION_ID);

@@ -119,34 +119,89 @@ public class DrivermgrRoaModuleImplTest {
         };
         Response rsp = impl.createNfvoNs(servletReq);
         JSONObject obj = JSONObject.fromObject(rsp.getEntity());
-        Assert.assertSame(1, Integer.valueOf(obj.getString("nsInstanceId")));
+        Assert.assertEquals(null, "1", obj.getString("nsInstanceId"));
     }
     
     @Test
     public void testDeleteNFVONs() {
-        //impl.deleteNfvoNs(servletReq);
+        // get request
+        mockGetRequestBody(FILE_PATH + "deleteNfvoNsReq.json");
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "deleteNfvoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        // update segment operation and delete segment
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+            @Mock
+            public void deleteSegmentByIdAndType(ServiceSegmentModel serviceSegment) {
+                // do nothing
+            }
+        };
+        Response rsp = impl.deleteNfvoNs(servletReq);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        JSONObject subObj = JSONObject.fromObject(obj.get("result"));
+        Assert.assertEquals(null, "success", subObj.getString("status"));
     }
     
     @Test
     public void testTerminateNFVONs() {
-       //impl.terminateNfvoNs(servletReq);
+        // get request
+        mockGetRequestBody(FILE_PATH + "terminateNfvoNsReq.json");
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "terminateNfvoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        // update segment operation and delete segment
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        Response rsp = impl.terminateNfvoNs(servletReq);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        Assert.assertEquals(null, "1", obj.getString("jobId"));
     }
     
     @Test
     public void testInstantiateNFVONs() {
-        String nsInstanceId = "1";
-        //impl.instantiateNfvoNs(nsInstanceId, servletReq);
+        // get request
+        mockGetRequestBody(FILE_PATH + "instantiateNfvoNsReq.json");
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "instantiateNfvoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        // insert data
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        Response rsp = impl.instantiateNfvoNs("1", servletReq);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        Assert.assertEquals(null, "1", obj.getString("jobId"));
     }
     
     @Test
     public void testQueryNFVONsProgress() {
-        String jobId = "1";
-        //impl.queryNfvoJobStatus(jobId);
+
     }
     
     @Test
     public void testCreateSDNONs() {
-     // get request
+        // get request
         mockGetRequestBody(FILE_PATH + "createSdnoNsReq.json");
         // get service template
         ServiceTemplate svcTmpl = new ServiceTemplate();
@@ -176,23 +231,79 @@ public class DrivermgrRoaModuleImplTest {
         };
         Response rsp = impl.createSdnoNs(servletReq);
         JSONObject obj = JSONObject.fromObject(rsp.getEntity());
-        Assert.assertSame(1, Integer.valueOf(obj.getString("nsInstanceId")));
+        Assert.assertEquals(null, "1", obj.getString("nsInstanceId"));
     }
     
     @Test
     public void testDeleteSDNONs() {
-        //impl.deleteSdnoNs(servletReq);
+        // get request
+        mockGetRequestBody(FILE_PATH + "deleteSdnoNsReq.json");
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "deleteSdnoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        // update segment operation and delete segment
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+            @Mock
+            public void deleteSegmentByIdAndType(ServiceSegmentModel serviceSegment) {
+                // do nothing
+            }
+        };
+        Response rsp = impl.deleteSdnoNs(servletReq);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        JSONObject subObj = JSONObject.fromObject(obj.get("result"));
+        Assert.assertEquals(null, "success", subObj.getString("status"));
     }
     
     @Test
     public void testTerminateSDNONs() {
-        //impl.terminateSdnoNs(servletReq);
+        // get request
+        mockGetRequestBody(FILE_PATH + "terminateSdnoNsReq.json");
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "terminateSdnoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        // update segment operation and delete segment
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        Response rsp = impl.terminateSdnoNs(servletReq);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        Assert.assertEquals(null, "1", obj.getString("jobId"));
     }
     
     @Test
     public void testInstantiateSDNONs() {
-        String nsInstanceId = "1";
-        //impl.instantiateSdnoNs(nsInstanceId, servletReq);
+        // get request
+        mockGetRequestBody(FILE_PATH + "instantiateSdnoNsReq.json");
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "instantiateSdnoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        // insert data
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        Response rsp = impl.instantiateSdnoNs("1", servletReq);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        Assert.assertEquals(null, "1", obj.getString("jobId"));
     }
     
     @Test
@@ -203,12 +314,59 @@ public class DrivermgrRoaModuleImplTest {
     
     @Test
     public void testCreateGSONs() {
-        //impl.createGsoNs(servletReq);
+        // get request
+        mockGetRequestBody(FILE_PATH + "createGsoNsReq.json");
+        // get service template
+        ServiceTemplate svcTmpl = new ServiceTemplate();
+        svcTmpl.setCsarId("csarId");
+        svcTmpl.setServiceTemplateId("svcTmplId");
+        new MockUp<CatalogProxyImpl>() {
+            @Mock
+            public ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost){
+                return svcTmpl;
+            }
+        };
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "createGsoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        // insert data
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public void insertSegment(ServiceSegmentModel serviceSegment) {
+                // do nothing
+            }
+            @Mock
+            public void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        Response rsp = impl.createGsoNs(servletReq);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        JSONObject subObj = JSONObject.fromObject(obj.get("service"));
+        Assert.assertEquals(null, "o1", subObj.getString("operationId"));
     }
     
     @Test
     public void testDeleteGSONs() {
-        //impl.deleteGsoNs(servletReq);
+        // get request
+        mockGetRequestBody(FILE_PATH + "deleteGsoNsReq.json");
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "deleteGsoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        // insert data
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        Response rsp = impl.deleteGsoNs(servletReq);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        Assert.assertEquals(null, "o1", obj.getString("operationId"));
     }
     
     @Test
