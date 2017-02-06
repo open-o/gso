@@ -116,6 +116,7 @@ public class UpdateStatusJob extends TimerTask {
             }
 
             // Update service instances status and processing by service segments
+            // size(svcModels) >= size(segmentOpers)
             updateData(svcModels, segmentOpers);
 
         } catch(Exception exception) {
@@ -165,10 +166,15 @@ public class UpdateStatusJob extends TimerTask {
      * @since GSO 0.5
      */
     private void dealSvcWithoutSegOpers(List<String> svcIds, List<ServiceModel> svcModels) {
-        List<String> unnormalSvcIds = new LinkedList<>();
         // Query unnormal service operation
         List<ServiceOperation> unnormalOper =
                 getUnNormalService(serviceOperDao.queryOperByIds(svcIds), SERVICE_WITHOUT_SEG_NOT_UPDATE);
+        if(CollectionUtils.isEmpty(unnormalOper)) {
+            return;
+        }
+
+        // Set service operation status
+        List<String> unnormalSvcIds = new LinkedList<>();
         for(ServiceOperation operation : unnormalOper) {
             operation.setFinishedAt(System.currentTimeMillis());
             operation.setResult(CommonConstant.Status.ERROR);
@@ -177,6 +183,7 @@ public class UpdateStatusJob extends TimerTask {
             operation.setProgress(Integer.valueOf(CommonConstant.Progress.ONE_HUNDRED));
             unnormalSvcIds.add(operation.getServiceId());
         }
+
         // Update service instance operation
         serviceOperDao.batchUpdate(unnormalOper);
 
@@ -348,6 +355,7 @@ public class UpdateStatusJob extends TimerTask {
 
                 serviceOper.setProgress(Integer.valueOf(CommonConstant.Progress.ONE_HUNDRED));
                 serviceOper.setFinishedAt(System.currentTimeMillis());
+                serviceOper.setResult(CommonConstant.Status.FINISHED);
                 updateSvcOper.add(serviceOper);
                 continue;
             }
@@ -375,18 +383,18 @@ public class UpdateStatusJob extends TimerTask {
         }
 
         // 3. Update service operations
-        if(CollectionUtils.isEmpty(updateSvcOper)) {
+        if(!CollectionUtils.isEmpty(updateSvcOper)) {
             serviceOperDao.batchUpdate(updateSvcOper);
         }
 
         // 4. Update service status
-        if(CollectionUtils.isEmpty(updateSvc)) {
+        if(!CollectionUtils.isEmpty(updateSvc)) {
             invDao.batchUpdate(invServices);
             svcModelDao.batchUpdate(updateSvc);
         }
 
         // 5. Delete service instances which are being deleted
-        if(CollectionUtils.isEmpty(delServiceIds)) {
+        if(!CollectionUtils.isEmpty(delServiceIds)) {
             svcModelDao.batchDelete(delServiceIds);
             invDao.batchDelete(delServiceIds);
         }

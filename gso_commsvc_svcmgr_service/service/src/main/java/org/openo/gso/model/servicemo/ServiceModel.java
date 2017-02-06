@@ -38,8 +38,8 @@ public class ServiceModel extends BaseServiceModel {
      * Parameters of service instance.
      */
     @JsonIgnore
-    private ServiceParameter parameter;
-    
+    private Object parameter;
+
     /**
      * Constructor<br/>
      * <p>
@@ -49,20 +49,6 @@ public class ServiceModel extends BaseServiceModel {
      */
     public ServiceModel() {
         super();
-    }
-
-    /**
-     * @return Returns the parameter.
-     */
-    public ServiceParameter getParameter() {
-        return parameter;
-    }
-
-    /**
-     * @param parameter The parameter to set.
-     */
-    public void setParameter(ServiceParameter parameter) {
-        this.parameter = parameter;
     }
 
     /**
@@ -80,6 +66,20 @@ public class ServiceModel extends BaseServiceModel {
     }
 
     /**
+     * @return Returns the parameter.
+     */
+    public Object getParameter() {
+        return parameter;
+    }
+
+    /**
+     * @param parameter The parameter to set.
+     */
+    public void setParameter(Object parameter) {
+        this.parameter = parameter;
+    }
+
+    /**
      * Add it for log.<br/>
      * 
      * @return property String
@@ -93,5 +93,4 @@ public class ServiceModel extends BaseServiceModel {
                 + ", getCreateAt()=" + getCreateAt() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
                 + ", toString()=" + super.toString() + "]";
     }
-
 }

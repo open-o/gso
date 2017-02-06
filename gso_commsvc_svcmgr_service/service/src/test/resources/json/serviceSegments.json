@@ -1,0 +1,24 @@
+{
+	"segments": [{
+		"serviceId": "6cf110404cea452390bf996717527739",
+		"serviceSegmentId": "segmentId_1",
+		"serviceSegmentType": "NFVO",
+		"serviceSegmentName": "segment",
+		"templateId": "38a6c01-66cc-46ab-b748-38a6c010d273",
+		"nodeType": "tosca.nodes.nfv.NS.POP",
+		"topoSeqNumber": 1,
+		"domainHost": "127.0.0.1",
+		"nodeTemplateName": "POP_NS_1"
+	},
+	{
+		"serviceId": "6cf110404cea452390bf996717527739",
+		"serviceSegmentId": "segmentId_2",
+		"serviceSegmentType": "NFVO",
+		"serviceSegmentName": "segment",
+		"templateId": "38a6c01-66cc-46ab-b748-38a6c010d273",
+		"nodeType": "tosca.nodes.nfv.NS.POP",
+		"topoSeqNumber": 2,
+		"domainHost": "127.0.0.1",
+		"nodeTemplateName": "POP_NS_2"
+	}]
+}

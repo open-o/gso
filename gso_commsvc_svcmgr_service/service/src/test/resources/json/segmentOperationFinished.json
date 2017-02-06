@@ -1,0 +1,24 @@
+{
+	"operations": [{
+		"serviceSegmentId": "segmentId_1",
+		"serviceSegmentType": "NFVO",
+		"jobId": "2",
+		"serviceId": "6cf110404cea452390bf996717527739",
+		"operationType": "create",
+		"status": "finished",
+		"progress": 100,
+		"errorCode": 200,
+		"statusDescription": "Something wrong with DB"
+	},
+	{
+		"serviceSegmentId": "segmentId_2",
+		"serviceSegmentType": "NFVO",
+		"jobId": "2",
+		"serviceId": "6cf110404cea452390bf996717527739",
+		"operationType": "create",
+		"status": "finished",
+		"progress": 100,
+		"errorCode": 200,
+		"statusDescription": ""
+	}]
+}
