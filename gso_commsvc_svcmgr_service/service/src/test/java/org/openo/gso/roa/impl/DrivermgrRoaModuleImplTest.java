@@ -146,7 +146,37 @@ public class DrivermgrRoaModuleImplTest {
     
     @Test
     public void testCreateSDNONs() {
-        //impl.createSdnoNs(servletReq);
+     // get request
+        mockGetRequestBody(FILE_PATH + "createSdnoNsReq.json");
+        // get service template
+        ServiceTemplate svcTmpl = new ServiceTemplate();
+        svcTmpl.setId("id");
+        svcTmpl.setServiceTemplateId("svcTmplId");
+        new MockUp<CatalogProxyImpl>() {
+            @Mock
+            public ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost){
+                return svcTmpl;
+            }
+        };
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "createSdnoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        // insert data
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public void insertSegment(ServiceSegmentModel serviceSegment) {
+                // do nothing
+            }
+            @Mock
+            public void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        Response rsp = impl.createSdnoNs(servletReq);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        Assert.assertSame(1, Integer.valueOf(obj.getString("nsInstanceId")));
     }
     
     @Test
