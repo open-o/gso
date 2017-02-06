@@ -466,12 +466,12 @@ public class DriverManagerImpl implements IDriverManager {
             LOGGER.info("job result is succeeded, operType is {}", operType);
             if(CommonConstant.OperationType.CREATE.equals(operType)) {
                 ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
-                updateSegmentOperStatus(statusSegOper, CommonConstant.Status.FINISHED, rspDesc.getErrorCode(), rspDesc.getStatusDescription());
+                updateSegmentOperStatus(statusSegOper, CommonConstant.Status.FINISHED, rsp.getStatus(), rspDesc.getStatusDescription());
             }
         } else if(CommonConstant.Status.ERROR.equals(rspDesc.getStatus())) {
             LOGGER.error("job result is failed, operType is {}", operType);
             ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
-            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, rspDesc.getErrorCode(), rspDesc.getStatusDescription());
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, rsp.getStatus(), rspDesc.getStatusDescription());
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
         } else {
             // do nothing

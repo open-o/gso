@@ -35,6 +35,7 @@ import org.openo.baseservice.roa.util.restclient.RestfulOptions;
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
+import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.dao.impl.ServiceSegmentDaoImpl;
 import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
@@ -66,6 +67,11 @@ public class DrivermgrRoaModuleImplTest {
     
     CatalogProxyImpl catalogProxy;
 
+    /**
+     * initial<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Before
     public void init() {
         impl = new DrivermgrRoaModuleImpl();
@@ -77,16 +83,31 @@ public class DrivermgrRoaModuleImplTest {
         driverMgr.setServiceSegmentDao(serviceSegmentDao);
     }
 
+    /**
+     * test get driver manager<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testGetDriver() {
         assertNotNull(impl.getDriverMgr());
     }
 
+    /**
+     * test set driver manager<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testSetDriver() {
         impl.setDriverMgr(driverMgr);
     }
 
+    /**
+     * test create nfvo network service<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testCreateNFVONs() {
         // get request
@@ -122,6 +143,11 @@ public class DrivermgrRoaModuleImplTest {
         Assert.assertEquals(null, "1", obj.getString("nsInstanceId"));
     }
     
+    /**
+     * test delete nfvo network service<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testDeleteNFVONs() {
         // get request
@@ -148,6 +174,11 @@ public class DrivermgrRoaModuleImplTest {
         Assert.assertEquals(null, "success", subObj.getString("status"));
     }
     
+    /**
+     * test terminate nfvo network service<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testTerminateNFVONs() {
         // get request
@@ -173,6 +204,11 @@ public class DrivermgrRoaModuleImplTest {
         Assert.assertEquals(null, "1", obj.getString("jobId"));
     }
     
+    /**
+     * test instantiate nfvo network service<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testInstantiateNFVONs() {
         // get request
@@ -194,11 +230,52 @@ public class DrivermgrRoaModuleImplTest {
         Assert.assertEquals(null, "1", obj.getString("jobId"));
     }
     
+    /**
+     * test query nfvo network service progress<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testQueryNFVONsProgress() {
-
+        String jobId = "1";
+        // get data
+        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
+        segOper.setOperationType(CommonConstant.OperationType.CREATE);
+        segOper.setServiceSegmentId("seg1");
+        ServiceSegmentModel segment = new ServiceSegmentModel();
+        segment.setDomainHost("10.100.1.1:80");
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public ServiceSegmentOperation querySegmentOperByJobIdAndType(String jobId, String segmentType) {
+                return segOper;
+            }
+            @Mock
+            public ServiceSegmentModel queryServiceSegmentByIdAndType(String segmentId, String segmentType) {
+                return segment;
+            }
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "queryNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        Response rsp = impl.queryNfvoJobStatus(jobId);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        JSONObject subObj = JSONObject.fromObject(obj.get("responseDescriptor"));
+        Assert.assertEquals(null, "100", subObj.getString("progress"));
+        Assert.assertEquals(null, "finished", subObj.getString("status"));
+        
     }
     
+    /**
+     * test create sdno network service<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testCreateSDNONs() {
         // get request
@@ -234,6 +311,11 @@ public class DrivermgrRoaModuleImplTest {
         Assert.assertEquals(null, "1", obj.getString("nsInstanceId"));
     }
     
+    /**
+     * test delete sdno network service<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testDeleteSDNONs() {
         // get request
@@ -260,6 +342,11 @@ public class DrivermgrRoaModuleImplTest {
         Assert.assertEquals(null, "success", subObj.getString("status"));
     }
     
+    /**
+     * test terminate sdno network service<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testTerminateSDNONs() {
         // get request
@@ -285,6 +372,11 @@ public class DrivermgrRoaModuleImplTest {
         Assert.assertEquals(null, "1", obj.getString("jobId"));
     }
     
+    /**
+     * test instantiate sdno network service<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testInstantiateSDNONs() {
         // get request
@@ -306,12 +398,51 @@ public class DrivermgrRoaModuleImplTest {
         Assert.assertEquals(null, "1", obj.getString("jobId"));
     }
     
+    /**
+     * test query sdno network service progress<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testQuerySDNONsProgress() {
         String jobId = "1";
-        //impl.querySdnoJobStatus(jobId);
+        // get data
+        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
+        segOper.setOperationType(CommonConstant.OperationType.CREATE);
+        segOper.setServiceSegmentId("seg2");
+        ServiceSegmentModel segment = new ServiceSegmentModel();
+        segment.setDomainHost("10.100.1.1:80");
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public ServiceSegmentOperation querySegmentOperByJobIdAndType(String jobId, String segmentType) {
+                return segOper;
+            }
+            @Mock
+            public ServiceSegmentModel queryServiceSegmentByIdAndType(String segmentId, String segmentType) {
+                return segment;
+            }
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "queryNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        Response rsp = impl.querySdnoJobStatus(jobId);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        JSONObject subObj = JSONObject.fromObject(obj.get("responseDescriptor"));
+        Assert.assertEquals(null, "100", subObj.getString("progress"));
+        Assert.assertEquals(null, "finished", subObj.getString("status"));
     }
     
+    /**
+     * test create gso network service<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testCreateGSONs() {
         // get request
@@ -348,6 +479,11 @@ public class DrivermgrRoaModuleImplTest {
         Assert.assertEquals(null, "o1", subObj.getString("operationId"));
     }
     
+    /**
+     * test delete gso network service<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testDeleteGSONs() {
         // get request
@@ -369,10 +505,44 @@ public class DrivermgrRoaModuleImplTest {
         Assert.assertEquals(null, "o1", obj.getString("operationId"));
     }
     
+    /**
+     * test query gso network service progress<br>
+     * 
+     * @since  GSO 0.5
+     */
     @Test
     public void testQueryGSONsProgress() {
         String jobId = "1";
-        //impl.queryGsoJobStatus(jobId);
+        // get data
+        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
+        segOper.setOperationType(CommonConstant.OperationType.CREATE);
+        segOper.setServiceSegmentId("seg1");
+        ServiceSegmentModel segment = new ServiceSegmentModel();
+        segment.setDomainHost("10.100.1.1:80");
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public ServiceSegmentOperation querySegmentOperByJobIdAndType(String jobId, String segmentType) {
+                return segOper;
+            }
+            @Mock
+            public ServiceSegmentModel queryServiceSegmentByIdAndType(String segmentId, String segmentType) {
+                return segment;
+            }
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "queryGsoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        Response rsp = impl.queryGsoJobStatus(jobId);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        JSONObject subObj = JSONObject.fromObject(obj.get("operation"));
+        Assert.assertEquals(null, "100", subObj.getString("progress"));
+        Assert.assertEquals(null, "finished", subObj.getString("result"));
     }
     
     /**
