@@ -23,14 +23,18 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openo.baseservice.roa.util.restclient.RestfulOptions;
+import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.exception.HttpCode;
+import org.openo.gso.util.RestfulUtil;
 import org.openo.gso.util.http.HttpUtil;
 
 import mockit.Mock;
@@ -131,6 +135,37 @@ public class CatalogProxyImplTest {
         response.setResponseJson(getJsonString(FILE_PATH + "getTemplateNodes.json"));
         mockGet(response);
         Assert.assertNotNull(catalogProxy.getNodeTemplate("123456", request));
+    }
+    
+    /**
+     * Test get service template by node type<br>
+     * 
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testGetSvcTmplByNodeType(){
+        String nodeType = "tosca.nodes.nfv.NS.POP_NS";
+        String domainHost = "10.100.1.1:80";
+        response.setStatus(HttpStatus.SC_OK);
+        response.setResponseJson(getJsonString(FILE_PATH + "getTemplateByNodeType.json"));
+        mockGetRestfulRsp(response);
+        Assert.assertNotNull(catalogProxy.getSvcTmplByNodeType(nodeType, domainHost));
+    }
+    
+    /**
+     * Mock to get rsp<br>
+     * 
+     * @param rsp restful response
+     * @since  GSO 0.5
+     */
+    private void mockGetRestfulRsp(final RestfulResponse rsp) {
+        new MockUp<RestfulUtil>() {
+            @Mock
+            public RestfulResponse getRemoteResponse(String url, String methodType,
+                    RestfulParametes restfulParametes, RestfulOptions options) {
+                return rsp;
+            }
+        };
     }
 
     /**
