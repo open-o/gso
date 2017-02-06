@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -35,14 +38,25 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openo.gso.constant.CommonConstant;
+import org.openo.gso.dao.impl.ServiceOperDaoImpl;
+import org.openo.gso.dao.inf.IServiceModelDao;
+import org.openo.gso.dao.inf.IServiceOperDao;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
+import org.openo.gso.job.DeleteOperationJob;
 import org.openo.gso.job.UpdateStatusJob;
+import org.openo.gso.model.servicemo.ServiceModel;
+import org.openo.gso.model.servicemo.ServiceOperation;
+import org.openo.gso.model.servicemo.ServicePackageMapping;
+import org.openo.gso.model.servicemo.ServiceParameter;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
+import org.openo.gso.model.servicemo.ServiceSegmentOperation;
 import org.openo.gso.util.json.JsonUtil;
 import org.openo.gso.util.service.SpringContextUtil;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.CollectionUtils;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -67,7 +81,22 @@ public class ActivatorTest {
     /**
      * SQL session.
      */
-    SqlSession session;
+    SqlSession session = null;
+
+    /**
+     * Service DAO
+     */
+    IServiceModelDao svcModelDao = null;
+
+    /**
+     * Service operation DAO
+     */
+    IServiceOperDao svcOperDao = null;
+
+    /**
+     * Service segment DAO
+     */
+    IServiceSegmentDao segmentDao = null;
 
     /**
      * Before executing UT, start sql.<br/>
@@ -107,6 +136,10 @@ public class ActivatorTest {
 
         reader.close();
 
+        svcModelDao = (IServiceModelDao)SpringContextUtil.getBeanById("serviceModelDao");
+        svcOperDao = (IServiceOperDao)SpringContextUtil.getBeanById("serviceOperDao");
+        segmentDao = (IServiceSegmentDao)SpringContextUtil.getBeanById("serviceSegmentDao");
+
         mockSession();
     }
 
@@ -121,19 +154,177 @@ public class ActivatorTest {
     }
 
     /**
-     * Test update status job<br/>
+     * Test update status job when service segments execution is failure.<br/>
      * 
      * @throws Exception when operation is failure.
      * @since GSO 0.5
      */
     @Test
-    public void testUpdateStatusJob() throws Exception {
-        String jsonString = getJsonString(FILE_PATH + "createServiceSegment.json");
-        ServiceSegmentModel segment = JsonUtil.unMarshal(jsonString, ServiceSegmentModel.class);
-        IServiceSegmentDao segmentDao = (IServiceSegmentDao)SpringContextUtil.getBeanById("serviceSegmentDao");
-        segmentDao.insertSegment(segment);
+    public void testUpdateStatusJobForError() throws Exception {
+        testUpdateStatusJob("segmentOperationWithError.json", CommonConstant.Status.ERROR,
+                CommonConstant.Progress.ONE_HUNDRED);
+    }
+
+    /**
+     * Test update status job when service segments are finished.<br/>
+     * 
+     * @throws Exception when operation is failure.
+     * @since GSO 0.5
+     */
+    @Test
+    public void testUpdateStatusJobForFinished() throws Exception {
+        testUpdateStatusJob("segmentOperationFinished.json", CommonConstant.Status.FINISHED,
+                CommonConstant.Progress.ONE_HUNDRED);
+    }
+
+    /**
+     * Test update status job when service segments are processing.<br/>
+     * 
+     * @throws Exception when operation is failure.
+     * @since GSO 0.5
+     */
+    @Test
+    public void testUpdateStatusJobForProcessing() throws Exception {
+        testUpdateStatusJob("segmentOperationProcessing.json", CommonConstant.Status.PROCESSING, null);
+    }
+
+    /**
+     * Test update status job when service has no service segments.<br/>
+     * 
+     * @throws Exception when operation is failure.
+     * @since GSO 0.5
+     */
+    @Test
+    public void testUpdateStatusJobWithoutSegs() throws Exception {
+        testUpdateOperFinishTime("serviceWithoutSegOper.json", 1485400153344L);
+    }
+
+    /**
+     * Test update status job when operation of service with segment not update for 2h.<br/>
+     * 
+     * @throws Exception when operation is failure.
+     * @since GSO 0.5
+     */
+    @Test
+    public void testUpdateStatusJobForLongTime() throws Exception {
+        testUpdateOperFinishTime("segmentOperationProcessing.json", System.currentTimeMillis());
+    }
+
+    /**
+     * Test delete operation timing task.<br/>
+     * 
+     * @throws Exception when operation is failure.
+     * @since GSO 0.5
+     */
+    @Test
+    public void testDeleteOperationJob() throws Exception {
+
+        // 1. prepare data
+        insertSvcData();
+        insertSegOper("segmentOperationFinished.json");
+        List<ServiceModel> services = svcModelDao.queryServiceByStatus(CommonConstant.Status.PROCESSING);
+        List<String> svcIds = new LinkedList<>();
+        for(ServiceModel service : services) {
+            svcIds.add(service.getServiceId());
+        }
+        List<ServiceOperation> svcOperations = svcOperDao.queryOperByIds(svcIds);
+        mockHistoryOper(svcOperations);
+
+        // 2. start test
+        DeleteOperationJob delOper = new DeleteOperationJob();
+        delOper.run();
+
+        // 3. check test result
+        Assert.assertTrue(CollectionUtils.isEmpty(svcOperDao.queryOperByIds(svcIds)));
+        Assert.assertTrue(CollectionUtils.isEmpty(segmentDao.querySegmentOperByIds(svcIds)));
+    }
+
+    /**
+     * Test update status job.<br/>
+     * 
+     * @param file data json file
+     * @param status service status
+     * @param process service operation status
+     * @since GSO 0.5
+     */
+    private void testUpdateStatusJob(String file, String status, String process) {
+        insertSvcData();
+        insertSegOper(file);
         UpdateStatusJob updateJob = new UpdateStatusJob();
         updateJob.run();
+
+        // check service change
+        List<ServiceModel> services = svcModelDao.queryServiceByStatus(status);
+        Assert.assertNotNull(services);
+        List<String> svcIds = new LinkedList<>();
+        for(ServiceModel service : services) {
+            svcIds.add(service.getServiceId());
+        }
+
+        // check service operation change
+        List<ServiceOperation> operations = svcOperDao.queryOperByIds(svcIds);
+        Assert.assertNotNull(operations);
+        for(ServiceOperation oper : operations) {
+            Assert.assertTrue(status.equals(oper.getResult()));
+            if(null != process) {
+                Assert.assertTrue(process.equals(Integer.toString(oper.getProgress())));
+            } else {
+                Assert.assertTrue((0 != oper.getProgress()) && (100 != oper.getProgress()));
+            }
+        }
+    }
+
+    /**
+     * Prepare service data before testing.<br/>
+     * 
+     * @param segOperationPath file for segment operation data
+     * @since GSO 0.5
+     */
+    private void insertSvcData() {
+
+        // service instance
+        ServiceModel svcModel = JsonUtil.unMarshal(getJsonString(FILE_PATH + "service.json"), ServiceModel.class);
+        ServiceParameter param =
+                JsonUtil.unMarshal(getJsonString(FILE_PATH + "serviceParameters.json"), ServiceParameter.class);
+        svcModel.setParameter(param);
+        ServicePackageMapping packageMapping =
+                JsonUtil.unMarshal(getJsonString(FILE_PATH + "packageMapping.json"), ServicePackageMapping.class);
+        svcModel.setServicePackage(packageMapping);
+        // segmentNumber is set JsonIgnore, so need to add value when constructing data.
+        svcModel.setSegmentNumber(2);
+        svcModelDao.insert(svcModel);
+
+        // service operation
+        ServiceOperation svcOper =
+                JsonUtil.unMarshal(getJsonString(FILE_PATH + "serviceOperation.json"), ServiceOperation.class);
+        svcOperDao.insert(svcOper);
+    }
+
+    /**
+     * Prepare service segments before testing.<br/>
+     * 
+     * @since GSO 0.5
+     */
+    private void insertSegmens() {
+        List<Object> segLst =
+                (List)JsonUtil.unMarshal(getJsonString(FILE_PATH + "serviceSegments.json"), Map.class).get("segments");
+        for(Object seg : segLst) {
+            segmentDao.insertSegment(JsonUtil.unMarshal(JsonUtil.marshal(seg), ServiceSegmentModel.class));
+        }
+    }
+
+    /**
+     * Prepare segment operation data before testing.<br/>
+     * 
+     * @param segOperationPath file for segment operation data
+     * @since GSO 0.5
+     */
+    private void insertSegOper(String segOperationPath) {
+        List<Object> segOperLst =
+                (List)JsonUtil.unMarshal(getJsonString(FILE_PATH + segOperationPath), Map.class).get("operations");
+        for(Object segOper : segOperLst) {
+            segmentDao.insertSegmentOper(JsonUtil.unMarshal(JsonUtil.marshal(segOper), ServiceSegmentOperation.class));
+        }
     }
 
     /**
@@ -173,5 +364,60 @@ public class ActivatorTest {
                 return session;
             }
         };
+    }
+
+    /**
+     * Mock queryHistory method because h2 jdbc not support FROM_UNIXTIME.<br/>
+     * 
+     * @param operations prepared operation data.
+     * @since GSO 0.5
+     */
+    private void mockHistoryOper(List<ServiceOperation> operations) {
+        new MockUp<ServiceOperDaoImpl>() {
+
+            @Mock
+            public List<ServiceOperation> queryHistory() {
+                return operations;
+            }
+        };
+    }
+
+    /**
+     * test scene that service operation time is long.<br/>
+     * 
+     * @param file segment operation file
+     * @param time service operation finish time
+     * @since GSO 0.5
+     */
+    private void testUpdateOperFinishTime(String file, long time) {
+        insertSvcData();
+        insertSegOper(file);
+        UpdateStatusJob updateJob = new UpdateStatusJob();
+        updateJob.run();
+
+        // 1. service status is normal which is processing
+        List<ServiceModel> services = svcModelDao.queryServiceByStatus(CommonConstant.Status.PROCESSING);
+        Assert.assertFalse(CollectionUtils.isEmpty(services));
+
+        // 2. service status is non-normal which is error
+        // 2.1 get all service instances ID
+        List<String> svcIds = new LinkedList<>();
+        for(ServiceModel service : services) {
+            svcIds.add(service.getServiceId());
+        }
+
+        // 2.2 modify last operation time of service
+        List<ServiceOperation> svcOpersOld = svcOperDao.queryOperByIds(svcIds);
+        for(ServiceOperation oper : svcOpersOld) {
+            // Old data is 1485399793344L
+            oper.setFinishedAt(time);
+            oper.setProgress(90);
+        }
+        svcOperDao.batchUpdate(svcOpersOld);
+
+        // 2.3 check the last data
+        updateJob.run();
+        services = svcModelDao.queryServiceByStatus(CommonConstant.Status.ERROR);
+        Assert.assertFalse(CollectionUtils.isEmpty(services));
     }
 }

@@ -148,7 +148,7 @@ public class ServiceManagerImpl implements IServiceManager {
         ServiceModel model = convertData(service);
         model.setName((String)service.get(Constant.SERVICE_NAME));
         model.setDescription((String)service.get(Constant.SERVICE_DESCRIPTION));
-        model.setParameter(convertParam(model.getServiceId(), paramsMap));
+        model.setParameter(instanceParam);
 
         // Cache csar ID. When operating csar, need to check csar status.
         String csarId = (String)service.get(Constant.SERVICE_DEF_ID);
@@ -351,8 +351,10 @@ public class ServiceManagerImpl implements IServiceManager {
         // insert inventory data
         inventoryDao.insert(DataConverter.convertToInvData(model), InvServiceModelMapper.class);
         inventoryDao.insert(model.getServicePackage(), InvServicePackageMapper.class);
-        inventoryDao.insert(model.getParameter(), InvServiceParameterMapper.class);
-        ;
+        if(null != model.getParameter()) {
+            inventoryDao.insert(DataConverter.convertDBParam(model.getServiceId(), model.getParameter()),
+                    InvServiceParameterMapper.class);
+        }
     }
 
     /**
@@ -424,23 +426,6 @@ public class ServiceManagerImpl implements IServiceManager {
         ValidateUtil.assertObjectNotNull(operation);
         Map<String, Object> workflowBody = DataConverter.constructWorkflowBody(operation, parameters);
         return workflowProxy.startWorkFlow(workflowBody, request);
-    }
-
-    /**
-     * Convert service parameter from map to list<ServiceParameter>.<br/>
-     * 
-     * @param serviceId service instance ID
-     * @param params service parameter
-     * @return parameters in the form of list
-     * @since GSO 0.5
-     */
-    private ServiceParameter convertParam(String serviceId, Map<String, Object> params) {
-        ServiceParameter parameter = new ServiceParameter();
-        parameter.setServiceId(serviceId);
-        parameter.setParamName(Constant.SERVICE_PARAMETERS);
-        parameter.setParamValue(JsonUtil.marshal(params));
-
-        return parameter;
     }
 
     /**

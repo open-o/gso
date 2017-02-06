@@ -32,6 +32,9 @@ import org.openo.gso.mapper.ServicePackageMapper;
 import org.openo.gso.mapper.ServiceParameterMapper;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
+import org.openo.gso.model.servicemo.ServiceParameter;
+import org.openo.gso.util.convertor.DataConverter;
+import org.openo.gso.util.json.JsonUtil;
 import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +97,8 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
 
             // 4. Insert service parameters
             if(null != serviceModel.getParameter()) {
-                getMapper(ServiceParameterMapper.class).insert(serviceModel.getParameter());
+                getMapper(ServiceParameterMapper.class)
+                        .insert(DataConverter.convertDBParam(serviceModel.getServiceId(), serviceModel.getParameter()));
             }
 
         } catch(Exception exception) {
@@ -212,7 +216,10 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
         try {
             ServiceModel model = getMapper(ServiceModelMapper.class).queryServiceByInstanceId(serviceId);
             model.setServicePackage(getMapper(ServicePackageMapper.class).queryPackageMapping(serviceId));
-            model.setParameter(getMapper(ServiceParameterMapper.class).query(serviceId));
+            ServiceParameter param = getMapper(ServiceParameterMapper.class).query(serviceId);
+            if(null != param) {
+                model.setParameter(JsonUtil.unMarshal(param.getParamValue(), Map.class));
+            }
             return model;
         } catch(Exception exception) {
             LOGGER.error("Fail to query service instance by id : {}", exception);

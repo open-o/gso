@@ -17,7 +17,6 @@
 package org.openo.gso.dao.impl;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -31,12 +30,14 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
+import org.springframework.util.CollectionUtils;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -141,7 +142,7 @@ public class ServiceModelDaoImplTest {
         serviceModelDao.delete("1");
         serviceModelDao.delete("3");
         List<ServiceModel> services = serviceModelDao.queryAllServices();
-        assertNull(services);
+        Assert.assertTrue(CollectionUtils.isEmpty(services));
     }
 
     /**
