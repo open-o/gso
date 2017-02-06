@@ -123,11 +123,11 @@ public class DataConverter {
      * @since GSO 0.5
      */
     public static Map<String, Object> constructWorkflowBody(OperationModel operation, Object parameter) {
-        Map<String, Object> body = new HashMap<String, Object>();
+        Map<String, Object> body = new HashMap<>();
         body.put(Constant.WSO_PROCESSID, operation.getProcessId());
         if(null != parameter) {
-            Map<String, Object> planInput = new HashMap<String, Object>();
-            Map<String, String> inputParam = new HashMap<String, String>();
+            Map<String, Object> planInput = new HashMap<>();
+            Map<String, String> inputParam = new HashMap<>();
             inputParam.put("inputParam", JsonUtil.marshal(parameter));
             planInput.put("planInput", inputParam);
             body.put(Constant.WSO_PARAMS, planInput);

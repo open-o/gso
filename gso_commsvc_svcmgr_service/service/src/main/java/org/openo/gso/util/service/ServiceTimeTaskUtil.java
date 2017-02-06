@@ -22,15 +22,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.openo.gso.job.DeleteOperationJob;
 import org.openo.gso.job.UpdateStatusJob;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ServiceTimeTaskUtil {
-
-    /**
-     * Log
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceTimeTaskUtil.class);
 
     /**
      * Executor service.
@@ -51,6 +44,17 @@ public class ServiceTimeTaskUtil {
      * Delay 7 * 24 * 3600 to delete history operations.
      */
     private static final long DELETE_HISTORY_OPERATION_DELAY = 7 * 24 * 3600L;
+
+    /**
+     * Constructor<br/>
+     * <p>
+     * </p>
+     * 
+     * @since GSO 0.5
+     */
+    private ServiceTimeTaskUtil() {
+
+    }
 
     /**
      * Startup task.<br/>

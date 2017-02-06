@@ -58,6 +58,11 @@ public class ErrorCode {
     public static final String DATA_IS_WRONG = "Data is wrong";
 
     /**
+     * Json fail to parse
+     */
+    public static final String JSON_FAIL_UNMARSHAL = "jsonstr unMarshal failed!";
+
+    /**
      * Constructor<br/>
      * <p>
      * </p>

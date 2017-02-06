@@ -55,10 +55,10 @@ public class RestfulUtil {
      * @param restfulParametes restful parameters(raw data and param map)
      * @param options ip and port
      * @return restful response
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
-    public static RestfulResponse getRemoteResponse(String url, String methodType,
-            RestfulParametes restfulParametes, RestfulOptions options) {
+    public static RestfulResponse getRemoteResponse(String url, String methodType, RestfulParametes restfulParametes,
+            RestfulOptions options) {
         RestfulResponse rsp = null;
         Restful rest = RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP);
         try {
@@ -89,10 +89,10 @@ public class RestfulUtil {
      * 
      * @param domainHost domainHost field
      * @return RestfulOptions Object
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     public static RestfulOptions setRestfulOptions(String domainHost) {
-        if(StringUtils.isEmpty(domainHost) || CommonConstant.LOCAL_HOST.equals(domainHost)){
+        if(StringUtils.isEmpty(domainHost) || CommonConstant.LOCAL_HOST.equals(domainHost)) {
             LOGGER.info("domainHost is {}", domainHost);
             return null;
         }
@@ -111,11 +111,11 @@ public class RestfulUtil {
      * @param rawData request body
      * @param queryParam parameters for query
      * @return RestfulParameters Object
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     public static RestfulParametes setRestfulParameters(String rawData, Map<String, String> queryParam) {
         RestfulParametes restfulParametes = new RestfulParametes();
-        Map<String, String> headerMap = new HashMap<String, String>(3);
+        Map<String, String> headerMap = new HashMap<>(3);
         headerMap.put(CommonConstant.HttpContext.CONTENT_TYPE, CommonConstant.HttpContext.MEDIA_TYPE_JSON);
         restfulParametes.setHeaderMap(headerMap);
 

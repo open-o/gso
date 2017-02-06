@@ -22,6 +22,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.codehaus.jackson.type.TypeReference;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.exception.HttpCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,8 +78,8 @@ public class JsonUtil {
         try {
             return MAPPER.readValue(jsonstr, type);
         } catch(IOException e) {
-            LOGGER.error("jsonstr unMarshal failed!", e);
-            throw new ApplicationException(HttpCode.BAD_REQUEST, "jsonstr unMarshal failed!");
+            LOGGER.error(ErrorCode.JSON_FAIL_UNMARSHAL, e);
+            throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.JSON_FAIL_UNMARSHAL);
         }
     }
 
@@ -94,8 +95,8 @@ public class JsonUtil {
         try {
             return MAPPER.readValue(jsonstr, type);
         } catch(IOException e) {
-            LOGGER.error("jsonstr unMarshal failed!", e);
-            throw new ApplicationException(HttpCode.BAD_REQUEST, "jsonstr unMarshal failed!");
+            LOGGER.error(ErrorCode.JSON_FAIL_UNMARSHAL, e);
+            throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.JSON_FAIL_UNMARSHAL);
         }
     }
 

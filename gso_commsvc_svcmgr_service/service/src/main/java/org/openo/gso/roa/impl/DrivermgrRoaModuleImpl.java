@@ -48,8 +48,9 @@ import org.slf4j.LoggerFactory;
  * @author
  * @version GSO 0.5 2016/8/4
  */
-public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODrivermgrRoaModule,IGSODrivermgrRoaModule {
-    
+public class DrivermgrRoaModuleImpl
+        implements INFVODrivermgrRoaModule, ISDNODrivermgrRoaModule, IGSODrivermgrRoaModule {
+
     /**
      * logger
      */
@@ -74,13 +75,12 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
         this.driverMgr = driverMgr;
     }
 
-
     /**
      * Create NFVO service instance<br>
      * 
      * @param servletReq http request
      * @return response
-     * @since   GSO 0.5
+     * @since GSO 0.5
      */
     @Override
     public Response createNfvoNs(HttpServletRequest servletReq) {
@@ -90,14 +90,12 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
         return buildResponse(rsp);
     }
 
-
-
     /**
      * Delete NFVO service instance<br>
      *
      * @param servletReq http request
      * @return response
-     * @since   GSO 0.5
+     * @since GSO 0.5
      */
     @Override
     public Response deleteNfvoNs(HttpServletRequest servletReq) {
@@ -111,8 +109,8 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * Query NFVO job status<br>
      * 
      * @param jobId uuid of NFVO job
-     * @return response 
-     * @since   GSO 0.5
+     * @return response
+     * @since GSO 0.5
      */
     @Override
     public Response queryNfvoJobStatus(String jobId) {
@@ -126,7 +124,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return response
-     * @since   GSO 0.5
+     * @since GSO 0.5
      */
     @Override
     public Response instantiateNfvoNs(String nsInstanceId, HttpServletRequest servletReq) {
@@ -135,7 +133,6 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
         RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, nfvSegInput, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
-    
 
     /**
      * Terminate NFVO service instance.<br/>
@@ -151,13 +148,13 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
         RestfulResponse rsp = driverMgr.terminateNs(nfvSegInput, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
-    
+
     /**
      * Create SDNO service instance<br>
      * 
      * @param servletReq http request
      * @return response
-     * @since   GSO 0.5
+     * @since GSO 0.5
      */
     @Override
     public Response createSdnoNs(HttpServletRequest servletReq) {
@@ -172,7 +169,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param servletReq http request
      * @return response
-     * @since   GSO 0.5
+     * @since GSO 0.5
      */
     @Override
     public Response deleteSdnoNs(HttpServletRequest servletReq) {
@@ -187,7 +184,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param jobId uuid of SDNO service job
      * @return response
-     * @since   GSO 0.5
+     * @since GSO 0.5
      */
     @Override
     public Response querySdnoJobStatus(String jobId) {
@@ -201,7 +198,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * @param nsInstanceId uuid of service instance
      * @param servletReq http request
      * @return response
-     * @since   GSO 0.5
+     * @since GSO 0.5
      */
     @Override
     public Response instantiateSdnoNs(String nsInstanceId, HttpServletRequest servletReq) {
@@ -216,7 +213,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param servletReq http request
      * @return response
-     * @since   GSO 0.5
+     * @since GSO 0.5
      */
     @Override
     public Response terminateSdnoNs(HttpServletRequest servletReq) {
@@ -231,7 +228,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param rsp restful response
      * @return response instance
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     private Response buildResponse(RestfulResponse rsp) {
         ResponseBuilder rspBuilder = Response.status(rsp.getStatus());
@@ -244,7 +241,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param servletReq http request
      * @return response
-     * @since   GSO 0.5
+     * @since GSO 0.5
      */
     @Override
     public Response createGsoNs(HttpServletRequest servletReq) {
@@ -259,7 +256,7 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param servletReq http request
      * @return response
-     * @since   GSO 0.5
+     * @since GSO 0.5
      */
     @Override
     public Response deleteGsoNs(HttpServletRequest servletReq) {
@@ -274,26 +271,27 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
      * 
      * @param jobId job id
      * @return response
-     * @since   GSO 0.5
+     * @since GSO 0.5
      */
     @Override
     public Response queryGsoJobStatus(String jobId) {
         RestfulResponse rsp = driverMgr.getGsoNsProgress(jobId, CommonConstant.SegmentType.GSO);
         return buildResponse(rsp);
     }
-    
+
     /**
      * private method 1:get input parameters for current node<br>
      * 
      * @param servletReq http request
      * @return input parameters for current node
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     private SegmentInputParameter getParamsForCurrentNode(HttpServletRequest servletReq) {
         // Step 0: get request model
         String body = RestUtils.getRequestBody(servletReq);
         LOGGER.info("body from request is {}", body);
-        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}").replaceAll("\"\\[", "\\[").replaceAll("\\]\"", "\\]");
+        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}").replaceAll("\"\\[", "\\[")
+                .replaceAll("\\]\"", "\\]");
         LOGGER.info("json body from request is {}", jsonBody);
         ServiceNode serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
 
@@ -302,14 +300,14 @@ public class DrivermgrRoaModuleImpl implements INFVODrivermgrRoaModule,ISDNODriv
             LOGGER.error("Input parameters from lcm/workflow are empty");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_PARAM);
         }
-        
+
         // Step 2:Get input parameters for current node
         List<SegmentInputParameter> inputList = serviceNode.getSegments();
-        Map<String, SegmentInputParameter> map = new HashMap<String, SegmentInputParameter>();
+        Map<String, SegmentInputParameter> map = new HashMap<>();
         for(SegmentInputParameter input : inputList) {
             map.put(input.getNodeTemplateName(), input);
         }
-        
+
         return map.get(serviceNode.getNodeTemplateName());
     }
 }

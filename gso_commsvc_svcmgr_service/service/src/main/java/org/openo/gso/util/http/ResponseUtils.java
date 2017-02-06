@@ -98,7 +98,7 @@ public class ResponseUtils {
         ValidateUtil.assertStringNotNull(request);
         Map<String, Object> requestMap = JsonUtil.unMarshal(request, Map.class);
         Object data = requestMap.get(key);
-        List<T> dataModelList = new LinkedList<T>();
+        List<T> dataModelList = new LinkedList<>();
         if(data instanceof List) {
             for(Object model : (List<T>)data) {
                 if(!(model instanceof Map)) {
@@ -143,7 +143,6 @@ public class ResponseUtils {
             args.setDescription(description);
             args.setReason(exception.getResponse().getEntity());
         }
-        
 
         return new ApplicationException(exception.getResponse().getStatus(), args);
     }

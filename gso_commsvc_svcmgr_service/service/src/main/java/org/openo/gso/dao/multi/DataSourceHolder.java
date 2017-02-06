@@ -29,7 +29,7 @@ public class DataSourceHolder {
     /**
      * Data sources.
      */
-    private static final ThreadLocal<String> dataSources = new ThreadLocal<String>();
+    private static final ThreadLocal<String> dataSources = new ThreadLocal<>();
 
     /**
      * Constructor<br/>

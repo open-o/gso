@@ -101,10 +101,10 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
                 ? svcDetail.getServiceModel().getServiceId() : null;
         String operationId = ((null != svcDetail) && (null != svcDetail.getServiceOperation()))
                 ? svcDetail.getServiceOperation().getOperationId() : null;
-        Map<String, String> ids = new HashMap<String, String>();
+        Map<String, String> ids = new HashMap<>();
         ids.put(Constant.SERVICE_INSTANCE_ID, serviceId);
         ids.put(Constant.SERVICE_OPERATION_ID, operationId);
-        Map<String, Object> rsp = new HashMap<String, Object>();
+        Map<String, Object> rsp = new HashMap<>();
         rsp.put(Constant.SERVICE_INDENTIFY, ids);
 
         LOGGER.error("create service response: {}", rsp);

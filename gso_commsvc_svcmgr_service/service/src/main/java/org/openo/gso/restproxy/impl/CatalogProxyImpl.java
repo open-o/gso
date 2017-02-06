@@ -126,7 +126,7 @@ public class CatalogProxyImpl implements ICatalogProxy {
         String url = new StringBuilder().append(CATALOG_REST_URI_SERVICETEMPALTE).append(templateId)
                 .append(FORWARD_FLASH).append(URI_PATH_PARAMETERS).toString();
 
-        Map<String, String> httpHeaders = new HashMap<String, String>();
+        Map<String, String> httpHeaders = new HashMap<>();
         RestfulResponse response = HttpUtil.get(url, httpHeaders, request);
         ResponseUtils.checkResonseAndThrowException(response, "query parameters of service template.");
 
@@ -147,7 +147,7 @@ public class CatalogProxyImpl implements ICatalogProxy {
         String url = new StringBuilder().append(CATALOG_REST_URI_SERVICETEMPALTE).append(templateId)
                 .append(FORWARD_FLASH).append(URI_PATH_OPERATIONS).toString();
 
-        Map<String, String> httpHeaders = new HashMap<String, String>();
+        Map<String, String> httpHeaders = new HashMap<>();
         RestfulResponse response = HttpUtil.get(url, httpHeaders, request);
         ResponseUtils.checkResonseAndThrowException(response, "query operation list of service template.");
 
@@ -166,7 +166,7 @@ public class CatalogProxyImpl implements ICatalogProxy {
     public List<ServiceTemplateModel> getTemplateByNodeTypeId(String nodeTypeId, HttpServletRequest request) {
         LOGGER.info("Get basic information of template by node type ID from catalog.");
         String url = new StringBuilder().append(CATALOG_REST_URI_SERVICETEMPALTE).append(URI_PATH_NESTING).toString();
-        Map<String, String> httpHeaders = new HashMap<String, String>();
+        Map<String, String> httpHeaders = new HashMap<>();
         httpHeaders.put(URI_PATH_QUERYING_NODETYPEDS, nodeTypeId);
         RestfulResponse response = HttpUtil.get(url, httpHeaders, request);
         ResponseUtils.checkResonseAndThrowException(response, "query service tempalte.");
@@ -202,7 +202,7 @@ public class CatalogProxyImpl implements ICatalogProxy {
         LOGGER.info("Notify catalog to set GSAR status.");
         String url = new StringBuilder().append(CATALOG_REST_URI_CSAR).append(csarId).append("?")
                 .append(URI_PATH_QUERY_ONBOARDSTATE).append("=").append(PACKAGE_STATE_ONBOARDED).toString();
-        Map<String, String> httpHeaders = new HashMap<String, String>();
+        Map<String, String> httpHeaders = new HashMap<>();
         RestfulResponse response = HttpUtil.put(url, httpHeaders, request);
         ResponseUtils.checkResonseAndThrowException(response, "update csar package state.");
     }
@@ -220,7 +220,7 @@ public class CatalogProxyImpl implements ICatalogProxy {
         LOGGER.info("Get nodes of template from catalog. Template id is {}", templateId);
         String url = new StringBuilder().append(CATALOG_REST_URI_SERVICETEMPALTE).append(templateId)
                 .append(URI_PATH_NODETEMPLATES).toString();
-        Map<String, String> httpHeaders = new HashMap<String, String>();
+        Map<String, String> httpHeaders = new HashMap<>();
         RestfulResponse response = HttpUtil.get(url, httpHeaders, request);
         ResponseUtils.checkResonseAndThrowException(response, "query tempalte node.");
 
@@ -233,7 +233,7 @@ public class CatalogProxyImpl implements ICatalogProxy {
      * 
      * @param nodeType node type
      * @return service template
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     @Override
     public ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost) {
@@ -243,7 +243,7 @@ public class CatalogProxyImpl implements ICatalogProxy {
 
         // Step 2: Prepare the restful parameters and options
         LOGGER.info("node Type is {}", nodeType);
-        Map<String, String> queryParam = new HashMap<String, String>();
+        Map<String, String> queryParam = new HashMap<>();
         queryParam.put("nodeTypeIds", nodeType);
 
         RestfulParametes restfulParameters = RestfulUtil.setRestfulParameters(null, queryParam);

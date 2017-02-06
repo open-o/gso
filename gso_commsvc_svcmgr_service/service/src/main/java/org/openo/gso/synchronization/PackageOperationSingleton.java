@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,17 +32,17 @@ public class PackageOperationSingleton {
     /**
      * Csar is being used to create service instance.
      */
-    private Set<String> beingUsedCsar = new HashSet<String>();
+    private Set<String> beingUsedCsar = new HashSet<>();
 
     /**
      * It is deleting csar package.
      */
-    private Set<String> beingDeletedCsar = new HashSet<String>();
+    private Set<String> beingDeletedCsar = new HashSet<>();
 
     /**
      * Operation instance.
      */
-    private static PackageOperationSingleton INSTANCE = new PackageOperationSingleton();
+    private static PackageOperationSingleton instancePackageOper = new PackageOperationSingleton();
 
     /**
      * Constructor<br/>
@@ -62,7 +62,7 @@ public class PackageOperationSingleton {
      * @since GSO 0.5
      */
     public static PackageOperationSingleton getInstance() {
-        return PackageOperationSingleton.INSTANCE;
+        return PackageOperationSingleton.instancePackageOper;
     }
 
     /**
