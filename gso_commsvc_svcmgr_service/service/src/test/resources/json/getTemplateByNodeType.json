@@ -1,5 +1,6 @@
 [{
 	"serviceTemplateId": "38a6c01-66cc-46ab-b748-38a6c010d272",
+	"id":"NanocellGateway",
 	"templateName": "NanocellGateway",
 	"vendor": "ZTE",
 	"version": "0.0.1",
