@@ -253,13 +253,13 @@ public class CommonUtil {
             ServiceParameterModel parameterModel =
                     JsonUtil.unMarshal(obj.get(FieldConstant.InventoryService.FIELD_INPUTPARAMETERS).toString(),
                             ServiceParameterModel.class);
-            model.setParameters(parameterModel);
+            model.setInputParameters(parameterModel);
         } else {
             Map<String, String> parameters = JsonUtil
                     .unMarshal(obj.get(FieldConstant.InventoryService.FIELD_INPUTPARAMETERS).toString(), Map.class);
             ServiceParameterModel parameterModel = new ServiceParameterModel();
             parameterModel.setAdditionalParamForNs(parameters);
-            model.setParameters(parameterModel);
+            model.setInputParameters(parameterModel);
         }
         return model;
     }

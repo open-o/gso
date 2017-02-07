@@ -65,7 +65,7 @@ public class ServiceModel {
     /**
      * the parameters
      */
-    private ServiceParameterModel parameters;
+    private ServiceParameterModel inputParameters;
 
     
     /**
@@ -179,20 +179,22 @@ public class ServiceModel {
         this.templateName = templateName;
     }
 
-    
-    /**
-     * @return Returns the parameters.
-     */
-    public ServiceParameterModel getParameters() {
-        return parameters;
-    }
 
     
     /**
-     * @param parameters The parameters to set.
+     * @return Returns the inputParameters.
      */
-    public void setParameters(ServiceParameterModel parameters) {
-        this.parameters = parameters;
+    public ServiceParameterModel getInputParameters() {
+        return inputParameters;
     }
 
+
+    
+    /**
+     * @param inputParameters The inputParameters to set.
+     */
+    public void setInputParameters(ServiceParameterModel inputParameters) {
+        this.inputParameters = inputParameters;
+    }
+    
 }
