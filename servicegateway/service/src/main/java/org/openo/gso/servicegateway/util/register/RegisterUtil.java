@@ -135,25 +135,29 @@ public class RegisterUtil {
 
         File file = new File(path);
         BufferedReader reader = null;
+        FileReader fileReader = null;
         String laststr = "";
         try {
-            reader = new BufferedReader(new FileReader(file));
+            fileReader = new FileReader(file);
+            reader = new BufferedReader(fileReader);
             String tempString = null;
             // Read one line at a time until the end of the null file.
             while ((tempString = reader.readLine()) != null) {
                 // add the line
                 laststr = laststr + tempString;
             }
-            reader.close();
         } catch (IOException e) {
             LOGGER.error("GSO ReadFile fail.", e);
         } finally {
-            if (reader != null) {
-                try {
+            try {
+                if(reader != null) {
                     reader.close();
-                } catch (IOException e1) {
-                    LOGGER.error("GSO ReadFile reader close fail.", e1);
                 }
+                if(fileReader != null) {
+                    fileReader.close();
+                }
+            } catch(IOException e1) {
+                LOGGER.error("GSO ReadFile reader close fail.", e1);
             }
         }
         return laststr;
