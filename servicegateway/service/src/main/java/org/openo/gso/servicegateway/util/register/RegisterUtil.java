@@ -153,6 +153,11 @@ public class RegisterUtil {
                 if(reader != null) {
                     reader.close();
                 }
+            } catch(IOException e1) {
+                LOGGER.error("GSO ReadFile reader close fail.", e1);
+            }
+            try {
+
                 if(fileReader != null) {
                     fileReader.close();
                 }

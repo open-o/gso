@@ -222,8 +222,7 @@ public class CommonUtil {
             logTheResponseData("query service from inventory", resp);
             if(HttpCode.isSucess(resp.getStatus())) {
                 JSONObject obj = JSONObject.fromObject(resp.getResponseContent());
-                ServiceModel model = convertJsonToServiceModel(obj);
-                return model;
+                return convertJsonToServiceModel(obj);
             }
         } catch(ServiceException e) {
             LOGGER.info("query the services failed.", e);
