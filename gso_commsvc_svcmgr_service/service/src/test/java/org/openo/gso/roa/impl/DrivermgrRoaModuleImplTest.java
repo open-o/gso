@@ -35,6 +35,7 @@ import org.openo.baseservice.roa.util.restclient.RestfulOptions;
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.dao.impl.ServiceSegmentDaoImpl;
 import org.openo.gso.model.drivermo.ServiceTemplate;
@@ -480,6 +481,107 @@ public class DrivermgrRoaModuleImplTest {
     }
     
     /**
+     * test create gso network service<br>
+     * fail1: service template is null
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testCreateGSONsFail1() {
+        // get request
+        mockGetRequestBody(FILE_PATH + "createGsoNsReq.json");
+        // get service template null
+        new MockUp<CatalogProxyImpl>() {
+            @Mock
+            public ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost){
+                return null;
+            }
+        };
+        try{
+            Response rsp = impl.createGsoNs(servletReq);
+        } catch(ApplicationException e) {
+            Assert.assertNotNull(e);
+        }
+    }
+    
+    /**
+     * test create gso network service<br>
+     * fail2: response content is invalid
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testCreateGSONsFail2() {
+        // get request
+        mockGetRequestBody(FILE_PATH + "createGsoNsReq.json");
+        // get service template
+        ServiceTemplate svcTmpl = new ServiceTemplate();
+        svcTmpl.setCsarId("csarId");
+        svcTmpl.setServiceTemplateId("svcTmplId");
+        new MockUp<CatalogProxyImpl>() {
+            @Mock
+            public ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost){
+                return svcTmpl;
+            }
+        };
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "createGsoNsFailedRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        try{
+            Response rsp = impl.createGsoNs(servletReq);
+        } catch (ApplicationException e) {
+            Assert.assertNotNull(e);
+        }
+    }
+    
+    /**
+     * test create gso network service<br>
+     * fail3: response status is 400, bad request
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testCreateGSONsFail3() {
+        // get request
+        mockGetRequestBody(FILE_PATH + "createGsoNsReq.json");
+        // get service template
+        ServiceTemplate svcTmpl = new ServiceTemplate();
+        svcTmpl.setCsarId("csarId");
+        svcTmpl.setServiceTemplateId("svcTmplId");
+        new MockUp<CatalogProxyImpl>() {
+            @Mock
+            public ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost){
+                return svcTmpl;
+            }
+        };
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_BAD_REQUEST);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "createGsoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        // insert data
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public void insertSegment(ServiceSegmentModel serviceSegment) {
+                // do nothing
+            }
+            @Mock
+            public void insertSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        try{
+            Response rsp = impl.createGsoNs(servletReq);
+        } catch (ApplicationException e) {
+            Assert.assertNotNull(e);
+        }
+    }
+    
+        
+    /**
      * test delete gso network service<br>
      * 
      * @since  GSO 0.5
@@ -504,6 +606,59 @@ public class DrivermgrRoaModuleImplTest {
         JSONObject obj = JSONObject.fromObject(rsp.getEntity());
         Assert.assertEquals(null, "o1", obj.getString("operationId"));
     }
+    
+    /**
+     * test delete gso network service<br>
+     * fail1: response status is 400, bad request
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testDeleteGSONsFail1() {
+        // get request
+        mockGetRequestBody(FILE_PATH + "deleteGsoNsReq.json");
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_BAD_REQUEST);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "deleteGsoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        // update data
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        try{
+            Response rsp = impl.deleteGsoNs(servletReq);
+        } catch (ApplicationException e) {
+            Assert.assertNotNull(e);
+        }
+        
+    }
+    
+    /**
+     * test delete gso network service<br>
+     * fail2: response content is invalid
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testDeleteGSONsFail2() {
+        // get request
+        mockGetRequestBody(FILE_PATH + "deleteGsoNsReq.json");
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "deleteGsoNsFailedRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        try{
+            Response rsp = impl.deleteGsoNs(servletReq);
+        } catch (ApplicationException e) {
+            Assert.assertNotNull(e);
+        }
+        
+    }
+    
+
     
     /**
      * test query gso network service progress<br>
@@ -546,6 +701,122 @@ public class DrivermgrRoaModuleImplTest {
     }
     
     /**
+     * test query gso network service progress<br>
+     * fail1: fail to operate db
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testQueryGSONsProgressFail1() {
+        String jobId = "1";
+        // get data
+        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
+        segOper.setOperationType(CommonConstant.OperationType.CREATE);
+        segOper.setServiceSegmentId("seg1");
+        ServiceSegmentModel segment = new ServiceSegmentModel();
+        segment.setDomainHost("10.100.1.1:80");
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public ServiceSegmentOperation querySegmentOperByJobIdAndType(String jobId, String segmentType) {
+                return segOper;
+            }
+            @Mock
+            public ServiceSegmentModel queryServiceSegmentByIdAndType(String segmentId, String segmentType) {
+                return segment;
+            }
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        mockGetRestfulRspException();
+        try{
+            Response rsp = impl.queryGsoJobStatus(jobId);
+        } catch (ApplicationException e) {
+            Assert.assertNotNull(e);
+        }
+    }
+    
+    /**
+     * test query gso network service progress<br>
+     * fail2: response status is 400, bad request
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testQueryGSONsProgressFail2() {
+        String jobId = "1";
+        // get data
+        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
+        segOper.setOperationType(CommonConstant.OperationType.CREATE);
+        segOper.setServiceSegmentId("seg1");
+        ServiceSegmentModel segment = new ServiceSegmentModel();
+        segment.setDomainHost("10.100.1.1:80");
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public ServiceSegmentOperation querySegmentOperByJobIdAndType(String jobId, String segmentType) {
+                return segOper;
+            }
+            @Mock
+            public ServiceSegmentModel queryServiceSegmentByIdAndType(String segmentId, String segmentType) {
+                return segment;
+            }
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_BAD_REQUEST);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "queryGsoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        try{
+            Response rsp = impl.queryGsoJobStatus(jobId);
+        } catch (ApplicationException e) {
+            Assert.assertNotNull(e);
+        }
+    }
+    
+    /**
+     * test query gso network service progress<br>
+     * fail3: response result is error
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testQueryGSONsProgressFail3() {
+        String jobId = "1";
+        // get data
+        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
+        segOper.setOperationType(CommonConstant.OperationType.CREATE);
+        segOper.setServiceSegmentId("seg1");
+        ServiceSegmentModel segment = new ServiceSegmentModel();
+        segment.setDomainHost("10.100.1.1:80");
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public ServiceSegmentOperation querySegmentOperByJobIdAndType(String jobId, String segmentType) {
+                return segOper;
+            }
+            @Mock
+            public ServiceSegmentModel queryServiceSegmentByIdAndType(String segmentId, String segmentType) {
+                return segment;
+            }
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+        };
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "queryGsoNsErrorRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        try{
+            Response rsp = impl.queryGsoJobStatus(jobId);
+        } catch (ApplicationException e) {
+            Assert.assertNotNull(e);
+        }
+    }
+    
+    /**
      * Mock to get request body.<br/>
      * 
      * @param file json file path.
@@ -573,6 +844,21 @@ public class DrivermgrRoaModuleImplTest {
             public RestfulResponse getRemoteResponse(String url, String methodType,
                     RestfulParametes restfulParametes, RestfulOptions options) {
                 return rsp;
+            }
+        };
+    }
+    
+    /**
+     * Mock to get rsp throw new application exception<br>
+     * 
+     * @since  GSO 0.5
+     */
+    private void mockGetRestfulRspException() {
+        new MockUp<RestfulUtil>() {
+            @Mock
+            public RestfulResponse getRemoteResponse(String url, String methodType,
+                    RestfulParametes restfulParametes, RestfulOptions options) {
+                throw new ApplicationException(HttpStatus.SC_INTERNAL_SERVER_ERROR, "failed");
             }
         };
     }
