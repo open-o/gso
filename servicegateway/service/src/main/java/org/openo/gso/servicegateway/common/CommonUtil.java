@@ -26,6 +26,7 @@ import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.impl.SystemEnvVariablesFactory;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.register.RegisterUtil;
 import org.openo.gso.servicegateway.constant.Constant;
 import org.openo.gso.servicegateway.constant.FieldConstant;
 import org.openo.gso.servicegateway.exception.HttpCode;
@@ -39,7 +40,6 @@ import org.openo.gso.servicegateway.model.ServiceTemplateModel;
 import org.openo.gso.servicegateway.service.impl.ServiceGatewayImpl;
 import org.openo.gso.servicegateway.util.http.HttpUtil;
 import org.openo.gso.servicegateway.util.json.JsonUtil;
-import org.openo.gso.servicegateway.util.register.RegisterUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

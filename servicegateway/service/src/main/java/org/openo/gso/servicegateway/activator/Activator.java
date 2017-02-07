@@ -20,8 +20,8 @@ import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openo.baseservice.util.impl.SystemEnvVariablesFactory;
+import org.openo.gso.commsvc.common.register.RegisterUtil;
 import org.openo.gso.servicegateway.constant.Constant;
-import org.openo.gso.servicegateway.util.register.RegisterUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
