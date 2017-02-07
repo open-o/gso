@@ -240,6 +240,38 @@ public class ActivatorTest {
     }
 
     /**
+     * Test update status job when finishing to delete service instance.<br/>
+     * 
+     * @throws Exception when operation is failure.
+     * @since GSO 0.5
+     */
+    @Test
+    public void testUpdateStatusJobForDelOper() throws Exception {
+
+        // 1. construct finished result
+        testUpdateStatusJob("segmentOperationFinished.json", CommonConstant.Status.FINISHED,
+                CommonConstant.Progress.ONE_HUNDRED);
+
+        // 2.1 delete old operation
+        List<ServiceModel> services = svcModelDao.queryAllServices();
+        List<String> svcIds = new LinkedList<>();
+        for(ServiceModel service : services) {
+            svcIds.add(service.getServiceId());
+            svcModelDao.updateServiceStatus(service.getServiceId(), CommonConstant.Status.PROCESSING);
+        }
+        svcOperDao.deleteHistory(svcIds);
+
+        // 2.2 insert new operation
+        ServiceOperation svcOper = JsonUtil.unMarshal(getJsonString(FILE_PATH + "serviceOperationForDelOper.json"),
+                ServiceOperation.class);
+        svcOperDao.insert(svcOper);
+
+        // 3. test
+        UpdateStatusJob updateJob = new UpdateStatusJob();
+        updateJob.run();
+    }
+
+    /**
      * Test update status job.<br/>
      * 
      * @param file data json file
@@ -419,5 +451,15 @@ public class ActivatorTest {
         updateJob.run();
         services = svcModelDao.queryServiceByStatus(CommonConstant.Status.ERROR);
         Assert.assertFalse(CollectionUtils.isEmpty(services));
+    }
+
+    /**
+     * Test stop method.<br/>
+     * 
+     * @since GSO 0.5
+     */
+    @Test
+    public void testStop() {
+        ((Activator)SpringContextUtil.getBeanById("activatorBean")).stop();
     }
 }

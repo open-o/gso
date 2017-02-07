@@ -55,6 +55,8 @@ import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
+import org.openo.gso.model.servicemo.ServiceModel;
+import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.restproxy.impl.CatalogProxyImpl;
 import org.openo.gso.restproxy.impl.WorkflowProxyImpl;
 import org.openo.gso.service.impl.OperationManager;
@@ -329,6 +331,23 @@ public class ServicemgrRoaModuleImplTest {
     }
 
     /**
+     * Test that fail to create service .<br/>
+     * 
+     * @since GSO 0.5
+     */
+    @Test(expected = ApplicationException.class)
+    public void testCreateServiceSegmentFail() {
+        new MockUp<RestUtils>() {
+
+            @Mock
+            public String getRequestBody(HttpServletRequest request) {
+                return null;
+            }
+        };
+        serviceRoa.createServiceSegment(httpRequest);
+    }
+
+    /**
      * Test delete service.<br/>
      * 
      * @throws ApplicationException when fail to operate database or parameter is wrong.
@@ -345,6 +364,43 @@ public class ServicemgrRoaModuleImplTest {
         // mock start workflow bpel workflow
         mockPost(responseSuccess);
         serviceRoa.deleteService("1", httpRequest);
+    }
+
+    /**
+     * Test delete service without segments.<br/>
+     * 
+     * @throws ApplicationException when fail to operate database or parameter is wrong.
+     * @since GSO 0.5
+     */
+    @Test
+    public void testDeleteServiceWithoutSegments() throws ApplicationException {
+        List<ServiceModel> services = serviceDao.queryAllServices();
+        for(ServiceModel service : services) {
+            List<ServiceSegmentModel> segs = serviceSegmentDao.queryServiceSegments(service.getServiceId());
+            for(ServiceSegmentModel seg : segs) {
+                serviceSegmentDao.delete(seg);
+            }
+        }
+
+        // mock get catalog plans
+        RestfulResponse responsePlan = new RestfulResponse();
+        responsePlan.setResponseJson(getJsonString(FILE_PATH + "getPlans.json"));
+        responsePlan.setStatus(HttpCode.RESPOND_OK);
+        mockGet(responsePlan);
+
+        // mock start workflow bpel workflow
+        mockPost(responseSuccess);
+        serviceRoa.deleteService("1", httpRequest);
+    }
+
+    /**
+     * Test delete service exception when service id is null.<br/>
+     * 
+     * @since GSO 0.5
+     */
+    @Test(expected = ApplicationException.class)
+    public void testDeleteServiceFail() {
+        serviceRoa.deleteService(null, httpRequest);
     }
 
     /**
@@ -366,6 +422,17 @@ public class ServicemgrRoaModuleImplTest {
      */
     @Test
     public void testGetTopoSequence() throws ApplicationException {
+        serviceRoa.getTopoSequence("1", httpRequest);
+    }
+
+    /**
+     * Test method getTopoSequence for exception.<br/>
+     * 
+     * @since GSO 0.5
+     */
+    @Test(expected = ApplicationException.class)
+    public void testGetTopoSequenceFail() {
+        session.close();
         serviceRoa.getTopoSequence("1", httpRequest);
     }
 
@@ -487,6 +554,7 @@ public class ServicemgrRoaModuleImplTest {
      */
     @Test
     public void testGetServiceOperation() {
+        Assert.assertNotNull(serviceManager.getOperationManager());
         Response rsp = serviceRoa.getServiceOperation("1", "123", httpRequest);
         String strExpect =
                 JsonUtil.marshal(JsonUtil.unMarshal(getJsonString(FILE_PATH + "queryOperationById.json"), Map.class));

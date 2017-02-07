@@ -220,9 +220,6 @@ public class UpdateStatusJob extends TimerTask {
         for(ServiceSegmentOperation segOper : segmentOpers) {
             serviceId = segOper.getServiceId();
             // Look for error segments.
-            if(svcSegError.containsKey(serviceId)) {
-                continue;
-            }
             if(segOper.getStatus().equals(CommonConstant.Status.ERROR)) {
                 svcSegError.put(serviceId, segOper);
                 continue;
@@ -382,18 +379,37 @@ public class UpdateStatusJob extends TimerTask {
             }
         }
 
-        // 3. Update service operations
+        // 3. update table data
+        updateTable(updateSvcOper, updateSvc, invServices, delServiceIds);
+    }
+
+    /**
+     * Update table data.<br/>
+     * 
+     * @param updateSvcOper service operation data
+     * @param updateSvc gso service instance data
+     * @param invServices inventory service instance data
+     * @param delServiceIds service instance IDs which will be deleted
+     * @since GSO 0.5
+     */
+    private void updateTable(List<ServiceOperation> updateSvcOper, List<ServiceModel> updateSvc,
+            List<InvServiceModel> invServices, List<String> delServiceIds) {
+        // 1. Update service operations
         if(!CollectionUtils.isEmpty(updateSvcOper)) {
             serviceOperDao.batchUpdate(updateSvcOper);
         }
 
-        // 4. Update service status
+        // 2.1 Update gso service status
         if(!CollectionUtils.isEmpty(updateSvc)) {
-            invDao.batchUpdate(invServices);
             svcModelDao.batchUpdate(updateSvc);
         }
 
-        // 5. Delete service instances which are being deleted
+        // 2.2 Update inventory service status
+        if(!CollectionUtils.isEmpty(invServices)) {
+            invDao.batchUpdate(invServices);
+        }
+
+        // 3. Delete service instances which are being deleted
         if(!CollectionUtils.isEmpty(delServiceIds)) {
             svcModelDao.batchDelete(delServiceIds);
             invDao.batchDelete(delServiceIds);

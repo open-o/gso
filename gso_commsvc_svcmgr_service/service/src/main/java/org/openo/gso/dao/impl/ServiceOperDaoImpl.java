@@ -192,6 +192,7 @@ public class ServiceOperDaoImpl implements IServiceOperDao {
     public void batchUpdate(List<ServiceOperation> svcOperations) {
         if(CollectionUtils.isEmpty(svcOperations)) {
             LOGGER.info("There is no service operation which need to update.");
+            return;
         }
 
         try {

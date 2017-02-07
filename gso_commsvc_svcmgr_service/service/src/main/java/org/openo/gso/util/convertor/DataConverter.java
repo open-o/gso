@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import net.sf.json.JSONObject;
-import net.sf.json.util.JSONUtils;
 
 /**
  * Data converter.<br/>
@@ -241,32 +240,6 @@ public class DataConverter {
         invService.setCreateAt(service.getCreateAt());
 
         return invService;
-    }
-
-    /**
-     * Convert service parameter.<br/>
-     * 
-     * @param svcParams list of service parameter
-     * @return map of service parameter
-     * @since GSO 0.5
-     */
-    private static Map convertParam(List<ServiceParameter> svcParams) {
-        Map<String, Object> paramMap = new HashMap<>();
-        if(CollectionUtils.isEmpty(svcParams)) {
-            return paramMap;
-        }
-
-        for(ServiceParameter param : svcParams) {
-            JSONObject obj = JSONObject.fromObject(JsonUtil.unMarshal(param.getParamValue(), Object.class));
-            if(JSONUtils.isArray(obj)) {
-                paramMap.put(param.getParamName(), JsonUtil.unMarshal(param.getParamValue(), List.class));
-            } else if(JSONUtils.isString(obj)) {
-                paramMap.put(param.getParamName(), param.getParamValue());
-            } else {
-                paramMap.put(param.getParamName(), JsonUtil.unMarshal(param.getParamValue(), Map.class));
-            }
-        }
-        return paramMap;
     }
 
     /**
