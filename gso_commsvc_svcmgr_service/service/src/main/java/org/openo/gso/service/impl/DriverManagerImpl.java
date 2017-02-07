@@ -615,9 +615,16 @@ public class DriverManagerImpl implements IDriverManager {
         JSONObject jsonSvc = JSONObject.fromObject(service);
         String subServiceId = jsonSvc.getString(Constant.SERVICE_INSTANCE_ID);
         String opertionId = jsonSvc.getString(Constant.SERVICE_OPERATION_ID);
-        if(StringUtils.isEmpty(subServiceId) || StringUtils.isEmpty(opertionId)) {
+        if(StringUtils.isEmpty(service) || StringUtils.isEmpty(subServiceId) || StringUtils.isEmpty(opertionId)) {
             LOGGER.error("Invalid response from create operation");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_RESPONSEE_FROM_CREATE_OPERATION);
+        }
+        
+        if(!HttpCode.isSucess(createGsoRsp.getStatus())){
+            LOGGER.error("update segment operation status : fail to create gso ns");
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(subServiceId, segmentType, CommonConstant.OperationType.CREATE);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, createGsoRsp.getStatus(), CommonConstant.StatusDesc.CREATE_NS_FAILED);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_CREATE_GSO_NS);
         }
         LOGGER.info("create gso ns -> end");
         LOGGER.info("save segment and operaton info -> begin");
@@ -630,12 +637,6 @@ public class DriverManagerImpl implements IDriverManager {
         serviceSegmentDao.insertSegmentOper(segmentOperInfo);
         LOGGER.info("save segment and operation info -> end");
         
-        if(!HttpCode.isSucess(createGsoRsp.getStatus())){
-            LOGGER.error("update segment operation status : fail to create gso ns");
-            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(subServiceId, segmentType, CommonConstant.OperationType.CREATE);
-            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, createGsoRsp.getStatus(), CommonConstant.StatusDesc.CREATE_NS_FAILED);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_CREATE_GSO_NS);
-        }
         return createGsoRsp;
     }
 
@@ -695,6 +696,12 @@ public class DriverManagerImpl implements IDriverManager {
         RestfulResponse delGsoRsp = RestfulUtil.getRemoteResponse(url, methodType, restfulParameters, options);
         LOGGER.info("delete gso ns response status is : {}", delGsoRsp.getStatus());
         LOGGER.info("delete gso ns response content is : {}", delGsoRsp.getResponseContent());
+        if(!HttpCode.isSucess(delGsoRsp.getStatus())){
+            LOGGER.error("update segment operation status : fail to delete gso ns");
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segInput.getSubServiceId(), segmentType, CommonConstant.OperationType.DELETE);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, delGsoRsp.getStatus(), CommonConstant.StatusDesc.DELETE_NS_FAILED);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_DELETE_GSO_NS);
+        }
         JSONObject obj = JSONObject.fromObject(delGsoRsp.getResponseContent());
         String opertionId = obj.getString(Constant.SERVICE_OPERATION_ID);
         if(StringUtils.isEmpty(opertionId)) {
@@ -708,12 +715,7 @@ public class DriverManagerImpl implements IDriverManager {
         segmentOperInfo.setJobId(opertionId);
         serviceSegmentDao.insertSegmentOper(segmentOperInfo);
         LOGGER.info("save operation info -> end");
-        if(!HttpCode.isSucess(delGsoRsp.getStatus())){
-            LOGGER.error("update segment operation status : fail to delete gso ns");
-            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segInput.getSubServiceId(), segmentType, CommonConstant.OperationType.DELETE);
-            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, delGsoRsp.getStatus(), CommonConstant.StatusDesc.DELETE_NS_FAILED);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_DELETE_GSO_NS);
-        }
+        
         return delGsoRsp;
     }
 
