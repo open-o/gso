@@ -16,13 +16,18 @@
 
 package org.openo.gso.restproxy.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.constant.Constant;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.util.http.HttpUtil;
+import org.openo.gso.util.json.JsonUtil;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -47,7 +52,10 @@ public class WorkflowProxyImplTest {
                     throws ApplicationException {
                 RestfulResponse response = new RestfulResponse();
                 response.setStatus(HttpCode.RESPOND_OK);
-                response.setResponseJson("responseString");
+                Map<String, String> result = new HashMap<>();
+                result.put(Constant.RESPONSE_STATUS, "1");
+                result.put(Constant.RESPONSE_CONTENT_MESSAGE, "");
+                response.setResponseJson(JsonUtil.marshal(result));
                 return response;
             }
         };

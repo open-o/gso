@@ -141,16 +141,20 @@ public class UpdateStatusJob extends TimerTask {
 
     /**
      * Get unnormal service instance which status is not updated for 5m.<br/>
+     * <p>
+     * Here it is a special service instance which has no segments operation in DB.
+     * </p>
      * 
      * @param svcOpers service operation
      * @param time that service operations not update
      * @return unnormal service instance operation
      * @since GSO 0.5
      */
-    private List<ServiceOperation> getUnNormalService(List<ServiceOperation> svcOpers, long time) {
+    private List<ServiceOperation> getUnNormalSvcWitoutSegs(List<ServiceOperation> svcOpers, long time) {
         List<ServiceOperation> unnormal = new LinkedList<>();
         for(ServiceOperation oper : svcOpers) {
-            if((oper.getFinishedAt() - oper.getOperateAt()) > time) {
+            if(((oper.getFinishedAt() - oper.getOperateAt()) > time)
+                    || ((System.currentTimeMillis() - oper.getFinishedAt()) > time)) {
                 unnormal.add(oper);
             }
         }
@@ -168,20 +172,25 @@ public class UpdateStatusJob extends TimerTask {
     private void dealSvcWithoutSegOpers(List<String> svcIds, List<ServiceModel> svcModels) {
         // Query unnormal service operation
         List<ServiceOperation> unnormalOper =
-                getUnNormalService(serviceOperDao.queryOperByIds(svcIds), SERVICE_WITHOUT_SEG_NOT_UPDATE);
+                getUnNormalSvcWitoutSegs(serviceOperDao.queryOperByIds(svcIds), SERVICE_WITHOUT_SEG_NOT_UPDATE);
         if(CollectionUtils.isEmpty(unnormalOper)) {
             return;
         }
 
         // Set service operation status
-        List<String> unnormalSvcIds = new LinkedList<>();
+        List<String> unnormalSvcIdsAdd = new LinkedList<>();
+        List<String> unnormalSvcIdsDel = new LinkedList<>();
         for(ServiceOperation operation : unnormalOper) {
             operation.setFinishedAt(System.currentTimeMillis());
             operation.setResult(CommonConstant.Status.ERROR);
             operation.setReason(
                     "The progress of operation is still " + operation.getProgress() + "%, so end operation.");
             operation.setProgress(Integer.valueOf(CommonConstant.Progress.ONE_HUNDRED));
-            unnormalSvcIds.add(operation.getServiceId());
+            if(operation.getOperation().equals(CommonConstant.OperationType.DELETE)) {
+                unnormalSvcIdsDel.add(operation.getServiceId());
+            } else {
+                unnormalSvcIdsAdd.add(operation.getServiceId());
+            }
         }
 
         // Update service instance operation
@@ -191,17 +200,24 @@ public class UpdateStatusJob extends TimerTask {
         List<InvServiceModel> invServices = new LinkedList<>();
         List<ServiceModel> unnormalServices = new LinkedList<>();
         for(ServiceModel service : svcModels) {
-            if(unnormalSvcIds.contains(service.getServiceId())) {
+            if(unnormalSvcIdsAdd.contains(service.getServiceId())) {
                 service.setStatus(CommonConstant.Status.ERROR);
                 unnormalServices.add(service);
                 invServices.add(DataConverter.convertToInvData(service));
             }
         }
 
-        // Update inventory service status
-        invDao.batchUpdate(invServices);
-        // Update service instance status
-        svcModelDao.batchUpdate(unnormalServices);
+        if(!CollectionUtils.isEmpty(invServices)) {
+            // Update inventory service status
+            invDao.batchUpdate(invServices);
+            // Update service instance status
+            svcModelDao.batchUpdate(unnormalServices);
+        }
+
+        if(!CollectionUtils.isEmpty(unnormalSvcIdsDel)) {
+            invDao.batchDelete(unnormalSvcIdsDel);
+            svcModelDao.batchDelete(unnormalSvcIdsDel);
+        }
     }
 
     /**

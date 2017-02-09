@@ -24,6 +24,7 @@ import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.InvServiceModelMapper;
+import org.openo.gso.mapper.InvServicePackageMapper;
 import org.openo.gso.mapper.InvServiceParameterMapper;
 import org.openo.gso.mapper.InventoryMapper;
 import org.openo.gso.model.servicemo.InvServiceModel;
@@ -173,6 +174,8 @@ public class InventoryDaoImpl implements IInventoryDao {
 
         try {
             LOGGER.info("Batch delete inventory services, the service ids are: {}", svcIds);
+            getMapper(InvServiceParameterMapper.class).batchDelete(svcIds);
+            getMapper(InvServicePackageMapper.class).batchDelete(svcIds);
             getMapper(InvServiceModelMapper.class).batchDelete(svcIds);
         } catch(Exception exception) {
             LOGGER.error("Fail to batch delete inventory service instance. {}", exception);

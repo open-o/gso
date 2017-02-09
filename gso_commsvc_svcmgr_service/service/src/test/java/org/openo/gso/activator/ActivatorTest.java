@@ -197,7 +197,7 @@ public class ActivatorTest {
      */
     @Test
     public void testUpdateStatusJobWithoutSegs() throws Exception {
-        testUpdateOperFinishTime("serviceWithoutSegOper.json", 1485400153344L);
+        testUpdateOperFinishTime("serviceWithoutSegOper.json", 1485400153344L, CommonConstant.Status.ERROR);
     }
 
     /**
@@ -208,7 +208,8 @@ public class ActivatorTest {
      */
     @Test
     public void testUpdateStatusJobForLongTime() throws Exception {
-        testUpdateOperFinishTime("segmentOperationProcessing.json", System.currentTimeMillis());
+        testUpdateOperFinishTime("segmentOperationProcessing.json", System.currentTimeMillis(),
+                CommonConstant.Status.PROCESSING);
     }
 
     /**
@@ -422,36 +423,20 @@ public class ActivatorTest {
      * @param time service operation finish time
      * @since GSO 0.5
      */
-    private void testUpdateOperFinishTime(String file, long time) {
+    private void testUpdateOperFinishTime(String file, long time, String status) {
         insertSvcData();
         insertSegOper(file);
         UpdateStatusJob updateJob = new UpdateStatusJob();
         updateJob.run();
 
-        // 1. service status is normal which is processing
-        List<ServiceModel> services = svcModelDao.queryServiceByStatus(CommonConstant.Status.PROCESSING);
-        Assert.assertFalse(CollectionUtils.isEmpty(services));
-
-        // 2. service status is non-normal which is error
-        // 2.1 get all service instances ID
-        List<String> svcIds = new LinkedList<>();
-        for(ServiceModel service : services) {
-            svcIds.add(service.getServiceId());
+        List<ServiceModel> services = svcModelDao.queryServiceByStatus(status);
+        if(status.equals(CommonConstant.Status.ERROR)) {
+            Assert.assertFalse(CollectionUtils.isEmpty(services));
         }
 
-        // 2.2 modify last operation time of service
-        List<ServiceOperation> svcOpersOld = svcOperDao.queryOperByIds(svcIds);
-        for(ServiceOperation oper : svcOpersOld) {
-            // Old data is 1485399793344L
-            oper.setFinishedAt(time);
-            oper.setProgress(90);
+        if(status.equals(CommonConstant.Status.PROCESSING)) {
+            Assert.assertFalse(CollectionUtils.isEmpty(services));
         }
-        svcOperDao.batchUpdate(svcOpersOld);
-
-        // 2.3 check the last data
-        updateJob.run();
-        services = svcModelDao.queryServiceByStatus(CommonConstant.Status.ERROR);
-        Assert.assertFalse(CollectionUtils.isEmpty(services));
     }
 
     /**

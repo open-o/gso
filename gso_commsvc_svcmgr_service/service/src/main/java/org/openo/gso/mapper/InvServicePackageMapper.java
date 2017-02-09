@@ -16,6 +16,8 @@
 
 package org.openo.gso.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 
@@ -45,4 +47,12 @@ public interface InvServicePackageMapper extends InventoryMapper {
      */
     @Override
     void delete(@Param("serviceId") String serviceId);
+
+    /**
+     * Batch delete service package mapping.<br/>
+     * 
+     * @param svcIds service instance ids
+     * @since GSO 0.5
+     */
+    void batchDelete(@Param("svcIds") List<String> svcIds);
 }

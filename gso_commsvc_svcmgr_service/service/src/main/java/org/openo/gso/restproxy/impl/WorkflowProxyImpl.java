@@ -16,12 +16,18 @@
 
 package org.openo.gso.restproxy.impl;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.constant.Constant;
+import org.openo.gso.exception.HttpCode;
 import org.openo.gso.restproxy.inf.IWorkflowProxy;
 import org.openo.gso.util.http.HttpUtil;
 import org.openo.gso.util.http.ResponseUtils;
+import org.openo.gso.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,16 +56,23 @@ public class WorkflowProxyImpl implements IWorkflowProxy {
      * 
      * @param sendBody content of request
      * @param request http request
-     * @return response content
      * @since GSO 0.5
      */
     @Override
-    public int startWorkFlow(Object sendBody, HttpServletRequest request) {
+    public void startWorkFlow(Object sendBody, HttpServletRequest request) {
         LOGGER.info("Notify workflow to startup bpel workflow.");
         RestfulResponse response = HttpUtil.post(WSO_URI, sendBody, request);
-        ResponseUtils.checkResonseAndThrowException(response, "start to bpel workflow.");
+        if(!HttpCode.isSucess(response.getStatus())) {
+            ResponseUtils.checkResonseAndThrowException(response, "start to bpel workflow.");
+        } else {
+            LOGGER.info("workflow return result: {}", response.getResponseContent());
+            Map<String, Object> result = JsonUtil.unMarshal(response.getResponseContent(), Map.class);
+            Object statusContent = result.get(Constant.RESPONSE_STATUS);
+            if(String.valueOf(statusContent).equals("0")) {
+                throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+                        result.get(Constant.RESPONSE_CONTENT_MESSAGE));
+            }
 
-        return response.getStatus();
+        }
     }
-
 }

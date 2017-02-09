@@ -57,9 +57,6 @@
             <if test="result != null">
                 result = #{result},
             </if>
-            <if test="operationContent != null">
-                   operationContent = #{operationContent},
-            </if>
             <if test="reason != null">
                 reason = #{reason},
             </if>

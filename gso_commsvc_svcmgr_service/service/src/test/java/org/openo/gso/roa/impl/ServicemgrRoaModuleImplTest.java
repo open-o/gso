@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,7 @@ import org.junit.Test;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.constant.Constant;
 import org.openo.gso.dao.impl.InventoryDaoImpl;
 import org.openo.gso.dao.impl.ServiceModelDaoImpl;
 import org.openo.gso.dao.impl.ServiceOperDaoImpl;
@@ -180,6 +182,12 @@ public class ServicemgrRoaModuleImplTest {
         serviceManager.setInventoryDao(inventoryDao);
         serviceRoa.setServicemanager(serviceManager);
         responseSuccess.setStatus(HttpCode.RESPOND_OK);
+
+        // add for workflow response
+        Map<String, String> result = new HashMap<>();
+        result.put(Constant.RESPONSE_STATUS, "1");
+        result.put(Constant.RESPONSE_CONTENT_MESSAGE, "");
+        responseSuccess.setResponseJson(JsonUtil.marshal(result));
     }
 
     /**

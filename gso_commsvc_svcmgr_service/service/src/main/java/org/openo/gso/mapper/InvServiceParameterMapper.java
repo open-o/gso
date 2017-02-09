@@ -47,4 +47,12 @@ public interface InvServiceParameterMapper extends InventoryMapper {
      */
     @Override
     void delete(@Param("serviceId") String serviceId);
+
+    /**
+     * Batch delete service parameters.<br/>
+     * 
+     * @param svcIds service instance ids
+     * @since GSO 0.5
+     */
+    void batchDelete(@Param("svcIds") List<String> svcIds);
 }

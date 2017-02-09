@@ -419,12 +419,12 @@ public class ServiceManagerImpl implements IServiceManager {
      * @return response status code
      * @since GSO 0.5
      */
-    private int startWorkFlow(String templateId, String key, HttpServletRequest request, Object parameters) {
+    private void startWorkFlow(String templateId, String key, HttpServletRequest request, Object parameters) {
         OperationModel operation = getOperation(templateId, key, request);
         LOGGER.info("Start workflow. Operations from catalog: {} ", operation);
         ValidateUtil.assertObjectNotNull(operation);
         Map<String, Object> workflowBody = DataConverter.constructWorkflowBody(operation, parameters);
-        return workflowProxy.startWorkFlow(workflowBody, request);
+        workflowProxy.startWorkFlow(workflowBody, request);
     }
 
     /**

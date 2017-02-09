@@ -35,4 +35,11 @@
         delete from t_lcm_defPackage_mapping where serviceId = #{serviceId}
     </delete>
 
+     <delete id="batchDelete" parameterType="java.util.List">
+        delete from t_lcm_defPackage_mapping where serviceId in
+        <foreach item="item" index="index" collection="svcIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+     </delete>
+     
 </mapper>

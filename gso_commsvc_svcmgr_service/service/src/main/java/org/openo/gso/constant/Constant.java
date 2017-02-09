@@ -232,6 +232,11 @@ public class Constant {
     public static final String SEGMENT_PROPERTY_NODETYPE = "nodeType";
 
     /**
+     * message field of response content
+     */
+    public static final String RESPONSE_CONTENT_MESSAGE = "message";
+
+    /**
      * Constructor<br/>
      * <p>
      * </p>

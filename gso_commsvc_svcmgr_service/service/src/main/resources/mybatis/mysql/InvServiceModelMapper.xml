@@ -57,11 +57,9 @@
             where serviceId = #{item.serviceId}
         </foreach>
     </update>
+    
     <delete id="batchDelete" parameterType="java.util.List">
-        delete svc, mapping, param from t_lcm_servicebaseinfo as svc left join t_lcm_defPackage_mapping as mapping on
-        svc.serviceId = mapping.serviceId
-        left join t_lcm_inputParam_mapping as param on svc.serviceId = param.serviceId
-        where svc.serviceId in
+        delete from t_lcm_servicebaseinfo where serviceId in
         <foreach item="item" index="index" collection="svcIds" open="(" separator="," close=")">
             #{item}
         </foreach>

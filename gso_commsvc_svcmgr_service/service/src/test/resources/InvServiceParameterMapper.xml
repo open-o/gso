@@ -41,4 +41,11 @@
         (serviceId,inputKey,inputValue)
         values(#{serviceId},#{paramName},#{paramValue})
     </insert>
+    
+    <delete id="batchDelete" parameterType="java.util.List">
+        delete from t_lcm_inputParam_mapping where serviceId in
+        <foreach item="item" index="index" collection="svcIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+     </delete>
 </mapper>

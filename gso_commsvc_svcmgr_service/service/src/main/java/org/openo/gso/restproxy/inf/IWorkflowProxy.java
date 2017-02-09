@@ -33,8 +33,7 @@ public interface IWorkflowProxy {
      * 
      * @param sendBody content of request
      * @param request http request
-     * @return response status code
      * @since GSO 0.5
      */
-    int startWorkFlow(Object sendBody, HttpServletRequest request);
+    void startWorkFlow(Object sendBody, HttpServletRequest request);
 }

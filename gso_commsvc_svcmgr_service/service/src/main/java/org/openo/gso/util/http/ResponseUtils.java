@@ -67,13 +67,13 @@ public class ResponseUtils {
      * @since GSO 0.5
      */
     public static void checkResonseAndThrowException(RestfulResponse response, String function) {
+        String result = response.getResponseContent();
         if(!HttpCode.isSucess(response.getStatus())) {
-            String errDes = response.getResponseContent();
-            if(!StringUtils.hasLength(errDes)) {
-                errDes = function;
+            if(!StringUtils.hasLength(result)) {
+                result = function;
             }
-            LOGGER.error("checkResonseAndThrowException: {}", errDes);
-            throw new ApplicationException(response.getStatus(), errDes);
+            LOGGER.error("checkResonseAndThrowException: {}", result);
+            throw new ApplicationException(response.getStatus(), result);
         }
     }
 
