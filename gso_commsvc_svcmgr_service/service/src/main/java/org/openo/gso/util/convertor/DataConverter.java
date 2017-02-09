@@ -201,24 +201,38 @@ public class DataConverter {
         if(null != params) {
             Object segments = params.get(Constant.SERVICE_SEGMENTS);
             if(segments instanceof List) {
-                List<Object> segmentLst = (List)segments;
-                for(Object segment : segmentLst) {
-                    JSONObject obj = JSONObject.fromObject(segment);
-                    if(null == obj) {
-                        continue;
-                    }
-
-                    // add fixed parameters
-                    obj.put(Constant.SERVICE_ID, model.getServiceId());
-                    obj.put(Constant.SERVICE_SEGMENT_NAME_DIRVER,
-                            model.getName() + "." + obj.getString(Constant.NODE_TEMPLATE_NAME));
-                    obj.put(Constant.SERVICE_SEGMENT_DES_DIRVER, model.getDescription());
-                    workflowParam.add(JSONObject.toBean(obj));
-                }
+                workflowParam = constructWorkflowParam((List)segments, model);
             }
         }
 
         return (new HashMap<>()).put(Constant.SERVICE_SEGMENTS, workflowParam);
+    }
+
+    /**
+     * Construct workflow parameter<br/>
+     * 
+     * @param segmentLst service segments
+     * @param model service model
+     * @return workflow parameters
+     * @since GSO 0.5
+     */
+    private static List<Object> constructWorkflowParam(List<Object> segmentLst, ServiceModel model) {
+        List<Object> workflowParam = new ArrayList<>();
+        for(Object segment : segmentLst) {
+            JSONObject obj = JSONObject.fromObject(segment);
+            if(null == obj) {
+                continue;
+            }
+
+            // add fixed parameters
+            obj.put(Constant.SERVICE_ID, model.getServiceId());
+            obj.put(Constant.SERVICE_SEGMENT_NAME_DIRVER,
+                    model.getName() + "." + obj.getString(Constant.NODE_TEMPLATE_NAME));
+            obj.put(Constant.SERVICE_SEGMENT_DES_DIRVER, model.getDescription());
+            workflowParam.add(JSONObject.toBean(obj));
+        }
+
+        return workflowParam;
     }
 
     /**
@@ -250,7 +264,7 @@ public class DataConverter {
      * @return response object
      * @since GSO 0.5
      */
-    public static Object getSegments(List<ServiceSegmentModel> segments, String serviceId) {
+    public static Map<String, Object> getSegments(List<ServiceSegmentModel> segments, String serviceId) {
 
         // service instance ID
         Map<String, Object> rspBody = new HashMap<>();

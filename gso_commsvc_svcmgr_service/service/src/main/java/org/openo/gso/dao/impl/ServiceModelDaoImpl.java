@@ -271,7 +271,7 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
     @Override
     public void batchUpdate(List<ServiceModel> services) {
         if(CollectionUtils.isEmpty(services)) {
-            LOGGER.info("There is no service which need to update.");
+            LOGGER.info("There is no service which need to update in gso.");
             return;
         }
 
@@ -279,7 +279,7 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
             LOGGER.info("Batch  update services: {}", services);
             getMapper(ServiceModelMapper.class).batchUpdate(services);
         } catch(Exception exception) {
-            LOGGER.error("Fail to batch update service instance. {}", exception);
+            LOGGER.error("Fail to batch update service instance in gso. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }
@@ -294,14 +294,14 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
     @Override
     public void batchDelete(List<String> svcIds) {
         if(CollectionUtils.isEmpty(svcIds)) {
-            LOGGER.info("There is no service which need to delete.");
+            LOGGER.info("There is no service which need to delete in gso.");
             return;
         }
         try {
             LOGGER.info("Batch delete services, the service ids are: {}", svcIds);
             getMapper(ServiceModelMapper.class).batchDelete(svcIds);
         } catch(Exception exception) {
-            LOGGER.error("Fail to batch delete service instance. {}", exception);
+            LOGGER.error("Fail to batch delete service instance in gso. {}", exception);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, ErrorCode.OPER_DB_FAIL);
         }
     }

@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.constant.Constant;
@@ -83,7 +84,7 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
             throw ResponseUtils.getException(exception, "Faile to on board package.");
         }
 
-        return Response.accepted(Constant.RESPONSE_STATUS_SUCCESS).build();
+        return Response.status(HttpStatus.SC_OK).entity(Constant.RESPONSE_STATUS_SUCCESS).build();
     }
 
     /**
@@ -104,7 +105,7 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
             throw ResponseUtils.getException(exception, "Faile to delete csar package.");
         }
 
-        return Response.accepted(Constant.RESPONSE_STATUS_SUCCESS).build();
+        return Response.status(HttpStatus.SC_OK).entity(Constant.RESPONSE_STATUS_SUCCESS).build();
     }
 
     /**

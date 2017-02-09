@@ -144,12 +144,12 @@ public class InventoryDaoImpl implements IInventoryDao {
     @Override
     public void batchUpdate(List<InvServiceModel> services) {
         if(CollectionUtils.isEmpty(services)) {
-            LOGGER.info("There is no service which need to update.");
+            LOGGER.info("There is no service which need to update in inventory.");
             return;
         }
 
         try {
-            LOGGER.info("Batch  update inventory services: {}", services);
+            LOGGER.info("Batch  update inventory services : {}", services);
             getMapper(InvServiceModelMapper.class).batchUpdate(services);
         } catch(Exception exception) {
             LOGGER.error("Fail to batch update inventory service instance. {}", exception);
@@ -167,7 +167,7 @@ public class InventoryDaoImpl implements IInventoryDao {
     @Override
     public void batchDelete(List<String> svcIds) {
         if(CollectionUtils.isEmpty(svcIds)) {
-            LOGGER.info("There is no service which need to delete.");
+            LOGGER.info("There is no service which need to delete in inventory.");
             return;
         }
 
@@ -189,7 +189,7 @@ public class InventoryDaoImpl implements IInventoryDao {
     @Override
     public void batchInsert(List<ServiceParameter> serviceParams) {
         if(CollectionUtils.isEmpty(serviceParams)) {
-            LOGGER.info("There is no service parameters which need to insert.");
+            LOGGER.info("There is no service parameters which need to insert in inventory.");
             return;
         }
 

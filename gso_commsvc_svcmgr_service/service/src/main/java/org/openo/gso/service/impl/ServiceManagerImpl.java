@@ -41,7 +41,6 @@ import org.openo.gso.model.servicemo.ServiceDetailModel;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServiceOperation;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
-import org.openo.gso.model.servicemo.ServiceParameter;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.restproxy.inf.ICatalogProxy;
 import org.openo.gso.restproxy.inf.IWorkflowProxy;

@@ -38,6 +38,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openo.gso.commsvc.common.register.RegisterUtil;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.dao.impl.ServiceOperDaoImpl;
 import org.openo.gso.dao.inf.IServiceModelDao;
@@ -451,6 +452,23 @@ public class ActivatorTest {
         updateJob.run();
         services = svcModelDao.queryServiceByStatus(CommonConstant.Status.ERROR);
         Assert.assertFalse(CollectionUtils.isEmpty(services));
+    }
+
+    /**
+     * Test start method.<br/>
+     * 
+     * @since GSO 0.5
+     */
+    @Test
+    public void testStart() {
+        new MockUp<RegisterUtil>() {
+
+            @Mock
+            public String readFile(String path) {
+                return "test";
+            }
+        };
+        ((Activator)SpringContextUtil.getBeanById("activatorBean")).start();
     }
 
     /**

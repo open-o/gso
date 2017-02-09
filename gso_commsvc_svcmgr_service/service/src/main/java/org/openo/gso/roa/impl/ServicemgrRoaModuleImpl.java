@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.constant.Constant;
@@ -109,7 +110,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
 
         LOGGER.error("create service response: {}", rsp);
 
-        return Response.accepted().entity(rsp).build();
+        return Response.status(HttpStatus.SC_ACCEPTED).entity(rsp).build();
     }
 
     /**
@@ -131,7 +132,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
             throw ResponseUtils.getException(exception, "Fail to delete service instance.");
         }
 
-        return Response.accepted().entity(Constant.RESPONSE_STATUS_SUCCESS).build();
+        return Response.status(HttpStatus.SC_ACCEPTED).entity(Constant.RESPONSE_STATUS_SUCCESS).build();
     }
 
     /**
@@ -146,7 +147,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     public Response getAllInstances(HttpServletRequest servletReq) {
         LOGGER.error("Start to get all service instances.");
         List<ServiceModel> services = serviceManager.getAllInstances();
-        return Response.accepted(DataConverter.getAllSvcIntancesResult(services)).build();
+        return Response.status(HttpStatus.SC_OK).entity(DataConverter.getAllSvcIntancesResult(services)).build();
     }
 
     /**
@@ -168,7 +169,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
             throw ResponseUtils.getException(exception, "Fail to query the sequence of topology.");
         }
 
-        return Response.accepted().entity(DataConverter.getSegments(serviceSegments, serviceId)).build();
+        return Response.status(HttpStatus.SC_OK).entity(DataConverter.getSegments(serviceSegments, serviceId)).build();
     }
 
     /**
@@ -194,7 +195,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
             throw ResponseUtils.getException(exception, "Fail to create service segment.");
         }
 
-        return Response.accepted().entity(result).build();
+        return Response.status(HttpStatus.SC_OK).entity(result).build();
     }
 
     /**
@@ -209,7 +210,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     public Response getInstanceByInstanceId(String serviceId, HttpServletRequest servletReq) {
         LOGGER.error("Start to get service instance by instanceId.");
         ServiceModel service = serviceManager.getInstanceByInstanceId(serviceId);
-        return Response.accepted(DataConverter.getSvcInstanceResult(service)).build();
+        return Response.status(HttpStatus.SC_OK).entity(DataConverter.getSvcInstanceResult(service)).build();
     }
 
     /**
@@ -227,6 +228,6 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
         ServiceOperation svcOperation = serviceManager.getServiceOperation(serviceId, operationId);
         Map<String, Object> operMap = new HashMap<>();
         operMap.put(Constant.OPERATION_IDENTIFY, JsonUtil.unMarshal(JsonUtil.marshal(svcOperation), Map.class));
-        return Response.accepted(operMap).build();
+        return Response.status(HttpStatus.SC_OK).entity(operMap).build();
     }
 }

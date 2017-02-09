@@ -11,7 +11,7 @@
 -- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
-drop table t_lcm_servicebaseinfo if exists;
+drop table if exists t_lcm_servicebaseinfo;
 create table t_lcm_servicebaseinfo
 (
     serviceId    varchar(255)  not null,
@@ -24,7 +24,7 @@ create table t_lcm_servicebaseinfo
 	createTime  bigint       not null,
 	constraint t_lcm_servicebaseinfo primary key(serviceId)
 );
-drop table t_lcm_inputParam_mapping if exists;
+drop table if exists t_lcm_inputParam_mapping;
 create table t_lcm_inputParam_mapping
 (
     serviceId   varchar(255)  not null,

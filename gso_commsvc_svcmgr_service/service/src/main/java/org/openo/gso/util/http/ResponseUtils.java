@@ -29,6 +29,7 @@ import org.openo.gso.util.json.JsonUtil;
 import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 /**
  * Interface to deal response result.<br/>
@@ -67,20 +68,12 @@ public class ResponseUtils {
      */
     public static void checkResonseAndThrowException(RestfulResponse response, String function) {
         if(!HttpCode.isSucess(response.getStatus())) {
-            ApplicationException appException = null;
-            try {
-                appException = JsonUtil.unMarshal(response.getResponseContent(), ApplicationException.class);
-            } catch(ApplicationException exception) {
-                LOGGER.error("transfer the response json string has some error: {}", exception);
-
-                ExceptionArgs args = new ExceptionArgs();
-                args.setDescription("Fail to " + function);
-                args.setReason(exception.getResponse().getEntity());
-
-                throw new ApplicationException(exception.getResponse().getStatus(), args);
+            String errDes = response.getResponseContent();
+            if(!StringUtils.hasLength(errDes)) {
+                errDes = function;
             }
-
-            throw appException;
+            LOGGER.error("checkResonseAndThrowException: {}", errDes);
+            throw new ApplicationException(response.getStatus(), errDes);
         }
     }
 

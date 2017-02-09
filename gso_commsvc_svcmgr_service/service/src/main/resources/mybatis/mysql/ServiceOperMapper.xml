@@ -76,7 +76,7 @@
     <select id="queryHistory" resultMap="serviceOperResultMap">
         select
         serviceId,operationId,operationType,userId,result,operationContent,progress,reason,operateAt,finishedAt from
-        t_lcm_service_operation where from_unixtime(tmp.operateAt/1000) &lt; date_sub(now(),interval 15 day))
+        t_lcm_service_operation where from_unixtime(operateAt/1000) &lt; date_sub(now(),interval 15 day)
     </select>
     
     <delete id="deleteHistory">
