@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
@@ -202,7 +201,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
      * @since GSO Mercury Release
      */
     @Override
-    public Response getDomains(@Context HttpServletRequest servletReq) {
+    public Response getDomains(HttpServletRequest servletReq) {
         LOGGER.info("query domains start");
         List<DomainModel> domains = serviceGateway.getDomains(servletReq);
         LOGGER.info("query domains rsp:" + JsonUtil.marshal(domains));
