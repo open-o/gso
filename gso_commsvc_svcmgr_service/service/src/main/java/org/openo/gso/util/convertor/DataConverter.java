@@ -181,7 +181,6 @@ public class DataConverter {
 
             // Deal service parameters
             properties.put(Constant.SERVICE_PARAMETERS, service.getParameter());
-            resultMap.put(Constant.SERVICE_INDENTIFY, properties);
         }
         resultMap.put(Constant.SERVICE_INDENTIFY, properties);
 

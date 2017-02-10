@@ -50,9 +50,10 @@ public interface IServiceManager {
      * 
      * @param serviceId service instance ID
      * @param httpRequest http request
+     * @return operation ID
      * @since GSO 0.5
      */
-    void deleteService(String serviceId, HttpServletRequest httpRequest);
+    String deleteService(String serviceId, HttpServletRequest httpRequest);
 
     /**
      * Query all service instances.<br/>

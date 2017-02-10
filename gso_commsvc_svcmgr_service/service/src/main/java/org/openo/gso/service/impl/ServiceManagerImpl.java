@@ -197,10 +197,11 @@ public class ServiceManagerImpl implements IServiceManager {
      * 
      * @param serviceId service instance ID
      * @param httpRequest http request
+     * @return operation ID
      * @since GSO 0.5
      */
     @Override
-    public void deleteService(String serviceId, HttpServletRequest httpRequest) {
+    public String deleteService(String serviceId, HttpServletRequest httpRequest) {
         // Firstly delete the old operation record of this service instance
         // If not delete old operation record, it will influence timing task
         operationManager.delete(serviceId);
@@ -241,6 +242,8 @@ public class ServiceManagerImpl implements IServiceManager {
             updateData(null, svcOperation);
             throw exception;
         }
+
+        return (null != svcOperation) ? svcOperation.getOperationId() : null;
     }
 
     /**

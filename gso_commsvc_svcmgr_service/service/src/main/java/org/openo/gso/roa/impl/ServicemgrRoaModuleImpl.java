@@ -124,15 +124,21 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     @Override
     public Response deleteService(String serviceId, HttpServletRequest servletReq) {
         LOGGER.error("Start to delete service instance.");
+        String operationId;
         try {
             ValidateUtil.assertStringNotNull(serviceId);
-            serviceManager.deleteService(serviceId, servletReq);
+            operationId = serviceManager.deleteService(serviceId, servletReq);
         } catch(ApplicationException exception) {
             LOGGER.error("Fail to delete service instance.");
             throw ResponseUtils.getException(exception, "Fail to delete service instance.");
         }
 
-        return Response.status(HttpStatus.SC_ACCEPTED).entity(Constant.RESPONSE_STATUS_SUCCESS).build();
+        Map<String, String> rps = new HashMap<>();
+        rps.put(Constant.SERVICE_OPERATION_ID, operationId);
+
+        LOGGER.error("delete service response: {}", rps);
+
+        return Response.status(HttpStatus.SC_ACCEPTED).entity(rps).build();
     }
 
     /**
