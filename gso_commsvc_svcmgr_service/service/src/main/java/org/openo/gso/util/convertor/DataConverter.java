@@ -183,7 +183,7 @@ public class DataConverter {
             properties.put(Constant.SERVICE_PARAMETERS, service.getParameter());
         }
         resultMap.put(Constant.SERVICE_INDENTIFY, properties);
-
+        LOGGER.info("getSvcInstanceResult: {}", JsonUtil.marshal(resultMap));
         return resultMap;
     }
 
@@ -288,6 +288,7 @@ public class DataConverter {
         // response body
         Map<String, Object> segMap = new HashMap<>();
         segMap.put(Constant.SERVICE_INDENTIFY, rspBody);
+        LOGGER.info("getSegments: {}", JsonUtil.marshal(segMap));
         return segMap;
     }
 

@@ -69,14 +69,14 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
         try {
             // 1. Get request body
             String body = RestUtils.getRequestBody(httpRequest);
-            ValidateUtil.assertStringNotNull(body);
+            ValidateUtil.assertStringNotNull(body, Constant.RESPONSE_CONTENT_MESSAGE);
             // 2. Parse json to get csarId
             Map<String, Object> bodyMap = JsonUtil.unMarshal(body, Map.class);
             Object serviceDefId = bodyMap.get(Constant.CSAR_ID);
             if(!(serviceDefId instanceof String)) {
                 throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.DATA_IS_WRONG);
             }
-            ValidateUtil.assertStringNotNull((String)serviceDefId);
+            ValidateUtil.assertStringNotNull((String)serviceDefId, Constant.SERVICE_DEF_ID);
             // 3. Update state
             packageMgr.updateOnBoardStatus((String)serviceDefId, httpRequest);
         } catch(ApplicationException exception) {

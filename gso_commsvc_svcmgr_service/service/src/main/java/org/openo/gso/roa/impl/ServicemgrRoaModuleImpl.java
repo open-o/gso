@@ -88,7 +88,8 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
         try {
             // 1. Check validation
             String reqContent = RestUtils.getRequestBody(servletReq);
-            ValidateUtil.assertStringNotNull(reqContent);
+            ValidateUtil.assertStringNotNull(reqContent, Constant.RESPONSE_CONTENT_MESSAGE);
+            LOGGER.info("create service instance: {}", reqContent);
 
             // 2. Create service
             svcDetail = serviceManager.createService(reqContent, servletReq);
@@ -126,7 +127,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
         LOGGER.error("Start to delete service instance.");
         String operationId;
         try {
-            ValidateUtil.assertStringNotNull(serviceId);
+            ValidateUtil.assertStringNotNull(serviceId, Constant.SERVICE_ID);
             operationId = serviceManager.deleteService(serviceId, servletReq);
         } catch(ApplicationException exception) {
             LOGGER.error("Fail to delete service instance.");
@@ -192,7 +193,8 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
         try {
             // 1. Check validation
             String reqContent = RestUtils.getRequestBody(servletReq);
-            ValidateUtil.assertStringNotNull(reqContent);
+            ValidateUtil.assertStringNotNull(reqContent, Constant.RESPONSE_CONTENT_MESSAGE);
+            LOGGER.info("create service segment: {}", reqContent);
 
             // 2. Create service segment
             serviceManager.createServiceSegment(reqContent, servletReq);
@@ -234,6 +236,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
         ServiceOperation svcOperation = serviceManager.getServiceOperation(serviceId, operationId);
         Map<String, Object> operMap = new HashMap<>();
         operMap.put(Constant.OPERATION_IDENTIFY, JsonUtil.unMarshal(JsonUtil.marshal(svcOperation), Map.class));
+        LOGGER.info("Get service Operation rsp: {}", JsonUtil.marshal(operMap));
         return Response.status(HttpStatus.SC_OK).entity(operMap).build();
     }
 }

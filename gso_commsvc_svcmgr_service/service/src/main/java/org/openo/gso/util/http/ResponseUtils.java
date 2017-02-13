@@ -24,6 +24,7 @@ import org.codehaus.jackson.type.TypeReference;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.commsvc.common.exception.ExceptionArgs;
+import org.openo.gso.constant.Constant;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.util.json.JsonUtil;
 import org.openo.gso.util.validate.ValidateUtil;
@@ -88,7 +89,7 @@ public class ResponseUtils {
      */
     @SuppressWarnings("unchecked")
     public static <T> List<T> getDataModelFromRsp(String request, String key, Class<T> type) {
-        ValidateUtil.assertStringNotNull(request);
+        ValidateUtil.assertStringNotNull(request, Constant.RESPONSE_CONTENT_MESSAGE);
         Map<String, Object> requestMap = JsonUtil.unMarshal(request, Map.class);
         Object data = requestMap.get(key);
         List<T> dataModelList = new LinkedList<>();
@@ -115,7 +116,7 @@ public class ResponseUtils {
      * @since SDNO 0.5
      */
     public static <T> T getDataModelFromRspList(String request, TypeReference<T> type) {
-        ValidateUtil.assertStringNotNull(request);
+        ValidateUtil.assertStringNotNull(request, Constant.RESPONSE_CONTENT_MESSAGE);
         return JsonUtil.unMarshal(request, type);
     }
 

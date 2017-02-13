@@ -55,16 +55,17 @@ public class ValidateUtil {
     /**
      * Assert String parameter.<br/>
      * 
-     * @param param parameter data
+     * @param paramValue parameter data
+     * @param name of parameter
      * @since GSO 0.5
      */
-    public static void assertStringNotNull(String param) {
-        if(StringUtils.hasLength(param)) {
+    public static void assertStringNotNull(String paramValue, String paramName) {
+        if(StringUtils.hasLength(paramValue)) {
             return;
         }
 
-        LOGGER.error("Parameter is null or empty.");
-        throw new ApplicationException(HttpCode.BAD_REQUEST, "Invalid parameter.");
+        LOGGER.error(paramName + ": Parameter is null or empty.");
+        throw new ApplicationException(HttpCode.BAD_REQUEST, paramName + ": Invalid parameter.");
     }
 
     /**

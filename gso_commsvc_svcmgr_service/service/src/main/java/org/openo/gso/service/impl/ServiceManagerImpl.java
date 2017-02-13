@@ -137,7 +137,7 @@ public class ServiceManagerImpl implements IServiceManager {
 
         // Validate data
         String templateId = (String)service.get(Constant.SERVICE_TEMPLATE_ID);
-        ValidateUtil.assertStringNotNull(templateId);
+        ValidateUtil.assertStringNotNull(templateId, Constant.SERVICE_TEMPLATE_ID);
         List<CatalogParameterModel> defineParams = catalogProxy.getParamsByTemplateId(templateId, httpRequest);
         Object instanceParam = service.get(Constant.SERVICE_PARAMETERS);
         ValidateUtil.validate(defineParams, instanceParam);
@@ -151,7 +151,7 @@ public class ServiceManagerImpl implements IServiceManager {
 
         // Cache csar ID. When operating csar, need to check csar status.
         String csarId = (String)service.get(Constant.SERVICE_DEF_ID);
-        ValidateUtil.assertStringNotNull(csarId);
+        ValidateUtil.assertStringNotNull(csarId, Constant.SERVICE_DEF_ID);
         PackageOperationSingleton.getInstance().addBeingUsedCsarIds(csarId);
 
         ServiceDetailModel svcDetail = new ServiceDetailModel();
@@ -218,7 +218,7 @@ public class ServiceManagerImpl implements IServiceManager {
                 ServicePackageMapping servicePackage = servicePackageDao.queryPackageMapping(serviceId);
                 ValidateUtil.assertObjectNotNull(servicePackage);
                 String templateId = servicePackage.getTemplateId();
-                ValidateUtil.assertStringNotNull(templateId);
+                ValidateUtil.assertStringNotNull(templateId, Constant.SERVICE_TEMPLATE_ID);
 
                 // 2.2 Fill in input parameters
                 List<Object> segLst = addServiceSegment(serviceSegments);
@@ -441,7 +441,7 @@ public class ServiceManagerImpl implements IServiceManager {
     public void createServiceSegment(String reqContent, HttpServletRequest httpRequest) {
         ServiceSegmentModel serviceSegment = JsonUtil.unMarshal(reqContent, ServiceSegmentModel.class);
         String serviceId = serviceSegment.getServiceId();
-        ValidateUtil.assertStringNotNull(serviceId);
+        ValidateUtil.assertStringNotNull(serviceId, Constant.SERVICE_ID);
 
         // Query service instance
         ServicePackageMapping pacakageInfo = servicePackageDao.queryPackageMapping(serviceId);
@@ -476,7 +476,7 @@ public class ServiceManagerImpl implements IServiceManager {
             throw new ApplicationException(HttpCode.BAD_REQUEST, "Fail to get node from catalog.");
         }
         String type = seviceSegment.getNodeType();
-        ValidateUtil.assertStringNotNull(type);
+        ValidateUtil.assertStringNotNull(type, Constant.SEGMENT_PROPERTY_NODETYPE);
 
         // visit node
         String nodeName = null;

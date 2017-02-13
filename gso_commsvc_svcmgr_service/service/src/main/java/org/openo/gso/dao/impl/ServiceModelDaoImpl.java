@@ -23,6 +23,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.ibatis.session.SqlSession;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.constant.Constant;
 import org.openo.gso.dao.inf.IServiceModelDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.ErrorCode;
@@ -116,7 +117,7 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
     @Override
     public void delete(String serviceId) {
         try {
-            ValidateUtil.assertStringNotNull(serviceId);
+            ValidateUtil.assertStringNotNull(serviceId, Constant.SERVICE_INSTANCE_ID);
 
             // 1. Delete service instance.
             ServiceModelMapper serviceModelMapper = getMapper(ServiceModelMapper.class);
