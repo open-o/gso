@@ -97,7 +97,9 @@ public class ServiceGatewayImpl implements IServiceGateway {
         switch(templateDetail.getTemplateType()) {
             case GSO:
                 // for GSO， the request body is same as servicegateway.
-                result = createGSOService(service);
+                String csarId = (String)templateDetail.getTemplateDetail().get(FieldConstant.CatalogTemplate.FIELD_CSARID);
+                service.put(FieldConstant.Create.FIELD_SERVICEDEFID, csarId);
+                result = createGSOService(requestBody);
                 break;
             case SDNO:
                 // for sdno, nsdId is templateId
@@ -136,7 +138,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
 
             String body = JsonUtil.marshal(reqBody);
             LOGGER.info("create gso service ,req:" + body);
-            RestfulResponse restfulRsp = HttpUtil.post(Constant.GSO_URL_CREATE, body);
+            RestfulResponse restfulRsp = HttpUtil.post(Constant.GSO_URL_CREATE, reqBody);
             CommonUtil.logTheResponseData("create gso service", restfulRsp);
             // Record the result of registration
             if(HttpCode.isSucess(restfulRsp.getStatus())) {
@@ -195,7 +197,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
         try {
             String body = JsonUtil.marshal(paramsForCreate);
             LOGGER.info("create ns service:" + body);
-            RestfulResponse restfulRsp = HttpUtil.post(createUri, body);
+            RestfulResponse restfulRsp = HttpUtil.post(createUri, paramsForCreate);
             CommonUtil.logTheResponseData("create ns service", restfulRsp);
             if(HttpCode.isSucess(restfulRsp.getStatus())) {
                 Map<String, Object> rspBody = JsonUtil.unMarshal(restfulRsp.getResponseContent(), Map.class);
@@ -326,7 +328,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
             reqBody.put(FieldConstant.NSTerminate.FIELD_TIMEOUT, "60");
             String body = JsonUtil.marshal(reqBody);
             LOGGER.info("delete ns service req:" + body);
-            RestfulResponse restfulRsp = HttpUtil.post(terminateUri, body);
+            RestfulResponse restfulRsp = HttpUtil.post(terminateUri, reqBody);
             CommonUtil.logTheResponseData("delete ns service", restfulRsp);
             if(HttpCode.isSucess(restfulRsp.getStatus())) {
                 Map<String, Object> rspBody = JsonUtil.unMarshal(restfulRsp.getResponseContent(), Map.class);

@@ -462,9 +462,15 @@ public class CommonUtil {
                 logTheResponseData("query node templates from catalog", nodeTemplatesResp);
                 if(HttpCode.isSucess(nodeTemplatesResp.getStatus())) {
                     JSONArray arrayTempate = JSONArray.fromObject(nodeTemplatesResp.getResponseContent());
-                    for(int i = 0, size = arrayTempate.size(); i < size; i++) {
+                    for(int i = 0, size = arrayTempate.size(); i < size; i++) {                        
                         String object = arrayTempate.getString(i);
-                        Map<String, Object> rspBody = JsonUtil.unMarshal(object, Map.class);
+                        if(null == object) {
+                            continue;
+                        }
+                        Map<String, Object> rspBody = JsonUtil.unMarshal(object, Map.class);   
+                        if(null == rspBody){
+                            continue;
+                        }
                         // here parse the template to model
                         ServiceTemplateModel templateModel = new ServiceTemplateModel();
                         templateModel.setTemplateDetail(rspBody);
