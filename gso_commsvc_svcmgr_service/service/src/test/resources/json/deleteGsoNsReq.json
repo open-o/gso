@@ -7,7 +7,7 @@
                 "nodeTemplateName": "GSO_A"
             },
             {
-                "serivceId":"gso_service_1",
+                "serviceId":"gso_service_1",
                 "subServiceId":"gso_service.seg2",
                 "domainHost": "10.11.11.2:80",
                 "nodeTemplateName": "GSO_B"
