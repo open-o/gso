@@ -235,7 +235,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
         LOGGER.error("Start to get service operation result by instanceId and opertionId.");
         ServiceOperation svcOperation = serviceManager.getServiceOperation(serviceId, operationId);
         Map<String, Object> operMap = new HashMap<>();
-        operMap.put(Constant.OPERATION_IDENTIFY, JsonUtil.unMarshal(JsonUtil.marshal(svcOperation), Map.class));
+        operMap.put(Constant.OPERATION_IDENTIFY, svcOperation);
         LOGGER.info("Get service Operation rsp: {}", JsonUtil.marshal(operMap));
         return Response.status(HttpStatus.SC_OK).entity(operMap).build();
     }

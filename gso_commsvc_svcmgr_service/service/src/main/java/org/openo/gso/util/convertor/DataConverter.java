@@ -150,6 +150,10 @@ public class DataConverter {
             Map<String, Object> properties;
             for(ServiceModel model : services) {
                 properties = JsonUtil.unMarshal(JsonUtil.marshal(model), Map.class);
+                if(null != model.getServicePackage()) {
+                    properties.put(Constant.SERVICE_DEF_ID, model.getServicePackage().getServiceDefId());
+                    properties.put(Constant.SERVICE_TEMPLATE_ID, model.getServicePackage().getTemplateId());
+                }
                 resultLst.add(properties);
             }
         }

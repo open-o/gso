@@ -16,6 +16,7 @@
 
 package org.openo.gso.model.servicemo;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.util.uuid.UuidUtils;
 
@@ -32,6 +33,7 @@ public class ServiceOperation {
     /**
      * Service instance ID.
      */
+    @JsonIgnore
     private String serviceId;
 
     /**

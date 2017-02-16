@@ -266,6 +266,7 @@ public class ActivatorTest {
         // 2.2 insert new operation
         ServiceOperation svcOper = JsonUtil.unMarshal(getJsonString(FILE_PATH + "serviceOperationForDelOper.json"),
                 ServiceOperation.class);
+        svcOper.setServiceId("6cf110404cea452390bf996717527739");
         svcOperDao.insert(svcOper);
 
         // 3. test
@@ -331,6 +332,7 @@ public class ActivatorTest {
         // service operation
         ServiceOperation svcOper =
                 JsonUtil.unMarshal(getJsonString(FILE_PATH + "serviceOperation.json"), ServiceOperation.class);
+        svcOper.setServiceId("6cf110404cea452390bf996717527739");
         svcOperDao.insert(svcOper);
     }
 
