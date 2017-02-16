@@ -32,9 +32,7 @@ import org.openo.gso.constant.DriverExceptionID;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.drivermo.SegmentInputParameter;
 import org.openo.gso.model.drivermo.ServiceNode;
-import org.openo.gso.roa.inf.IGSODrivermgrRoaModule;
-import org.openo.gso.roa.inf.INFVODrivermgrRoaModule;
-import org.openo.gso.roa.inf.ISDNODrivermgrRoaModule;
+import org.openo.gso.roa.inf.IDrivermgrRoaModule;
 import org.openo.gso.service.inf.IDriverManager;
 import org.openo.gso.util.json.JsonUtil;
 import org.slf4j.Logger;
@@ -49,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * @version GSO 0.5 2016/8/4
  */
 public class DrivermgrRoaModuleImpl
-        implements INFVODrivermgrRoaModule, ISDNODrivermgrRoaModule, IGSODrivermgrRoaModule {
+        implements IDrivermgrRoaModule {
 
     /**
      * logger

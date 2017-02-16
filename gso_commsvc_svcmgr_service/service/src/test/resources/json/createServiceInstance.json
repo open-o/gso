@@ -13,7 +13,7 @@
                 "nodeTemplateName": "POP_NS",
                 "nodeType": "tosca.nodes.nfv.NS.POP",
                 "segments": [],
-                "additionalParamForNS": {
+                "additionalParamForNs": {
                     "externalDataNetworkName": "Flow_out_net",
                     "m6000_mng_ip": "181.18.20.2",
                     "externalCompanyFtpDataNetworkName": "Flow_out_net",
@@ -30,12 +30,12 @@
                 "nodeTemplateName": "POP_DC",
                 "nodeType": "tosca.nodes.nfv.NS.DC",
                 "segments": [],
-                "additionalParamForNS": {
+                "additionalParamForNs": {
                     "location": "e151059a-d924-4629-845f-264db19e50b4",
                     "sdncontroller": "9b9f02c0-298b-458a-bc9c-be3692e4f35e"
                 }
             }],
-            "additionalParamForNS": {
+            "additionalParamForNs": {
                 
             }
         }
