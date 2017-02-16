@@ -636,8 +636,14 @@ public class DriverManagerImpl implements IDriverManager {
         segmentOperInfo.setJobId(opertionId);
         serviceSegmentDao.insertSegmentOper(segmentOperInfo);
         LOGGER.info("save segment and operation info -> end");
-        
-        return createGsoRsp;
+        //build response
+        Map<String, String> contentMap = new HashMap<>();
+        contentMap.put(Constant.SERVICE_OPERATION_ID, opertionId);
+        String content = JsonUtil.marshal(contentMap); 
+        RestfulResponse rsp = new RestfulResponse();
+        rsp.setStatus(createGsoRsp.getStatus());
+        rsp.setResponseJson(content);
+        return rsp;
     }
 
     /**
@@ -769,6 +775,11 @@ public class DriverManagerImpl implements IDriverManager {
         // Step 6: update segment operation status
         if(CommonConstant.Progress.ONE_HUNDRED.equals(String.valueOf(svcOper.getProgress())) && CommonConstant.Status.FINISHED.equals(svcOper.getResult())) {
             LOGGER.info("job result is succeeded, operType is {}", operType);
+            if(CommonConstant.OperationType.DELETE.equals(operType)){
+                //delete gso segment when query result is ok
+                LOGGER.info("delete gso segment");
+                serviceSegmentDao.delete(svcSegment);                
+            }
             ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
             updateSegmentOperStatus(statusSegOper, CommonConstant.Status.FINISHED, rsp.getStatus(), svcOper.getOperationContent());
 
@@ -781,8 +792,18 @@ public class DriverManagerImpl implements IDriverManager {
             // do nothing
         }
         LOGGER.info("query gso ns status -> end");
-          
-        return rsp;
+        
+        NsProgressStatus nsProgress = new NsProgressStatus();
+        nsProgress.setJobId(jobId);
+        ResponseDescriptor rspDesc = new ResponseDescriptor();
+        rspDesc.setStatus(svcOper.getResult());
+        rspDesc.setProgress(String.valueOf(svcOper.getProgress()));
+        nsProgress.setResponseDescriptor(rspDesc);
+        String responseString = JsonUtil.marshal(nsProgress);
+        RestfulResponse jobRsp = new RestfulResponse();
+        jobRsp.setStatus(rsp.getStatus());
+        jobRsp.setResponseJson(responseString);
+        return jobRsp;
 
     }
     

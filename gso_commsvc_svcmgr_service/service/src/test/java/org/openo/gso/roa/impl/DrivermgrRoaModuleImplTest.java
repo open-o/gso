@@ -476,8 +476,7 @@ public class DrivermgrRoaModuleImplTest {
         };
         Response rsp = impl.createGsoNs(servletReq);
         JSONObject obj = JSONObject.fromObject(rsp.getEntity());
-        JSONObject subObj = JSONObject.fromObject(obj.get("service"));
-        Assert.assertEquals(null, "o1", subObj.getString("operationId"));
+        Assert.assertEquals(null, "o1", obj.getString("operationId"));
     }
     
     /**
@@ -662,7 +661,7 @@ public class DrivermgrRoaModuleImplTest {
     
     /**
      * test query gso network service progress<br>
-     * 
+     * for create
      * @since  GSO 0.5
      */
     @Test
@@ -695,9 +694,53 @@ public class DrivermgrRoaModuleImplTest {
         mockGetRestfulRsp(restRsp);
         Response rsp = impl.queryGsoJobStatus(jobId);
         JSONObject obj = JSONObject.fromObject(rsp.getEntity());
-        JSONObject subObj = JSONObject.fromObject(obj.get("operation"));
+        JSONObject subObj = JSONObject.fromObject(obj.get("responseDescriptor"));
         Assert.assertEquals(null, "100", subObj.getString("progress"));
-        Assert.assertEquals(null, "finished", subObj.getString("result"));
+        Assert.assertEquals(null, "finished", subObj.getString("status"));
+    }
+    
+    /**
+     * test query gso network service progress<br>
+     * for delete
+     * @since  GSO 0.5
+     */
+    @Test
+    public void testQueryGSONsProgress2() {
+        String jobId = "1";
+        // get data
+        ServiceSegmentOperation segOper = new ServiceSegmentOperation();
+        segOper.setOperationType(CommonConstant.OperationType.DELETE);
+        segOper.setServiceSegmentId("seg1");
+        ServiceSegmentModel segment = new ServiceSegmentModel();
+        segment.setDomainHost("10.100.1.1:80");
+        new MockUp<ServiceSegmentDaoImpl>() {
+            @Mock
+            public ServiceSegmentOperation querySegmentOperByJobIdAndType(String jobId, String segmentType) {
+                return segOper;
+            }
+            @Mock
+            public ServiceSegmentModel queryServiceSegmentByIdAndType(String segmentId, String segmentType) {
+                return segment;
+            }
+            @Mock
+            public void updateSegmentOper(ServiceSegmentOperation svcSegmentOper) {
+                // do nothing
+            }
+            @Mock
+            public void delete(ServiceSegmentModel svcSegment) {
+                // do nothing
+            }
+        };
+        // get response
+        RestfulResponse restRsp = new RestfulResponse();
+        restRsp.setStatus(HttpStatus.SC_OK);
+        restRsp.setResponseJson(getJsonString(FILE_PATH + "queryGsoNsRsp.json"));
+        mockGetRestfulRsp(restRsp);
+        Response rsp = impl.queryGsoJobStatus(jobId);
+        JSONObject obj = JSONObject.fromObject(rsp.getEntity());
+        JSONObject subObj = JSONObject.fromObject(obj.get("responseDescriptor"));
+        Assert.assertEquals(null, "100", subObj.getString("progress"));
+        Assert.assertEquals(null, "finished", subObj.getString("status"));
     }
     
     /**
