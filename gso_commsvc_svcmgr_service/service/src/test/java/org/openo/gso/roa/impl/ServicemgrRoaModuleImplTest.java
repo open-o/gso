@@ -57,6 +57,7 @@ import org.openo.gso.dao.multi.DatabaseSessionHandler;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
+import org.openo.gso.model.catalogmo.ServiceTemplateModel;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.restproxy.impl.CatalogProxyImpl;
@@ -261,6 +262,11 @@ public class ServicemgrRoaModuleImplTest {
                         "inputs", CatalogParameterModel.class);
             }
 
+            @Mock
+            public ServiceTemplateModel getTemplateById(String templateId) throws ApplicationException {
+                return JsonUtil.unMarshal(getJsonString(FILE_PATH + "getTemplateByTemplateID.json"),
+                        ServiceTemplateModel.class);
+            }
         };
 
         // mock get catalog plans
@@ -297,6 +303,11 @@ public class ServicemgrRoaModuleImplTest {
                         "inputs", CatalogParameterModel.class);
             }
 
+            @Mock
+            public ServiceTemplateModel getTemplateById(String templateId) throws ApplicationException {
+                return JsonUtil.unMarshal(getJsonString(FILE_PATH + "getTemplateByTemplateID.json"),
+                        ServiceTemplateModel.class);
+            }
         };
 
         // mock get catalog plans

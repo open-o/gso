@@ -37,6 +37,7 @@ import org.openo.gso.mapper.InvServiceParameterMapper;
 import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
 import org.openo.gso.model.catalogmo.OperationModel;
+import org.openo.gso.model.catalogmo.ServiceTemplateModel;
 import org.openo.gso.model.servicemo.ServiceDetailModel;
 import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServiceOperation;
@@ -148,6 +149,9 @@ public class ServiceManagerImpl implements IServiceManager {
         model.setName((String)service.get(Constant.SERVICE_NAME));
         model.setDescription((String)service.get(Constant.SERVICE_DESCRIPTION));
         model.setParameter(instanceParam);
+
+        // Set service template name
+        setTemplateName(model, templateId);
 
         // Cache csar ID. When operating csar, need to check csar status.
         String csarId = (String)service.get(Constant.SERVICE_DEF_ID);
@@ -615,5 +619,19 @@ public class ServiceManagerImpl implements IServiceManager {
     @Override
     public ServiceOperation getServiceOperation(String serviceId, String operationId) {
         return operationManager.queryOperation(serviceId, operationId);
+    }
+
+    /**
+     * Set template name.<br/>
+     * 
+     * @param serviceModel service instance model
+     * @param templateId service template ID
+     * @since GSO 0.5
+     */
+    private void setTemplateName(ServiceModel serviceModel, String templateId) {
+        ServiceTemplateModel templateModel = catalogProxy.getTemplateById(templateId);
+        if((null != templateModel) && (null != serviceModel.getServicePackage())) {
+            serviceModel.getServicePackage().setTemplateName(templateModel.getTemplateName());
+        }
     }
 }

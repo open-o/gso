@@ -39,5 +39,6 @@ create table t_lcm_defPackage_mapping_inv
     serviceId    varchar(36) not null,
     serviceDefId varchar(255) not null,
     templateId  varchar(255)  not null,
+    templateName  varchar(255)  null,
     primary key(serviceId)
 );

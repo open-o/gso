@@ -93,13 +93,22 @@ public interface ICatalogProxy {
      * @since GSO 0.5
      */
     void updateGsarStatus(String csarId, HttpServletRequest request);
-    
+
     /**
      * get service template by node type<br>
      * 
      * @param nodeType node type
      * @return service template
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     ServiceTemplate getSvcTmplByNodeType(String nodeType, String domainHost);
+
+    /**
+     * Query service template by service template ID.<br/>
+     * 
+     * @param templateId service template ID
+     * @return service template ID
+     * @since GSO 0.5
+     */
+    ServiceTemplateModel getTemplateById(String templateId);
 }

@@ -256,4 +256,22 @@ public class CatalogProxyImpl implements ICatalogProxy {
         JSONArray array = JSONArray.fromObject(rsp.getResponseContent());
         return JsonUtil.unMarshal(array.getString(0), ServiceTemplate.class);
     }
+
+    /**
+     * Query service template by service template ID.<br/>
+     * 
+     * @param templateId service template ID
+     * @return service template ID
+     * @since GSO 0.5
+     */
+    @Override
+    public ServiceTemplateModel getTemplateById(String templateId) {
+        LOGGER.info("Query service tempalte by service template ID from catalog.  The ID is:  {}", templateId);
+        String url = new StringBuilder().append(CATALOG_REST_URI_SERVICETEMPALTE).append(templateId).toString();
+        Map<String, String> httpHeaders = new HashMap<>();
+        RestfulResponse response = HttpUtil.get(url, httpHeaders, null);
+        ResponseUtils.checkResonseAndThrowException(response, "query service tempalte by ID.");
+
+        return JsonUtil.unMarshal(response.getResponseContent(), ServiceTemplateModel.class);
+    }
 }

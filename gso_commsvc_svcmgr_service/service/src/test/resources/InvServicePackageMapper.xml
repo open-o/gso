@@ -22,13 +22,14 @@
         <result property="serviceId" column="serviceId" />
         <result property="serviceDefId" column="serviceDefId" />
         <result property="templateId" column="templateId" />
+        <result property="templateName" column="templateName" />
     </resultMap>
 
     <insert id="insert" parameterType="org.openo.gso.model.servicemo.ServicePackageMapping">
         insert into
         t_lcm_defPackage_mapping_inv
-        (serviceId,serviceDefId,templateId)
-        values(#{serviceId},#{serviceDefId},#{templateId})
+        (serviceId,serviceDefId,templateId,templateName)
+        values(#{serviceId},#{serviceDefId},#{templateId},#{templateName})
     </insert>
 
     <delete id="delete">

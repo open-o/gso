@@ -17,9 +17,10 @@ create table t_lcm_defPackage_mapping
 (
     serviceId    varchar(255) not null,
 	serviceDefId varchar(255) not null,
-	templateId  varchar(255)  not null,	
+	templateId  varchar(255)  not null,
+	templateName  varchar(255)  null,    
 	primary key(serviceId)
 );
 
-insert into t_lcm_defPackage_mapping (serviceId,serviceDefId,templateId) 
-VALUES('1', '12345', 'gso');
+insert into t_lcm_defPackage_mapping (serviceId,serviceDefId,templateId,templateName) 
+VALUES('1', '12345', 'gso', 'templateName');
