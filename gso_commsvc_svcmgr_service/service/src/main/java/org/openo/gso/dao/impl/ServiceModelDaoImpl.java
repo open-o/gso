@@ -216,6 +216,10 @@ public class ServiceModelDaoImpl implements IServiceModelDao {
     public ServiceModel queryServiceByInstanceId(String serviceId) {
         try {
             ServiceModel model = getMapper(ServiceModelMapper.class).queryServiceByInstanceId(serviceId);
+            if(null == model) {
+                LOGGER.error("Fail to query service instance by id : {}", serviceId);
+                return null;
+            }
             model.setServicePackage(getMapper(ServicePackageMapper.class).queryPackageMapping(serviceId));
             ServiceParameter param = getMapper(ServiceParameterMapper.class).query(serviceId);
             if(null != param) {
