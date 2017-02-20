@@ -476,7 +476,8 @@ public class DrivermgrRoaModuleImplTest {
         };
         Response rsp = impl.createGsoNs(servletReq);
         JSONObject obj = JSONObject.fromObject(rsp.getEntity());
-        Assert.assertEquals(null, "o1", obj.getString("operationId"));
+        JSONObject subObj = obj.getJSONObject("service");
+        Assert.assertEquals(null, "o1", subObj.getString("operationId"));
     }
     
     /**
