@@ -108,7 +108,7 @@ public class ProgressPool {
      * @param queryJobUri
      * @since GSO 0.5
      */
-    public void dealCreateProgress(final EnumServiceType serviceType, final String operationId,
+    public void dealCommonProgress(final EnumServiceType serviceType, final String operationId,
             final String queryJobUri) {
 
         Thread createThread = new Thread(new Runnable() {
@@ -118,7 +118,7 @@ public class ProgressPool {
                 if(serviceType == EnumServiceType.GSO) {
                     dealGSOProgress(operationId, queryJobUri);
                 } else {
-                    dealNonGSOCreateProgress(operationId, queryJobUri);
+                    dealNonGSOCommonProgress(operationId, queryJobUri);
                 }
             }
         });
@@ -162,12 +162,12 @@ public class ProgressPool {
      * @param queryJobUri
      * @since GSO 0.5
      */
-    private void dealNonGSOCreateProgress(final String operationId, final String queryJobUri) {
+    private void dealNonGSOCommonProgress(final String operationId, final String queryJobUri) {
         OperationModel model = addNewOpertaionModel(operationId);
         try {
             int timeOut = 0;
             while(timeOut <= TIME_OUT) {
-                boolean needBreak = queryNonGSOCreateProgress(queryJobUri, model);
+                boolean needBreak = queryNonGSOCommonProgress(queryJobUri, model);
                 if(needBreak) {
                     break;
                 }
@@ -198,7 +198,7 @@ public class ProgressPool {
      * @since GSO Mercury Release
      */
     @SuppressWarnings("unchecked")
-    private boolean queryNonGSOCreateProgress(final String queryJobUri, OperationModel model) throws ServiceException {
+    private boolean queryNonGSOCommonProgress(final String queryJobUri, OperationModel model) throws ServiceException {
         boolean needBreak = false;
         LOGGER.info("query NS operation info start");
         RestfulResponse resp = HttpUtil.get(queryJobUri, new HashMap<String, String>());

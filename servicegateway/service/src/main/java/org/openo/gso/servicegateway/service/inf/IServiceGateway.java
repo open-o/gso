@@ -45,6 +45,16 @@ public interface IServiceGateway {
      * @since GSO 0.5
      */
     OperationResult createService(String reqContent, HttpServletRequest httpRequest);
+    
+    /**
+     * Scale service instance.<br/>
+     * 
+     * @param serviceId service instance ID
+     * @param httpRequest http request
+     * @return the operation id
+     * @since GSO Mercury Release
+     */
+    String scaleService(String serviceId, HttpServletRequest httpRequest);
 
     /**
      * Delete service instances.<br/>

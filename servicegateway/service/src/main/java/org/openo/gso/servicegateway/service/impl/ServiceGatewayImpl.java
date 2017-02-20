@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openo.baseservice.remoteservice.exception.ExceptionArgs;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.servicegateway.common.CommonUtil;
 import org.openo.gso.servicegateway.constant.Constant;
@@ -97,7 +98,8 @@ public class ServiceGatewayImpl implements IServiceGateway {
         switch(templateDetail.getTemplateType()) {
             case GSO:
                 // for GSO， the request body is same as servicegateway.
-                String csarId = (String)templateDetail.getTemplateDetail().get(FieldConstant.CatalogTemplate.FIELD_CSARID);
+                String csarId =
+                        (String)templateDetail.getTemplateDetail().get(FieldConstant.CatalogTemplate.FIELD_CSARID);
                 service.put(FieldConstant.Create.FIELD_SERVICEDEFID, csarId);
                 result = createGSOService(requestBody);
                 break;
@@ -151,7 +153,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 result.setOperationId(operationId);
                 String uri = String.format(Constant.GSO_URL_QUERY_OPRATION, serviceId, operationId);
                 // use progress pool to create a new thread,for query the progress.
-                ProgressPool.getInstance().dealCreateProgress(EnumServiceType.GSO, operationId, uri);
+                ProgressPool.getInstance().dealCommonProgress(EnumServiceType.GSO, operationId, uri);
             } else {
                 ExceptionArgs args = new ExceptionArgs();
                 args.setDescArgs(new String[] {"Fail to create service:" + restfulRsp.getResponseContent()});
@@ -221,7 +223,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
                     result.setOperationId(jobId);
                     String uri = String.format(queryJobUri, jobId);
                     // use progressPool to create a thread to query the progress
-                    ProgressPool.getInstance().dealCreateProgress(serviceType, jobId, uri);
+                    ProgressPool.getInstance().dealCommonProgress(serviceType, jobId, uri);
                     return result;
                 } else {
                     ExceptionArgs args = new ExceptionArgs();
@@ -563,4 +565,40 @@ public class ServiceGatewayImpl implements IServiceGateway {
         List<DomainModel> domains = CommonUtil.getDomains();
         return domains;
     }
+    
+    /**
+     * scale a service
+     * <br>
+     * 
+     * @param serviceId
+     * @param httpRequest
+     * @return
+     * @since   GSO Mercury Release
+     */
+    @Override
+    public  String scaleService(String serviceId, HttpServletRequest httpRequest){
+        try {
+            String reqContent = RestUtils.getRequestBody(httpRequest);
+            Map<String, Object> requestBody = JsonUtil.unMarshal(reqContent, Map.class);
+            LOGGER.info("scale ns service req:" + reqContent);
+            String scaleUrl = String.format(Constant.NFVO_URL_SCALE, serviceId);
+            RestfulResponse restfulRsp = HttpUtil.post(scaleUrl, requestBody);
+            CommonUtil.logTheResponseData("scale ns service", restfulRsp);
+            if(HttpCode.isSucess(restfulRsp.getStatus())) {
+                Map<String, Object> rspBody = JsonUtil.unMarshal(restfulRsp.getResponseContent(), Map.class);
+                String jobId = (String)rspBody.get(Constant.JOB_ID);
+                // start query progress and delete the service after terminate
+                String uri = String.format(Constant.NFVO_URL_QUERYJOB, jobId);
+                ProgressPool.getInstance().dealCommonProgress(EnumServiceType.NFVO, jobId, uri);
+                return jobId;
+            } else {
+                LOGGER.info("scale ns service failed.");
+                throw new ApplicationException(restfulRsp.getStatus(), "scale ns service failed.");
+            }
+        } catch(ServiceException e) {
+            LOGGER.info("scale ns service failed.", e);
+            throw new ApplicationException(e.getHttpCode(), e.getExceptionArgs());
+        }
+    }
+    
 }

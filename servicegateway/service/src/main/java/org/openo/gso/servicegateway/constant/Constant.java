@@ -268,6 +268,11 @@ public class Constant {
     public static final String NFVO_URL_INSTANTIATE = "/openoapi/nslcm/v1/ns/%s/instantiate";
 
     /**
+     * URL for scale nfvo
+     */
+    public static final String NFVO_URL_SCALE = "/openoapi/nslcm/v1/ns/%s/scale";
+
+    /**
      * URL for query nfvo job
      */
     public static final String NFVO_URL_QUERYJOB = "/openoapi/nslcm/v1/jobs/%s";

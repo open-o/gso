@@ -66,6 +66,19 @@ public interface IServiceGatewayRoaModule {
     @Consumes({"application/json"})
     @Path("/services/{serviceId}")
     Response deleteService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq);
+    
+    /**
+     * Scale service instance.<br/>
+     * 
+     * @param servletReq http request
+     * @return response
+     * @since GSO 0.5
+     */
+    @POST
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+    @Path("/services/{serviceId}/scale")
+    Response scaleService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq);
 
     /**
      * Query operation by operationId<br>
