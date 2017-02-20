@@ -161,6 +161,20 @@ public class ServiceGatewayRoaModuleImplTest {
         mockHttpUtil();
         serviceRoa.deleteService("5212b49f-fe70-414f-9519-88bec35b3191", httpRequest);
     }
+    
+    /**
+     * Test scale nfvo service. now only nfvo service support scale<br/>
+     * 
+     * @throws ServiceException when fail to operate database or parameter is wrong.
+     * @since GSO Mercury Release
+     */
+    @Test
+    public void testScaleNFVOService() throws ServiceException {
+        // mock request body, no care the body detail.
+        mockGetRequestBody(FILE_PATH + "createNFVOServiceInstance.json");
+        mockHttpUtil();
+        serviceRoa.scaleService("5212b49f-fe70-414f-9519-88bec35b3191", httpRequest);
+    }    
 
     /**
      * test generate create parameters
@@ -290,6 +304,9 @@ public class ServiceGatewayRoaModuleImplTest {
                 }else if(url.contains("/openoapi/inventory/v1/services")){
                     // mock query services
                     return getResponse("queryServices.json");
+                }else if(url.contains("/openoapi/nslcm/v1/ns/5212b49f-fe70-414f-9519-88bec35b3191/scale")){
+                    //mock scale nfvo rsp, same as terminate rsp
+                    return  getResponse("terminateNFVOInstanceRsp.json");
                 }
                 return null;
             }

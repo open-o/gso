@@ -207,4 +207,32 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
         LOGGER.info("query domains rsp:" + JsonUtil.marshal(domains));
         return Response.accepted().entity(domains).build();
     }
+
+    /**
+     * scale a service
+     * <br>
+     * 
+     * @param serviceId the serviceId to scale
+     * @param servletReq
+     * @return
+     * @since GSO Mercury Release
+     */
+    @Override
+    public Response scaleService(String serviceId, HttpServletRequest servletReq) {
+        String operationId = null;
+        LOGGER.info("scale a service, serviceId:" + serviceId);
+        try {
+            // Delete service
+            operationId = serviceGateway.scaleService(serviceId, servletReq);
+        } catch(ApplicationException exception) {
+            LOGGER.error("Fail to scale service instance.");
+            throw ResponseUtils.getException(exception, "Fail to scale service instance");
+        }
+        Map<String, String> result = new HashMap<>();
+        result.put(FieldConstant.Delete.FIELD_RESPONSE_OPERATIONID, operationId);
+        LOGGER.info("scale a service, rsp:" + JsonUtil.marshal(result));
+        return Response.accepted().entity(result).build();
+    }
+    
+    
 }
