@@ -636,14 +636,8 @@ public class DriverManagerImpl implements IDriverManager {
         segmentOperInfo.setJobId(opertionId);
         serviceSegmentDao.insertSegmentOper(segmentOperInfo);
         LOGGER.info("save segment and operation info -> end");
-        //build response
-        Map<String, String> contentMap = new HashMap<>();
-        contentMap.put(Constant.SERVICE_OPERATION_ID, opertionId);
-        String content = JsonUtil.marshal(contentMap); 
-        RestfulResponse rsp = new RestfulResponse();
-        rsp.setStatus(createGsoRsp.getStatus());
-        rsp.setResponseJson(content);
-        return rsp;
+        
+        return createGsoRsp;
     }
 
     /**
