@@ -32,11 +32,13 @@ import org.openo.gso.servicegateway.constant.FieldConstant;
 import org.openo.gso.servicegateway.exception.HttpCode;
 import org.openo.gso.servicegateway.model.DomainModel;
 import org.openo.gso.servicegateway.model.EnumServiceType;
+import org.openo.gso.servicegateway.model.NsParametersModel;
 import org.openo.gso.servicegateway.model.ParameterDefineModel;
 import org.openo.gso.servicegateway.model.SegmentTemplateModel;
 import org.openo.gso.servicegateway.model.ServiceModel;
 import org.openo.gso.servicegateway.model.ServiceParameterModel;
 import org.openo.gso.servicegateway.model.ServiceTemplateModel;
+import org.openo.gso.servicegateway.model.VnfProfileModel;
 import org.openo.gso.servicegateway.service.impl.ServiceGatewayImpl;
 import org.openo.gso.servicegateway.util.http.HttpUtil;
 import org.openo.gso.servicegateway.util.json.JsonUtil;
@@ -257,7 +259,9 @@ public class CommonUtil {
             Map<String, String> parameters = JsonUtil
                     .unMarshal(obj.get(FieldConstant.InventoryService.FIELD_INPUTPARAMETERS).toString(), Map.class);
             ServiceParameterModel parameterModel = new ServiceParameterModel();
-            parameterModel.setAdditionalParamForNs(parameters);
+            NsParametersModel nsParametersModel = new NsParametersModel();
+            nsParametersModel.setAdditionalParamForNs(parameters);
+            parameterModel.setNsParameters(nsParametersModel);
             model.setInputParameters(parameterModel);
         }
         return model;
@@ -292,6 +296,40 @@ public class CommonUtil {
         }
         LOGGER.info("query the vims failed");
         return vims;
+    }
+
+    /**
+     * query the vnf ids by nfvo template id
+     * <br>
+     * 
+     * @param templateId
+     * @return
+     * @since GSO Mercury Release
+     */
+    public static List<VnfProfileModel> queryVnfProfileIdsByTemplateId(String templateId) {
+        List<VnfProfileModel> vnfName2Ids = new ArrayList<>();
+        try {
+            LOGGER.info("query vnfs from catalog start");
+            String url = String.format(Constant.CATALOG_NODETYPE_URL, templateId);
+            RestfulResponse resp = HttpUtil.get(url, new HashMap<String, String>());
+            logTheResponseData("query vnfs from catalog", resp);
+            if(HttpCode.isSucess(resp.getStatus())) {
+
+                JSONArray array = JSONArray.fromObject(resp.getResponseContent());
+                for(int i = 0, size = array.size(); i < size; i++) {
+                    JSONObject obj = array.getJSONObject(i);
+                    JSONObject objProperties = obj.getJSONObject(FieldConstant.VnfNodeTemplate.FIELD_PROPERTIES);
+                    vnfName2Ids.add(new VnfProfileModel((String)obj.get(FieldConstant.VnfNodeTemplate.FIELD_NAME),
+                            (String)objProperties.get(FieldConstant.VnfNodeTemplate.FIELD_PROPERTIES_ID)));
+                }
+                return vnfName2Ids;
+            }
+        } catch(ServiceException e) {
+
+            LOGGER.info("query the vnfs failed", e);
+        }
+        LOGGER.info("query the vnfs failed");
+        return vnfName2Ids;
     }
 
     /**
@@ -333,9 +371,9 @@ public class CommonUtil {
      * @return the location parameter define model
      * @since GSO 0.5
      */
-    public static ParameterDefineModel generateLocationParam(Map<String, String> vims) {
+    public static ParameterDefineModel generateLocationParam(String vnfName, Map<String, String> vims) {
         ParameterDefineModel location = new ParameterDefineModel();
-        location.setName("location");
+        location.setName(vnfName);
         location.setDescription("location for the service");
         location.setType("enum");
         location.setRequired("true");

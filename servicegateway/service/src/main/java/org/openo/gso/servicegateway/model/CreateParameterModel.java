@@ -50,10 +50,9 @@ public class CreateParameterModel {
     private List<CreateParameterModel> segments = new ArrayList<>();
 
     /**
-     * the additionalParamForNs is used for the ns itself, both gso,sdno, nfvo
-     * this params is defined in the template. and both with the location and sdn controller.
+     * the ns parameters
      */
-    private List<ParameterDefineModel> additionalParamForNs = new ArrayList<>();
+    private CreateNsParametersModel nsParameters = new CreateNsParametersModel();
 
     /**
      * @return Returns the domainHost.
@@ -113,18 +112,20 @@ public class CreateParameterModel {
         this.segments = segments;
     }
 
+    
     /**
-     * @return Returns the additionalParamForNs.
+     * @return Returns the nsParameters.
      */
-    public List<ParameterDefineModel> getAdditionalParamForNs() {
-        return additionalParamForNs;
+    public CreateNsParametersModel getNsParameters() {
+        return nsParameters;
     }
 
+    
     /**
-     * @param additionalParamForNs The additionalParamForNs to set.
+     * @param nsParameters The nsParameters to set.
      */
-    public void setAdditionalParamForNs(List<ParameterDefineModel> additionalParamForNs) {
-        this.additionalParamForNs = additionalParamForNs;
+    public void setNsParameters(CreateNsParametersModel nsParameters) {
+        this.nsParameters = nsParameters;
     }
 
 }

@@ -1,0 +1,98 @@
+[
+  {
+    "id": "55641134-067c-4579-988e-f52fed9c929c",
+    "name": "VFW",
+    "type": "tosca.nodes.nfv.ext.zte.VNF.VFW",
+    "properties": {
+      "request_reclassification": "false",
+      "plugin_info": "vbrasplugin_1.0",
+      "nsh_aware": "true",
+      "vnfd_version": "1.0.0",
+      "csarVersion": "v1.0",
+      "csarProvider": "ZTE",
+      "externalPluginManageNetworkName": "vlan_4007_plugin_net",
+      "version": "v1.0",
+      "csarType": "NFAR",
+      "cross_dc": "false",
+      "vendor": "zte",
+      "is_shared": "false",
+      "name": "VFW",
+      "vnf_extend_type": "driver",
+      "id": "vcpe_vfw_zte_1_0",
+      "vnf_type": "VFW"
+    },
+    "relationShips": [
+      {
+        "sourceNodeName": "VFW",
+        "targetNodeName": "VFW",
+        "sourceNodeId": "VFW",
+        "targetNodeId": "VFW"
+      },
+      {
+        "sourceNodeName": "VFW",
+        "targetNodeName": "VFW",
+        "sourceNodeId": "VFW",
+        "targetNodeId": "VFW"
+      }
+    ]
+  },
+  {
+    "id": "5b83834f-f776-43fb-888c-052943242862",
+    "name": "LB",
+    "type": "tosca.nodes.nfv.VNF.LB",
+    "properties": {
+      "vendor": "Canonical",
+      "csarVersion": "v1.0",
+      "csarProvider": "Canonical",
+      "id": "VNFD_LB_2016",
+      "vnf_type": "LB",
+      "version": "v1.0",
+      "csarType": "NFAR"
+    },
+    "relationShips": [
+      {
+        "sourceNodeName": "LB",
+        "targetNodeName": "VFW",
+        "sourceNodeId": "LB",
+        "targetNodeId": "VFW"
+      }
+    ]
+  },
+  {
+    "id": "f1a9119e-16bc-4315-89c8-6e1165e64180",
+    "name": "VCPE_VNF",
+    "type": "tosca.nodes.nfv.ext.zte.VNF.VCPE_VNF",
+    "properties": {
+      "request_reclassification": "false",
+      "nsh_aware": "true",
+      "adjust_vnf_capacity": "true",
+      "vnfd_version": "V2R8C30",
+      "csarVersion": "V2R8C30",
+      "vmnumber_overquota_alarm": "true",
+      "csarProvider": "Huawei",
+      "version": "V2R8C30",
+      "csarType": "NFAR",
+      "cross_dc": "false",
+      "vendor": "Huawei",
+      "is_shared": "false",
+      "name": "VCPE_VNF",
+      "vnf_extend_type": "none",
+      "id": "VNFD_VCPE_V2R8C30",
+      "vnf_type": "vCPE"
+    },
+    "relationShips": [
+      {
+        "sourceNodeName": "VCPE_VNF",
+        "targetNodeName": "VFW",
+        "sourceNodeId": "VCPE_VNF",
+        "targetNodeId": "VFW"
+      },
+      {
+        "sourceNodeName": "VCPE_VNF",
+        "targetNodeName": "VFW",
+        "sourceNodeId": "VCPE_VNF",
+        "targetNodeId": "VFW"
+      }
+    ]
+  }
+]

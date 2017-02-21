@@ -354,7 +354,13 @@ public class ServiceGatewayRoaModuleImplTest {
                 } else if(url.contains(
                         "/openoapi/catalog/v1/servicetemplates/592f9437-a9c0-4303-b9f6-c445bb7e9814/nodetemplates")) {
                     return getResponse("getGSONodeTypes.json");
-                }else if(url.contains(
+                } else if(url.contains(
+                        "/openoapi/catalog/v1/servicetemplates/5212b49f-fe70-414f-9519-88bec35b3191/nodetemplates")
+                        || url.contains(
+                                "/openoapi/catalog/v1/servicetemplates/5212b49f-fe70-414f-9519-88bec35b3190/nodetemplates")) {
+                    return getResponse("getNFVONodeTypes.json");
+                }
+                else if(url.contains(
                         "/openoapi/catalog/v1/servicetemplates/nesting?nodeTypeIds")) {
                     return getResponse("getTemplatesByNodeTypes.json");
                 }
