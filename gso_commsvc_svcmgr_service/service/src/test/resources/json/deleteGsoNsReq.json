@@ -1,15 +1,17 @@
 {
-    "nodeTemplateName":"GSO_A",
-    "segments": [{
-                "serviceId":"gso_service_1",
-                "subServiceId":"gso_service.seg1",
-                "domainHost": "10.11.11.1:80",
-                "nodeTemplateName": "GSO_A"
-            },
-            {
-                "serviceId":"gso_service_1",
-                "subServiceId":"gso_service.seg2",
-                "domainHost": "10.11.11.2:80",
-                "nodeTemplateName": "GSO_B"
-            }]
+  "nodeTemplateName": "GSO_A",
+  "segments": [
+    {
+      "serviceId": "gso_service_1",
+      "subServiceId": "gso_service.seg1",
+      "domainHost": "10.11.11.1:80",
+      "nodeTemplateName": "GSO_A"
+    },
+    {
+      "serviceId": "gso_service_1",
+      "subServiceId": "gso_service.seg2",
+      "domainHost": "10.11.11.2:80",
+      "nodeTemplateName": "GSO_B"
+    }
+  ]
 }

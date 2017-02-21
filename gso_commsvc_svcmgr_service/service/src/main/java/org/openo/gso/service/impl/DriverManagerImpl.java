@@ -40,6 +40,7 @@ import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.drivermo.NsCreateReq;
 import org.openo.gso.model.drivermo.NsInstantiateReq;
+import org.openo.gso.model.drivermo.NsParameters;
 import org.openo.gso.model.drivermo.NsProgressStatus;
 import org.openo.gso.model.drivermo.ResponseDescriptor;
 import org.openo.gso.model.drivermo.SegmentInputParameter;
@@ -321,7 +322,9 @@ public class DriverManagerImpl implements IDriverManager {
         // Step2: Prepare restful parameters and options
         NsInstantiateReq oRequest = new NsInstantiateReq();
         oRequest.setNsInstanceId(segmentId);
-        oRequest.setAdditionalParamForNs(segInput.getAdditionalParamForNs());
+        NsParameters nsParameters = segInput.getNsParameters();
+        oRequest.setLocationConstraints(nsParameters.getLocationConstraints());
+        oRequest.setAdditionalParamForNs(nsParameters.getAdditionalParamForNs());
         String instReq = JsonUtil.marshal(oRequest);
         
         RestfulParametes restfulParameters = RestfulUtil.setRestfulParameters(instReq, null);
@@ -657,7 +660,7 @@ public class DriverManagerImpl implements IDriverManager {
         parameters.setNodeTemplateName(cInput.getNodeTemplateName());
         parameters.setNodeType(cInput.getNodeType());
         parameters.setSegments(segments);
-        parameters.setAdditionalParamForNs(cInput.getAdditionalParamForNs());
+        parameters.setNsParameters(cInput.getNsParameters());
         
         //build request detail
         ServiceCreateReqDetail service = new ServiceCreateReqDetail();

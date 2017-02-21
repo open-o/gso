@@ -1,6 +1,7 @@
 {
-    "result":{
-        "status":"success",
-        "statusDescription":"success",
-        "errorCode":""}
+  "result": {
+    "status": "success",
+    "statusDescription": "success",
+    "errorCode": ""
+  }
 }

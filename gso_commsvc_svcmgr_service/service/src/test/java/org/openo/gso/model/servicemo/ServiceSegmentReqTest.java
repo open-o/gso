@@ -17,11 +17,10 @@
 package org.openo.gso.model.servicemo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
+import org.openo.gso.model.drivermo.NsParameters;
 
 
 /**
@@ -111,9 +110,9 @@ public class ServiceSegmentReqTest {
      * Test method for {@link org.openo.gso.model.servicemo.ServiceSegmentReq#getAdditionalParamForNs()}.
      */
     @Test
-    public void testGetAdditionalParamForNs() {
+    public void testGetNsParameters() {
         ServiceSegmentReq req = new ServiceSegmentReq();
-        req.getAdditionalParamForNs();
+        req.getNsParameters();
     }
 
     /**
@@ -122,8 +121,8 @@ public class ServiceSegmentReqTest {
     @Test
     public void testSetAdditionalParamForNs() {
         ServiceSegmentReq req = new ServiceSegmentReq();
-        Map<String, String> additionalParamForNs = new HashMap<String, String>();
-        req.setAdditionalParamForNs(additionalParamForNs);
+        NsParameters nsParameters = new NsParameters();
+        req.setNsParameters(nsParameters);
     }
 
 }

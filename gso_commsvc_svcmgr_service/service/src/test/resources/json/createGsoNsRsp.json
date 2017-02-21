@@ -1,6 +1,6 @@
 {
-    "service":{
-        "serviceId":"s1",
-        "operationId":"o1"
-    }
+  "service": {
+    "serviceId": "s1",
+    "operationId": "o1"
+  }
 }

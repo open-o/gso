@@ -16,9 +16,7 @@
 package org.openo.gso.model.drivermo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 import org.openo.gso.constant.CommonConstant;
@@ -112,14 +110,14 @@ public class SegmentInputParameterTest {
     }
 
     @Test
-    public void testGetAdditionalParamForNs() {
-        Map<String,String> map = input.getAdditionalParamForNs();
+    public void testGetNsParameters() {
+        NsParameters nsParameters = input.getNsParameters();
     }
 
     @Test
-    public void testSetAdditionalParamForNs() {
-        Map<String,String> map = new HashMap<String, String>();
-        input.setAdditionalParamForNs(map);
+    public void testSetNsParameters() {
+        NsParameters nsParameters = new NsParameters();
+        input.setNsParameters(nsParameters);
     }
 
 }

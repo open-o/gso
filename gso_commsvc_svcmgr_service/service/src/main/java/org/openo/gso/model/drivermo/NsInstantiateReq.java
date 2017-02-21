@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package org.openo.gso.model.drivermo;
 
-import java.util.Map;
-
 /**
  * <br>
  * <p>
@@ -25,12 +23,9 @@ import java.util.Map;
  * @author
  * @version     GSO 0.5  2016/9/3
  */
-public class NsInstantiateReq {
+public class NsInstantiateReq extends NsParameters{
 
     String nsInstanceId;
-
-    Map<String, String> additionalParamForNs;
-    
     
     /**
      * @return Returns the nsInstanceId.
@@ -38,8 +33,6 @@ public class NsInstantiateReq {
     public String getNsInstanceId() {
         return nsInstanceId;
     }
-
-
     
     /**
      * @param nsInstanceId The nsInstanceId to set.
@@ -48,21 +41,4 @@ public class NsInstantiateReq {
         this.nsInstanceId = nsInstanceId;
     }
 
-
-    /**
-     * @return Returns the additionalParamForNs.
-     */
-    public Map<String, String> getAdditionalParamForNs() {
-        return additionalParamForNs;
-    }
-
-    
-    /**
-     * @param additionalParamForNs The additionalParamForNs to set.
-     */
-    public void setAdditionalParamForNs(Map<String, String> additionalParamForNs) {
-        this.additionalParamForNs = additionalParamForNs;
-    }
-
-   
 }

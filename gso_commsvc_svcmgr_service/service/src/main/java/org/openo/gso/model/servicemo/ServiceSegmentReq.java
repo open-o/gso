@@ -17,7 +17,8 @@
 package org.openo.gso.model.servicemo;
 
 import java.util.List;
-import java.util.Map;
+
+import org.openo.gso.model.drivermo.NsParameters;
 
 /**
  * service segment request model<br>
@@ -50,9 +51,9 @@ public class ServiceSegmentReq {
     private List<ServiceSegmentReq> segments;
     
     /**
-     * additional parameters for network service
+     * parameters for ns
      */
-    private Map<String, String> additionalParamForNs;
+    private NsParameters nsParameters;
     
     /**
      * @return Returns the domainHost.
@@ -111,17 +112,16 @@ public class ServiceSegmentReq {
     }
     
     /**
-     * @return Returns the additionalParamForNs.
+     * @return Returns the nsParameters.
      */
-    public Map<String, String> getAdditionalParamForNs() {
-        return additionalParamForNs;
+    public NsParameters getNsParameters() {
+        return nsParameters;
     }
     
     /**
-     * @param additionalParamForNs The additionalParamForNs to set.
+     * @param nsParameters The nsParameters to set.
      */
-    public void setAdditionalParamForNs(Map<String, String> additionalParamForNs) {
-        this.additionalParamForNs = additionalParamForNs;
+    public void setNsParameters(NsParameters nsParameters) {
+        this.nsParameters = nsParameters;
     }
-    
 }

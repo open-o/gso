@@ -16,7 +16,6 @@
 package org.openo.gso.model.drivermo;
 
 import java.util.List;
-import java.util.Map;
 
 import org.openo.gso.model.servicemo.ServiceSegmentReq;
 
@@ -44,7 +43,7 @@ public class SegmentInputParameter {
     
     private List<ServiceSegmentReq> segments;
     
-    private Map<String, String> additionalParamForNs;
+    private NsParameters nsParameters;
 
     
     /**
@@ -168,22 +167,18 @@ public class SegmentInputParameter {
     public void setSegments(List<ServiceSegmentReq> segments) {
         this.segments = segments;
     }
-
-    /**
-     * @return Returns the additionalParamForNs.
-     */
-    public Map<String, String> getAdditionalParamForNs() {
-        return additionalParamForNs;
-    }
-
     
     /**
-     * @param additionalParamForNs The additionalParamForNs to set.
+     * @return Returns the nsParameters.
      */
-    public void setAdditionalParamForNs(Map<String, String> additionalParamForNs) {
-        this.additionalParamForNs = additionalParamForNs;
+    public NsParameters getNsParameters() {
+        return nsParameters;
     }
     
-    
-
+    /**
+     * @param nsParameters The nsParameters to set.
+     */
+    public void setNsParameters(NsParameters nsParameters) {
+        this.nsParameters = nsParameters;
+    }
 }
