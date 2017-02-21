@@ -80,8 +80,10 @@ public class FieldConstant {
         public static final String PARAM_FIELD_NAME_NODETEMPLATENAME = "nodeTemplateName";
 
         public static final String PARAM_FIELD_NAME_NODETYPE = "nodeType";
+        
+        public static final String PARAM_FIELD_NAME_NSPARAMETERS = "nsParameters";
 
-        public static final String PARAM_FIELD_NAME_NSPARAM = "additionalParamForNs";
+        public static final String PARAM_FIELD_NAME_ADDITIONALPARAMFORNS = "additionalParamForNs";
 
         public static final String FIELD_RESPONSE_SERVICE = "service";
 
@@ -289,5 +291,16 @@ public class FieldConstant {
 
         }        
     }
+    public static class VnfNodeTemplate {
 
+        public static final String FIELD_NAME = "name";
+
+        public static final String FIELD_PROPERTIES = "properties";
+        
+        public static final String FIELD_PROPERTIES_ID = "id";
+        
+        private VnfNodeTemplate() {
+
+        }        
+    }
 }

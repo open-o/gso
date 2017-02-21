@@ -33,6 +33,8 @@ import org.openo.gso.servicegateway.common.CommonUtil;
 import org.openo.gso.servicegateway.constant.Constant;
 import org.openo.gso.servicegateway.constant.FieldConstant;
 import org.openo.gso.servicegateway.exception.HttpCode;
+import org.openo.gso.servicegateway.model.CreateLocationConstraintModel;
+import org.openo.gso.servicegateway.model.CreateLocationConstraintModelForVim;
 import org.openo.gso.servicegateway.model.CreateParameterModel;
 import org.openo.gso.servicegateway.model.CreateParameterRspModel;
 import org.openo.gso.servicegateway.model.DomainModel;
@@ -43,6 +45,7 @@ import org.openo.gso.servicegateway.model.ParameterDefineModel;
 import org.openo.gso.servicegateway.model.SegmentTemplateModel;
 import org.openo.gso.servicegateway.model.ServiceModel;
 import org.openo.gso.servicegateway.model.ServiceTemplateModel;
+import org.openo.gso.servicegateway.model.VnfProfileModel;
 import org.openo.gso.servicegateway.service.inf.IServiceGateway;
 import org.openo.gso.servicegateway.util.http.HttpUtil;
 import org.openo.gso.servicegateway.util.http.ResponseUtils;
@@ -192,8 +195,6 @@ public class ServiceGatewayImpl implements IServiceGateway {
         if(!StringUtils.isEmpty(domain)) {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "The Domain of the service should be null");
         }
-        // deal with parameters
-        Object nsParams = parameters.get(FieldConstant.Create.PARAM_FIELD_NAME_NSPARAM);
 
         // sent Create Msg
         try {
@@ -206,9 +207,10 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 String nsInstanceId = (String)rspBody.get(FieldConstant.NSCreate.FIELD_RESPONSE_NSINSTANCEID);
 
                 // instantiate Service
-                Map<String, Object> paramsForInstantiate = new HashMap<>();
+                Map<String, Object> paramsForInstantiate = (Map<String, Object>) parameters.get(FieldConstant.Create.PARAM_FIELD_NAME_NSPARAMETERS);
+                //append instanceId
                 paramsForInstantiate.put(FieldConstant.NSInstantiate.FIELD_NSINSTANCEID, nsInstanceId);
-                paramsForInstantiate.put(FieldConstant.NSInstantiate.FIELD_PARAMS, nsParams);
+
                 // sent instantiate msg
                 String instantiateMsg = JsonUtil.marshal(paramsForCreate);
                 LOGGER.info("instantiate ns service, req:" + instantiateMsg);
@@ -490,15 +492,28 @@ public class ServiceGatewayImpl implements IServiceGateway {
         if(vims.isEmpty()) {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "failed to query vims");
         }
-        ParameterDefineModel locationModel = CommonUtil.generateLocationParam(vims);
-        param.getAdditionalParamForNs().add(locationModel);
+        //generate vim location parameters
+        String templateId = (String)template.getTemplateDetail().get(FieldConstant.CatalogTemplate.FIELD_TEMPLATEID);
+        List<VnfProfileModel> vnfs = CommonUtil.queryVnfProfileIdsByTemplateId(templateId);
+        List<CreateLocationConstraintModel> locationConstraints = new ArrayList<>();
+        for(VnfProfileModel vnf: vnfs){
+            ParameterDefineModel locationModel = CommonUtil.generateLocationParam(vnf.getName(),vims);
+            CreateLocationConstraintModel locationParameter = new CreateLocationConstraintModel();
+            locationParameter.setVnfProfileId(vnf.getVnfProfileId());
+            CreateLocationConstraintModelForVim vimParam = new CreateLocationConstraintModelForVim();
+            vimParam.setVimId(locationModel);
+            locationParameter.setLocationConstraints(vimParam);
+            locationConstraints.add(locationParameter);
+        }
+        param.getNsParameters().setLocationConstraints(locationConstraints);
+        
         // query sdncontrollers
         Map<String, String> sdnControllers = CommonUtil.querySDNControllerInfo();
         if(sdnControllers.isEmpty()) {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "failed to query sdn controllers");
         }
         ParameterDefineModel sdnControllerModel = CommonUtil.generateSDNControllerParam(sdnControllers);
-        param.getAdditionalParamForNs().add(sdnControllerModel);
+        param.getNsParameters().getAdditionalParamForNs().add(sdnControllerModel);
         return param;
     }
 
@@ -515,7 +530,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
         List<ParameterDefineModel> inputs =
                 ResponseUtils.getDataModelFromRsp(JsonUtil.marshal(template.getTemplateDetail()),
                         FieldConstant.CatalogTemplate.FIELD_INPUTS, ParameterDefineModel.class);
-        parameters.setAdditionalParamForNs(inputs);
+        parameters.getNsParameters().setAdditionalParamForNs(inputs);
         String nodeType = CommonUtil.getTemplateNodeType(template);
         parameters.setNodeType(nodeType);
         return parameters;
@@ -575,6 +590,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * @return
      * @since   GSO Mercury Release
      */
+    @SuppressWarnings("unchecked")
     @Override
     public  String scaleService(String serviceId, HttpServletRequest httpRequest){
         try {

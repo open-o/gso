@@ -16,9 +16,7 @@
 package org.openo.gso.servicegateway.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * the service parameter model for query
@@ -52,10 +50,9 @@ public class ServiceParameterModel {
     private List<ServiceParameterModel> segments = new ArrayList<>();
 
     /**
-     * the additionalParamForNs is used for the ns itself, both gso,sdno, nfvo
-     * this params is defined in the template. and both with the location and sdn controller.
+     * the ns parameters model
      */
-    private Map<String, String> additionalParamForNs = new HashMap<>();
+    private NsParametersModel nsParameters = new NsParametersModel();
 
     /**
      * @return Returns the domainHost.
@@ -121,19 +118,24 @@ public class ServiceParameterModel {
         this.segments = segments;
     }
 
-    
-    /**
-     * @return Returns the additionalParamForNs.
-     */
-    public Map<String, String> getAdditionalParamForNs() {
-        return additionalParamForNs;
-    }
+
 
     
     /**
-     * @param additionalParamForNs The additionalParamForNs to set.
+     * @return Returns the nsParameters.
      */
-    public void setAdditionalParamForNs(Map<String, String> additionalParamForNs) {
-        this.additionalParamForNs = additionalParamForNs;
-    }  
+    public NsParametersModel getNsParameters() {
+        return nsParameters;
+    }
+
+
+
+    
+    /**
+     * @param nsParameters The nsParameters to set.
+     */
+    public void setNsParameters(NsParametersModel nsParameters) {
+        this.nsParameters = nsParameters;
+    }
+    
 }
