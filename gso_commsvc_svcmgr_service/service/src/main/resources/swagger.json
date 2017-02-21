@@ -227,77 +227,445 @@
                 }
             }
         },
-        "/drivers/instantiate": {
+        "/gsodrivers/ns/create": {
             "post": {
-                "summary": "create the network service segment",
-                "description": "create the network service segment",
-                "operationId": "createNsSegment",
+                "summary": "Create GSO Service Segment",
+                "description": "it will create a GS-O segment instance specified in the request",
+                "operationId": "createGsoNs",
                 "consumes": [
-                    "application/json"
+                    "application/json;charset=UTF-8"
                 ],
                 "produces": [
-                    "application/json"
+                    "application/json;charset=UTF-8"
                 ],
                 "parameters": [
                     {
+                        "name": "nsCreatRequest",
                         "in": "body",
-                        "name": "body",
-                        "description": "Parameters needed to create service segment.",
+                        "description": "parameters needed to create gso service segment.",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/driver"
+                            "$ref": "#/definitions/NsReq"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Service segment is created successfully.",
+                        "description": "create gso service segment success",
                         "schema": {
-                            "$ref": "#/definitions/segmentId"
+                            "$ref": "#/definitions/GsoNsCreateRsp"
                         }
                     },
                     "default": {
                         "description": "Unexpected error",
                         "schema": {
-                            "$ref": "#/definitions/result"
+                            "$ref": "#/definitions/Result"
                         }
                     }
                 }
             }
         },
-        "/drivers/terminate": {
+        "/gsodrivers/ns/delete": {
             "post": {
-                "summary": "delete the network service segment",
-                "description": "delete the network service segment",
-                "operationId": "deleteNsSegment",
+                "summary": "Delete GSO Service Segment",
+                "description": "it will delete a GS-O segment instance specified in the request",
+                "operationId": "deleteGsoNs",
                 "consumes": [
-                    "application/json"
+                    "application/json;charset=UTF-8"
                 ],
                 "produces": [
-                    "application/json"
+                    "application/json;charset=UTF-8"
                 ],
                 "parameters": [
                     {
+                        "name": "nsDeleteRequest",
                         "in": "body",
-                        "name": "body",
-                        "description": "Parameters needed to delete service segment.",
+                        "description": "parameters needed to delete gso service segment.",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/driver"
+                            "$ref": "#/definitions/NsReq"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Service segment is deleted successfully.",
+                        "description": "delete gso service segment success",
                         "schema": {
-                            "$ref": "#/definitions/segmentId"
+                            "$ref": "#/definitions/GsoNsDeleteRsp"
                         }
                     },
                     "default": {
                         "description": "Unexpected error",
                         "schema": {
-                            "$ref": "#/definitions/result"
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/gsodrivers/jobs/{jobId}": {
+            "get": {
+                "summary": "Get GSO Service Segment Operation Status",
+                "description": "it will get a GS-O segment instance operation status specified in the request",
+                "operationId": "queryGsoNsProgress",
+                "consumes": [
+                    "application/json;charset=UTF-8"
+                ],
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "job id of the gso service segment to be queried",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "query gso service segment operation status success",
+                        "schema": {
+                            "$ref": "#/definitions/NsQueryRsp"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/nfvodrivers/ns": {
+            "post": {
+                "summary": "Create NFVO Service Segment",
+                "description": "it will create a NFV-O segment instance specified in the request",
+                "operationId": "createNfvoNs",
+                "parameters": [
+                    {
+                        "name": "nsCreateRequest",
+                        "in": "body",
+                        "description": "parameters needed to create nfvo service segment.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "create nfvo service segment success",
+                        "schema": {
+                            "$ref": "#/definitions/NsCreateRsp"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/nfvodrivers/{nsInstanceId}/instantiate": {
+            "post": {
+                "summary": "Instantiate NFVO Service Segment",
+                "description": "it will instantiate a NFV-O segment instance specified in the request",
+                "operationId": "instantiateNfvoNs",
+                "parameters": [
+                    {
+                        "name": "nsInstantiateRequest",
+                        "in": "body",
+                        "description": "parameters needed to instantiate nfvo service segment.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NsReq"
+                        }
+                    },
+                    {
+                        "name": "nsInstanceId",
+                        "in": "path",
+                        "description": "id of segment instance",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "instantiate nfvo service segment success",
+                        "schema": {
+                            "$ref": "#/definitions/NsInstantiateRsp"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/nfvodrivers/ns/terminate": {
+            "post": {
+                "summary": "Terminate NFVO Service Segment",
+                "description": "it will terminate a NFV-O segment instance specified in the request",
+                "operationId": "terminateNfvoNs",
+                "parameters": [
+                    {
+                        "name": "nsTerminateRequest",
+                        "in": "body",
+                        "description": "parameters needed to terminate nfvo service segment.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "terminate nfvo service segment success",
+                        "schema": {
+                            "$ref": "#/definitions/NsTerminateRsp"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/nfvodrivers/ns/delete": {
+            "post": {
+                "summary": "Delete NFVO Service Segment",
+                "description": "it will delete a NFV-O segment instance specified in the request",
+                "operationId": "deleteNfvoNs",
+                "parameters": [
+                    {
+                        "name": "nsDeleteRequest",
+                        "in": "body",
+                        "description": "parameters needed to delete nfvo service segment.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "delete nfvo service segment success"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/nfvodrivers/jobs/{jobId}": {
+            "get": {
+                "summary": "Get NFVO Service Segment Operation Status",
+                "description": "it will get a NFV-O segment instance operation status specified in the request",
+                "operationId": "queryNfvoNsProgress",
+                "consumes": [
+                    "application/json;charset=UTF-8"
+                ],
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "job id of the nfvo service segment to be queried",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "query nfvo service segment operation status success",
+                        "schema": {
+                            "$ref": "#/definitions/NsQueryRsp"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/sdnodrivers/ns": {
+            "post": {
+                "summary": "Create SDNO Service Segment",
+                "description": "it will create a SDN-O segment instance specified in the request",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "parameters needed to create sdno service segment.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "create sdno service segment success",
+                        "schema": {
+                            "$ref": "#/definitions/NsCreateRsp"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/sdnodrivers/{nsInstanceId}/instantiate": {
+            "post": {
+                "summary": "Instantiate SDNO Service Segment",
+                "description": "it will instantiate a SDN-O segment instance specified in the request",
+                "parameters": [
+                    {
+                        "name": "nsInstantiateRequest",
+                        "in": "body",
+                        "description": "parameters needed to instantiate sdno service segment.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NsReq"
+                        }
+                    },
+                    {
+                        "name": "nsInstanceId",
+                        "in": "path",
+                        "description": "id of segment instance",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "instantiate sdno service segment success",
+                        "schema": {
+                            "$ref": "#/definitions/NsInstantiateRsp"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/sdnodrivers/ns/terminate": {
+            "post": {
+                "summary": "Terminate SDNO Service Segment",
+                "description": "it will terminate a SDN-O segment instance specified in the request",
+                "parameters": [
+                    {
+                        "name": "nsTerminateRequest",
+                        "in": "body",
+                        "description": "parameters needed to terminate sdno service segment.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "terminate sdno service segment success",
+                        "schema": {
+                            "$ref": "#/definitions/NsTerminateRsp"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/sdnodrivers/ns/delete": {
+            "post": {
+                "summary": "Delete SDNO Service Segment",
+                "description": "it will delete a SDN-O segment instance specified in the request",
+                "parameters": [
+                    {
+                        "name": "nsDeleteRequest",
+                        "in": "body",
+                        "description": "parameters needed to delete sdno service segment.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "delete sdno service segment success"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/sdnodrivers/jobs/{jobId}": {
+            "get": {
+                "summary": "Get SDNO Service Segment Operation Status",
+                "description": "it will get a SDN-O segment instance operation status specified in the request",
+                "operationId": "querySdnoNsProgress",
+                "consumes": [
+                    "application/json;charset=UTF-8"
+                ],
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "job id of the sdno service segment to be queried",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "query sdno service segment operation status success",
+                        "schema": {
+                            "$ref": "#/definitions/NsQueryRsp"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
                         }
                     }
                 }
@@ -305,23 +673,162 @@
         }
     },
     "definitions": {
-        "driver": {
+        "NsReq": {
             "type": "object",
-            "description": "service segment structure",
+            "description": "service segment request structure",
+            "required": [
+                "nodeTemplateName",
+                "segments"
+            ],
             "properties": {
-                "nodeType": {
+                "nodeTemplateName": {
                     "type": "string",
-                    "description": "the type of service segment"
+                    "description": "name of the node template"
                 },
-                "inputParameters": {
+                "segments": {
                     "type": "string",
-                    "description": "Parameters needed for service segment."
+                    "description": "parameters needed to create service segment"
                 }
             }
         },
-        "segmentId": {
-            "type": "string",
-            "description": "service segment id"
+        "NsCreateRsp": {
+            "type": "object",
+            "description": "service segment response structure for create",
+            "required": [
+                "nsInstanceId"
+            ],
+            "properties": {
+                "nsInstanceId": {
+                    "type": "string",
+                    "description": "service segment instance id"
+                }
+            }
+        },
+        "GsoNsCreateRsp": {
+            "type": "object",
+            "description": "service segment response structure for create gso ns",
+            "properties": {
+                "service": {
+                    "type": "object",
+                    "required": [
+                        "serviceId",
+                        "operationId"
+                    ],
+                    "properties": {
+                        "serviceId": {
+                            "type": "string",
+                            "description": "service segment instance id"
+                        },
+                        "operationId": {
+                            "type": "string",
+                            "description": "service segment instance operation id"
+                        }
+                    }
+                }
+            }
+        },
+        "GsoNsDeleteRsp": {
+            "type": "object",
+            "description": "service segment response structure for delete gso ns",
+            "required": [
+                "operationId"
+            ],
+            "properties": {
+                "operationId": {
+                    "type": "string",
+                    "description": "service segment instance operation id"
+                }
+            }
+        },
+        "NsInstantiateRsp": {
+            "type": "object",
+            "description": "service segment response structure for instantiate",
+            "required": [
+                "jobId"
+            ],
+            "properties": {
+                "jobId": {
+                    "type": "string",
+                    "description": "service segment job id for instantiate"
+                }
+            }
+        },
+        "NsTerminateRsp": {
+            "type": "object",
+            "description": "service segment response structure for instantiate",
+            "required": [
+                "jobId"
+            ],
+            "properties": {
+                "jobId": {
+                    "type": "string",
+                    "description": "service segment job id for instantiate"
+                }
+            }
+        },
+        "Result": {
+            "type": "object",
+            "description": "a general structure for reporting failure",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "description": "success or failure"
+                },
+                "statusDescription": {
+                    "type": "string",
+                    "description": "detail description"
+                },
+                "errorCode": {
+                    "type": "integer",
+                    "description": "error code"
+                }
+            }
+        },
+        "NsQueryRsp": {
+            "type": "object",
+            "description": "service segment job status structure",
+            "required": [
+                "jobId",
+                "responseDescriptor"
+            ],
+            "properties": {
+                "jobId": {
+                    "type": "string",
+                    "description": "job id"
+                },
+                "responseDescriptor": {
+                    "$ref": "#/definitions/ResponseDescriptor"
+                }
+            }
+        },
+        "ResponseDescriptor": {
+            "type": "object",
+            "description": "service segment job status response desc",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "description": "status of the job"
+                },
+                "statusDescription": {
+                    "type": "string",
+                    "description": "description of the job status"
+                },
+                "progress": {
+                    "type": "string",
+                    "description": "progress of the job"
+                },
+                "errorCode": {
+                    "type": "string",
+                    "description": "status of the job"
+                },
+                "responseId": {
+                    "type": "string",
+                    "description": "id of the response"
+                }
+            }
         },
         "service": {
             "type": "object",
