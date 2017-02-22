@@ -373,7 +373,7 @@ public class CommonUtil {
      */
     public static ParameterDefineModel generateLocationParam(String vnfName, Map<String, String> vims) {
         ParameterDefineModel location = new ParameterDefineModel();
-        location.setName(vnfName);
+        location.setName(vnfName + "_Location");
         location.setDescription("location for the service");
         location.setType("enum");
         location.setRequired("true");

@@ -497,7 +497,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
         List<VnfProfileModel> vnfs = CommonUtil.queryVnfProfileIdsByTemplateId(templateId);
         List<CreateLocationConstraintModel> locationConstraints = new ArrayList<>();
         for(VnfProfileModel vnf: vnfs){
-            ParameterDefineModel locationModel = CommonUtil.generateLocationParam(vnf.getName(),vims);
+            ParameterDefineModel locationModel = CommonUtil.generateLocationParam(vnf.getVnfProfileId(),vims);
             CreateLocationConstraintModel locationParameter = new CreateLocationConstraintModel();
             locationParameter.setVnfProfileId(vnf.getVnfProfileId());
             CreateLocationConstraintModelForVim vimParam = new CreateLocationConstraintModelForVim();
