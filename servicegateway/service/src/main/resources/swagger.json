@@ -1,0 +1,601 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "v1",
+        "title": "servicegateway",
+        "description": "the service gateway api"
+    },
+    "schemes": [
+        "http"
+    ],
+    "basePath": "/openoapi/servicegateway/v1",
+    "paths": {
+        "/services": {
+            "post": {
+                "summary": "create service",
+                "description": "create gso,sdno,nfvo service",
+                "tags": [
+                    "IServiceGatewayRoaModule"
+                ],
+                "operationId": "createService",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "createRequest",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/CreateRequestModel"
+                        },
+                        "description": "the request body",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "create service success",
+                        "schema": {
+                            "$ref": "#/definitions/CreateResponseModel"
+                        }
+                    },
+                    "400": {
+                        "description": "parameter wrong"
+                    },
+                    "500": {
+                        "description": "inner error"
+                    }
+                }
+            },
+            "get": {
+                "summary": "query all services",
+                "description": "query all services from inventory",
+                "tags": [
+                    "IServiceGatewayRoaModule"
+                ],
+                "operationId": "getServices",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "query all services success",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/QueryServicesResponseModel"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "inner error"
+                    }
+                }
+            }
+        },
+        "/services/{serviceId}": {
+            "delete": {
+                "summary": "delete service",
+                "description": "delete service by service id",
+                "tags": [
+                    "IServiceGatewayRoaModule"
+                ],
+                "operationId": "deleteService",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "serviceId",
+                        "in": "path",
+                        "description": "the service id to delete",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "delete service success",
+                        "schema": {
+                            "$ref": "#/definitions/CommonOperationRspModel"
+                        }
+                    },
+                    "500": {
+                        "description": "inner error"
+                    }
+                }
+            },
+            "get": {
+                "summary": "query single service",
+                "description": "query a services by service id",
+                "tags": [
+                    "IServiceGatewayRoaModule"
+                ],
+                "operationId": "getService",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "serviceId",
+                        "in": "path",
+                        "description": "the service id to query",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "query service by service id success",
+                        "schema": {
+                            "$ref": "#/definitions/QueryServicesResponseModel"
+                        }
+                    },
+                    "500": {
+                        "description": "inner error"
+                    }
+                }
+            }
+        },
+        "/services/{serviceId}/operations/{operationId}": {
+            "get": {
+                "summary": "query operation progress",
+                "description": "query operation progress by operationId",
+                "tags": [
+                    "IServiceGatewayRoaModule"
+                ],
+                "operationId": "getOperation",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "serviceId",
+                        "in": "path",
+                        "description": "the service id to query",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "operationId",
+                        "in": "path",
+                        "description": "the operation id id to query",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "query operation by operation id success",
+                        "schema": {
+                            "$ref": "#/definitions/OperationResponseModel"
+                        }
+                    },
+                    "500": {
+                        "description": "inner error"
+                    }
+                }
+            }
+        },
+        "/services/{serviceId}/scale": {
+            "post": {
+                "summary": "scale service",
+                "description": "scale a service",
+                "tags": [
+                    "IServiceGatewayRoaModule"
+                ],
+                "operationId": "scaleService",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "serviceId",
+                        "in": "path",
+                        "description": "the service id to scale",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "scaleRequest",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/ScaleRequestModel"
+                        },
+                        "description": "the request body",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "scale service success",
+                        "schema": {
+                            "$ref": "#/definitions/CommonOperationRspModel"
+                        }
+                    },
+                    "500": {
+                        "description": "inner error"
+                    }
+                }
+            }
+        },
+        "/createparameters/{templateId}": {
+            "get": {
+                "summary": "query the create parameter information",
+                "description": "query the create parameter information by template id",
+                "tags": [
+                    "IServiceGatewayRoaModule"
+                ],
+                "operationId": "generateCreateParameters",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "templateId",
+                        "in": "path",
+                        "description": "the template id",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "generate create parameters by template id success",
+                        "schema": {
+                            "$ref": "#/definitions/GenerateParamsResponseModel"
+                        }
+                    },
+                    "500": {
+                        "description": "inner error"
+                    }
+                }
+            }
+        },
+        "/domains": {
+            "get": {
+                "summary": "query the domains information",
+                "description": "query all domains",
+                "tags": [
+                    "IServiceGatewayRoaModule"
+                ],
+                "operationId": "getDomains",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "query domains success",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/DomainModel"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "inner error"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "CreateRequestModel": {
+            "properties": {
+                "service": {
+                    "$ref": "#/definitions/CreateServiceModel"
+                }
+            }
+        },
+        "CreateServiceModel": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "serviceDefId": {
+                    "type": "string"
+                },
+                "templateId": {
+                    "type": "string"
+                },
+                "templateName": {
+                    "type": "string"
+                },
+                "parameters": {
+                    "$ref": "#/definitions/ServiceParamModel"
+                }
+            }
+        },
+        "ServiceParamModel": {
+            "properties": {
+                "domainHost": {
+                    "type": "string"
+                },
+                "nodeTemplateName": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "type": "string"
+                },
+                "segments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ServiceParamModel"
+                    }
+                },
+                "nsParameters": {
+                    "$ref": "#/definitions/NsParametersModel"
+                }
+            }
+        },
+        "NsParametersModel": {
+            "properties": {
+                "locationConstraints": {
+                    "$ref": "#/definitions/LocationConstrainsModel"
+                },
+                "additionalParamForNs": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "LocationConstrainsModel": {
+            "properties": {
+                "vnfProfileId": {
+                    "type": "string"
+                },
+                "locationConstraints": {
+                    "$ref": "#/definitions/LocationConstrainsVimModel"
+                }
+            }
+        },
+        "LocationConstrainsVimModel": {
+            "properties": {
+                "vimId": {
+                    "type": "string"
+                }
+            }
+        },
+        "CreateResponseModel": {
+            "properties": {
+                "service": {
+                    "$ref": "#/definitions/ServiceOperationModel"
+                }
+            }
+        },
+        "ServiceOperationModel": {
+            "properties": {
+                "serviceId": {
+                    "type": "string"
+                },
+                "operationId": {
+                    "type": "string"
+                }
+            }
+        },
+        "CommonOperationRspModel": {
+            "properties": {
+                "operationId": {
+                    "type": "string"
+                }
+            }
+        },
+        "QueryServicesResponseModel": {
+            "properties": {
+                "serviceId": {
+                    "type": "string"
+                },
+                "serviceName": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "createTime": {
+                    "type": "string"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "serviceType": {
+                    "type": "string"
+                },
+                "templateName": {
+                    "type": "string"
+                },
+                "parameters": {
+                    "$ref": "#/definitions/ServiceParamModel"
+                }
+            }
+        },
+        "OperationResponseModel": {
+            "properties": {
+                "operation": {
+                    "$ref": "#/definitions/OperationModel"
+                }
+            }
+        },
+        "OperationModel": {
+            "properties": {
+                "operationId": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                },
+                "operationContent": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "progress": {
+                    "type": "string"
+                }
+            }
+        },
+        "GenerateParamsResponseModel": {
+            "properties": {
+                "templateId": {
+                    "type": "string"
+                },
+                "parameters": {
+                    "$ref": "#/definitions/CreateParamModel"
+                }
+            }
+        },
+        "CreateParamModel": {
+            "properties": {
+                "domainHost": {
+                    "$ref": "#/definitions/ParamDefineModel"
+                },
+                "nodeTempalteName": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "type": "string"
+                },
+                "segments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CreateParamModel"
+                    }
+                },
+                "nsParameters": {
+                    "$ref": "#/definitions/CreateNsParamModel"
+                }
+            }
+        },
+        "CreateNsParamModel": {
+            "properties": {
+                "locationConstraints": {
+                    "$ref": "#/definitions/CreateLocationConstraintsModel"
+                },
+                "additionalParamForNs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ParamDefineModel"
+                    }
+                }
+            }
+        },
+        "CreateLocationConstraintsModel": {
+            "properties": {
+                "vnfProfileId": {
+                    "type": "string"
+                },
+                "locationConstraints": {
+                    "$ref": "#/definitions/CreateLocationConstraintsVimModel"
+                }
+            }
+        },
+        "CreateLocationConstraintsVimModel": {
+            "properties": {
+                "vimId": {
+                    "$ref": "#/definitions/ParamDefineModel"
+                }
+            }
+        },
+        "ParamDefineModel": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "defaultValue": {
+                    "type": "string"
+                },
+                "range": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "DomainModel": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "host": {
+                    "type": "string"
+                }
+            }
+        },
+        "ScaleRequestModel": {
+            "properties": {
+                "scaleType": {
+                    "type": "string"
+                },
+                "scaleVnfData": {
+                    "$ref": "#/definitions/ScaleVnfModel"
+                }
+            }
+        },
+        "ScaleVnfModel": {
+            "properties": {
+                "vnfInstanceId": {
+                    "type": "string"
+                },
+                "sacleByStepData": {
+                    "$ref": "#/definitions/ScaleByStepModel"
+                }
+            }
+        },
+        "ScaleByStepModel": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "aspectId": {
+                    "type": "string"
+                },
+                "numberOfSteps": {
+                    "type": "integer"
+                },
+                "additionalParam": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
