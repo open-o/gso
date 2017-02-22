@@ -72,7 +72,7 @@ public class OperationManager implements IOperationManager {
         ServiceOperation operation = new ServiceOperation(serviceId, operationType, null);
 
         // Insert operation into DB
-        LOGGER.error("Service operation data: {}", operation);
+        LOGGER.info("Service operation data: {}", operation);
         serviceOperDao.insert(operation);
 
         return operation;
@@ -87,7 +87,7 @@ public class OperationManager implements IOperationManager {
      */
     @Override
     public void updateOperation(ServiceOperation svcOperation) {
-        LOGGER.error("Update service operation data: {}", svcOperation);
+        LOGGER.info("Update service operation data: {}", svcOperation);
         serviceOperDao.update(svcOperation);
     }
 

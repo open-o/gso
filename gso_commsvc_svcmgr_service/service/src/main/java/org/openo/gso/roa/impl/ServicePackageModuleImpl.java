@@ -65,7 +65,7 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
     @SuppressWarnings("unchecked")
     @Override
     public Response onBoardingPackage(HttpServletRequest httpRequest) {
-        LOGGER.error("Start to upload package status.");
+        LOGGER.info("Start to upload package status.");
         try {
             // 1. Get request body
             String body = RestUtils.getRequestBody(httpRequest);
@@ -74,6 +74,7 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
             Map<String, Object> bodyMap = JsonUtil.unMarshal(body, Map.class);
             Object serviceDefId = bodyMap.get(Constant.CSAR_ID);
             if(!(serviceDefId instanceof String)) {
+                LOGGER.error("serviceDefId is not String: {}", String.valueOf(serviceDefId));
                 throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.DATA_IS_WRONG);
             }
             ValidateUtil.assertStringNotNull((String)serviceDefId, Constant.SERVICE_DEF_ID);
@@ -97,8 +98,9 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
      */
     @Override
     public Response deleteGsarPackage(String serviceDefId, HttpServletRequest httpRequest) {
-        LOGGER.error("Start to delete package.");
+        LOGGER.info("Start to delete package.");
         try {
+            ValidateUtil.assertStringNotNull(serviceDefId, Constant.SERVICE_DEF_ID);
             packageMgr.deletePackage(serviceDefId, httpRequest);
         } catch(ApplicationException exception) {
             LOGGER.error("Faile to delete csar package, {}", exception);

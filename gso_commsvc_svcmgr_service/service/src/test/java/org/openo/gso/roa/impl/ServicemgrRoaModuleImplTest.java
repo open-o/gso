@@ -346,24 +346,7 @@ public class ServicemgrRoaModuleImplTest {
 
         };
 
-        serviceRoa.createServiceSegment(httpRequest);
-    }
-
-    /**
-     * Test that fail to create service .<br/>
-     * 
-     * @since GSO 0.5
-     */
-    @Test(expected = ApplicationException.class)
-    public void testCreateServiceSegmentFail() {
-        new MockUp<RestUtils>() {
-
-            @Mock
-            public String getRequestBody(HttpServletRequest request) {
-                return null;
-            }
-        };
-        serviceRoa.createServiceSegment(httpRequest);
+        serviceManager.createServiceSegment(RestUtils.getRequestBody(httpRequest), httpRequest);
     }
 
     /**

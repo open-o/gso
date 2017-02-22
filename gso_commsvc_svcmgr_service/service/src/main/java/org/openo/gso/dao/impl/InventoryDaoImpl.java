@@ -46,7 +46,7 @@ public class InventoryDaoImpl implements IInventoryDao {
     /**
      * Log service.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceModelDaoImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryDaoImpl.class);
 
     /**
      * Session handler.

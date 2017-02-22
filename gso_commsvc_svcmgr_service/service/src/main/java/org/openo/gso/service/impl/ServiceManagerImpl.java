@@ -132,6 +132,7 @@ public class ServiceManagerImpl implements IServiceManager {
     public ServiceDetailModel createService(String reqContent, HttpServletRequest httpRequest) {
 
         // Parse request
+        ValidateUtil.assertStringNotNull(reqContent, Constant.RESPONSE_CONTENT_MESSAGE);
         Map<String, Object> requestBody = JsonUtil.unMarshal(reqContent, Map.class);
         Map<String, Object> service = (Map<String, Object>)requestBody.get(Constant.SERVICE_INDENTIFY);
         ValidateUtil.assertObjectNotNull(service);
@@ -443,6 +444,7 @@ public class ServiceManagerImpl implements IServiceManager {
      */
     @Override
     public void createServiceSegment(String reqContent, HttpServletRequest httpRequest) {
+        ValidateUtil.assertStringNotNull(reqContent, Constant.RESPONSE_CONTENT_MESSAGE);
         ServiceSegmentModel serviceSegment = JsonUtil.unMarshal(reqContent, ServiceSegmentModel.class);
         String serviceId = serviceSegment.getServiceId();
         ValidateUtil.assertStringNotNull(serviceId, Constant.SERVICE_ID);
@@ -450,7 +452,7 @@ public class ServiceManagerImpl implements IServiceManager {
         // Query service instance
         ServicePackageMapping pacakageInfo = servicePackageDao.queryPackageMapping(serviceId);
         if(null == pacakageInfo) {
-            LOGGER.error("There is no package in DB. The service is ", serviceId);
+            LOGGER.error("There is no package in DB. The service is {}", serviceId);
             throw new ApplicationException(HttpCode.BAD_REQUEST, "There is no package in DB.");
         }
 
@@ -493,7 +495,7 @@ public class ServiceManagerImpl implements IServiceManager {
             }
 
             // get node sequence
-            if(node.getName().equals(Constant.NODE_SEQUENCE)) {
+            if(Constant.NODE_SEQUENCE.equals(node.getName())) {
                 Map<String, Object> properties = node.getProperties();
                 if(!CollectionUtils.isEmpty(properties)) {
                     Object sequence = properties.get(Constant.SEQUENCE_PROPERTY);
@@ -602,7 +604,7 @@ public class ServiceManagerImpl implements IServiceManager {
 
         if(null != svcOperation) {
             svcOperation.setResult(status);
-            svcOperation.setProgress(100);
+            svcOperation.setProgress(Integer.valueOf(CommonConstant.Progress.ONE_HUNDRED).intValue());
             svcOperation.setReason(reason);
             svcOperation.setFinishedAt(System.currentTimeMillis());
         }

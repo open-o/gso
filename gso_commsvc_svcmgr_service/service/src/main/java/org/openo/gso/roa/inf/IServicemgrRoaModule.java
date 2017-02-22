@@ -108,19 +108,6 @@ public interface IServicemgrRoaModule {
     Response getTopoSequence(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq);
 
     /**
-     * Create service segment instance.<br/>
-     * 
-     * @param servletReq http request
-     * @return response
-     * @since GSO 0.5
-     */
-    @POST
-    @Produces({"application/json"})
-    @Consumes({"application/json"})
-    @Path("/services/service-segments")
-    Response createServiceSegment(@Context HttpServletRequest servletReq);
-
-    /**
      * Query service operation result.<br/>
      * 
      * @param serviceId service instance ID

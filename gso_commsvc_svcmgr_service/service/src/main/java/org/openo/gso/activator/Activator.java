@@ -60,9 +60,9 @@ public class Activator {
      */
     private void registerService() {
         // get the jsonString form the service file
-        String root = SystemEnvVariablesFactory.getInstance().getAppRoot();
-        String serviceFilePath = root + File.separator + Constant.FILE_PATH_ETC + File.separator
-                + Constant.FILE_PATH_REGISTER + File.separator + Constant.FILE_PATH_JSON;
+        StringBuilder builder = new StringBuilder().append(SystemEnvVariablesFactory.getInstance().getAppRoot());
+        String serviceFilePath = builder.append(File.separator).append(Constant.FILE_PATH_ETC).append(File.separator)
+                .append(Constant.FILE_PATH_REGISTER).append(File.separator).append(Constant.FILE_PATH_JSON).toString();
         String jsonInfo = RegisterUtil.readFile(serviceFilePath);
 
         // check the jsonInfo
