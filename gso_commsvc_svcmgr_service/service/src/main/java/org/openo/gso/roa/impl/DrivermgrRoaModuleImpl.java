@@ -16,9 +16,7 @@
 
 package org.openo.gso.roa.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
@@ -35,6 +33,7 @@ import org.openo.gso.model.drivermo.ServiceNode;
 import org.openo.gso.roa.inf.IDrivermgrRoaModule;
 import org.openo.gso.service.inf.IDriverManager;
 import org.openo.gso.util.json.JsonUtil;
+import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +101,6 @@ public class DrivermgrRoaModuleImpl
         RestfulResponse rsp = driverMgr.deleteNs(nfvSegInput, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
-
     /**
      * Query NFVO job status<br>
      * 
@@ -112,6 +110,7 @@ public class DrivermgrRoaModuleImpl
      */
     @Override
     public Response queryNfvoJobStatus(String jobId) {
+        ValidateUtil.assertObjectNotNull(jobId);
         RestfulResponse rsp = driverMgr.getNsProgress(jobId, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
@@ -126,6 +125,7 @@ public class DrivermgrRoaModuleImpl
      */
     @Override
     public Response instantiateNfvoNs(String nsInstanceId, HttpServletRequest servletReq) {
+        ValidateUtil.assertObjectNotNull(nsInstanceId);
         // Step 1: get parameters from request for current node
         SegmentInputParameter nfvSegInput = getParamsForCurrentNode(servletReq);
         RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, nfvSegInput, CommonConstant.SegmentType.NFVO);
@@ -186,6 +186,7 @@ public class DrivermgrRoaModuleImpl
      */
     @Override
     public Response querySdnoJobStatus(String jobId) {
+        ValidateUtil.assertObjectNotNull(jobId);
         RestfulResponse rsp = driverMgr.getNsProgress(jobId, CommonConstant.SegmentType.SDNO);
         return buildResponse(rsp);
     }
@@ -200,6 +201,7 @@ public class DrivermgrRoaModuleImpl
      */
     @Override
     public Response instantiateSdnoNs(String nsInstanceId, HttpServletRequest servletReq) {
+        ValidateUtil.assertObjectNotNull(nsInstanceId);
         // Step 1: get parameters from request for current node
         SegmentInputParameter sdnSegInput = getParamsForCurrentNode(servletReq);
         RestfulResponse rsp = driverMgr.instantiateNs(nsInstanceId, sdnSegInput, CommonConstant.SegmentType.SDNO);
@@ -273,6 +275,7 @@ public class DrivermgrRoaModuleImpl
      */
     @Override
     public Response queryGsoJobStatus(String jobId) {
+        ValidateUtil.assertObjectNotNull(jobId);
         RestfulResponse rsp = driverMgr.getGsoNsProgress(jobId, CommonConstant.SegmentType.GSO);
         return buildResponse(rsp);
     }
@@ -287,9 +290,12 @@ public class DrivermgrRoaModuleImpl
     private SegmentInputParameter getParamsForCurrentNode(HttpServletRequest servletReq) {
         // Step 0: get request model
         String body = RestUtils.getRequestBody(servletReq);
+        ValidateUtil.assertObjectNotNull(body);
         LOGGER.info("body from request is {}", body);
-        String jsonBody = body.replaceAll("\"\\{", "\\{").replaceAll("\\}\"", "\\}").replaceAll("\"\\[", "\\[")
-                .replaceAll("\\]\"", "\\]");
+        String jsonBody = body.replaceAll(CommonConstant.LEFT_QUOTE_LEFT_BRACE, CommonConstant.LEFT_BRACE)
+                .replaceAll(CommonConstant.RIGHT_BRACE_RIGHT_QUOTE, CommonConstant.RIGHT_BRACE)
+                .replaceAll(CommonConstant.LEFT_QUOTE_LEFT_BRACKET, CommonConstant.LEFT_BRACKET)
+                .replaceAll(CommonConstant.RIGHT_BRACKET_RIGHT_QUOTE, CommonConstant.RIGHT_BRACKET);
         LOGGER.info("json body from request is {}", jsonBody);
         ServiceNode serviceNode = JsonUtil.unMarshal(jsonBody, ServiceNode.class);
 
@@ -301,11 +307,14 @@ public class DrivermgrRoaModuleImpl
 
         // Step 2:Get input parameters for current node
         List<SegmentInputParameter> inputList = serviceNode.getSegments();
-        Map<String, SegmentInputParameter> map = new HashMap<>();
+        SegmentInputParameter segInput = new SegmentInputParameter();
         for(SegmentInputParameter input : inputList) {
-            map.put(input.getNodeTemplateName(), input);
+            if(serviceNode.getNodeTemplateName().equals(input.getNodeTemplateName())){
+                segInput = input;
+                break;
+            }
         }
 
-        return map.get(serviceNode.getNodeTemplateName());
+        return segInput;
     }
 }

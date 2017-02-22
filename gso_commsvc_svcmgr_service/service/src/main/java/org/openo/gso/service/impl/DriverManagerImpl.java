@@ -19,12 +19,7 @@ package org.openo.gso.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang.StringUtils;
 import org.openo.baseservice.roa.util.restclient.RestfulOptions;
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
@@ -56,6 +51,7 @@ import org.openo.gso.restproxy.inf.ICatalogProxy;
 import org.openo.gso.service.inf.IDriverManager;
 import org.openo.gso.util.RestfulUtil;
 import org.openo.gso.util.json.JsonUtil;
+import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -228,9 +224,12 @@ public class DriverManagerImpl implements IDriverManager {
         
         //Step4: Call NFVO or SDNO lcm to create ns        
         RestfulResponse createRsp = RestfulUtil.getRemoteResponse(url, methodType, restfulParametes, options);
+        ValidateUtil.assertObjectNotNull(createRsp);
         LOGGER.info("create ns response status is : {}", createRsp.getStatus());
         LOGGER.info("create ns response content is : {}", createRsp.getResponseContent());
+        ValidateUtil.assertObjectNotNull(createRsp.getResponseContent());
         JSONObject obj = JSONObject.fromObject(createRsp.getResponseContent());
+        ValidateUtil.assertObjectNotNull(obj);
         String segmentId = obj.getString(CommonConstant.NS_INSTANCE_ID);
         if(StringUtils.isEmpty(segmentId)) {
             LOGGER.error("Invalid instanceId from create operation");
@@ -244,7 +243,6 @@ public class DriverManagerImpl implements IDriverManager {
         //Step 6: save segment operation information
         ServiceSegmentOperation segmentOperInfo = new ServiceSegmentOperation(segmentId, segmentType, CommonConstant.OperationType.CREATE, segInput.getServiceId(), CommonConstant.Status.PROCESSING);
         serviceSegmentDao.insertSegmentOper(segmentOperInfo);
-        LOGGER.info("save segment and operation info -> end");
         
         if(!HttpCode.isSucess(createRsp.getStatus())){
             LOGGER.error("update segment operation status : fail to create ns");
@@ -252,7 +250,7 @@ public class DriverManagerImpl implements IDriverManager {
             updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, createRsp.getStatus(), CommonConstant.StatusDesc.CREATE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_CREATE_NS);
         }
-        
+        LOGGER.info("save segment and operation info -> end");
         return createRsp;
     }
 
@@ -276,6 +274,7 @@ public class DriverManagerImpl implements IDriverManager {
         RestfulParametes restfulParameters = RestfulUtil.setRestfulParameters(null, null);
         RestfulOptions options = RestfulUtil.setRestfulOptions(segInput.getDomainHost());
         RestfulResponse deleteRsp = RestfulUtil.getRemoteResponse(url, methodType, restfulParameters, options);
+        ValidateUtil.assertObjectNotNull(deleteRsp);
         LOGGER.info("delete ns response status is : {}", deleteRsp.getStatus());
         LOGGER.info("delete ns response content is : {}", deleteRsp.getResponseContent());
         LOGGER.info("delete ns -> end");
@@ -283,17 +282,18 @@ public class DriverManagerImpl implements IDriverManager {
             LOGGER.error("fail to delete ns");
             ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, CommonConstant.OperationType.DELETE);
             updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, deleteRsp.getStatus(), CommonConstant.StatusDesc.TERMINATE_NS_FAILED);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_INSTANTIATE_NS);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_DELETE_NS);
         }
-
-        //Step3: update service segment operation status
+        
+        //Step3: delete segment info
+        deleteSegmentInfo(segmentId, segmentType);
+        LOGGER.info("delete segment information -> end");
+        
+        //Step4: update service segment operation status
         ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, CommonConstant.OperationType.DELETE);
         updateSegmentOperStatus(statusSegOper, CommonConstant.Status.FINISHED, deleteRsp.getStatus(), null);
         LOGGER.info("update segment operaton status for delete -> end");
-        
-        //Step4: delete segment info
-        deleteSegmentInfo(segmentId, segmentType);
-        LOGGER.info("delete segment information -> end");
+
         return deleteRsp;
         
     }
@@ -315,25 +315,28 @@ public class DriverManagerImpl implements IDriverManager {
     public RestfulResponse instantiateNs(String segmentId, SegmentInputParameter segInput, String segmentType) {
         //Call the NFVO or SDNO service to instantiate service
         LOGGER.info("instantiate ns -> begin");
-        // Step1: prepare url and 
-        String url = getUrl(segmentType, segmentId, CommonConstant.Step.INSTANTIATE);
-        String methodType = CommonConstant.MethodType.POST;
                 
-        // Step2: Prepare restful parameters and options
+        // Step1: Prepare restful parameters and options
         NsInstantiateReq oRequest = new NsInstantiateReq();
         oRequest.setNsInstanceId(segmentId);
         NsParameters nsParameters = segInput.getNsParameters();
         oRequest.setLocationConstraints(nsParameters.getLocationConstraints());
         oRequest.setAdditionalParamForNs(nsParameters.getAdditionalParamForNs());
-        String instReq = JsonUtil.marshal(oRequest);
-        
+        String instReq = JsonUtil.marshal(oRequest);        
         RestfulParametes restfulParameters = RestfulUtil.setRestfulParameters(instReq, null);
         RestfulOptions options = RestfulUtil.setRestfulOptions(segInput.getDomainHost());
         
+        // Step2: prepare url and 
+        String url = getUrl(segmentType, segmentId, CommonConstant.Step.INSTANTIATE);
+        String methodType = CommonConstant.MethodType.POST;
+        
         RestfulResponse instRsp = RestfulUtil.getRemoteResponse(url, methodType, restfulParameters, options);
+        ValidateUtil.assertObjectNotNull(instRsp);
         LOGGER.info("instantiate ns response status is : {}", instRsp.getStatus());
         LOGGER.info("instantiate ns response content is : {}", instRsp.getResponseContent());
+        ValidateUtil.assertObjectNotNull(instRsp.getResponseContent());
         JSONObject obj = JSONObject.fromObject(instRsp.getResponseContent());
+        ValidateUtil.assertObjectNotNull(obj);
         String jobId = obj.getString(CommonConstant.JOB_ID);
         if(StringUtils.isEmpty(jobId)) {
             LOGGER.error("Invalid jobId from instantiate operation");
@@ -388,6 +391,7 @@ public class DriverManagerImpl implements IDriverManager {
         
         //Step4: Call the NFVO or SDNO service to terminate service
         RestfulResponse terminateRsp = RestfulUtil.getRemoteResponse(url, methodType, restfulParametes, options);
+        ValidateUtil.assertObjectNotNull(terminateRsp);
         LOGGER.info("terminate ns response status is : {}", terminateRsp.getStatus());
         LOGGER.info("terminate ns response content is : {}", terminateRsp.getResponseContent());
         JSONObject obj = JSONObject.fromObject(terminateRsp.getResponseContent());
@@ -405,7 +409,7 @@ public class DriverManagerImpl implements IDriverManager {
             LOGGER.error("fail to instantiate ns");
             ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, CommonConstant.OperationType.DELETE);
             updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, terminateRsp.getStatus(), CommonConstant.StatusDesc.TERMINATE_NS_FAILED);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_INSTANTIATE_NS);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_TERMINATE_NS);
         }
         LOGGER.info("update segment job id -> begin");
         ServiceSegmentOperation jobSegOper = new ServiceSegmentOperation(segmentId, segmentType, CommonConstant.OperationType.DELETE);
@@ -428,33 +432,33 @@ public class DriverManagerImpl implements IDriverManager {
      */
     @Override
     public RestfulResponse getNsProgress(String jobId, String segmentType) {
+        
+        ValidateUtil.assertObjectNotNull(jobId);
         ServiceSegmentOperation segmentOper = serviceSegmentDao.querySegmentOperByJobIdAndType(jobId, segmentType);
+        
+        ValidateUtil.assertObjectNotNull(segmentOper);
         String segmentId = segmentOper.getServiceSegmentId();
         String operType = segmentOper.getOperationType();
         //Step 1: get service segmemt operation by segment id and segment type
         ServiceSegmentModel segment = serviceSegmentDao.queryServiceSegmentByIdAndType(segmentId, segmentType);
-        //Step 2 : build query task
-        QueryProgress task = new QueryProgress(segmentType, null, jobId, segment.getDomainHost());
-        //Step 3: start query
-        LOGGER.info("query ns status -> begin");
-        ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(1);
-        RestfulResponse rsp = null;
-        try {
-            Future<RestfulResponse> status = executor.submit(task);
-            rsp = status.get();
-        } catch(Exception e) {
-            LOGGER.error("fail to query the operation status: {}", e);
-            executor.shutdown();
-            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
-            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, HttpStatus.SC_INTERNAL_SERVER_ERROR, CommonConstant.StatusDesc.QUERY_JOB_STATUS_FAILED);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
-        }
 
+        ValidateUtil.assertObjectNotNull(segment);
+        //Step 2: start query
+        LOGGER.info("query ns status -> begin");
+        String url = getUrl(segmentType, jobId, CommonConstant.Step.QUERY);
+        String methodType = CommonConstant.MethodType.GET;
+        // prepare restful parameters and options
+        RestfulParametes restfulParametes = RestfulUtil.setRestfulParameters(null, null);
+        RestfulOptions options = RestfulUtil.setRestfulOptions(segment.getDomainHost());
+        RestfulResponse rsp = RestfulUtil.getRemoteResponse(url, methodType, restfulParametes, options);
+        ValidateUtil.assertObjectNotNull(rsp);
+        LOGGER.info("query ns progress response status is : {}", rsp.getStatus());
+        LOGGER.info("query ns progress response content is : {}", rsp.getResponseContent());
         if(!HttpCode.isSucess(rsp.getStatus())) {
             LOGGER.info("fail to query job status");
             ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
             updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.QUERY_JOB_STATUS_FAILED);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_QUERY_JOB_STATUS);
         }
         // Step 4: Process Network Service Instantiate Response
         NsProgressStatus nsProgress = JsonUtil.unMarshal(rsp.getResponseContent(), NsProgressStatus.class);
@@ -462,6 +466,7 @@ public class DriverManagerImpl implements IDriverManager {
         // Step 5: update segment operation progress
         ServiceSegmentOperation progressSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
         progressSegOper.setProgress(Integer.valueOf(rspDesc.getProgress()));
+        progressSegOper.setStatusDescription(rspDesc.getStatusDescription());
         serviceSegmentDao.updateSegmentOper(progressSegOper);
 
         // Step 6: update segment operation status
@@ -475,7 +480,7 @@ public class DriverManagerImpl implements IDriverManager {
             LOGGER.error("job result is failed, operType is {}", operType);
             ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
             updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, rsp.getStatus(), rspDesc.getStatusDescription());
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.JOB_STATUS_ERROR);
         } else {
             // do nothing
         }
@@ -484,44 +489,7 @@ public class DriverManagerImpl implements IDriverManager {
         return rsp;
     }
     
-    
-
-    class QueryProgress implements Callable<RestfulResponse> {
-
-        String segmentType;
-        String instanceId;
-        String jobId;
-        String domainHost;
-        QueryProgress(String segmentType, String instanceId, String jobId, String domianHost) {
-            this.segmentType = segmentType;
-            this.instanceId = instanceId;
-            this.jobId = jobId;
-            this.domainHost = domianHost;
-        }
-
-        @Override
-        public RestfulResponse call() throws Exception {
-            // For every 10 seconds query progress
-            Thread.sleep(TEN_SECONDS);
-            //Step1: prepare url and method type
-            String url;
-            if(CommonConstant.SegmentType.GSO.equals(segmentType)) {
-                url = String.format(CommonConstant.GSO_QUERY_URL, instanceId, jobId);
-            } else {
-                url = getUrl(segmentType, jobId, CommonConstant.Step.QUERY);
-            }
-            String methodType = CommonConstant.MethodType.GET;
-            //Step2: prepare restful parameters and options
-            RestfulParametes restfulParametes = RestfulUtil.setRestfulParameters(null, null);
-            RestfulOptions options = RestfulUtil.setRestfulOptions(domainHost);
-            RestfulResponse rsp = RestfulUtil.getRemoteResponse(url, methodType, restfulParametes, options);
-            LOGGER.info("query ns progress response status is : {}", rsp.getStatus());
-            LOGGER.info("query ns progress response content is : {}", rsp.getResponseContent());
-            return rsp;
-        }
-
-    }
-    
+   
     /**
      * private method 4: save segment information<br>
      * 
@@ -610,10 +578,12 @@ public class DriverManagerImpl implements IDriverManager {
         RestfulParametes restfulParametes = RestfulUtil.setRestfulParameters(createGsoReq, null);
         RestfulOptions options = RestfulUtil.setRestfulOptions(segInput.getDomainHost());
         RestfulResponse createGsoRsp = RestfulUtil.getRemoteResponse(url, methodType, restfulParametes, options);
+        ValidateUtil.assertObjectNotNull(createGsoRsp);
         LOGGER.info("create gso ns response status is : {}", createGsoRsp.getStatus());
         LOGGER.info("create gso ns response content is : {}", createGsoRsp.getResponseContent());
-
+        ValidateUtil.assertObjectNotNull(createGsoRsp.getResponseContent());
         JSONObject obj = JSONObject.fromObject(createGsoRsp.getResponseContent());
+        ValidateUtil.assertObjectNotNull(obj);
         String service = obj.getString(Constant.SERVICE_INDENTIFY);
         JSONObject jsonSvc = JSONObject.fromObject(service);
         String subServiceId = jsonSvc.getString(Constant.SERVICE_INSTANCE_ID);
@@ -622,13 +592,7 @@ public class DriverManagerImpl implements IDriverManager {
             LOGGER.error("Invalid response from create operation");
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INVALID_RESPONSEE_FROM_CREATE_OPERATION);
         }
-        
-        if(!HttpCode.isSucess(createGsoRsp.getStatus())){
-            LOGGER.error("update segment operation status : fail to create gso ns");
-            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(subServiceId, segmentType, CommonConstant.OperationType.CREATE);
-            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, createGsoRsp.getStatus(), CommonConstant.StatusDesc.CREATE_NS_FAILED);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_CREATE_GSO_NS);
-        }
+
         LOGGER.info("create gso ns -> end");
         LOGGER.info("save segment and operaton info -> begin");
         //Step 4: save segment information 
@@ -638,8 +602,14 @@ public class DriverManagerImpl implements IDriverManager {
         ServiceSegmentOperation segmentOperInfo = new ServiceSegmentOperation(subServiceId, segmentType, CommonConstant.OperationType.CREATE, segInput.getServiceId(), CommonConstant.Status.PROCESSING);
         segmentOperInfo.setJobId(opertionId);
         serviceSegmentDao.insertSegmentOper(segmentOperInfo);
+        if(!HttpCode.isSucess(createGsoRsp.getStatus())){
+            LOGGER.error("update segment operation status : fail to create gso ns");
+            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(subServiceId, segmentType, CommonConstant.OperationType.CREATE);
+            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, createGsoRsp.getStatus(), CommonConstant.StatusDesc.CREATE_NS_FAILED);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_CREATE_GSO_NS);
+        }
         LOGGER.info("save segment and operation info -> end");
-        
+
         return createGsoRsp;
     }
 
@@ -697,6 +667,7 @@ public class DriverManagerImpl implements IDriverManager {
         RestfulOptions options = RestfulUtil.setRestfulOptions(segInput.getDomainHost());
         
         RestfulResponse delGsoRsp = RestfulUtil.getRemoteResponse(url, methodType, restfulParameters, options);
+        ValidateUtil.assertObjectNotNull(delGsoRsp);
         LOGGER.info("delete gso ns response status is : {}", delGsoRsp.getStatus());
         LOGGER.info("delete gso ns response content is : {}", delGsoRsp.getResponseContent());
         if(!HttpCode.isSucess(delGsoRsp.getStatus())){
@@ -705,7 +676,9 @@ public class DriverManagerImpl implements IDriverManager {
             updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, delGsoRsp.getStatus(), CommonConstant.StatusDesc.DELETE_NS_FAILED);
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_DELETE_GSO_NS);
         }
+        ValidateUtil.assertObjectNotNull(delGsoRsp.getResponseContent());
         JSONObject obj = JSONObject.fromObject(delGsoRsp.getResponseContent());
+        ValidateUtil.assertObjectNotNull(obj);
         String opertionId = obj.getString(Constant.SERVICE_OPERATION_ID);
         if(StringUtils.isEmpty(opertionId)) {
             LOGGER.error("Invalid response from delete operation");
@@ -737,28 +710,24 @@ public class DriverManagerImpl implements IDriverManager {
         String operType = segmentOperation.getOperationType();
         //Step 1: get service segmemt operation by segment id and segment type
         ServiceSegmentModel svcSegment = serviceSegmentDao.queryServiceSegmentByIdAndType(segmentId, segmentType);
-        //Step 2 : build query task
-        QueryProgress task = new QueryProgress(segmentType, segmentId, jobId, svcSegment.getDomainHost());
+        
         //Step 3: start query
         LOGGER.info("query gso ns status -> begin");
-        ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(1);
-        RestfulResponse rsp = null;
-        try {
-            Future<RestfulResponse> nsStatus = executor.submit(task);
-            rsp = nsStatus.get();
-        } catch(Exception e) {
-            LOGGER.error("fail to query the gso operation status: {}", e);
-            executor.shutdown();
-            ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
-            updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, HttpStatus.SC_INTERNAL_SERVER_ERROR, CommonConstant.StatusDesc.QUERY_JOB_STATUS_FAILED);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
-        }
+        String url = String.format(CommonConstant.GSO_QUERY_URL, segmentId, jobId);
+        String methodType = CommonConstant.MethodType.GET;
+        // prepare restful parameters and options
+        RestfulParametes restfulParametes = RestfulUtil.setRestfulParameters(null, null);
+        RestfulOptions options = RestfulUtil.setRestfulOptions(svcSegment.getDomainHost());
+        RestfulResponse rsp = RestfulUtil.getRemoteResponse(url, methodType, restfulParametes, options);
+        ValidateUtil.assertObjectNotNull(rsp);
+        LOGGER.info("query gso ns progress response status is : {}", rsp.getStatus());
+        LOGGER.info("query gso ns progress response content is : {}", rsp.getResponseContent());
 
         if(!HttpCode.isSucess(rsp.getStatus())) {
             LOGGER.info("fail to query gso job status");
             ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
             updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, rsp.getStatus(), CommonConstant.StatusDesc.QUERY_JOB_STATUS_FAILED);
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.FAIL_TO_QUERY_JOB_STATUS);
         }
 
         // Step 4: Process Response
@@ -767,6 +736,7 @@ public class DriverManagerImpl implements IDriverManager {
         // Step 5: update segment operation progress
         ServiceSegmentOperation progressSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
         progressSegOper.setProgress(svcOper.getProgress());
+        progressSegOper.setStatusDescription(svcOper.getOperationContent());
         serviceSegmentDao.updateSegmentOper(progressSegOper);
 
         // Step 6: update segment operation status
@@ -784,7 +754,7 @@ public class DriverManagerImpl implements IDriverManager {
             LOGGER.error("job result is failed, operType is {}", operType);
             ServiceSegmentOperation statusSegOper = new ServiceSegmentOperation(segmentId, segmentType, operType);
             updateSegmentOperStatus(statusSegOper, CommonConstant.Status.ERROR, rsp.getStatus(), svcOper.getReason());
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.INTERNAL_ERROR);
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, DriverExceptionID.JOB_STATUS_ERROR);
         } else {
             // do nothing
         }
@@ -795,6 +765,7 @@ public class DriverManagerImpl implements IDriverManager {
         ResponseDescriptor rspDesc = new ResponseDescriptor();
         rspDesc.setStatus(svcOper.getResult());
         rspDesc.setProgress(String.valueOf(svcOper.getProgress()));
+        rspDesc.setStatusDescription(svcOper.getOperationContent());
         nsProgress.setResponseDescriptor(rspDesc);
         String responseString = JsonUtil.marshal(nsProgress);
         RestfulResponse jobRsp = new RestfulResponse();
