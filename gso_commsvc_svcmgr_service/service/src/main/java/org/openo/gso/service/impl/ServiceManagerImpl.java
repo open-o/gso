@@ -404,8 +404,8 @@ public class ServiceManagerImpl implements IServiceManager {
     private OperationModel getOperation(String templateId, String key, HttpServletRequest request) {
         List<OperationModel> operations = catalogProxy.getOperationsByTemplateId(templateId, request);
         if(CollectionUtils.isEmpty(operations)) {
-            LOGGER.error("There is no execution plan.");
-            throw new ApplicationException(HttpCode.RESPOND_CONFLICT, "There is no execution plan.");
+            LOGGER.error("There is no execution plan in catalog.");
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "There is no execution plan in catalog.");
         }
 
         for(OperationModel keyOperation : operations) {

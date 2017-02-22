@@ -17,7 +17,6 @@
 package org.openo.gso.roa.impl;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,14 +27,10 @@ import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.model.servicemo.ServiceDetailModel;
-import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServiceOperation;
-import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.roa.inf.IServicemgrRoaModule;
 import org.openo.gso.service.inf.IServiceManager;
 import org.openo.gso.util.convertor.DataConverter;
-import org.openo.gso.util.http.ResponseUtils;
-import org.openo.gso.util.json.JsonUtil;
 import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,19 +79,14 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     @Override
     public Response createService(HttpServletRequest servletReq) {
         LOGGER.info("Start to create service instance.");
-        ServiceDetailModel svcDetail = null;
-        try {
-            // 1. Check validation
-            String reqContent = RestUtils.getRequestBody(servletReq);
-            ValidateUtil.assertStringNotNull(reqContent, Constant.RESPONSE_CONTENT_MESSAGE);
-            LOGGER.info("create service instance: {}", reqContent);
 
-            // 2. Create service
-            svcDetail = serviceManager.createService(reqContent, servletReq);
-        } catch(ApplicationException exception) {
-            LOGGER.error("Fail to create service instance.", exception);
-            throw ResponseUtils.getException(exception, "Fail to create service instance.");
-        }
+        // 1. Check validation
+        String reqContent = RestUtils.getRequestBody(servletReq);
+        ValidateUtil.assertStringNotNull(reqContent, Constant.RESPONSE_CONTENT_MESSAGE);
+        LOGGER.info("create service instance: {}", reqContent);
+
+        // 2. Create service
+        ServiceDetailModel svcDetail = serviceManager.createService(reqContent, servletReq);
 
         // 3. assemble response data.
         String serviceId = ((null != svcDetail) && (null != svcDetail.getServiceModel()))
@@ -125,20 +115,15 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     @Override
     public Response deleteService(String serviceId, HttpServletRequest servletReq) {
         LOGGER.info("Start to delete service instance.");
-        String operationId;
-        try {
-            ValidateUtil.assertStringNotNull(serviceId, Constant.SERVICE_ID);
-            operationId = serviceManager.deleteService(serviceId, servletReq);
-        } catch(ApplicationException exception) {
-            LOGGER.error("Fail to delete service instance.");
-            throw ResponseUtils.getException(exception, "Fail to delete service instance.");
-        }
 
+        // 1. Delete service and return operation id
+        ValidateUtil.assertStringNotNull(serviceId, Constant.SERVICE_ID);
+        String operationId = serviceManager.deleteService(serviceId, servletReq);
+        LOGGER.info("delete service, the operation id is: {}", operationId);
+
+        // 2. Build response
         Map<String, String> rps = new HashMap<>();
         rps.put(Constant.SERVICE_OPERATION_ID, operationId);
-
-        LOGGER.info("delete service response: {}", rps);
-
         return Response.status(HttpStatus.SC_ACCEPTED).entity(rps).build();
     }
 
@@ -153,8 +138,8 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     @Override
     public Response getAllInstances(HttpServletRequest servletReq) {
         LOGGER.info("Start to get all service instances.");
-        List<ServiceModel> services = serviceManager.getAllInstances();
-        return Response.status(HttpStatus.SC_OK).entity(DataConverter.getAllSvcIntancesResult(services)).build();
+        Object response = DataConverter.getAllSvcIntancesResult(serviceManager.getAllInstances());
+        return Response.status(HttpStatus.SC_OK).entity(response).build();
     }
 
     /**
@@ -168,15 +153,9 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     @Override
     public Response getTopoSequence(String serviceId, HttpServletRequest servletReq) {
         LOGGER.info("Start to get top sequence number of service.");
-        List<ServiceSegmentModel> serviceSegments = null;
-        try {
-            serviceSegments = serviceManager.getServiceSegments(serviceId);
-        } catch(ApplicationException exception) {
-            LOGGER.error("Fail to query the sequence of topology.");
-            throw ResponseUtils.getException(exception, "Fail to query the sequence of topology.");
-        }
-
-        return Response.status(HttpStatus.SC_OK).entity(DataConverter.getSegments(serviceSegments, serviceId)).build();
+        ValidateUtil.assertStringNotNull(serviceId, Constant.SERVICE_ID);
+        Object response = DataConverter.getSegments(serviceManager.getServiceSegments(serviceId), serviceId);
+        return Response.status(HttpStatus.SC_OK).entity(response).build();
     }
 
     /**
@@ -190,8 +169,9 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     @Override
     public Response getInstanceByInstanceId(String serviceId, HttpServletRequest servletReq) {
         LOGGER.info("Start to get service instance by instanceId.");
-        ServiceModel service = serviceManager.getInstanceByInstanceId(serviceId);
-        return Response.status(HttpStatus.SC_OK).entity(DataConverter.getSvcInstanceResult(service)).build();
+        ValidateUtil.assertStringNotNull(serviceId, Constant.SERVICE_ID);
+        Object response = DataConverter.getSvcInstanceResult(serviceManager.getInstanceByInstanceId(serviceId));
+        return Response.status(HttpStatus.SC_OK).entity(response).build();
     }
 
     /**
@@ -206,10 +186,19 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     @Override
     public Response getServiceOperation(String serviceId, String operationId, HttpServletRequest servletReq) {
         LOGGER.info("Start to get service operation result by instanceId and opertionId.");
+
+        // 1. Check input
+        ValidateUtil.assertStringNotNull(serviceId, Constant.SERVICE_ID);
+        ValidateUtil.assertStringNotNull(operationId, Constant.SERVICE_OPERATION_ID);
+
+        // 2. Query operation result
         ServiceOperation svcOperation = serviceManager.getServiceOperation(serviceId, operationId);
+        LOGGER.info("Get service Operation rsp: {}", svcOperation);
+
+        // 3. Build response.
         Map<String, Object> operMap = new HashMap<>();
         operMap.put(Constant.OPERATION_IDENTIFY, svcOperation);
-        LOGGER.info("Get service Operation rsp: {}", JsonUtil.marshal(operMap));
+
         return Response.status(HttpStatus.SC_OK).entity(operMap).build();
     }
 }

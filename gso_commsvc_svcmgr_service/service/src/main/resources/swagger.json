@@ -1,9 +1,9 @@
 {
     "swagger": "2.0",
     "info": {
-        "version": "1.0.0",
-        "title": "GSO NBI",
-        "description": "API of GSO"
+        "version": "1.0",
+        "title": "GSO-LCM NBI AND GS-O Driver Southbound API",
+        "description": "GSO-LCM NBI is responsible to create cross domain service. Southbound Interface (SBI) drivers are responsible for translation to specific technologies such as SDN and NFV."
     },
     "basePath": "/openoapi/gso/v1",
     "schemes": [
@@ -16,7 +16,7 @@
         "application/json"
     ],
     "paths": {
-        "/service": {
+        "/services": {
             "post": {
                 "summary": "Create service instance",
                 "description": "It creates a service instance based on request body.",
@@ -30,26 +30,26 @@
                 "parameters": [
                     {
                         "in": "body",
-                        "name": "body",
+                        "name": "createRequest",
                         "description": "Parameters needed to create service instance.",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/services"
+                            "$ref": "#/definitions/CreateServiceReq"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Service instance is created successfully.",
+                    "201": {
+                        "description": "Request has been received, service instance is being created.",
                         "schema": {
-                            "$ref": "#/definitions/serviceId"
+                            "$ref": "#/definitions/CreateServiceResponse"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to create service instance, which is internal error."
                     }
                 }
             },
@@ -67,19 +67,19 @@
                     "200": {
                         "description": "query successfully",
                         "schema": {
-                            "$ref": "#/definitions/service"
+                            "$ref": "#/definitions/GetAllServicesResponse"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to query all service instances, which is internal error."
                     }
                 }
             }
         },
-        "/service/toposequence/{serviceId}": {
+        "/services/toposequence/{serviceId}": {
             "get": {
                 "summary": "get topology sequence of service segment",
                 "description": "show service segment by sequnece number which is defined in service template",
@@ -104,19 +104,19 @@
                     "200": {
                         "description": "get successfully.",
                         "schema": {
-                            "$ref": "#/definitions/ServiceTopology"
+                            "$ref": "#/definitions/SvcTopologyResponse"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to get topology of service segments, which is internal error."
                     }
                 }
             }
         },
-        "/service/{serviceId}": {
+        "/services/{serviceId}": {
             "delete": {
                 "summary": "delete service instance",
                 "description": "delete service instance",
@@ -138,17 +138,97 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "delete successfully.",
+                    "201": {
+                        "description": "Request has been received, service instance is being deleted.",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/DeleteServiceResponse"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to delete service instace, which is internal error."
+                    }
+                }
+            },
+            "get": {
+                "summary": "query detail of service instance",
+                "description": "query detail of service instance",
+                "operationId": "getInstanceByInstanceId",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "serviceId",
+                        "in": "path",
+                        "description": "service instance id",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "query successfully.",
                         "schema": {
-                            "$ref": "#/definitions/result"
+                            "$ref": "#/definitions/GetOneServiceResponse"
                         }
+                    },
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to query detail of service instace, which is internal error."
+                    }
+                }
+            }
+        },
+        "/services/{serviceId}/operations/{operationId}": {
+            "get": {
+                "summary": "get service operation",
+                "description": "get service operation",
+                "operationId": "getServiceOperation",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "serviceId",
+                        "in": "path",
+                        "description": "service instace id",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "name": "operationId",
+                        "in": "path",
+                        "description": "service operation id",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get successfully.",
+                        "schema": {
+                            "$ref": "#/definitions/GetOperationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to query operation of service instace, which is internal error."
                     }
                 }
             }
@@ -182,11 +262,14 @@
                             "type": "string"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "409": {
+                        "description": "Request resource conflict with other operations."
+                    },
+                    "500": {
+                        "description": "Fail to onboarding package, which is internal error."
                     }
                 }
             }
@@ -218,11 +301,14 @@
                             "type": "string"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "409": {
+                        "description": "Request resource conflict with other operations."
+                    },
+                    "500": {
+                        "description": "Fail to onboarding package, which is internal error."
                     }
                 }
             }
@@ -256,11 +342,11 @@
                             "$ref": "#/definitions/GsoNsCreateRsp"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to create gso service segment, which is internal error."
                     }
                 }
             }
@@ -294,11 +380,11 @@
                             "$ref": "#/definitions/GsoNsDeleteRsp"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to delete gso service segment, which is internal error."
                     }
                 }
             }
@@ -330,11 +416,11 @@
                             "$ref": "#/definitions/NsQueryRsp"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to get gso service segment, which is internal error."
                     }
                 }
             }
@@ -362,11 +448,11 @@
                             "$ref": "#/definitions/NsCreateRsp"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to create nfvo service segment, which is internal error."
                     }
                 }
             }
@@ -401,11 +487,11 @@
                             "$ref": "#/definitions/NsInstantiateRsp"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to instantiate nfvo service segment, which is internal error."
                     }
                 }
             }
@@ -433,11 +519,11 @@
                             "$ref": "#/definitions/NsTerminateRsp"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to terminate nfvo service segment, which is internal error."
                     }
                 }
             }
@@ -462,11 +548,11 @@
                     "200": {
                         "description": "delete nfvo service segment success"
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to delete nfvo service segment, which is internal error."
                     }
                 }
             }
@@ -498,11 +584,11 @@
                             "$ref": "#/definitions/NsQueryRsp"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to get nfvo service segment, which is internal error."
                     }
                 }
             }
@@ -529,11 +615,11 @@
                             "$ref": "#/definitions/NsCreateRsp"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to create sdno service segment, which is internal error."
                     }
                 }
             }
@@ -567,11 +653,11 @@
                             "$ref": "#/definitions/NsInstantiateRsp"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to instantiate sdno service segment, which is internal error."
                     }
                 }
             }
@@ -598,11 +684,11 @@
                             "$ref": "#/definitions/NsTerminateRsp"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to terminate sdno service segment, which is internal error."
                     }
                 }
             }
@@ -626,11 +712,11 @@
                     "200": {
                         "description": "delete sdno service segment success"
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to delete sdno service segment, which is internal error."
                     }
                 }
             }
@@ -662,17 +748,347 @@
                             "$ref": "#/definitions/NsQueryRsp"
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Result"
-                        }
+                    "400": {
+                        "description": "Input parameter is wrong."
+                    },
+                    "500": {
+                        "description": "Fail to delete sdno service segment, which is internal error."
                     }
                 }
             }
         }
     },
     "definitions": {
+        "CreateServiceReq": {
+            "type": "object",
+            "description": "create service request",
+            "properties": {
+                "service": {
+                    "$ref": "#/definitions/CreateServiceModel"
+                }
+            }
+        },
+        "CreateServiceModel": {
+            "type": "object",
+            "description": "create service request model",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "the name of service instance"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "the description of service instance"
+                },
+                "serviceDefId": {
+                    "type": "string",
+                    "description": "GSAR service package ID"
+                },
+                "templateId": {
+                    "type": "string",
+                    "description": "ID of yaml file which is defined in Definitions directory"
+                },
+                "parameters": {
+                    "$ref": "#/definitions/ServiceParamModel"
+                }
+            }
+        },
+        "CreateServiceResponse": {
+            "type": "object",
+            "description": "create service response",
+            "properties": {
+                "service": {
+                    "$ref": "#/definitions/CreateResponseModel"
+                }
+            }
+        },
+        "CreateResponseModel": {
+            "type": "object",
+            "description": "create service response model",
+            "properties": {
+                "serviceId": {
+                    "type": "string",
+                    "description": "service instance ID"
+                },
+                "operationsId": {
+                    "type": "string",
+                    "description": "service operation ID"
+                }
+            }
+        },
+        "GetAllServicesResponse": {
+            "type": "object",
+            "description": "get all services response",
+            "properties": {
+                "services": {
+                    "type": "array",
+                    "description": "service instance structure",
+                    "items": {
+                        "$ref": "#/definitions/BaseServiceInfo"
+                    }
+                }
+            }
+        },
+        "BaseServiceInfo": {
+            "type": "object",
+            "description": "service instance basic information",
+            "properties": {
+                "serviceId": {
+                    "type": "string",
+                    "description": "service instance ID"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "the name of service instance"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "the description of service instance"
+                },
+                "activeStatus": {
+                    "type": "string",
+                    "description": "service instance active status"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "service operation status"
+                },
+                "creator": {
+                    "type": "string",
+                    "description": "who creates service instance"
+                },
+                "createAt": {
+                    "type": "string",
+                    "description": "time that service instance is created"
+                },
+                "serviceDefId": {
+                    "type": "string",
+                    "description": "GSAR package ID"
+                },
+                "templateId": {
+                    "type": "string",
+                    "description": "service template ID"
+                }
+            }
+        },
+        "GetOneServiceResponse": {
+            "type": "object",
+            "description": "response that query detail of a service instace",
+            "properties": {
+                "service": {
+                    "$ref": "#/definitions/ServiceDetail"
+                }
+            }
+        },
+        "ServiceDetail": {
+            "type": "object",
+            "description": "service instance structure",
+            "properties": {
+                "serviceId": {
+                    "type": "string",
+                    "description": "service instance ID"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "the name of service instance"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "the description of service instance"
+                },
+                "activeStatus": {
+                    "type": "string",
+                    "description": "service instance active status"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "service operation status"
+                },
+                "creator": {
+                    "type": "string",
+                    "description": "who creates service instance"
+                },
+                "createAt": {
+                    "type": "string",
+                    "description": "time that service instance is created"
+                },
+                "serviceDefId": {
+                    "type": "string",
+                    "description": "GSAR package ID"
+                },
+                "templateId": {
+                    "type": "string",
+                    "description": "service template ID"
+                },
+                "parameters": {
+                    "$ref": "#/definitions/ServiceParamModel"
+                }
+            }
+        },
+        "ServiceParamModel": {
+            "type": "object",
+            "description": "parameters of node",
+            "properties": {
+                "domainHost": {
+                    "type": "string",
+                    "description": "IP and port which is used to access or manage current service object"
+                },
+                "nodeTemplateName": {
+                    "type": "string",
+                    "description": "Node name defined in node template"
+                },
+                "nodeType": {
+                    "type": "string",
+                    "description": "Node type"
+                },
+                "segments": {
+                    "type": "array",
+                    "description": "This field manages parameters of sub-service or service segment",
+                    "items": {
+                        "$ref": "#/definitions/ServiceParamModel"
+                    }
+                },
+                "nsParameters": {
+                    "type": "object",
+                    "description": "This model uses definitions of NSLCM API which is Instantiate Network Service. Excepet there is no nsInstanceId, other properties is the same as NSLCM API. So here just list additionalParamForNs property, refer to openo SDNO/NFVO NSLCM API to write others properties.",
+                    "properties": {
+                        "additionalParamForNs": {
+                            "type": "object",
+                            "description": "NS-level parameters for current node, now all of openo GSO parameters are written here.",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "SvcTopologyResponse": {
+            "type": "object",
+            "description": "response of querying service topology sequence",
+            "properties": {
+                "service": {
+                    "$ref": "#/definitions/ServiceTopology"
+                }
+            }
+        },
+        "ServiceTopology": {
+            "type": "object",
+            "description": "service topology information",
+            "required": [
+                "serviceId",
+                "segments"
+            ],
+            "properties": {
+                "serviceId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "service instance ID"
+                },
+                "segments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ServiceSegment"
+                    },
+                    "description": "service segments of service instance"
+                }
+            }
+        },
+        "ServiceSegment": {
+            "type": "object",
+            "description": "service segment",
+            "required": [
+                "serviceSegmentId",
+                "serviceSegmentType",
+                "topoSeqNumber",
+                "domainHost"
+            ],
+            "properties": {
+                "serviceSegmentId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "service segment ID"
+                },
+                "serviceSegmentType": {
+                    "type": "string",
+                    "description": "service node type of service segment"
+                },
+                "topoSeqNumber": {
+                    "type": "string",
+                    "description": "number that service segment represent in topology."
+                },
+                "domainHost": {
+                    "type": "string",
+                    "description": "IP and port of service which manages service segment."
+                }
+            }
+        },
+        "GetOperationResponse": {
+            "type": "object",
+            "description": "Response that query service operation result",
+            "properties": {
+                "operation": {
+                    "$ref": "#/definitions/OperationModel"
+                }
+            }
+        },
+        "OperationModel": {
+            "type": "object",
+            "description": "service segment",
+            "properties": {
+                "operationId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "service operation ID"
+                },
+                "operation": {
+                    "type": "string",
+                    "description": "operation type"
+                },
+                "result": {
+                    "type": "string",
+                    "description": "operation result."
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "operation fail reason."
+                },
+                "userId": {
+                    "type": "string",
+                    "description": "operation user ID."
+                },
+                "operationContent": {
+                    "type": "string",
+                    "description": "operation content."
+                },
+                "progress": {
+                    "type": "string",
+                    "description": "operation progress."
+                },
+                "operateAt": {
+                    "type": "string",
+                    "description": "operation start time."
+                },
+                "finishedAt": {
+                    "type": "string",
+                    "description": "operation finish time."
+                }
+            }
+        },
+        "csarId": {
+            "type": "string",
+            "description": "GSAR package id that catalog provides."
+        },
+        "DeleteServiceResponse": {
+            "type": "string",
+            "description": "delete service instance response",
+            "properties": {
+                "operationId": {
+                    "type": "string",
+                    "description": "delete operation ID."
+                }
+            }
+        },
         "NsReq": {
             "type": "object",
             "description": "service segment request structure",
@@ -766,24 +1182,6 @@
                 }
             }
         },
-        "Result": {
-            "type": "object",
-            "description": "a general structure for reporting failure",
-            "properties": {
-                "status": {
-                    "type": "string",
-                    "description": "success or failure"
-                },
-                "statusDescription": {
-                    "type": "string",
-                    "description": "detail description"
-                },
-                "errorCode": {
-                    "type": "integer",
-                    "description": "error code"
-                }
-            }
-        },
         "NsQueryRsp": {
             "type": "object",
             "description": "service segment job status structure",
@@ -829,152 +1227,6 @@
                     "description": "id of the response"
                 }
             }
-        },
-        "service": {
-            "type": "object",
-            "description": "service instance structure",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "description": "the name of service instance"
-                },
-                "description": {
-                    "type": "string",
-                    "description": "the description of service instance"
-                },
-                "serviceDefId": {
-                    "type": "string",
-                    "description": "GSAR service package ID"
-                },
-                "templateId": {
-                    "type": "string",
-                    "description": "ID of yaml file which is defined in Definitions directory"
-                },
-                "templateName": {
-                    "type": "string",
-                    "description": "The name of yaml file which is defined in Definitions directory"
-                },
-                "parameters": {
-                    "type": "string",
-                    "description": "Parameters that are used to create service instace"
-                }
-            }
-        },
-        "serviceId": {
-            "type": "string",
-            "description": "service id"
-        },
-        "result": {
-            "type": "object",
-            "description": "a general structure for reporting failure",
-            "properties": {
-                "status": {
-                    "type": "string",
-                    "description": "success or  fail"
-                },
-                "statusDescription": {
-                    "type": "string",
-                    "description": "the detail of failure"
-                },
-                "errorCode": {
-                    "type": "integer",
-                    "description": "error code"
-                }
-            }
-        },
-        "services": {
-            "type": "object",
-            "description": "service instance structure",
-            "required": [
-                "serviceId",
-                "name",
-                "description",
-                "createdAt",
-                "activeStatus",
-                "status",
-                "templateName"
-            ],
-            "properties": {
-                "serviceId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "description": "service instance ID"
-                },
-                "name": {
-                    "type": "string",
-                    "description": "name of service instance"
-                },
-                "description": {
-                    "type": "string",
-                    "description": "description of service instance"
-                },
-                "createdAt": {
-                    "type": "string",
-                    "description": "Time to creat service instance"
-                },
-                "activeStatus": {
-                    "type": "string",
-                    "description": "status of service instace, active or deactive"
-                },
-                "status": {
-                    "type": "string",
-                    "description": "operation status of service instace, creatSucceed, createFailed or deleteFailed."
-                },
-                "templateName": {
-                    "type": "string",
-                    "description": "name of service template that is used to create service instance."
-                }
-            }
-        },
-        "ServiceTopology": {
-            "type": "object",
-            "description": "service topology information",
-            "required": [
-                "serviceId",
-                "serviceSegments"
-            ],
-            "properties": {
-                "serviceId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "description": "service instance ID"
-                },
-                "serviceSegments": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ServiceSegment"
-                    },
-                    "description": "service segments of service instance"
-                }
-            }
-        },
-        "ServiceSegment": {
-            "type": "object",
-            "description": "service segment",
-            "required": [
-                "serviceSegmentId",
-                "type",
-                "topoSeqNumber"
-            ],
-            "properties": {
-                "serviceSegmentId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "description": "service segment ID"
-                },
-                "type": {
-                    "type": "string",
-                    "description": "service node type of service segment"
-                },
-                "topoSeqNumber": {
-                    "type": "string",
-                    "description": "number that service segment represent in topology."
-                }
-            }
-        },
-        "csarId": {
-            "type": "string",
-            "description": "GSAR package id that catalog provides"
         }
     }
 }

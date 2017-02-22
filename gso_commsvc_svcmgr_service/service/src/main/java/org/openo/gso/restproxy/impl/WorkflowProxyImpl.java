@@ -61,18 +61,22 @@ public class WorkflowProxyImpl implements IWorkflowProxy {
     @Override
     public void startWorkFlow(Object sendBody, HttpServletRequest request) {
         LOGGER.info("Notify workflow to startup bpel workflow.");
+
         RestfulResponse response = HttpUtil.post(WSO_URI, sendBody, request);
+
+        // 1. Check non-normal error response which is not built by workflow.
         if(!HttpCode.isSucess(response.getStatus())) {
             ResponseUtils.checkResonseAndThrowException(response, "start to bpel workflow.");
-        } else {
-            LOGGER.info("workflow return result: {}", response.getResponseContent());
-            Map<String, Object> result = JsonUtil.unMarshal(response.getResponseContent(), Map.class);
-            Object statusContent = result.get(Constant.RESPONSE_STATUS);
-            if(Constant.WORKFLOW_RESPONSE_ZERO.equals(String.valueOf(statusContent))) {
-                throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
-                        result.get(Constant.RESPONSE_CONTENT_MESSAGE));
-            }
+            return;
+        }
 
+        // 2. Check normal response which workflow builds
+        LOGGER.info("workflow return result: {}", response.getResponseContent());
+        Map<String, Object> result = JsonUtil.unMarshal(response.getResponseContent(), Map.class);
+        Object statusContent = result.get(Constant.RESPONSE_STATUS);
+        if(Constant.WORKFLOW_RESPONSE_ZERO.equals(String.valueOf(statusContent))) {
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+                    result.get(Constant.RESPONSE_CONTENT_MESSAGE));
         }
     }
 }

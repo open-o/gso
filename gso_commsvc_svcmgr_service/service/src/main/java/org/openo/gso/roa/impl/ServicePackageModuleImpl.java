@@ -29,7 +29,6 @@ import org.openo.gso.exception.ErrorCode;
 import org.openo.gso.exception.HttpCode;
 import org.openo.gso.roa.inf.IServicePackageModule;
 import org.openo.gso.service.inf.IPackageManager;
-import org.openo.gso.util.http.ResponseUtils;
 import org.openo.gso.util.json.JsonUtil;
 import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
@@ -66,24 +65,22 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
     @Override
     public Response onBoardingPackage(HttpServletRequest httpRequest) {
         LOGGER.info("Start to upload package status.");
-        try {
-            // 1. Get request body
-            String body = RestUtils.getRequestBody(httpRequest);
-            ValidateUtil.assertStringNotNull(body, Constant.RESPONSE_CONTENT_MESSAGE);
-            // 2. Parse json to get csarId
-            Map<String, Object> bodyMap = JsonUtil.unMarshal(body, Map.class);
-            Object serviceDefId = bodyMap.get(Constant.CSAR_ID);
-            if(!(serviceDefId instanceof String)) {
-                LOGGER.error("serviceDefId is not String: {}", String.valueOf(serviceDefId));
-                throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.DATA_IS_WRONG);
-            }
-            ValidateUtil.assertStringNotNull((String)serviceDefId, Constant.SERVICE_DEF_ID);
-            // 3. Update state
-            packageMgr.updateOnBoardStatus((String)serviceDefId, httpRequest);
-        } catch(ApplicationException exception) {
-            LOGGER.error("Faile to on board package, {}", exception);
-            throw ResponseUtils.getException(exception, "Faile to on board package.");
+
+        // 1. Get request body
+        String body = RestUtils.getRequestBody(httpRequest);
+        ValidateUtil.assertStringNotNull(body, Constant.RESPONSE_CONTENT_MESSAGE);
+
+        // 2. Parse json to get csarId
+        Map<String, Object> bodyMap = JsonUtil.unMarshal(body, Map.class);
+        Object serviceDefId = bodyMap.get(Constant.CSAR_ID);
+        if(!(serviceDefId instanceof String)) {
+            LOGGER.error("serviceDefId is not String: {}", String.valueOf(serviceDefId));
+            throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.DATA_IS_WRONG);
         }
+        ValidateUtil.assertStringNotNull((String)serviceDefId, Constant.SERVICE_DEF_ID);
+
+        // 3. Update state
+        packageMgr.updateOnBoardStatus((String)serviceDefId, httpRequest);
 
         return Response.status(HttpStatus.SC_OK).entity(Constant.RESPONSE_STATUS_SUCCESS).build();
     }
@@ -99,14 +96,8 @@ public class ServicePackageModuleImpl implements IServicePackageModule {
     @Override
     public Response deleteGsarPackage(String serviceDefId, HttpServletRequest httpRequest) {
         LOGGER.info("Start to delete package.");
-        try {
-            ValidateUtil.assertStringNotNull(serviceDefId, Constant.SERVICE_DEF_ID);
-            packageMgr.deletePackage(serviceDefId, httpRequest);
-        } catch(ApplicationException exception) {
-            LOGGER.error("Faile to delete csar package, {}", exception);
-            throw ResponseUtils.getException(exception, "Faile to delete csar package.");
-        }
-
+        ValidateUtil.assertStringNotNull(serviceDefId, Constant.SERVICE_DEF_ID);
+        packageMgr.deletePackage(serviceDefId, httpRequest);
         return Response.status(HttpStatus.SC_OK).entity(Constant.RESPONSE_STATUS_SUCCESS).build();
     }
 
