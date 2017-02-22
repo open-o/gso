@@ -68,7 +68,7 @@ public class WorkflowProxyImpl implements IWorkflowProxy {
             LOGGER.info("workflow return result: {}", response.getResponseContent());
             Map<String, Object> result = JsonUtil.unMarshal(response.getResponseContent(), Map.class);
             Object statusContent = result.get(Constant.RESPONSE_STATUS);
-            if(String.valueOf(statusContent).equals("0")) {
+            if(Constant.WORKFLOW_RESPONSE_ZERO.equals(String.valueOf(statusContent))) {
                 throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
                         result.get(Constant.RESPONSE_CONTENT_MESSAGE));
             }

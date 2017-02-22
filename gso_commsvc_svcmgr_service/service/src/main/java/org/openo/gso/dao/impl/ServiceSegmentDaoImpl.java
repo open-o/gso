@@ -46,7 +46,7 @@ public class ServiceSegmentDaoImpl implements IServiceSegmentDao {
     /**
      * Log service.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServicePackageDaoImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceSegmentDaoImpl.class);
 
     /**
      * Session handler.

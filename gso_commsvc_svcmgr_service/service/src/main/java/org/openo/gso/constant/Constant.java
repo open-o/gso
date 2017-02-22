@@ -237,6 +237,31 @@ public class Constant {
     public static final String RESPONSE_CONTENT_MESSAGE = "message";
 
     /**
+     * Workflow response status
+     */
+    public static final String WORKFLOW_RESPONSE_ZERO = "0";
+
+    /**
+     * Operate service operation record DAO
+     */
+    public static final String BEAID_SERVICE_OPER_DAO = "serviceOperDao";
+
+    /**
+     * Operate service segment DAO
+     */
+    public static final String BEAID_SERVICE_SEG_DAO = "serviceSegmentDao";
+
+    /**
+     * Operae service instance DAO
+     */
+    public static final String BEAID_SERVICE_MODEL_DAO = "serviceModelDao";
+
+    /**
+     * Operate inventory data DAO
+     */
+    public static final String BEAID_INV_DAO = "inventoryDao";
+
+    /**
      * Constructor<br/>
      * <p>
      * </p>

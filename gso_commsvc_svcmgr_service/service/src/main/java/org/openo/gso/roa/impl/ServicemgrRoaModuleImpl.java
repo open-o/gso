@@ -83,7 +83,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      */
     @Override
     public Response createService(HttpServletRequest servletReq) {
-        LOGGER.error("Start to create service instance.");
+        LOGGER.info("Start to create service instance.");
         ServiceDetailModel svcDetail = null;
         try {
             // 1. Check validation
@@ -109,7 +109,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
         Map<String, Object> rsp = new HashMap<>();
         rsp.put(Constant.SERVICE_INDENTIFY, ids);
 
-        LOGGER.error("create service response: {}", rsp);
+        LOGGER.info("create service response: {}", rsp);
 
         return Response.status(HttpStatus.SC_ACCEPTED).entity(rsp).build();
     }
@@ -124,7 +124,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      */
     @Override
     public Response deleteService(String serviceId, HttpServletRequest servletReq) {
-        LOGGER.error("Start to delete service instance.");
+        LOGGER.info("Start to delete service instance.");
         String operationId;
         try {
             ValidateUtil.assertStringNotNull(serviceId, Constant.SERVICE_ID);
@@ -137,7 +137,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
         Map<String, String> rps = new HashMap<>();
         rps.put(Constant.SERVICE_OPERATION_ID, operationId);
 
-        LOGGER.error("delete service response: {}", rps);
+        LOGGER.info("delete service response: {}", rps);
 
         return Response.status(HttpStatus.SC_ACCEPTED).entity(rps).build();
     }
@@ -152,7 +152,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      */
     @Override
     public Response getAllInstances(HttpServletRequest servletReq) {
-        LOGGER.error("Start to get all service instances.");
+        LOGGER.info("Start to get all service instances.");
         List<ServiceModel> services = serviceManager.getAllInstances();
         return Response.status(HttpStatus.SC_OK).entity(DataConverter.getAllSvcIntancesResult(services)).build();
     }
@@ -167,7 +167,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      */
     @Override
     public Response getTopoSequence(String serviceId, HttpServletRequest servletReq) {
-        LOGGER.error("Start to get top sequence number of service.");
+        LOGGER.info("Start to get top sequence number of service.");
         List<ServiceSegmentModel> serviceSegments = null;
         try {
             serviceSegments = serviceManager.getServiceSegments(serviceId);
@@ -180,33 +180,6 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
     }
 
     /**
-     * Create service segment instance.<br/>
-     * 
-     * @param servletReq http request
-     * @return response service segments
-     * @since GSO 0.5
-     */
-    @Override
-    public Response createServiceSegment(HttpServletRequest servletReq) {
-        LOGGER.error("Start to create service segment.");
-        Map<String, Object> result = null;
-        try {
-            // 1. Check validation
-            String reqContent = RestUtils.getRequestBody(servletReq);
-            ValidateUtil.assertStringNotNull(reqContent, Constant.RESPONSE_CONTENT_MESSAGE);
-            LOGGER.info("create service segment: {}", reqContent);
-
-            // 2. Create service segment
-            serviceManager.createServiceSegment(reqContent, servletReq);
-        } catch(ApplicationException exception) {
-            LOGGER.error("Fail to create service segment.");
-            throw ResponseUtils.getException(exception, "Fail to create service segment.");
-        }
-
-        return Response.status(HttpStatus.SC_OK).entity(result).build();
-    }
-
-    /**
      * Get service instance by service instance ID.<br/>
      * 
      * @param serviceId service instance ID
@@ -216,7 +189,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      */
     @Override
     public Response getInstanceByInstanceId(String serviceId, HttpServletRequest servletReq) {
-        LOGGER.error("Start to get service instance by instanceId.");
+        LOGGER.info("Start to get service instance by instanceId.");
         ServiceModel service = serviceManager.getInstanceByInstanceId(serviceId);
         return Response.status(HttpStatus.SC_OK).entity(DataConverter.getSvcInstanceResult(service)).build();
     }
@@ -232,7 +205,7 @@ public class ServicemgrRoaModuleImpl implements IServicemgrRoaModule {
      */
     @Override
     public Response getServiceOperation(String serviceId, String operationId, HttpServletRequest servletReq) {
-        LOGGER.error("Start to get service operation result by instanceId and opertionId.");
+        LOGGER.info("Start to get service operation result by instanceId and opertionId.");
         ServiceOperation svcOperation = serviceManager.getServiceOperation(serviceId, operationId);
         Map<String, Object> operMap = new HashMap<>();
         operMap.put(Constant.OPERATION_IDENTIFY, svcOperation);

@@ -57,22 +57,25 @@ public class UpdateStatusJob extends TimerTask {
     /**
      * Service model dao.
      */
-    private IServiceModelDao svcModelDao = (IServiceModelDao)SpringContextUtil.getBeanById("serviceModelDao");
+    private IServiceModelDao svcModelDao =
+            (IServiceModelDao)SpringContextUtil.getBeanById(Constant.BEAID_SERVICE_MODEL_DAO);
 
     /**
      * Service segment dao.
      */
-    private IServiceSegmentDao segmentsDao = (IServiceSegmentDao)SpringContextUtil.getBeanById("serviceSegmentDao");
+    private IServiceSegmentDao segmentsDao =
+            (IServiceSegmentDao)SpringContextUtil.getBeanById(Constant.BEAID_SERVICE_SEG_DAO);
 
     /**
      * Service operation dao.
      */
-    private IServiceOperDao serviceOperDao = (IServiceOperDao)SpringContextUtil.getBeanById("serviceOperDao");
+    private IServiceOperDao serviceOperDao =
+            (IServiceOperDao)SpringContextUtil.getBeanById(Constant.BEAID_SERVICE_OPER_DAO);
 
     /**
      * Inventory Service dao.
      */
-    private IInventoryDao invDao = (IInventoryDao)SpringContextUtil.getBeanById("inventoryDao");
+    private IInventoryDao invDao = (IInventoryDao)SpringContextUtil.getBeanById(Constant.BEAID_INV_DAO);
 
     /**
      * Operation of service without segment not update for 5m
@@ -185,8 +188,8 @@ public class UpdateStatusJob extends TimerTask {
             operation.setResult(CommonConstant.Status.ERROR);
             operation.setReason(
                     "The progress of operation is still " + operation.getProgress() + "%, so end operation.");
-            operation.setProgress(Integer.valueOf(CommonConstant.Progress.ONE_HUNDRED));
-            if(operation.getOperation().equals(CommonConstant.OperationType.DELETE)) {
+            operation.setProgress(Integer.valueOf(CommonConstant.Progress.ONE_HUNDRED).intValue());
+            if(CommonConstant.OperationType.DELETE.equals(operation.getOperation())) {
                 unnormalSvcIdsDel.add(operation.getServiceId());
             } else {
                 unnormalSvcIdsAdd.add(operation.getServiceId());
@@ -236,7 +239,7 @@ public class UpdateStatusJob extends TimerTask {
         for(ServiceSegmentOperation segOper : segmentOpers) {
             serviceId = segOper.getServiceId();
             // Look for error segments.
-            if(segOper.getStatus().equals(CommonConstant.Status.ERROR)) {
+            if(CommonConstant.Status.ERROR.equals(segOper.getStatus())) {
                 svcSegError.put(serviceId, segOper);
                 continue;
             }
@@ -305,7 +308,7 @@ public class UpdateStatusJob extends TimerTask {
 
             operation.setResult(CommonConstant.Status.ERROR);
             operation.setFinishedAt(System.currentTimeMillis());
-            operation.setProgress(Integer.valueOf(CommonConstant.Progress.ONE_HUNDRED));
+            operation.setProgress(Integer.valueOf(CommonConstant.Progress.ONE_HUNDRED).intValue());
             // need to confirm if it is reason item.
             operation.setReason(segOper.getStatusDescription());
         }
@@ -358,7 +361,7 @@ public class UpdateStatusJob extends TimerTask {
             // all service segments finish operation.
             if(isSvcFinished(segOperLst, service.getSegmentNumber())) {
 
-                if(serviceOper.getOperation().equals(Constant.OPERATION_DELETE)) {
+                if(Constant.OPERATION_DELETE.equals(serviceOper.getOperation())) {
                     delServiceIds.add(service.getServiceId());
                 } else {
                     service.setStatus(CommonConstant.Status.FINISHED);
@@ -366,7 +369,7 @@ public class UpdateStatusJob extends TimerTask {
                     invServices.add(DataConverter.convertToInvData(service));
                 }
 
-                serviceOper.setProgress(Integer.valueOf(CommonConstant.Progress.ONE_HUNDRED));
+                serviceOper.setProgress(Integer.valueOf(CommonConstant.Progress.ONE_HUNDRED).intValue());
                 serviceOper.setFinishedAt(System.currentTimeMillis());
                 serviceOper.setResult(CommonConstant.Status.FINISHED);
                 updateSvcOper.add(serviceOper);
@@ -446,7 +449,7 @@ public class UpdateStatusJob extends TimerTask {
         }
 
         for(ServiceSegmentOperation oper : segOperLst) {
-            if(!oper.getStatus().equals(CommonConstant.Status.FINISHED)) {
+            if(!CommonConstant.Status.FINISHED.equals(oper.getStatus())) {
                 return false;
             }
         }

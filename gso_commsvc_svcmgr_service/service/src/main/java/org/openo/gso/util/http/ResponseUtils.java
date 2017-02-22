@@ -68,14 +68,18 @@ public class ResponseUtils {
      * @since GSO 0.5
      */
     public static void checkResonseAndThrowException(RestfulResponse response, String function) {
-        String result = response.getResponseContent();
-        if(!HttpCode.isSucess(response.getStatus())) {
-            if(!StringUtils.hasLength(result)) {
-                result = function;
-            }
-            LOGGER.error("checkResonseAndThrowException: {}", result);
-            throw new ApplicationException(response.getStatus(), result);
+        if(HttpCode.isSucess(response.getStatus())) {
+            LOGGER.info("This function is ok: {}", function);
+            return;
         }
+
+        // Get exception information to throw
+        String result = response.getResponseContent();
+        if(!StringUtils.hasLength(result)) {
+            result = function;
+        }
+        LOGGER.error("checkResonseAndThrowException: {}", result);
+        throw new ApplicationException(response.getStatus(), result);
     }
 
     /**

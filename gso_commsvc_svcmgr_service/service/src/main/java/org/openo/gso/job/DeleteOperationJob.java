@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.TimerTask;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.openo.gso.constant.Constant;
 import org.openo.gso.dao.inf.IServiceOperDao;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.model.servicemo.ServiceOperation;
@@ -52,7 +53,8 @@ public class DeleteOperationJob extends TimerTask {
     public void run() {
         try {
 
-            IServiceOperDao svcOperDao = (IServiceOperDao)SpringContextUtil.getBeanById("serviceOperDao");
+            IServiceOperDao svcOperDao =
+                    (IServiceOperDao)SpringContextUtil.getBeanById(Constant.BEAID_SERVICE_OPER_DAO);
             List<ServiceOperation> svcOperations = svcOperDao.queryHistory();
             if(CollectionUtils.isEmpty(svcOperations)) {
                 return;
@@ -64,7 +66,8 @@ public class DeleteOperationJob extends TimerTask {
             }
 
             LOGGER.info("Start to delete history operations: {}", svcOperations);
-            IServiceSegmentDao segmengtDao = (IServiceSegmentDao)SpringContextUtil.getBeanById("serviceSegmentDao");
+            IServiceSegmentDao segmengtDao =
+                    (IServiceSegmentDao)SpringContextUtil.getBeanById(Constant.BEAID_SERVICE_SEG_DAO);
             segmengtDao.deleteHistory(svcIds);
             svcOperDao.deleteHistory(svcIds);
         } catch(Exception exception) {
