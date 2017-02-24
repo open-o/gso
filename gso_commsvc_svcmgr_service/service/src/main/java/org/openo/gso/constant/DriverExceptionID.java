@@ -49,6 +49,14 @@ public class DriverExceptionID {
 
     public static final String FAIL_TO_DELETE_GSO_NS = "Fail to delete gso ns";
 
+    public static final String FAIL_TO_DELETE_NS = "Fail to delete ns";
+
+    public static final String FAIL_TO_TERMINATE_NS = "Fail to terminate ns";
+
+    public static final String JOB_STATUS_ERROR = "Job status error";
+
+    public static final String FAIL_TO_QUERY_JOB_STATUS = "Fail to query job status";
+
     private DriverExceptionID() {
 
     }
