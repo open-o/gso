@@ -153,29 +153,20 @@ public class CommonUtil {
      * @return the service type
      * @since GSO 0.5
      */
-    @SuppressWarnings("unchecked")
     public static EnumServiceType getServiceTypeByServiceId(String serviceId) {
-        try {
-            LOGGER.info("query data from inventory, service id:" + serviceId);
-            String url = String.format(Constant.INVENTORY_URL_QUERYSERVICE, serviceId);
-            RestfulResponse resp = HttpUtil.get(url, new HashMap<String, String>());
-            logTheResponseData("query data from inventory", resp);
-            if(HttpCode.isSucess(resp.getStatus())) {
-                Map<String, Object> rspBody =
-                        (Map<String, Object>)JsonUtil.unMarshal(resp.getResponseContent(), Map.class);
-                String serviceType = (String)rspBody.get("serviceType");
-                if(FieldConstant.ServiceType.GSO.equals(serviceType)) {
-                    return EnumServiceType.GSO;
-                } else if(FieldConstant.ServiceType.SDNO.equals(serviceType)) {
-                    return EnumServiceType.SDNO;
-                } else if(FieldConstant.ServiceType.NFVO.equals(serviceType)) {
-                    return EnumServiceType.NFVO;
-                } else {
-                    return EnumServiceType.UNKNOWN;
-                }
+        LOGGER.info("query data from inventory, service id:" + serviceId);
+        ServiceModel service = getServiceFromInventory(serviceId);
+        if(null != service) {
+            String serviceType = service.getServiceType();
+            if(FieldConstant.ServiceType.GSO.equals(serviceType)) {
+                return EnumServiceType.GSO;
+            } else if(FieldConstant.ServiceType.SDNO.equals(serviceType)) {
+                return EnumServiceType.SDNO;
+            } else if(FieldConstant.ServiceType.NFVO.equals(serviceType)) {
+                return EnumServiceType.NFVO;
+            } else {
+                return EnumServiceType.UNKNOWN;
             }
-        } catch(ServiceException e) {
-            LOGGER.info("query the service info by service Id failed, service Id:" + serviceId, e);
         }
         return EnumServiceType.UNKNOWN;
     }
@@ -191,7 +182,13 @@ public class CommonUtil {
         try {
             List<ServiceModel> serviceModels = new ArrayList<>();
             LOGGER.info("query services from inventory start");
-            RestfulResponse resp = HttpUtil.post(Constant.INVENTORY_URL_QUERYSERVICES, "");
+            Map<String,Object> reqCon = new HashMap<>();
+            reqCon.put("sort", new ArrayList<Map<String,String>>(0));
+            reqCon.put("pagination", 1);
+            reqCon.put("pagesize", Integer.MAX_VALUE);
+            reqCon.put("condition", new HashMap<String,String>());
+            reqCon.put("serviceId", "");
+            RestfulResponse resp = HttpUtil.post(Constant.INVENTORY_URL_QUERYSERVICES, reqCon);
             logTheResponseData("query services from inventory", resp);
             if(HttpCode.isSucess(resp.getStatus())) {
                 JSONArray array = JSONArray.fromObject(resp.getResponseContent());
@@ -219,12 +216,21 @@ public class CommonUtil {
     public static ServiceModel getServiceFromInventory(String serviceId) {
         try {
             LOGGER.info("query data from inventory, service id:" + serviceId);
-            String url = String.format(Constant.INVENTORY_URL_QUERYSERVICE, serviceId);
+            Map<String,Object> reqCon = new HashMap<>();
+            reqCon.put("sort", new ArrayList<Map<String,String>>(0));
+            reqCon.put("pagination", 1);
+            reqCon.put("pagesize", Integer.MAX_VALUE);
+            reqCon.put("condition", new HashMap<String,String>());
+            reqCon.put("serviceId", serviceId);
+            String url = String.format(Constant.INVENTORY_URL_QUERYSERVICES, serviceId);
             RestfulResponse resp = HttpUtil.get(url, new HashMap<String, String>());
             logTheResponseData("query service from inventory", resp);
             if(HttpCode.isSucess(resp.getStatus())) {
-                JSONObject obj = JSONObject.fromObject(resp.getResponseContent());
-                return convertJsonToServiceModel(obj);
+                JSONArray array = JSONArray.fromObject(resp.getResponseContent());
+                if(array.size() == 1){
+                    JSONObject obj = array.getJSONObject(0);
+                    return convertJsonToServiceModel(obj);
+                }
             }
         } catch(ServiceException e) {
             LOGGER.info("query the services failed.", e);
