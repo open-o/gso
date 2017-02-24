@@ -276,11 +276,6 @@ public class Constant {
      * URL for query nfvo job
      */
     public static final String NFVO_URL_QUERYJOB = "/openoapi/nslcm/v1/jobs/%s";
-
-    /**
-     * URL for query service
-     */
-    public static final String INVENTORY_URL_QUERYSERVICE = "/openoapi/inventory/v1/services/%s";
     
     /**
      * URL for query services
