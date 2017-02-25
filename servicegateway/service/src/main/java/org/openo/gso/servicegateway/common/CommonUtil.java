@@ -222,8 +222,7 @@ public class CommonUtil {
             reqCon.put("pagesize", Integer.MAX_VALUE);
             reqCon.put("condition", new HashMap<String,String>());
             reqCon.put("serviceId", serviceId);
-            String url = String.format(Constant.INVENTORY_URL_QUERYSERVICES, serviceId);
-            RestfulResponse resp = HttpUtil.get(url, new HashMap<String, String>());
+            RestfulResponse resp = HttpUtil.post(Constant.INVENTORY_URL_QUERYSERVICES, reqCon);
             logTheResponseData("query service from inventory", resp);
             if(HttpCode.isSucess(resp.getStatus())) {
                 JSONArray array = JSONArray.fromObject(resp.getResponseContent());
