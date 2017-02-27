@@ -287,6 +287,7 @@ public class ServiceGatewayRoaModuleImplTest {
                 return null;
             }
 
+            @SuppressWarnings("rawtypes")
             @Mock
             public RestfulResponse post(final String url, Object sendObj) {
                 if(url.contains("/openoapi/gso/v1/services")) {
@@ -302,8 +303,15 @@ public class ServiceGatewayRoaModuleImplTest {
                     // mock instantiate nfov rsp
                     return getResponse("terminateNFVOInstanceRsp.json");
                 }else if(url.contains("/openoapi/inventory/v1/services")){
-                    // mock query services
-                    return getResponse("queryServices.json");
+                    Map reqCon = (Map)sendObj;
+                    String serviceId = (String)reqCon.get("serviceId");
+                    if(serviceId.equals("5212b49f-fe70-414f-9519-88bec35b3191")) {
+                        // mock query services
+                        return getResponse("queryInvNFVOService.json");
+                    } else {
+                        // mock query services
+                        return getResponse("queryServices.json");
+                    }
                 }else if(url.contains("/openoapi/nslcm/v1/ns/5212b49f-fe70-414f-9519-88bec35b3191/scale")){
                     //mock scale nfvo rsp, same as terminate rsp
                     return  getResponse("terminateNFVOInstanceRsp.json");

@@ -1,94 +1,108 @@
-[{
-    "serviceId":"5212b49f-fe70-414f-9519-88bec35b3190",
-    "serviceName":"test_gso",
-    "serviceType":"GSO",
-    "description":"test_gso",
-    "createTime":"",
-    "templateName":"GSO",
-    "creator":"admin",
-    "inputParameters":{
-        "domainHost":"",
-        "nodeTemplateName":"",
-        "nodeType":"",
-        "segments":[
-            {
-                "domainHost":"100.1.1.10:80",
-                "nodeTemplateName":"gso_domaina",
-                "nodeType":"tosca.nodes.nfv.NS.POP_NS",
-                "segments":[
-                    {
-                        "domainHost":"100.1.1.10:80",
-                        "nodeTemplateName":"pop",
-                        "nodeType":"tosca.nodes.nfv.NS.POP_NS",
-                        "segments":[
+[
+    {
+        "serviceId":"5212b49f-fe70-414f-9519-88bec35b3190",
+        "serviceName":"test_gso",
+        "serviceType":"GSO",
+        "description":"test_gso",
+        "createTime":"",
+        "templateName":"GSO",
+        "creator":"admin",
+        "inputParameters":{
+            "domainHost":"",
+            "nodeTemplateName":"",
+            "nodeType":"",
+            "segments":[
+                {
+                    "domainHost":"",
+                    "nodeTemplateName":"overlayervpn",
+                    "nodeType":"tosca.nodes.sdn.ext.NS.enterprise2DC",
+                    "segments":[
 
-                        ],
+                    ],
+                    "nsParameters":{
                         "additionalParamForNs":{
-                            "externalDataNetworkName":"Flow_out_net",
-                            "m6000_mng_ip":"181.18.20.2",
-                            "externalCompanyFtpDataNetworkName":"Flow_out_net",
-                            "externalPluginManageNetworkName":"plugin_net_2014",
-                            "externalManageNetworkName":"mng_net_2017",
-                            "sfc_data_network":"sfc_data_net_2016",
-                            "NatIpRange":"210.1.1.10-210.1.1.20",
-                            "location":"8937a94d-1799-47a5-971d-58ff7d35def6",
-                            "sdncontroller":"8937a94d-1799-47a5-971d-58ff7d35de56"
+                            "dcGWIP":"11.11.11.1",
+                            "description":"212",
+                            "name":"1212",
+                            "dcLBIP":"22.22.22.2",
+                            "vpcSubnetCidr":"10.0.2.0/24",
+                            "siteCidr":"10.0.1.0/24",
+                            "siteThinCpeIP":"33.22.22.1",
+                            "vCPE_MgrIp":"172.15.4.101",
+                            "vpcName":"vdc0/vpc1",
+                            "dcFWIP":"33.33.33.1",
+                            "vpcSubnetName":"vdc0/vpc1",
+                            "id":"55",
+                            "siteAccessPortVlan":"G0/0/1.101"
                         }
-                    },
-                    {
-                        "domainHost":"100.1.1.10:80",
-                        "nodeTemplateName":"dc",
-                        "nodeType":"tosca.nodes.nfv.NS.DC_NS",
-                        "segments":[
+                    }
+                },
+                {
+                    "domainHost":"",
+                    "nodeTemplateName":"pop",
+                    "nodeType":"tosca.nodes.nfv.NS.POP_NS",
+                    "segments":[
 
+                    ],
+                    "nsParameters":{
+                        "locationConstraints":[
+                            {
+                                "vnfProfileId":"vcpe_vfw_zte_1_0",
+                                "locationConstraints":{
+                                    "vimId":"8937a94d-1799-47a5-971d-58ff7d35def6"
+                                }
+                            },
+                            {
+                                "vnfProfileId":"VNFD_LB_2016",
+                                "locationConstraints":{
+                                    "vimId":"8937a94d-1799-47a5-971d-58ff7d35def6"
+                                }
+                            },
+                            {
+                                "vnfProfileId":"VNFD_VCPE_V2R8C30",
+                                "locationConstraints":{
+                                    "vimId":"8937a94d-1799-47a5-971d-58ff7d35def6"
+                                }
+                            }
                         ],
                         "additionalParamForNs":{
-                            "location":"8937a94d-1799-47a5-971d-58ff7d35def6",
+                            "sdncontroller":"8937a94d-1799-47a5-971d-58ff7d35de55"
+                        }
+                    }
+                },
+                {
+                    "domainHost":"",
+                    "nodeTemplateName":"dc",
+                    "nodeType":"tosca.nodes.nfv.NS.DC_NS",
+                    "segments":[
+
+                    ],
+                    "nsParameters":{
+                        "locationConstraints":[
+                            {
+                                "vnfProfileId":"VNFD_MW_2016",
+                                "locationConstraints":{
+                                    "vimId":"8937a94d-1799-47a5-971d-58ff7d35def6"
+                                }
+                            },
+                            {
+                                "vnfProfileId":"VNFD_VSFTP_2016",
+                                "locationConstraints":{
+                                    "vimId":"8937a94d-1799-47a5-971d-58ff7d35def6"
+                                }
+                            }
+                        ],
+                        "additionalParamForNs":{
                             "sdncontroller":"8937a94d-1799-47a5-971d-58ff7d35de56"
                         }
                     }
-                ],
-                "additionalParamForNs":{
-                    "externalDataNetworkName":"Flow_out_net",
-                    "m6000_mng_ip":"181.18.20.2"
                 }
-            },
-            {
-                "domainHost":"100.1.1.12:80",
-                "nodeTemplateName":"ns_aaa",
-                "nodeType":"tosca.nodes.nfv.NS.DC_NS",
-                "segments":[
-
-                ],
+            ],
+            "nsParameters":{
                 "additionalParamForNs":{
-                    "location":"8937a94d-1799-47a5-971d-58ff7d35def6",
-                    "sdncontroller":"8937a94d-1799-47a5-971d-58ff7d35de56"
+
                 }
             }
-        ],
-        "additionalParamForNs":{
-
         }
     }
-},
-{
-    "serviceId":"5212b49f-fe70-414f-9519-88bec35b3191",
-    "serviceName":"test_nfvo",
-    "serviceType":"NFVO",
-    "description":"test_nfvo",
-    "creator":"",
-    "templateName":"ns_ds",
-    "createTime":"",
-    "inputParameters":{
-        "externalDataNetworkName":"Flow_out_net",
-        "m6000_mng_ip":"181.18.20.2",
-        "externalCompanyFtpDataNetworkName":"Flow_out_net",
-        "externalPluginManageNetworkName":"plugin_net_2014",
-        "externalManageNetworkName":"mng_net_2017",
-        "sfc_data_network":"sfc_data_net_2016",
-        "NatIpRange":"210.1.1.10-210.1.1.20",
-        "location":"8937a94d-1799-47a5-971d-58ff7d35def6",
-        "sdncontroller":"8937a94d-1799-47a5-971d-58ff7d35de56"
-    }
-}
 ]
