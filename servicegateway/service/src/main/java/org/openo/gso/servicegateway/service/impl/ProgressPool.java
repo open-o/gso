@@ -402,7 +402,7 @@ public class ProgressPool {
             Map<String, Object> responseDescriptor =
                     (Map<String, Object>)rspBody.get(FieldConstant.QueryOperation.FIELD_OPERATION);
             // set the result to model
-            model.setProgress((String)responseDescriptor.get(FieldConstant.QueryOperation.FIELD_PROGRESS));
+            model.setProgress(String.valueOf(responseDescriptor.get(FieldConstant.QueryOperation.FIELD_PROGRESS)));
             model.setUserId((String)responseDescriptor.get(FieldConstant.QueryOperation.FIELD_USERID));
             String result = (String)responseDescriptor.get(FieldConstant.QueryOperation.FIELD_RESULT);
             model.setResult(result);
