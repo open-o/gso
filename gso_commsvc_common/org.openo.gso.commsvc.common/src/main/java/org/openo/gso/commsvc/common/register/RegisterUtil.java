@@ -47,7 +47,7 @@ public class RegisterUtil {
 
     private RegisterUtil() {
     }
-    
+
     /**
      * register the service to M-Bus by the parameter<br/>
      * 
@@ -58,7 +58,7 @@ public class RegisterUtil {
      */
     public static void registerService(final String jsonInfo) {
         // check the parameter
-        if (StringUtils.isEmpty(jsonInfo)) {
+        if(StringUtils.isEmpty(jsonInfo)) {
             LOGGER.error("RegisterUtil registerService jsonInfo is null");
             return;
         }
@@ -72,17 +72,17 @@ public class RegisterUtil {
 
             // if the jsonInfo have the getInputIP string,start to replace the
             // local IP
-            if (isIPExist) {
-                if (!StringUtils.isEmpty(localIP)) {
+            if(isIPExist) {
+                if(!StringUtils.isEmpty(localIP)) {
                     bodyData = bodyData.replace(Constant.SERVICE_KEY_IP, localIP);
                 } else {
                     LOGGER.error("RegisterUtil registerService localIP is null");
                     return;
                 }
             }
-        } catch (UnknownHostException e) {
+        } catch(UnknownHostException e) {
             LOGGER.error("RegisterUtil registerService getHostAddress fail:", e);
-            if (isIPExist) {
+            if(isIPExist) {
                 // if get local IP failed In the isIPExist is true ,operation is
                 // stopped.
                 return;
@@ -93,12 +93,12 @@ public class RegisterUtil {
         try {
             RestfulResponse restfulRsp = RestfulFactory.getRestInstance("http").post(Constant.M_BUS_REGISTER_URL,
                     getRestfulParameters(bodyData));
-            if (null != restfulRsp) {
+            if(null != restfulRsp) {
                 // Record the result of registration
                 // (201:success;415:Invalid Parameter;500:Internal Server Error)
                 LOGGER.info("RegisterUtil registerService register result:", restfulRsp.getStatus());
             }
-        } catch (ServiceException e) {
+        } catch(ServiceException e) {
             LOGGER.error("RegisterUtil registerService post fail:", e);
         }
     }
@@ -129,7 +129,7 @@ public class RegisterUtil {
      */
     public static String readFile(String path) {
         // check parameter
-        if (StringUtils.isEmpty(path)) {
+        if(StringUtils.isEmpty(path)) {
             return null;
         }
 
@@ -142,17 +142,17 @@ public class RegisterUtil {
             bufReader = new BufferedReader(fileReader);
             String tempString = null;
             // Read one line at a time until the end of the null file.
-            while ((tempString = bufReader.readLine()) != null) {
+            while((tempString = bufReader.readLine()) != null) {
                 // add the line
                 laststr = laststr + tempString;
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             LOGGER.error("GSO ReadFile fail.", e);
         } finally {
-            if (bufReader != null) {
+            if(bufReader != null) {
                 try {
                     bufReader.close();
-                } catch (IOException e1) {
+                } catch(IOException e1) {
                     LOGGER.error("GSO ReadFile bufReader close fail.", e1);
                 }
             }

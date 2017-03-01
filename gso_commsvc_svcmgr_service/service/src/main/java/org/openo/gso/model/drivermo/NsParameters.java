@@ -25,12 +25,12 @@ import java.util.Map;
  * </p>
  * 
  * @author
- * @version     GSO 0.5  2017/2/21
+ * @version GSO 0.5 2017/2/21
  */
 public class NsParameters {
-    
+
     private List<LocationConstraint> locationConstraints;
-    
+
     private Map<String, String> additionalParamForNs;
 
     /**
@@ -40,15 +40,12 @@ public class NsParameters {
         return locationConstraints;
     }
 
-    
     /**
      * @param locationConstraints The locationConstraints to set.
      */
     public void setLocationConstraints(List<LocationConstraint> locationConstraints) {
         this.locationConstraints = locationConstraints;
     }
-
-
 
     /**
      * @return Returns the additionalParamForNs.
@@ -57,13 +54,11 @@ public class NsParameters {
         return additionalParamForNs;
     }
 
-    
     /**
      * @param additionalParamForNs The additionalParamForNs to set.
      */
     public void setAdditionalParamForNs(Map<String, String> additionalParamForNs) {
         this.additionalParamForNs = additionalParamForNs;
     }
-
 
 }

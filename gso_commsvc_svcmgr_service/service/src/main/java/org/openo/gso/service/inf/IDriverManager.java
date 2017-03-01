@@ -40,7 +40,7 @@ public interface IDriverManager {
      * @since GSO 0.5
      */
     RestfulResponse instantiateNs(String nsInstanceId, SegmentInputParameter segInput, String domain);
-    
+
     /**
      * terminate service instance.<br/>
      * 
@@ -57,7 +57,7 @@ public interface IDriverManager {
      * @param segInput input parameters for current node from http request
      * @param domain SDNO or NFVO
      * @return response
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     RestfulResponse createNs(SegmentInputParameter segInput, String domain);
 
@@ -67,7 +67,7 @@ public interface IDriverManager {
      * @param segInput input parameters for current node from http request
      * @param domain SDNO or NFVO
      * @return response
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     RestfulResponse deleteNs(SegmentInputParameter segInput, String domain);
 
@@ -77,7 +77,7 @@ public interface IDriverManager {
      * @param jobId uuid for service job
      * @param domain SDNO or NFVO
      * @return response
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     RestfulResponse getNsProgress(String jobId, String domain);
 
@@ -87,7 +87,7 @@ public interface IDriverManager {
      * @param segInput input parameters for current node from http request
      * @param domain GSO
      * @return response
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     RestfulResponse createGsoNs(SegmentInputParameter segInput, String domain);
 
@@ -97,17 +97,17 @@ public interface IDriverManager {
      * @param segInput input parameters for current node from http request
      * @param domain GSO
      * @return response
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     RestfulResponse deleteGsoNs(SegmentInputParameter segInput, String domain);
 
     /**
      * query gso service job status<br>
      * 
-     * @param jobId job id 
+     * @param jobId job id
      * @param domain GSO
      * @return response
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     RestfulResponse getGsoNsProgress(String jobId, String domain);
 

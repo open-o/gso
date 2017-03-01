@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,10 @@ package org.openo.gso.model.drivermo;
  * <br>
  * <p>
  * </p>
- * response model of query operation status 
+ * response model of query operation status
+ * 
  * @author
- * @version     SDNO 0.5  September 3, 2016
+ * @version SDNO 0.5 September 3, 2016
  */
 public class ResponseDescriptor {
 
@@ -36,7 +37,6 @@ public class ResponseDescriptor {
 
     Integer responseId;
 
-    
     /**
      * @return Returns the status.
      */
@@ -44,7 +44,6 @@ public class ResponseDescriptor {
         return status;
     }
 
-    
     /**
      * @param status The status to set.
      */
@@ -52,7 +51,6 @@ public class ResponseDescriptor {
         this.status = status;
     }
 
-    
     /**
      * @return Returns the progress.
      */
@@ -60,7 +58,6 @@ public class ResponseDescriptor {
         return progress;
     }
 
-    
     /**
      * @param progress The progress to set.
      */
@@ -68,7 +65,6 @@ public class ResponseDescriptor {
         this.progress = progress;
     }
 
-    
     /**
      * @return Returns the statusDescription.
      */
@@ -76,7 +72,6 @@ public class ResponseDescriptor {
         return statusDescription;
     }
 
-    
     /**
      * @param statusDescription The statusDescription to set.
      */
@@ -84,7 +79,6 @@ public class ResponseDescriptor {
         this.statusDescription = statusDescription;
     }
 
-    
     /**
      * @return Returns the errorCode.
      */
@@ -92,7 +86,6 @@ public class ResponseDescriptor {
         return errorCode;
     }
 
-    
     /**
      * @param errorCode The errorCode to set.
      */
@@ -100,7 +93,6 @@ public class ResponseDescriptor {
         this.errorCode = errorCode;
     }
 
-    
     /**
      * @return Returns the responseId.
      */
@@ -108,14 +100,11 @@ public class ResponseDescriptor {
         return responseId;
     }
 
-    
     /**
      * @param responseId The responseId to set.
      */
     public void setResponseId(Integer responseId) {
         this.responseId = responseId;
     }
-
-    
 
 }

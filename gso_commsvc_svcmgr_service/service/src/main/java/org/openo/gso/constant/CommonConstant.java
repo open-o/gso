@@ -47,27 +47,27 @@ public class CommonConstant {
     public static final String NFVO_DELETE_URL = "/openoapi/nslcm/v1/ns/%s";
 
     public static final String NFVO_QUERY_URL = "/openoapi/nslcm/v1/jobs/%s";
-    
+
     public static final String GSO_CREATE_URL = "/openoapi/gso/v1/services";
-    
+
     public static final String GSO_DELETE_URL = "/openoapi/gso/v1/services/%s";
-    
+
     public static final String GSO_QUERY_URL = "/openoapi/gso/v1/services/%s/operations/%s";
-    
+
     public static final String LEFT_QUOTE_LEFT_BRACE = "\"\\{";
-    
+
     public static final String LEFT_BRACE = "\\{";
 
     public static final String RIGHT_BRACE_RIGHT_QUOTE = "\\}\"";
-    
+
     public static final String RIGHT_BRACE = "\\}";
-    
+
     public static final String LEFT_QUOTE_LEFT_BRACKET = "\"\\[";
-    
+
     public static final String LEFT_BRACKET = "\\[";
-    
+
     public static final String RIGHT_BRACKET_RIGHT_QUOTE = "\\]\"";
-    
+
     public static final String RIGHT_BRACKET = "\\]";
 
     /**
@@ -249,20 +249,20 @@ public class CommonConstant {
         public static final String PROCESSING = "processing";
 
         public static final String ERROR = "error";
-        
-        private Status(){
-            
+
+        private Status() {
+
         }
     }
 
     public static class OperationType {
-        
+
         public static final String CREATE = "create";
-        
+
         public static final String DELETE = "delete";
-        
+
         private OperationType() {
-            
+
         }
     }
 

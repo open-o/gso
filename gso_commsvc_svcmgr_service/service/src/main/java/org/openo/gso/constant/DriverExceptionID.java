@@ -33,7 +33,8 @@ public class DriverExceptionID {
 
     public static final String FAILED_TO_SVCTMPL_CATALOGUE = "Failed to get service template from catalogue";
 
-    public static final String INVALID_RESPONSE_FROM_INSTANTIATE_OPERATION = "Invalid response from instantiate operation";
+    public static final String INVALID_RESPONSE_FROM_INSTANTIATE_OPERATION =
+            "Invalid response from instantiate operation";
 
     public static final String INVALID_RESPONSEE_FROM_CREATE_OPERATION = "Invalid response from create operation";
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,9 @@ import java.util.List;
  * <p>
  * </p>
  * response model of query operation status
+ * 
  * @author
- * @version     GSO 0.5  2016/9/3
+ * @version GSO 0.5 2016/9/3
  */
 public class NsProgressStatus {
 
@@ -34,7 +35,6 @@ public class NsProgressStatus {
 
     List<ResponseDescriptor> responseHistoryList;
 
-    
     /**
      * @return Returns the jobId.
      */
@@ -42,7 +42,6 @@ public class NsProgressStatus {
         return jobId;
     }
 
-    
     /**
      * @param jobId The jobId to set.
      */
@@ -50,8 +49,6 @@ public class NsProgressStatus {
         this.jobId = jobId;
     }
 
-
-    
     /**
      * @return Returns the responseDescriptor.
      */
@@ -59,8 +56,6 @@ public class NsProgressStatus {
         return responseDescriptor;
     }
 
-
-    
     /**
      * @param responseDescriptor The responseDescriptor to set.
      */
@@ -68,8 +63,6 @@ public class NsProgressStatus {
         this.responseDescriptor = responseDescriptor;
     }
 
-
-    
     /**
      * @return Returns the responseHistoryList.
      */
@@ -77,8 +70,6 @@ public class NsProgressStatus {
         return responseHistoryList;
     }
 
-
-    
     /**
      * @param responseHistoryList The responseHistoryList to set.
      */
@@ -86,5 +77,4 @@ public class NsProgressStatus {
         this.responseHistoryList = responseHistoryList;
     }
 
-    
 }

@@ -45,8 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author
  * @version GSO 0.5 2016/8/4
  */
-public class DrivermgrRoaModuleImpl
-        implements IDrivermgrRoaModule {
+public class DrivermgrRoaModuleImpl implements IDrivermgrRoaModule {
 
     /**
      * logger
@@ -101,6 +100,7 @@ public class DrivermgrRoaModuleImpl
         RestfulResponse rsp = driverMgr.deleteNs(nfvSegInput, CommonConstant.SegmentType.NFVO);
         return buildResponse(rsp);
     }
+
     /**
      * Query NFVO job status<br>
      * 
@@ -309,7 +309,7 @@ public class DrivermgrRoaModuleImpl
         List<SegmentInputParameter> inputList = serviceNode.getSegments();
         SegmentInputParameter segInput = new SegmentInputParameter();
         for(SegmentInputParameter input : inputList) {
-            if(serviceNode.getNodeTemplateName().equals(input.getNodeTemplateName())){
+            if(serviceNode.getNodeTemplateName().equals(input.getNodeTemplateName())) {
                 segInput = input;
                 break;
             }
