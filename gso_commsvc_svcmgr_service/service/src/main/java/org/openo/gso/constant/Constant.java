@@ -262,6 +262,11 @@ public class Constant {
     public static final String BEAID_INV_DAO = "inventoryDao";
 
     /**
+     * Token identify
+     */
+    public static final String X_AUTH_TOKEN = "X-Auth-Token";
+
+    /**
      * Constructor<br/>
      * <p>
      * </p>
