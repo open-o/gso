@@ -44,7 +44,7 @@ public class FieldConstant {
         public static final String NFVO = "NFVO";
 
         public static final String SDNO = "SDNO";
-        
+
         private ServiceType() {
 
         }
@@ -80,7 +80,7 @@ public class FieldConstant {
         public static final String PARAM_FIELD_NAME_NODETEMPLATENAME = "nodeTemplateName";
 
         public static final String PARAM_FIELD_NAME_NODETYPE = "nodeType";
-        
+
         public static final String PARAM_FIELD_NAME_NSPARAMETERS = "nsParameters";
 
         public static final String PARAM_FIELD_NAME_ADDITIONALPARAMFORNS = "additionalParamForNs";
@@ -100,10 +100,10 @@ public class FieldConstant {
     public static class Delete {
 
         public static final String FIELD_RESPONSE_OPERATIONID = "operationId";
-        
+
         private Delete() {
 
-        }        
+        }
     }
 
     public static class NSCreate {
@@ -115,7 +115,7 @@ public class FieldConstant {
         public static final String FIELD_DESCRIPTION = "description";
 
         public static final String FIELD_RESPONSE_NSINSTANCEID = "nsInstanceId";
-        
+
         private NSCreate() {
 
         }
@@ -139,16 +139,30 @@ public class FieldConstant {
         public static final String FIELD_NSINSTANCEID = "nsInstanceId";
 
         public static final String FIELD_TERMINATIONTYPE = "terminationType";
+        
+        public static final String FIELD_TERMINATIONTYPE_DEFAULT = "graceful";
 
         public static final String FIELD_TIMEOUT = "gracefulTerminationTimeout";
+        
+        public static final String FIELD_TIMEOUT_DEFAULT = "60";
 
+        public static final String FIELD_RESPONSE_JOBID = "jobId";
+                
         private NSTerminate() {
 
-        }        
+        }
+    }
+    
+    public static class NSScale {
+
+        public static final String FIELD_RESPONSE_JOBID = "jobId";
+                
+        private NSScale() {
+
+        }
     }
 
     public static class QueryJob {
-
 
         public static final String FIELD_JOBID = "jobId";
 
@@ -167,10 +181,10 @@ public class FieldConstant {
         public static final String STATUS_FINISHED = "finished";
 
         public static final String STATUS_ERROR = "error";
-        
+
         private QueryJob() {
 
-        }        
+        }
     }
 
     public static class QueryOperation {
@@ -194,10 +208,10 @@ public class FieldConstant {
         public static final String RESULT_FINISHED = "finished";
 
         public static final String RESULT_ERROR = "error";
-        
+
         private QueryOperation() {
 
-        }        
+        }
 
     }
 
@@ -230,7 +244,7 @@ public class FieldConstant {
 
         private Vim() {
 
-        }        
+        }
     }
 
     public static class SDNController {
@@ -241,9 +255,8 @@ public class FieldConstant {
 
         private SDNController() {
 
-        }        
+        }
     }
-    
 
     public static class NodeTemplates {
 
@@ -278,7 +291,7 @@ public class FieldConstant {
 
         private InventoryService() {
 
-        }       
+        }
     }
 
     public static class Domain {
@@ -286,21 +299,22 @@ public class FieldConstant {
         public static final String FIELD_NAME = "name";
 
         public static final String FIELD_HOST = "host";
-        
+
         private Domain() {
 
-        }        
+        }
     }
+
     public static class VnfNodeTemplate {
 
         public static final String FIELD_NAME = "name";
 
         public static final String FIELD_PROPERTIES = "properties";
-        
+
         public static final String FIELD_PROPERTIES_ID = "id";
-        
+
         private VnfNodeTemplate() {
 
-        }        
+        }
     }
 }

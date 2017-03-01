@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.util.RestUtils;
@@ -86,7 +87,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
         }
         Map<String, Map<String, String>> result = operResult.toResultMap();
         LOGGER.info("create a new service rsp:" + JsonUtil.marshal(result));
-        return Response.accepted().entity(result).build();
+        return Response.status(Status.ACCEPTED).entity(result).build();
     }
 
     /**
@@ -112,7 +113,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
         Map<String, String> result = new HashMap<>();
         result.put(FieldConstant.Delete.FIELD_RESPONSE_OPERATIONID, operationId);
         LOGGER.info("delete a service, rsp:" + JsonUtil.marshal(result));
-        return Response.accepted().entity(result).build();
+        return Response.status(Status.ACCEPTED).entity(result).build();
     }
 
     public IServiceGateway getServiceGateway() {
@@ -139,7 +140,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
         OperationModel operation = serviceGateway.getOperation(serviceId, operationId, servletReq);
         Map<String, Map<String, String>> result = operation.toResultMap();
         LOGGER.info("query an operation, resp:" + JsonUtil.marshal(result));
-        return Response.accepted().entity(result).build();
+        return Response.status(Status.ACCEPTED).entity(result).build();
     }
 
     /**
@@ -157,7 +158,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
         CreateParameterRspModel result = serviceGateway.generateCreateParameters(templateId, servletReq);
         String jsonStr = JsonUtil.marshal(result);
         LOGGER.info("generate create parameters, rsp:" + jsonStr);
-        return Response.accepted().entity(jsonStr).build();
+        return Response.status(Status.ACCEPTED).entity(jsonStr).build();
     }
 
     /**
@@ -173,7 +174,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
         LOGGER.info("query services start");
         List<ServiceModel> array = serviceGateway.getServices(servletReq);
         LOGGER.info("query services rsp:" + JsonUtil.marshal(array));
-        return Response.accepted().entity(array).build();
+        return Response.status(Status.ACCEPTED).entity(array).build();
     }
 
     /**
@@ -189,7 +190,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
         LOGGER.info("query service by service id start, service Id:" + serviceId);
         ServiceModel service = serviceGateway.getService(serviceId, servletReq);
         LOGGER.info("query service rsp:" + JsonUtil.marshal(service));
-        return Response.accepted().entity(service).build();
+        return Response.status(Status.ACCEPTED).entity(service).build();
     }
 
     /**
@@ -205,7 +206,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
         LOGGER.info("query domains start");
         List<DomainModel> domains = serviceGateway.getDomains(servletReq);
         LOGGER.info("query domains rsp:" + JsonUtil.marshal(domains));
-        return Response.accepted().entity(domains).build();
+        return Response.status(Status.ACCEPTED).entity(domains).build();
     }
 
     /**
@@ -231,8 +232,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
         Map<String, String> result = new HashMap<>();
         result.put(FieldConstant.Delete.FIELD_RESPONSE_OPERATIONID, operationId);
         LOGGER.info("scale a service, rsp:" + JsonUtil.marshal(result));
-        return Response.accepted().entity(result).build();
+        return Response.status(Status.ACCEPTED).entity(result).build();
     }
-    
-    
+
 }

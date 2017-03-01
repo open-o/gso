@@ -88,11 +88,11 @@ public class ServiceGatewayImpl implements IServiceGateway {
 
         // Parse request
         Map<String, Object> requestBody = JsonUtil.unMarshal(reqContent, Map.class);
+        ValidateUtil.assertObjectNotNull(requestBody);
         Map<String, Object> service = (Map<String, Object>)requestBody.get(FieldConstant.Create.FIELD_SERVICE);
         if(null == service) {
             service = requestBody;
         }
-        ValidateUtil.assertObjectNotNull(requestBody);
         String templateId = (String)service.get(FieldConstant.Create.FIELD_TEMPLATEID);
         // query the template information
         ServiceTemplateModel templateDetail = CommonUtil.getServiceTemplateByTemplateId(templateId);
@@ -158,9 +158,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 // use progress pool to create a new thread,for query the progress.
                 ProgressPool.getInstance().dealCommonProgress(EnumServiceType.GSO, operationId, uri);
             } else {
-                ExceptionArgs args = new ExceptionArgs();
-                args.setDescArgs(new String[] {"Fail to create service:" + restfulRsp.getResponseContent()});
-                throw new ApplicationException(restfulRsp.getStatus(), args);
+                throw new ApplicationException(restfulRsp.getStatus(), "Fail to create service:" + restfulRsp.getResponseContent());
             }
         } catch(ServiceException e) {
             LOGGER.error("service gateway create restful call result:", e);
@@ -207,8 +205,9 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 String nsInstanceId = (String)rspBody.get(FieldConstant.NSCreate.FIELD_RESPONSE_NSINSTANCEID);
 
                 // instantiate Service
-                Map<String, Object> paramsForInstantiate = (Map<String, Object>) parameters.get(FieldConstant.Create.PARAM_FIELD_NAME_NSPARAMETERS);
-                //append instanceId
+                Map<String, Object> paramsForInstantiate =
+                        (Map<String, Object>)parameters.get(FieldConstant.Create.PARAM_FIELD_NAME_NSPARAMETERS);
+                // append instanceId
                 paramsForInstantiate.put(FieldConstant.NSInstantiate.FIELD_NSINSTANCEID, nsInstanceId);
 
                 // sent instantiate msg
@@ -328,15 +327,16 @@ public class ServiceGatewayImpl implements IServiceGateway {
         try {
             Map<String, String> reqBody = new HashMap<>();
             reqBody.put(FieldConstant.NSTerminate.FIELD_NSINSTANCEID, serviceId);
-            reqBody.put(FieldConstant.NSTerminate.FIELD_TERMINATIONTYPE, "graceful");
-            reqBody.put(FieldConstant.NSTerminate.FIELD_TIMEOUT, "60");
+            reqBody.put(FieldConstant.NSTerminate.FIELD_TERMINATIONTYPE,
+                    FieldConstant.NSTerminate.FIELD_TERMINATIONTYPE_DEFAULT);
+            reqBody.put(FieldConstant.NSTerminate.FIELD_TIMEOUT, FieldConstant.NSTerminate.FIELD_TIMEOUT_DEFAULT);
             String body = JsonUtil.marshal(reqBody);
             LOGGER.info("delete ns service req:" + body);
             RestfulResponse restfulRsp = HttpUtil.post(terminateUri, reqBody);
             CommonUtil.logTheResponseData("delete ns service", restfulRsp);
             if(HttpCode.isSucess(restfulRsp.getStatus())) {
                 Map<String, Object> rspBody = JsonUtil.unMarshal(restfulRsp.getResponseContent(), Map.class);
-                String jobId = (String)rspBody.get(Constant.JOB_ID);
+                String jobId = (String)rspBody.get(FieldConstant.NSTerminate.FIELD_RESPONSE_JOBID);
                 // start query progress and delete the service after terminate
                 String uri = String.format(queryJobUri, jobId);
                 ProgressPool.getInstance().dealDeleteProgress(serviceType, jobId, deleteUri, uri);
@@ -391,17 +391,17 @@ public class ServiceGatewayImpl implements IServiceGateway {
         }
         // generate params
         switch(template.getTemplateType()) {
-            case GSO: 
+            case GSO:
                 // gso support multi domain
                 CreateParameterModel gsoParam = generateGSOTemplateParameters(template, true);
                 rspModel.setParameters(gsoParam);
                 break;
-            case SDNO: 
+            case SDNO:
                 // for sdno , only parameters defined in the template needed.
                 CreateParameterModel sdnoParam = generateTemplateParameters(template);
                 rspModel.setParameters(sdnoParam);
                 break;
-            case NFVO: 
+            case NFVO:
                 // for nfvo, parameters defined in the template, location param, sdn controller
                 // param need.
                 CreateParameterModel nfvoParam = generateNFVOTemplateParameters(template);
@@ -492,12 +492,12 @@ public class ServiceGatewayImpl implements IServiceGateway {
         if(vims.isEmpty()) {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "failed to query vims");
         }
-        //generate vim location parameters
+        // generate vim location parameters
         String templateId = (String)template.getTemplateDetail().get(FieldConstant.CatalogTemplate.FIELD_TEMPLATEID);
         List<VnfProfileModel> vnfs = CommonUtil.queryVnfProfileIdsByTemplateId(templateId);
         List<CreateLocationConstraintModel> locationConstraints = new ArrayList<>();
-        for(VnfProfileModel vnf: vnfs){
-            ParameterDefineModel locationModel = CommonUtil.generateLocationParam(vnf.getVnfProfileId(),vims);
+        for(VnfProfileModel vnf : vnfs) {
+            ParameterDefineModel locationModel = CommonUtil.generateLocationParam(vnf.getVnfProfileId(), vims);
             CreateLocationConstraintModel locationParameter = new CreateLocationConstraintModel();
             locationParameter.setVnfProfileId(vnf.getVnfProfileId());
             CreateLocationConstraintModelForVim vimParam = new CreateLocationConstraintModelForVim();
@@ -506,7 +506,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
             locationConstraints.add(locationParameter);
         }
         param.getNsParameters().setLocationConstraints(locationConstraints);
-        
+
         // query sdncontrollers
         Map<String, String> sdnControllers = CommonUtil.querySDNControllerInfo();
         if(sdnControllers.isEmpty()) {
@@ -580,7 +580,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
         List<DomainModel> domains = CommonUtil.getDomains();
         return domains;
     }
-    
+
     /**
      * scale a service
      * <br>
@@ -588,11 +588,11 @@ public class ServiceGatewayImpl implements IServiceGateway {
      * @param serviceId
      * @param httpRequest
      * @return
-     * @since   GSO Mercury Release
+     * @since GSO Mercury Release
      */
     @SuppressWarnings("unchecked")
     @Override
-    public  String scaleService(String serviceId, HttpServletRequest httpRequest){
+    public String scaleService(String serviceId, HttpServletRequest httpRequest) {
         try {
             String reqContent = RestUtils.getRequestBody(httpRequest);
             Map<String, Object> requestBody = JsonUtil.unMarshal(reqContent, Map.class);
@@ -602,7 +602,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
             CommonUtil.logTheResponseData("scale ns service", restfulRsp);
             if(HttpCode.isSucess(restfulRsp.getStatus())) {
                 Map<String, Object> rspBody = JsonUtil.unMarshal(restfulRsp.getResponseContent(), Map.class);
-                String jobId = (String)rspBody.get(Constant.JOB_ID);
+                String jobId = (String)rspBody.get(FieldConstant.NSScale.FIELD_RESPONSE_JOBID);
                 // start query progress and delete the service after terminate
                 String uri = String.format(Constant.NFVO_URL_QUERYJOB, jobId);
                 ProgressPool.getInstance().dealCommonProgress(EnumServiceType.NFVO, jobId, uri);
@@ -616,5 +616,5 @@ public class ServiceGatewayImpl implements IServiceGateway {
             throw new ApplicationException(e.getHttpCode(), e.getExceptionArgs());
         }
     }
-    
+
 }

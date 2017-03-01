@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, Huawei Technologies Co., Ltd.
+ * Copyright (c) 2016-2017, Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openo.gso.servicegateway.testsuite;
 
 import org.junit.runner.RunWith;
@@ -23,12 +24,9 @@ import org.openo.gso.servicegateway.roa.impl.ServiceGatewayRoaModuleImplTest;
 import org.openo.gso.servicegateway.service.impl.ServiceGatewayImplTest;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-	ActivatorTest.class,
-	ServiceGatewayImplTest.class,	
-	HttpCodeTest.class,
-	ServiceGatewayRoaModuleImplTest.class
-        
+@Suite.SuiteClasses({ActivatorTest.class, ServiceGatewayImplTest.class, HttpCodeTest.class,
+                ServiceGatewayRoaModuleImplTest.class
+
 })
 public class SuiteSGTest {
 

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openo.gso.servicegateway.model;
 
 /**
@@ -22,16 +23,16 @@ package org.openo.gso.servicegateway.model;
  * </p>
  * 
  * @author
- * @version     GSO Mercury Release  2017.2.21
+ * @version GSO Mercury Release 2017.2.21
  */
 public class CreateLocationConstraintModel {
+
     // the vnf profile id
     private String vnfProfileId;
-    
+
     // the location constraint information
     private CreateLocationConstraintModelForVim locationConstraints;
 
-    
     /**
      * @return Returns the vnfProfileId.
      */
@@ -39,7 +40,6 @@ public class CreateLocationConstraintModel {
         return vnfProfileId;
     }
 
-    
     /**
      * @param vnfProfileId The vnfProfileId to set.
      */
@@ -47,7 +47,6 @@ public class CreateLocationConstraintModel {
         this.vnfProfileId = vnfProfileId;
     }
 
-    
     /**
      * @return Returns the locationConstraints.
      */
@@ -55,7 +54,6 @@ public class CreateLocationConstraintModel {
         return locationConstraints;
     }
 
-    
     /**
      * @param locationConstraints The locationConstraints to set.
      */
@@ -63,5 +61,4 @@ public class CreateLocationConstraintModel {
         this.locationConstraints = locationConstraints;
     }
 
-    
 }

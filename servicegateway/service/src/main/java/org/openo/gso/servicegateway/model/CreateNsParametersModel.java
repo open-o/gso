@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openo.gso.servicegateway.model;
 
 import java.util.ArrayList;
@@ -25,11 +26,10 @@ import java.util.List;
  * </p>
  * 
  * @author
- * @version     GSO Mercury Release  2017年2月21日
+ * @version GSO Mercury Release 2017年2月21日
  */
 public class CreateNsParametersModel {
-    
-    
+
     private List<CreateLocationConstraintModel> locationConstraints = null;
 
     /**
@@ -38,7 +38,6 @@ public class CreateNsParametersModel {
      */
     private List<ParameterDefineModel> additionalParamForNs = new ArrayList<>();
 
-    
     /**
      * @return Returns the locationConstraints.
      */
@@ -46,7 +45,6 @@ public class CreateNsParametersModel {
         return locationConstraints;
     }
 
-    
     /**
      * @param locationConstraints The locationConstraints to set.
      */
@@ -54,7 +52,6 @@ public class CreateNsParametersModel {
         this.locationConstraints = locationConstraints;
     }
 
-    
     /**
      * @return Returns the additionalParamForNs.
      */
@@ -62,13 +59,11 @@ public class CreateNsParametersModel {
         return additionalParamForNs;
     }
 
-    
     /**
      * @param additionalParamForNs The additionalParamForNs to set.
      */
     public void setAdditionalParamForNs(List<ParameterDefineModel> additionalParamForNs) {
         this.additionalParamForNs = additionalParamForNs;
     }
-    
-    
+
 }

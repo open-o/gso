@@ -25,7 +25,7 @@ import java.util.Map;
  * </p>
  * 
  * @author
- * @version     GSO 0.5  2017.1.11
+ * @version GSO 0.5 2017.1.11
  */
 public class ServiceTemplateModel {
 

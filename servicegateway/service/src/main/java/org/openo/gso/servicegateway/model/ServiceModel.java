@@ -67,7 +67,6 @@ public class ServiceModel {
      */
     private ServiceParameterModel inputParameters;
 
-    
     /**
      * @return Returns the serviceId.
      */
@@ -75,7 +74,6 @@ public class ServiceModel {
         return serviceId;
     }
 
-    
     /**
      * @param serviceId The serviceId to set.
      */
@@ -83,7 +81,6 @@ public class ServiceModel {
         this.serviceId = serviceId;
     }
 
-    
     /**
      * @return Returns the serviceName.
      */
@@ -91,7 +88,6 @@ public class ServiceModel {
         return serviceName;
     }
 
-    
     /**
      * @param serviceName The serviceName to set.
      */
@@ -99,7 +95,6 @@ public class ServiceModel {
         this.serviceName = serviceName;
     }
 
-    
     /**
      * @return Returns the description.
      */
@@ -107,7 +102,6 @@ public class ServiceModel {
         return description;
     }
 
-    
     /**
      * @param description The description to set.
      */
@@ -115,7 +109,6 @@ public class ServiceModel {
         this.description = description;
     }
 
-    
     /**
      * @return Returns the createTime.
      */
@@ -123,7 +116,6 @@ public class ServiceModel {
         return createTime;
     }
 
-    
     /**
      * @param createTime The createTime to set.
      */
@@ -131,7 +123,6 @@ public class ServiceModel {
         this.createTime = createTime;
     }
 
-    
     /**
      * @return Returns the creator.
      */
@@ -139,7 +130,6 @@ public class ServiceModel {
         return creator;
     }
 
-    
     /**
      * @param creator The creator to set.
      */
@@ -147,7 +137,6 @@ public class ServiceModel {
         this.creator = creator;
     }
 
-    
     /**
      * @return Returns the serviceType.
      */
@@ -155,7 +144,6 @@ public class ServiceModel {
         return serviceType;
     }
 
-    
     /**
      * @param serviceType The serviceType to set.
      */
@@ -163,7 +151,6 @@ public class ServiceModel {
         this.serviceType = serviceType;
     }
 
-    
     /**
      * @return Returns the templateName.
      */
@@ -171,7 +158,6 @@ public class ServiceModel {
         return templateName;
     }
 
-    
     /**
      * @param templateName The templateName to set.
      */
@@ -179,8 +165,6 @@ public class ServiceModel {
         this.templateName = templateName;
     }
 
-
-    
     /**
      * @return Returns the inputParameters.
      */
@@ -188,13 +172,11 @@ public class ServiceModel {
         return inputParameters;
     }
 
-
-    
     /**
      * @param inputParameters The inputParameters to set.
      */
     public void setInputParameters(ServiceParameterModel inputParameters) {
         this.inputParameters = inputParameters;
     }
-    
+
 }

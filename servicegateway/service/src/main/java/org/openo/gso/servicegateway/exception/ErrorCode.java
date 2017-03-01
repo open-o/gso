@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, Huawei Technologies Co., Ltd.
+ * Copyright (c) 2016-2017, Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class ErrorCode {
      * Package is being deleted.
      */
     public static final String SVCMGR_PACKAGE_BEING_DELETED = "servicemgr.package.beingDelete";
-    
+
     /**
      * operation fail
      */
@@ -56,7 +56,7 @@ public class ErrorCode {
      * operation partial success
      */
     public static final int PARTIAL_SUCCESS = 1;
-    
+
     /**
      * operation success
      */

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openo.gso.servicegateway.model;
 
 /**
@@ -22,14 +23,13 @@ package org.openo.gso.servicegateway.model;
  * </p>
  * 
  * @author
- * @version     GSO Mercury Release  2017.2.21
+ * @version GSO Mercury Release 2017.2.21
  */
 public class LocationConstraintModelForVim {
-    
+
     // the vim id
     private String vimId;
 
-    
     /**
      * @return Returns the vimId.
      */
@@ -37,12 +37,11 @@ public class LocationConstraintModelForVim {
         return vimId;
     }
 
-    
     /**
      * @param vimId The vimId to set.
      */
     public void setVimId(String vimId) {
         this.vimId = vimId;
     }
-    
+
 }

@@ -23,7 +23,7 @@ package org.openo.gso.servicegateway.model;
  * </p>
  * 
  * @author
- * @version     GSO 0.5  2017.1.11
+ * @version GSO 0.5 2017.1.11
  */
 public class SegmentTemplateModel {
 
