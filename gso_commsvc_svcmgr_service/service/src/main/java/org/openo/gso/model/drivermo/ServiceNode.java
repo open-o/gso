@@ -23,8 +23,9 @@ import java.util.List;
  * <p>
  * </p>
  * model service node
+ * 
  * @author
- * @version     GSO 0.5  2016/9/3
+ * @version GSO 0.5 2016/9/3
  */
 public class ServiceNode {
 
@@ -37,34 +38,33 @@ public class ServiceNode {
      * input parameters
      */
     private List<SegmentInputParameter> segments;
-    
+
     /**
      * @return Returns the nodeTemplateName.
      */
     public String getNodeTemplateName() {
         return nodeTemplateName;
     }
-    
+
     /**
      * @param nodeTemplateName The nodeTemplateName to set.
      */
     public void setNodeTemplateName(String nodeTemplateName) {
         this.nodeTemplateName = nodeTemplateName;
     }
-    
+
     /**
      * @return Returns the segments.
      */
     public List<SegmentInputParameter> getSegments() {
         return segments;
     }
-    
+
     /**
      * @param segments The segments to set.
      */
     public void setSegments(List<SegmentInputParameter> segments) {
         this.segments = segments;
     }
-
 
 }

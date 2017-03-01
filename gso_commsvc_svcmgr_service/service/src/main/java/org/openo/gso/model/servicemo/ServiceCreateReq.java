@@ -22,22 +22,22 @@ package org.openo.gso.model.servicemo;
  * </p>
  * 
  * @author
- * @version     GSO 0.5  2017/1/20
+ * @version GSO 0.5 2017/1/20
  */
 public class ServiceCreateReq {
-    
+
     /**
      * service create request detail model
      */
     private ServiceCreateReqDetail service;
-    
+
     /**
      * @return Returns the service.
      */
     public ServiceCreateReqDetail getService() {
         return service;
     }
-    
+
     /**
      * @param service The service to set.
      */

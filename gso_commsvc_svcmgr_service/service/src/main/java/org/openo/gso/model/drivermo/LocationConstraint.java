@@ -24,21 +24,20 @@ import java.util.Map;
  * </p>
  * 
  * @author
- * @version     GSO 0.5  2017/2/21
+ * @version GSO 0.5 2017/2/21
  */
 public class LocationConstraint {
-    
+
     /**
      * vnf profile id
      */
     private String vnfProfileId;
-    
+
     /**
      * location constraints: vimId
      */
     private Map<String, String> locationConstraints;
 
-    
     /**
      * @return Returns the vnfProfileId.
      */
@@ -46,7 +45,6 @@ public class LocationConstraint {
         return vnfProfileId;
     }
 
-    
     /**
      * @param vnfProfileId The vnfProfileId to set.
      */
@@ -54,7 +52,6 @@ public class LocationConstraint {
         this.vnfProfileId = vnfProfileId;
     }
 
-    
     /**
      * @return Returns the locationConstraints.
      */
@@ -62,13 +59,11 @@ public class LocationConstraint {
         return locationConstraints;
     }
 
-    
     /**
      * @param locationConstraints The locationConstraints to set.
      */
     public void setLocationConstraints(Map<String, String> locationConstraints) {
         this.locationConstraints = locationConstraints;
     }
-    
 
 }

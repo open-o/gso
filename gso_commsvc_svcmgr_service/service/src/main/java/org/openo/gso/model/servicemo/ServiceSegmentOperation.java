@@ -78,8 +78,8 @@ public class ServiceSegmentOperation {
      * @since GSO 0.5
      */
     public ServiceSegmentOperation() {
-        
-        //do nothing
+
+        // do nothing
 
     }
 
@@ -100,7 +100,6 @@ public class ServiceSegmentOperation {
         this.operationType = operType;
 
     }
-
 
     /**
      * Service Segment Operation Constructor<br>
@@ -206,7 +205,6 @@ public class ServiceSegmentOperation {
     public void setStatus(String status) {
         this.status = status;
     }
-    
 
     /**
      * @return Returns the progress.

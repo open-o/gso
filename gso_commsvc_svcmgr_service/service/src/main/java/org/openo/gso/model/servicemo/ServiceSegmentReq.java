@@ -26,7 +26,7 @@ import org.openo.gso.model.drivermo.NsParameters;
  * </p>
  * 
  * @author
- * @version     GSO 0.5  2017/1/20
+ * @version GSO 0.5 2017/1/20
  */
 public class ServiceSegmentReq {
 
@@ -34,90 +34,90 @@ public class ServiceSegmentReq {
      * ip and port for the current domain
      */
     private String domainHost;
-    
+
     /**
      * node template name
      */
     private String nodeTemplateName;
-    
+
     /**
      * node type
      */
     private String nodeType;
-    
+
     /**
      * sub segment list
      */
     private List<ServiceSegmentReq> segments;
-    
+
     /**
      * parameters for ns
      */
     private NsParameters nsParameters;
-    
+
     /**
      * @return Returns the domainHost.
      */
     public String getDomainHost() {
         return domainHost;
     }
-    
+
     /**
      * @param domainHost The domainHost to set.
      */
     public void setDomainHost(String domainHost) {
         this.domainHost = domainHost;
     }
-    
+
     /**
      * @return Returns the nodeTemplateName.
      */
     public String getNodeTemplateName() {
         return nodeTemplateName;
     }
-    
+
     /**
      * @param nodeTemplateName The nodeTemplateName to set.
      */
     public void setNodeTemplateName(String nodeTemplateName) {
         this.nodeTemplateName = nodeTemplateName;
     }
-    
+
     /**
      * @return Returns the nodeType.
      */
     public String getNodeType() {
         return nodeType;
     }
-    
+
     /**
      * @param nodeType The nodeType to set.
      */
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
     }
-    
+
     /**
      * @return Returns the segments.
      */
     public List<ServiceSegmentReq> getSegments() {
         return segments;
     }
-    
+
     /**
      * @param segments The segments to set.
      */
     public void setSegments(List<ServiceSegmentReq> segments) {
         this.segments = segments;
     }
-    
+
     /**
      * @return Returns the nsParameters.
      */
     public NsParameters getNsParameters() {
         return nsParameters;
     }
-    
+
     /**
      * @param nsParameters The nsParameters to set.
      */

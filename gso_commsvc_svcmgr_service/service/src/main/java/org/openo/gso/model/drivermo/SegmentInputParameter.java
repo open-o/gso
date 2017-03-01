@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openo.gso.model.drivermo;
 
 import java.util.List;
@@ -23,29 +24,29 @@ import org.openo.gso.model.servicemo.ServiceSegmentReq;
  * Input Parameter For Each Domain<br>
  * <p>
  * </p>
- * @version     GSO 0.5  2017/1/7
+ * 
+ * @version GSO 0.5 2017/1/7
  */
 public class SegmentInputParameter {
-    
+
     private String serviceId;
-    
+
     private String subServiceId;
-    
+
     private String subServiceName;
-    
+
     private String subServiceDesc;
-    
+
     private String domainHost;
-    
+
     private String nodeTemplateName;
-    
+
     private String nodeType;
-    
+
     private List<ServiceSegmentReq> segments;
-    
+
     private NsParameters nsParameters;
 
-    
     /**
      * @return Returns the serviceId.
      */
@@ -53,21 +54,20 @@ public class SegmentInputParameter {
         return serviceId;
     }
 
-    
     /**
      * @param serviceId The serviceId to set.
      */
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
     }
-    
+
     /**
      * @return Returns the subServiceId.
      */
     public String getSubServiceId() {
         return subServiceId;
     }
-    
+
     /**
      * @param subServiceId The subServiceId to set.
      */
@@ -82,7 +82,6 @@ public class SegmentInputParameter {
         return subServiceName;
     }
 
-    
     /**
      * @param subServiceName The subServiceName to set.
      */
@@ -90,7 +89,6 @@ public class SegmentInputParameter {
         this.subServiceName = subServiceName;
     }
 
-    
     /**
      * @return Returns the subServiceDesc.
      */
@@ -98,7 +96,6 @@ public class SegmentInputParameter {
         return subServiceDesc;
     }
 
-    
     /**
      * @param subServiceDesc The subServiceDesc to set.
      */
@@ -106,7 +103,6 @@ public class SegmentInputParameter {
         this.subServiceDesc = subServiceDesc;
     }
 
-    
     /**
      * @return Returns the domainHost.
      */
@@ -114,7 +110,6 @@ public class SegmentInputParameter {
         return domainHost;
     }
 
-    
     /**
      * @param domainHost The domainHost to set.
      */
@@ -122,7 +117,6 @@ public class SegmentInputParameter {
         this.domainHost = domainHost;
     }
 
-    
     /**
      * @return Returns the nodeTemplateName.
      */
@@ -130,7 +124,6 @@ public class SegmentInputParameter {
         return nodeTemplateName;
     }
 
-    
     /**
      * @param nodeTemplateName The nodeTemplateName to set.
      */
@@ -138,7 +131,6 @@ public class SegmentInputParameter {
         this.nodeTemplateName = nodeTemplateName;
     }
 
-    
     /**
      * @return Returns the nodeType.
      */
@@ -146,35 +138,34 @@ public class SegmentInputParameter {
         return nodeType;
     }
 
-    
     /**
      * @param nodeType The nodeType to set.
      */
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
     }
-    
+
     /**
      * @return Returns the segments.
      */
     public List<ServiceSegmentReq> getSegments() {
         return segments;
     }
-    
+
     /**
      * @param segments The segments to set.
      */
     public void setSegments(List<ServiceSegmentReq> segments) {
         this.segments = segments;
     }
-    
+
     /**
      * @return Returns the nsParameters.
      */
     public NsParameters getNsParameters() {
         return nsParameters;
     }
-    
+
     /**
      * @param nsParameters The nsParameters to set.
      */

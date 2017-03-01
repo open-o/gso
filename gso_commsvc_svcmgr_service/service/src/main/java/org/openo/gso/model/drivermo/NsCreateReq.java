@@ -32,7 +32,6 @@ public class NsCreateReq {
 
     String description;
 
-    
     /**
      * @return Returns the nsdId.
      */
@@ -40,15 +39,12 @@ public class NsCreateReq {
         return nsdId;
     }
 
-
-    
     /**
      * @param nsdId The nsdId to set.
      */
     public void setNsdId(String nsdId) {
         this.nsdId = nsdId;
     }
-
 
     /**
      * @return Returns the nsName.
@@ -57,7 +53,6 @@ public class NsCreateReq {
         return nsName;
     }
 
-    
     /**
      * @param nsName The nsName to set.
      */
@@ -65,7 +60,6 @@ public class NsCreateReq {
         this.nsName = nsName;
     }
 
-    
     /**
      * @return Returns the description.
      */
@@ -73,7 +67,6 @@ public class NsCreateReq {
         return description;
     }
 
-    
     /**
      * @param description The description to set.
      */
@@ -81,5 +74,4 @@ public class NsCreateReq {
         this.description = description;
     }
 
-    
 }

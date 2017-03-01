@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class Constant {
      * service file Path:file name
      */
     public static final String FILE_PATH_JSON = "service.json";
-    
+
     /**
      * the head type for Restful
      */
@@ -49,7 +49,7 @@ public class Constant {
      * the head value for Restful
      */
     public static final String HEAD_ERMAP_VALUE = "application/json;charset=UTF-8";
-    
+
     /**
      * the URL for Register service to the M-service Bus
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import java.util.List;
 public class ServiceTemplate {
 
     String serviceTemplateId;
-    
+
     String id;
 
     String serviceTemplateName;
@@ -53,14 +53,14 @@ public class ServiceTemplate {
      * <p>
      * </p>
      * service template type
+     * 
      * @author
-     * @version     GSO 0.5  2016/9/3
+     * @version GSO 0.5 2016/9/3
      */
     public enum TemplateType {
         NS, VNF
     }
 
-    
     /**
      * @return Returns the serviceTemplateId.
      */
@@ -68,28 +68,26 @@ public class ServiceTemplate {
         return serviceTemplateId;
     }
 
-    
     /**
      * @param serviceTemplateId The serviceTemplateId to set.
      */
     public void setServiceTemplateId(String serviceTemplateId) {
         this.serviceTemplateId = serviceTemplateId;
     }
-    
+
     /**
      * @return Returns the id.
      */
     public String getId() {
         return id;
     }
-    
+
     /**
      * @param id The id to set.
      */
     public void setId(String id) {
         this.id = id;
     }
-
 
     /**
      * @return Returns the serviceTemplateName.
@@ -98,7 +96,6 @@ public class ServiceTemplate {
         return serviceTemplateName;
     }
 
-    
     /**
      * @param serviceTemplateName The serviceTemplateName to set.
      */
@@ -106,7 +103,6 @@ public class ServiceTemplate {
         this.serviceTemplateName = serviceTemplateName;
     }
 
-    
     /**
      * @return Returns the vendorName.
      */
@@ -114,7 +110,6 @@ public class ServiceTemplate {
         return vendorName;
     }
 
-    
     /**
      * @param vendorName The vendorName to set.
      */
@@ -122,7 +117,6 @@ public class ServiceTemplate {
         this.vendorName = vendorName;
     }
 
-    
     /**
      * @return Returns the templateVersion.
      */
@@ -130,7 +124,6 @@ public class ServiceTemplate {
         return templateVersion;
     }
 
-    
     /**
      * @param templateVersion The templateVersion to set.
      */
@@ -138,7 +131,6 @@ public class ServiceTemplate {
         this.templateVersion = templateVersion;
     }
 
-    
     /**
      * @return Returns the tmplType.
      */
@@ -146,7 +138,6 @@ public class ServiceTemplate {
         return tmplType;
     }
 
-    
     /**
      * @param tmplType The tmplType to set.
      */
@@ -154,7 +145,6 @@ public class ServiceTemplate {
         this.tmplType = tmplType;
     }
 
-    
     /**
      * @return Returns the csarId.
      */
@@ -162,7 +152,6 @@ public class ServiceTemplate {
         return csarId;
     }
 
-    
     /**
      * @param csarId The csarId to set.
      */
@@ -170,7 +159,6 @@ public class ServiceTemplate {
         this.csarId = csarId;
     }
 
-    
     /**
      * @return Returns the downloadUri.
      */
@@ -178,7 +166,6 @@ public class ServiceTemplate {
         return downloadUri;
     }
 
-    
     /**
      * @param downloadUri The downloadUri to set.
      */
@@ -186,7 +173,6 @@ public class ServiceTemplate {
         this.downloadUri = downloadUri;
     }
 
-    
     /**
      * @return Returns the lstInputs.
      */
@@ -194,7 +180,6 @@ public class ServiceTemplate {
         return lstInputs;
     }
 
-    
     /**
      * @param lstInputs The lstInputs to set.
      */
@@ -202,7 +187,6 @@ public class ServiceTemplate {
         this.lstInputs = lstInputs;
     }
 
-    
     /**
      * @return Returns the lstOutputs.
      */
@@ -210,14 +194,11 @@ public class ServiceTemplate {
         return lstOutputs;
     }
 
-    
     /**
      * @param lstOutputs The lstOutputs to set.
      */
     public void setLstOutputs(List<OutputParameter> lstOutputs) {
         this.lstOutputs = lstOutputs;
     }
-
-
 
 }

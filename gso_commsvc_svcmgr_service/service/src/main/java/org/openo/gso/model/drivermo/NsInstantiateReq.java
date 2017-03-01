@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openo.gso.model.drivermo;
 
 /**
@@ -20,20 +21,21 @@ package org.openo.gso.model.drivermo;
  * <p>
  * </p>
  * request model for instatiate
+ * 
  * @author
- * @version     GSO 0.5  2016/9/3
+ * @version GSO 0.5 2016/9/3
  */
-public class NsInstantiateReq extends NsParameters{
+public class NsInstantiateReq extends NsParameters {
 
     String nsInstanceId;
-    
+
     /**
      * @return Returns the nsInstanceId.
      */
     public String getNsInstanceId() {
         return nsInstanceId;
     }
-    
+
     /**
      * @param nsInstanceId The nsInstanceId to set.
      */

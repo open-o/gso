@@ -22,16 +22,15 @@ package org.openo.gso.model.servicemo;
  * </p>
  * 
  * @author
- * @version     GSO 0.5  2017/1/22
+ * @version GSO 0.5 2017/1/22
  */
 public class ServiceOperationRsp {
-    
+
     /**
      * response of the service operation result
      */
     private ServiceOperation operation;
 
-    
     /**
      * @return Returns the operation.
      */
@@ -39,7 +38,6 @@ public class ServiceOperationRsp {
         return operation;
     }
 
-    
     /**
      * @param operation The operation to set.
      */

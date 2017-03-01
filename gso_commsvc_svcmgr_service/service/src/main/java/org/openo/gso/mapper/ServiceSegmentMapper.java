@@ -56,7 +56,7 @@ public interface ServiceSegmentMapper {
      * @since GSO 0.5
      */
     List<ServiceSegmentModel> queryServiceSegments(@Param("serviceId") String serviceId);
-    
+
     /**
      * Insert service segment instance.<br/>
      * 
@@ -71,18 +71,18 @@ public interface ServiceSegmentMapper {
      * @param serviceSegmentId instance id
      * @param serviceSegmentType NFVO or SDNO
      * @return service segment
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
-    ServiceSegmentModel queryServiceSegmentByIdAndType(@Param("serviceSegmentId") String serviceSegmentId, @Param("serviceSegmentType") String serviceSegmentType);
+    ServiceSegmentModel queryServiceSegmentByIdAndType(@Param("serviceSegmentId") String serviceSegmentId,
+            @Param("serviceSegmentType") String serviceSegmentType);
 
     /**
      * delete service segment by segment id and segment type<br>
      * 
      * @param serviceSegment service segment
      * @throws ApplicationException when fail to delete service segment
-     * @since   GSO 0.5
+     * @since GSO 0.5
      */
     void deleteSegmentByIdAndType(ServiceSegmentModel serviceSegment);
 
-    
 }

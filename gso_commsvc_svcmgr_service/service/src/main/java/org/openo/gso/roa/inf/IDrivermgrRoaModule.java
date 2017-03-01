@@ -48,13 +48,13 @@ public interface IDrivermgrRoaModule {
     @Consumes({"application/json"})
     @Path("/nfvodrivers/ns")
     Response createNfvoNs(@Context HttpServletRequest servletReq);
-    
+
     /**
      * Delete the NFVO instance<br>
-     
+     * 
      * @param servletReq http request
      * @return response
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
@@ -67,14 +67,14 @@ public interface IDrivermgrRoaModule {
      * 
      * @param jobId uuid of NFVO job
      * @return status of the NFVO instance
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     @GET
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/nfvodrivers/jobs/{jobId}")
     Response queryNfvoJobStatus(@PathParam("jobId") String jobId);
-    
+
     /**
      * <br>
      * Instantiate the NFVO instance
@@ -94,15 +94,15 @@ public interface IDrivermgrRoaModule {
      * Terminate the NFVO instance<br>
      * 
      * @param servletReq http request
-     * @return response 
-     * @since  GSO 0.5
+     * @return response
+     * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/nfvodrivers/ns/terminate")
     Response terminateNfvoNs(@Context HttpServletRequest servletReq);
-    
+
     /**
      * Create the SDNO instance.<br/>
      * 
@@ -115,13 +115,13 @@ public interface IDrivermgrRoaModule {
     @Consumes({"application/json"})
     @Path("/sdnodrivers/ns")
     Response createSdnoNs(@Context HttpServletRequest servletReq);
-    
+
     /**
      * Delete the SDNO instance<br>
      * 
      * @param servletReq http request
      * @return response
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
@@ -134,14 +134,14 @@ public interface IDrivermgrRoaModule {
      * 
      * @param jobId uuid for SDNO job
      * @return status of the SDNO instance
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     @GET
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/sdnodrivers/jobs/{jobId}")
     Response querySdnoJobStatus(@PathParam("jobId") String jobId);
-    
+
     /**
      * <br>
      * Instantiate the SDNO instance
@@ -161,47 +161,47 @@ public interface IDrivermgrRoaModule {
      * Terminate the SDNO instance<br>
      * 
      * @param servletReq http request
-     * @return response 
-     * @since  GSO 0.5
+     * @return response
+     * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/sdnodrivers/ns/terminate")
     Response terminateSdnoNs(@Context HttpServletRequest servletReq);
-    
+
     /**
      * create gso service<br>
      * 
      * @param servletReq http request
      * @return response
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/gsodrivers/ns/create")
     Response createGsoNs(@Context HttpServletRequest servletReq);
-    
+
     /**
      * delete gso service<br>
      * 
      * @param servletReq http request
      * @return response
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
     @Path("/gsodrivers/ns/delete")
     Response deleteGsoNs(@Context HttpServletRequest servletReq);
-    
+
     /**
      * query gso service job status<br>
      * 
      * @param jobId job id
      * @return response
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
     @GET
     @Produces({"application/json"})

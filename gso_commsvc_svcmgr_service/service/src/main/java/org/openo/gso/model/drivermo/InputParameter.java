@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,14 +41,14 @@ public class InputParameter {
      * <p>
      * </p>
      * parameter type
+     * 
      * @author
-     * @version     GSO 0.5  2016/9/3
+     * @version GSO 0.5 2016/9/3
      */
     public enum Type {
         STRING, INTEGER, FLOAT, BOOLEAN
     }
 
-    
     /**
      * @return Returns the name.
      */
@@ -56,7 +56,6 @@ public class InputParameter {
         return name;
     }
 
-    
     /**
      * @param name The name to set.
      */
@@ -64,7 +63,6 @@ public class InputParameter {
         this.name = name;
     }
 
-    
     /**
      * @return Returns the paramType.
      */
@@ -72,7 +70,6 @@ public class InputParameter {
         return paramType;
     }
 
-    
     /**
      * @param paramType The paramType to set.
      */
@@ -80,7 +77,6 @@ public class InputParameter {
         this.paramType = paramType;
     }
 
-    
     /**
      * @return Returns the description.
      */
@@ -88,7 +84,6 @@ public class InputParameter {
         return description;
     }
 
-    
     /**
      * @param description The description to set.
      */
@@ -96,7 +91,6 @@ public class InputParameter {
         this.description = description;
     }
 
-    
     /**
      * @return Returns the defaultValue.
      */
@@ -104,7 +98,6 @@ public class InputParameter {
         return defaultValue;
     }
 
-    
     /**
      * @param defaultValue The defaultValue to set.
      */
@@ -112,7 +105,6 @@ public class InputParameter {
         this.defaultValue = defaultValue;
     }
 
-    
     /**
      * @return Returns the required.
      */
@@ -120,14 +112,11 @@ public class InputParameter {
         return required;
     }
 
-    
     /**
      * @param required The required to set.
      */
     public void setRequired(boolean required) {
         this.required = required;
     }
-
-
 
 }
