@@ -20,11 +20,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulFactory;
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.constant.Constant;
 import org.openo.gso.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +68,7 @@ public class HttpUtil {
      */
     public static RestfulResponse get(final String url, final Map<String, String> httpHeaders,
             HttpServletRequest httpRequest) {
-        final RestfulParametes restfulParametes = getRestfulParametes();
+        final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
         for(Map.Entry<String, String> entry : httpHeaders.entrySet()) {
             restfulParametes.put(entry.getKey(), entry.getValue());
         }
@@ -93,7 +95,7 @@ public class HttpUtil {
      */
     public static RestfulResponse post(final String url, Object sendObj, HttpServletRequest httpRequest) {
 
-        final RestfulParametes restfulParametes = getRestfulParametes();
+        final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
         if(sendObj != null) {
             String strJsonReq = JsonUtil.marshal(sendObj);
             restfulParametes.setRawData(strJsonReq);
@@ -120,7 +122,7 @@ public class HttpUtil {
      * @since GSO 0.5
      */
     public static RestfulResponse delete(final String url, HttpServletRequest httpRequest) {
-        final RestfulParametes restfulParametes = getRestfulParametes();
+        final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
         RestfulResponse response = null;
         try {
             response = RestfulFactory.getRestInstance(RestfulFactory.PROTO_HTTP).delete(url, restfulParametes);
@@ -143,7 +145,7 @@ public class HttpUtil {
      */
     public static RestfulResponse put(final String url, final Map<String, String> httpHeaders,
             HttpServletRequest httpRequest) {
-        final RestfulParametes restfulParametes = getRestfulParametes();
+        final RestfulParametes restfulParametes = getRestfulParametes(httpRequest);
         for(Map.Entry<String, String> entry : httpHeaders.entrySet()) {
             restfulParametes.put(entry.getKey(), entry.getValue());
         }
@@ -166,8 +168,11 @@ public class HttpUtil {
      * @return rest parameters
      * @since GSO 0.5
      */
-    public static RestfulParametes getRestfulParametes() {
+    public static RestfulParametes getRestfulParametes(HttpServletRequest httpRequest) {
         final RestfulParametes restfulParametes = new RestfulParametes();
+        if(StringUtils.isEmpty(httpRequest.getHeader(Constant.X_AUTH_TOKEN))) {
+            restfulParametes.putHttpContextHeader(Constant.X_AUTH_TOKEN, httpRequest.getHeader(Constant.X_AUTH_TOKEN));
+        }
         restfulParametes.putHttpContextHeader("Content-Type", "application/json;charset=UTF-8");
         return restfulParametes;
     }

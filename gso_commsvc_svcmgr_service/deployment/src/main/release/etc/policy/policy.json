@@ -1,0 +1,14 @@
+{
+	"policies": [{
+		"service": "gsolcm:createService",
+		"rule": "role:admin"
+	},
+	{
+		"service": "gsolcm:getService",
+		"rule": "role:admin OR role:securitymanager OR role:operator"
+	},
+	{
+		"service": "gsolcm:deleteService",
+		"rule": "role:admin"
+	}]
+}

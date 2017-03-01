@@ -1,0 +1,28 @@
+{
+	"rights": [
+	{
+		"uri-pattern": "/rest/gso/v1/services",
+		"method": "POST",
+		"action": "gsolcm:createService"
+	},
+	{
+		"uri-pattern": "/rest/gso/v1/services",
+		"method": "GET",
+		"action": "gsolcm:getService"
+	},
+	{
+		"uri-pattern": "/rest/gso/v1/services/{service_id}",
+		"method": "GET",
+		"action": "gsolcm:getService"
+	},
+	{
+		"uri-pattern": "/rest/gso/v1/services/{service_id}",
+		"method": "DELETE",
+		"action": "gsolcm:deleteService"
+	},
+	{
+		"uri-pattern": "/rest/gso/v1/services/{service_id}/operations/{operation_id}",
+		"method": "GET",
+		"action": "gsolcm:getService"
+	}]
+}
