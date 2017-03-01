@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, Huawei Technologies Co., Ltd.
+ * Copyright (c) 2016-2017, Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 public class Activator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Activator.class);
-
 
     /**
      * start operation by spring <br/>

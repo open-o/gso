@@ -66,7 +66,7 @@ public interface IServiceGatewayRoaModule {
     @Consumes({"application/json"})
     @Path("/services/{serviceId}")
     Response deleteService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq);
-    
+
     /**
      * Scale service instance.<br/>
      * 

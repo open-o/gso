@@ -16,7 +16,6 @@
 
 package org.openo.gso.servicegateway.util.http;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,6 @@ import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.commsvc.common.exception.ExceptionArgs;
-import org.openo.gso.servicegateway.constant.Constant;
 import org.openo.gso.servicegateway.exception.HttpCode;
 import org.openo.gso.servicegateway.util.json.JsonUtil;
 import org.slf4j.Logger;
@@ -149,20 +147,4 @@ public class ResponseUtils {
         return appException;
     }
 
-    /**
-     * Assemble operation result.<br/>
-     * 
-     * @param objectId instance ID
-     * @param operateCode operation result
-     * @return Response result
-     * @since GSO 0.5
-     */
-    public static Map<String, Object> setResult(String objectId, Object operateCode) {
-        Map<String, Object> result = new HashMap<>();
-        result.put(Constant.RESPONSE_RESULT, operateCode);
-        String serviceId = (null != objectId) ? objectId : null;
-        result.put(Constant.SERVICE_INSTANCE_ID, serviceId);
-
-        return result;
-    }
 }

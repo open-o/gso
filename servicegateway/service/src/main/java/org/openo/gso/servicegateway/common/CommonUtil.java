@@ -64,17 +64,15 @@ public class CommonUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceGatewayImpl.class);
 
     /**
-     * 
      * Constructor<br>
      * <p>
      * </p>
      * 
-     * @since  GSO Mercury Release
+     * @since GSO Mercury Release
      */
-    private CommonUtil()
-    {        
+    private CommonUtil() {
     }
-    
+
     /**
      * <br>
      * get the template model by template id
@@ -182,11 +180,11 @@ public class CommonUtil {
         try {
             List<ServiceModel> serviceModels = new ArrayList<>();
             LOGGER.info("query services from inventory start");
-            Map<String,Object> reqCon = new HashMap<>();
-            reqCon.put("sort", new ArrayList<Map<String,String>>(0));
+            Map<String, Object> reqCon = new HashMap<>();
+            reqCon.put("sort", new ArrayList<Map<String, String>>(0));
             reqCon.put("pagination", 1);
             reqCon.put("pagesize", Integer.MAX_VALUE);
-            reqCon.put("condition", new HashMap<String,String>());
+            reqCon.put("condition", new HashMap<String, String>());
             reqCon.put("serviceId", "");
             RestfulResponse resp = HttpUtil.post(Constant.INVENTORY_URL_QUERYSERVICES, reqCon);
             logTheResponseData("query services from inventory", resp);
@@ -216,17 +214,17 @@ public class CommonUtil {
     public static ServiceModel getServiceFromInventory(String serviceId) {
         try {
             LOGGER.info("query data from inventory, service id:" + serviceId);
-            Map<String,Object> reqCon = new HashMap<>();
-            reqCon.put("sort", new ArrayList<Map<String,String>>(0));
+            Map<String, Object> reqCon = new HashMap<>();
+            reqCon.put("sort", new ArrayList<Map<String, String>>(0));
             reqCon.put("pagination", 1);
             reqCon.put("pagesize", Integer.MAX_VALUE);
-            reqCon.put("condition", new HashMap<String,String>());
+            reqCon.put("condition", new HashMap<String, String>());
             reqCon.put("serviceId", serviceId);
             RestfulResponse resp = HttpUtil.post(Constant.INVENTORY_URL_QUERYSERVICES, reqCon);
             logTheResponseData("query service from inventory", resp);
             if(HttpCode.isSucess(resp.getStatus())) {
                 JSONArray array = JSONArray.fromObject(resp.getResponseContent());
-                if(array.size() == 1){
+                if(array.size() == 1) {
                     JSONObject obj = array.getJSONObject(0);
                     return convertJsonToServiceModel(obj);
                 }
@@ -423,7 +421,8 @@ public class CommonUtil {
         Map<String, String> domainsInfo = new HashMap<>();
         for(int i = 0, size = array.size(); i < size; i++) {
             JSONObject obj = array.getJSONObject(i);
-            domainsInfo.put((String)obj.get(FieldConstant.Domain.FIELD_HOST), (String)obj.get(FieldConstant.Domain.FIELD_NAME));
+            domainsInfo.put((String)obj.get(FieldConstant.Domain.FIELD_HOST),
+                    (String)obj.get(FieldConstant.Domain.FIELD_NAME));
         }
         // if only default "localhost" contained. no need to select domain.
         if(domainsInfo.size() == 1) {
@@ -505,13 +504,13 @@ public class CommonUtil {
                 logTheResponseData("query node templates from catalog", nodeTemplatesResp);
                 if(HttpCode.isSucess(nodeTemplatesResp.getStatus())) {
                     JSONArray arrayTempate = JSONArray.fromObject(nodeTemplatesResp.getResponseContent());
-                    for(int i = 0, size = arrayTempate.size(); i < size; i++) {                        
+                    for(int i = 0, size = arrayTempate.size(); i < size; i++) {
                         String object = arrayTempate.getString(i);
                         if(null == object) {
                             continue;
                         }
-                        Map<String, Object> rspBody = JsonUtil.unMarshal(object, Map.class);   
-                        if(null == rspBody){
+                        Map<String, Object> rspBody = JsonUtil.unMarshal(object, Map.class);
+                        if(null == rspBody) {
                             continue;
                         }
                         // here parse the template to model

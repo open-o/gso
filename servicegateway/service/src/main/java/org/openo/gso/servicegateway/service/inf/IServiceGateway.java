@@ -45,7 +45,7 @@ public interface IServiceGateway {
      * @since GSO 0.5
      */
     OperationResult createService(String reqContent, HttpServletRequest httpRequest);
-    
+
     /**
      * Scale service instance.<br/>
      * 

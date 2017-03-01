@@ -42,7 +42,6 @@ public class NsParametersModel {
      */
     private Map<String, String> additionalParamForNs = new HashMap<>();
 
-    
     /**
      * @return Returns the locationConstraints.
      */
@@ -50,7 +49,6 @@ public class NsParametersModel {
         return locationConstraints;
     }
 
-    
     /**
      * @param locationConstraints The locationConstraints to set.
      */
@@ -58,7 +56,6 @@ public class NsParametersModel {
         this.locationConstraints = locationConstraints;
     }
 
-    
     /**
      * @return Returns the additionalParamForNs.
      */
@@ -66,14 +63,11 @@ public class NsParametersModel {
         return additionalParamForNs;
     }
 
-    
     /**
      * @param additionalParamForNs The additionalParamForNs to set.
      */
     public void setAdditionalParamForNs(Map<String, String> additionalParamForNs) {
         this.additionalParamForNs = additionalParamForNs;
     }
-    
-    
 
 }

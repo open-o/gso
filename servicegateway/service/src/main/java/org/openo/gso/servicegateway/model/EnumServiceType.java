@@ -25,5 +25,5 @@ package org.openo.gso.servicegateway.model;
  * @version GSO 0.5 2017.1.3
  */
 public enum EnumServiceType {
-    GSO, NFVO, SDNO, UNKNOWN;    
+    GSO, NFVO, SDNO, UNKNOWN;
 }

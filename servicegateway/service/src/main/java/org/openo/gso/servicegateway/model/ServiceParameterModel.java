@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openo.gso.servicegateway.model;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import java.util.List;
  * </p>
  * 
  * @author
- * @version     GSO Mercury Release  2017年1月22日
+ * @version GSO Mercury Release 2017年1月22日
  */
 public class ServiceParameterModel {
 
@@ -61,15 +62,12 @@ public class ServiceParameterModel {
         return domainHost;
     }
 
-
-    
     /**
      * @param domainHost The domainHost to set.
      */
     public void setDomainHost(String domainHost) {
         this.domainHost = domainHost;
     }
-
 
     /**
      * @return Returns the nodeTemplateName.
@@ -78,7 +76,6 @@ public class ServiceParameterModel {
         return nodeTemplateName;
     }
 
-    
     /**
      * @param nodeTemplateName The nodeTemplateName to set.
      */
@@ -86,7 +83,6 @@ public class ServiceParameterModel {
         this.nodeTemplateName = nodeTemplateName;
     }
 
-    
     /**
      * @return Returns the nodeType.
      */
@@ -94,7 +90,6 @@ public class ServiceParameterModel {
         return nodeType;
     }
 
-    
     /**
      * @param nodeType The nodeType to set.
      */
@@ -102,7 +97,6 @@ public class ServiceParameterModel {
         this.nodeType = nodeType;
     }
 
-    
     /**
      * @return Returns the segments.
      */
@@ -110,7 +104,6 @@ public class ServiceParameterModel {
         return segments;
     }
 
-    
     /**
      * @param segments The segments to set.
      */
@@ -118,9 +111,6 @@ public class ServiceParameterModel {
         this.segments = segments;
     }
 
-
-
-    
     /**
      * @return Returns the nsParameters.
      */
@@ -128,14 +118,11 @@ public class ServiceParameterModel {
         return nsParameters;
     }
 
-
-
-    
     /**
      * @param nsParameters The nsParameters to set.
      */
     public void setNsParameters(NsParametersModel nsParameters) {
         this.nsParameters = nsParameters;
     }
-    
+
 }

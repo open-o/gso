@@ -161,7 +161,7 @@ public class ServiceGatewayRoaModuleImplTest {
         mockHttpUtil();
         serviceRoa.deleteService("5212b49f-fe70-414f-9519-88bec35b3191", httpRequest);
     }
-    
+
     /**
      * Test scale nfvo service. now only nfvo service support scale<br/>
      * 
@@ -174,7 +174,7 @@ public class ServiceGatewayRoaModuleImplTest {
         mockGetRequestBody(FILE_PATH + "createNFVOServiceInstance.json");
         mockHttpUtil();
         serviceRoa.scaleService("5212b49f-fe70-414f-9519-88bec35b3191", httpRequest);
-    }    
+    }
 
     /**
      * test generate create parameters
@@ -188,7 +188,6 @@ public class ServiceGatewayRoaModuleImplTest {
         mockHttpUtil();
         serviceRoa.generateCreateParameters("592f9437-a9c0-4303-b9f6-c445bb7e9814", httpRequest);
     }
-    
 
     /**
      * test query services
@@ -202,7 +201,6 @@ public class ServiceGatewayRoaModuleImplTest {
         mockHttpUtil();
         serviceRoa.getServices(httpRequest);
     }
-    
 
     /**
      * test query one services
@@ -216,7 +214,7 @@ public class ServiceGatewayRoaModuleImplTest {
         mockHttpUtil();
         serviceRoa.getService("5212b49f-fe70-414f-9519-88bec35b3191", httpRequest);
     }
-    
+
     /**
      * test query domains
      * <br>
@@ -229,7 +227,7 @@ public class ServiceGatewayRoaModuleImplTest {
         mockHttpUtil();
         serviceRoa.getDomains(httpRequest);
     }
-    
+
     /**
      * test query operation
      * <br>
@@ -245,11 +243,11 @@ public class ServiceGatewayRoaModuleImplTest {
             public OperationModel getOperation(String operationId) {
                 return new OperationModel();
             }
-        };        
-        serviceRoa.getOperation("5212b49f-fe70-414f-9519-88bec35b3191", "5212b49f-fe70-414f-9519-88bec35b3191", httpRequest);
+        };
+        serviceRoa.getOperation("5212b49f-fe70-414f-9519-88bec35b3191", "5212b49f-fe70-414f-9519-88bec35b3191",
+                httpRequest);
     }
-    
-    
+
     /**
      * Mock to get request body.<br/>
      * 
@@ -302,7 +300,7 @@ public class ServiceGatewayRoaModuleImplTest {
                 } else if(url.contains("/openoapi/nslcm/v1/ns/5212b49f-fe70-414f-9519-88bec35b3191/terminate")) {
                     // mock instantiate nfov rsp
                     return getResponse("terminateNFVOInstanceRsp.json");
-                }else if(url.contains("/openoapi/inventory/v1/services")){
+                } else if(url.contains("/openoapi/inventory/v1/services")) {
                     Map reqCon = (Map)sendObj;
                     String serviceId = (String)reqCon.get("serviceId");
                     if(serviceId.equals("5212b49f-fe70-414f-9519-88bec35b3191")) {
@@ -312,9 +310,9 @@ public class ServiceGatewayRoaModuleImplTest {
                         // mock query services
                         return getResponse("queryServices.json");
                     }
-                }else if(url.contains("/openoapi/nslcm/v1/ns/5212b49f-fe70-414f-9519-88bec35b3191/scale")){
-                    //mock scale nfvo rsp, same as terminate rsp
-                    return  getResponse("terminateNFVOInstanceRsp.json");
+                } else if(url.contains("/openoapi/nslcm/v1/ns/5212b49f-fe70-414f-9519-88bec35b3191/scale")) {
+                    // mock scale nfvo rsp, same as terminate rsp
+                    return getResponse("terminateNFVOInstanceRsp.json");
                 }
                 return null;
             }
@@ -367,9 +365,7 @@ public class ServiceGatewayRoaModuleImplTest {
                         || url.contains(
                                 "/openoapi/catalog/v1/servicetemplates/5212b49f-fe70-414f-9519-88bec35b3190/nodetemplates")) {
                     return getResponse("getNFVONodeTypes.json");
-                }
-                else if(url.contains(
-                        "/openoapi/catalog/v1/servicetemplates/nesting?nodeTypeIds")) {
+                } else if(url.contains("/openoapi/catalog/v1/servicetemplates/nesting?nodeTypeIds")) {
                     return getResponse("getTemplatesByNodeTypes.json");
                 }
                 return null;

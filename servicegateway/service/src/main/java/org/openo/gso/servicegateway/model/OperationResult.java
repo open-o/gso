@@ -28,7 +28,7 @@ import org.openo.gso.servicegateway.constant.FieldConstant;
  * </p>
  * 
  * @author
- * @version     GSO 0.5  2017.1.5
+ * @version GSO 0.5 2017.1.5
  */
 public class OperationResult {
 
@@ -36,41 +36,36 @@ public class OperationResult {
 
     private String operationId;
 
-    
     public String getServiceId() {
         return serviceId;
     }
 
-    
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
     }
 
-    
     public String getOperationId() {
         return operationId;
     }
 
-    
     public void setOperationId(String operationId) {
         this.operationId = operationId;
     }
-    
+
     /**
-     * get the result map 
+     * get the result map
      * <br>
      * 
      * @return
-     * @since  GSO 0.5
+     * @since GSO 0.5
      */
-    public Map<String,Map<String,String>> toResultMap()
-    {
-        Map<String,Map<String,String>> result = new HashMap<>();
-        Map<String,String> serviceRspInfo = new HashMap<>();
+    public Map<String, Map<String, String>> toResultMap() {
+        Map<String, Map<String, String>> result = new HashMap<>();
+        Map<String, String> serviceRspInfo = new HashMap<>();
         serviceRspInfo.put(FieldConstant.Create.FIELD_RESPONSE_SERVICEID, serviceId);
-        serviceRspInfo.put(FieldConstant.Create.FIELD_RESPONSE_OPERATIONID,operationId);
+        serviceRspInfo.put(FieldConstant.Create.FIELD_RESPONSE_OPERATIONID, operationId);
         result.put(FieldConstant.Create.FIELD_RESPONSE_SERVICE, serviceRspInfo);
         return result;
     }
-    
+
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openo.gso.servicegateway.model;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import java.util.List;
  * </p>
  * 
  * @author
- * @version     GSO 0.5  2017.1.10
+ * @version GSO 0.5 2017.1.10
  */
 public class CreateParameterModel {
 
@@ -96,7 +97,6 @@ public class CreateParameterModel {
         this.nodeType = nodeType;
     }
 
-    
     /**
      * @return Returns the segments.
      */
@@ -104,7 +104,6 @@ public class CreateParameterModel {
         return segments;
     }
 
-    
     /**
      * @param segments The segments to set.
      */
@@ -112,7 +111,6 @@ public class CreateParameterModel {
         this.segments = segments;
     }
 
-    
     /**
      * @return Returns the nsParameters.
      */
@@ -120,7 +118,6 @@ public class CreateParameterModel {
         return nsParameters;
     }
 
-    
     /**
      * @param nsParameters The nsParameters to set.
      */
