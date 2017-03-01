@@ -21,15 +21,15 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ErrorCode;
+import org.openo.gso.commsvc.common.exception.HttpCode;
+import org.openo.gso.commsvc.common.util.ValidateUtil;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
-import org.openo.gso.exception.ErrorCode;
-import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.ServiceSegmentMapper;
 import org.openo.gso.mapper.ServiceSegmentOperMapper;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
 import org.openo.gso.model.servicemo.ServiceSegmentOperation;
-import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

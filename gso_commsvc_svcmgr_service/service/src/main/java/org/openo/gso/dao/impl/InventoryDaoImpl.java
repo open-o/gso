@@ -19,10 +19,10 @@ package org.openo.gso.dao.impl;
 import java.util.List;
 
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ErrorCode;
+import org.openo.gso.commsvc.common.exception.HttpCode;
 import org.openo.gso.dao.inf.IInventoryDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
-import org.openo.gso.exception.ErrorCode;
-import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.InvServiceModelMapper;
 import org.openo.gso.mapper.InvServicePackageMapper;
 import org.openo.gso.mapper.InvServiceParameterMapper;

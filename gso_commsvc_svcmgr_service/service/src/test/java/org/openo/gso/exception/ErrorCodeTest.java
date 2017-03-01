@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.openo.gso.exception;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.openo.gso.exception.ErrorCode;
+import org.openo.gso.commsvc.common.exception.ErrorCode;
 
 /**
  * Test Constant class.<br/>
@@ -33,8 +33,8 @@ public class ErrorCodeTest {
 
     @Test
     public void test() {
-        assertEquals("servicemgr.mysql.oper_mysql_db_error", ErrorCode.SVCMGR_OPER_MYSQL_DB_ERROR);
-        assertEquals("servicemgr.bad_param", ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM);
+        assertEquals("Fail to operate database!", ErrorCode.OPER_DB_FAIL);
+        assertEquals("Data is wrong", ErrorCode.DATA_IS_WRONG);
     }
 
 }

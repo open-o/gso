@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.util.JsonUtil;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.model.catalogmo.OperationModel;
@@ -30,7 +31,6 @@ import org.openo.gso.model.servicemo.ServiceModel;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 import org.openo.gso.model.servicemo.ServiceParameter;
 import org.openo.gso.model.servicemo.ServiceSegmentModel;
-import org.openo.gso.util.json.JsonUtil;
 import org.openo.gso.util.uuid.UuidUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -24,13 +24,13 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.HttpStatus;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ErrorCode;
+import org.openo.gso.commsvc.common.exception.HttpCode;
+import org.openo.gso.commsvc.common.util.ValidateUtil;
+import org.openo.gso.commsvc.common.util.JsonUtil;
 import org.openo.gso.constant.Constant;
-import org.openo.gso.exception.ErrorCode;
-import org.openo.gso.exception.HttpCode;
 import org.openo.gso.roa.inf.IServicePackageModule;
 import org.openo.gso.service.inf.IPackageManager;
-import org.openo.gso.util.json.JsonUtil;
-import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

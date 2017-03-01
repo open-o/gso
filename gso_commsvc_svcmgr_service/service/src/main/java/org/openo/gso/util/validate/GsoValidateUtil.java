@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.openo.gso.commsvc.common.exception.ApplicationException;
-import org.openo.gso.exception.HttpCode;
+import org.openo.gso.commsvc.common.exception.HttpCode;
+import org.openo.gso.commsvc.common.util.ValidateUtil;
 import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 /**
  * <br/>
@@ -34,12 +34,12 @@ import org.springframework.util.StringUtils;
  * @author
  * @version GSO 0.5 2016/8/19
  */
-public class ValidateUtil {
+public class GsoValidateUtil{
 
     /**
      * Log server.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ValidateUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GsoValidateUtil.class);
 
     /**
      * Constructor<br/>
@@ -48,37 +48,7 @@ public class ValidateUtil {
      * 
      * @since GSO 0.5
      */
-    private ValidateUtil() {
-
-    }
-
-    /**
-     * Assert String parameter.<br/>
-     * 
-     * @param paramValue parameter data
-     * @param name of parameter
-     * @since GSO 0.5
-     */
-    public static void assertStringNotNull(String paramValue, String paramName) {
-        if(StringUtils.hasLength(paramValue)) {
-            return;
-        }
-
-        LOGGER.error(paramName + ": Parameter is null or empty.");
-        throw new ApplicationException(HttpCode.BAD_REQUEST, paramName + ": Invalid parameter.");
-    }
-
-    /**
-     * Assert object is null.<br/>
-     * 
-     * @param object data object
-     * @since GSO 0.5
-     */
-    public static void assertObjectNotNull(Object object) {
-        if(null == object) {
-            LOGGER.error("Object is null.");
-            throw new ApplicationException(HttpCode.BAD_REQUEST, "Object is null.");
-        }
+    private GsoValidateUtil() {
 
     }
 

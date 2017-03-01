@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2016-2017, Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package org.openo.gso.servicegateway.util.http;
+package org.openo.gso.commsvc.common.util;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.type.TypeReference;
-import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.commsvc.common.exception.ExceptionArgs;
-import org.openo.gso.servicegateway.exception.HttpCode;
-import org.openo.gso.servicegateway.util.json.JsonUtil;
+import org.openo.gso.commsvc.common.exception.HttpCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 /**
  * Interface to deal response result.<br/>
@@ -45,6 +44,10 @@ public class ResponseUtils {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(ResponseUtils.class);
 
+    /**
+     * message
+     */
+    private static final String RESPONSE_CONTENT_MESSAGE = "message";
     /**
      * Constructor<br/>
      * <p>
@@ -66,21 +69,18 @@ public class ResponseUtils {
      * @since GSO 0.5
      */
     public static void checkResonseAndThrowException(RestfulResponse response, String function) {
-        if(!HttpCode.isSucess(response.getStatus())) {
-            ApplicationException roaExceptionInfo = null;
-            try {
-                roaExceptionInfo = JsonUtil.unMarshal(response.getResponseContent(), ApplicationException.class);
-            } catch(ApplicationException e) {
-                LOGGER.error("transfer the response json string has some error: {}", e);
-
-                ExceptionArgs args = new ExceptionArgs();
-                args.setDescription("Fail to unMarshal the Json");
-                args.setReason("Fail to " + function);
-                throw new ApplicationException(response.getStatus(), args);
-            }
-
-            throw roaExceptionInfo;
+        if(HttpCode.isSucess(response.getStatus())) {
+            LOGGER.info("This function is ok: {}", function);
+            return;
         }
+
+        // Get exception information to throw
+        String result = response.getResponseContent();
+        if(!StringUtils.hasLength(result)) {
+            result = function;
+        }
+        LOGGER.error("checkResonseAndThrowException: {}", result);
+        throw new ApplicationException(response.getStatus(), result);
     }
 
     /**
@@ -94,9 +94,10 @@ public class ResponseUtils {
      */
     @SuppressWarnings("unchecked")
     public static <T> List<T> getDataModelFromRsp(String request, String key, Class<T> type) {
+        ValidateUtil.assertStringNotNull(request, RESPONSE_CONTENT_MESSAGE);
         Map<String, Object> requestMap = JsonUtil.unMarshal(request, Map.class);
         Object data = requestMap.get(key);
-        List<T> dataModelList = new LinkedList<T>();
+        List<T> dataModelList = new LinkedList<>();
         if(data instanceof List) {
             for(Object model : (List<T>)data) {
                 if(!(model instanceof Map)) {
@@ -117,10 +118,10 @@ public class ResponseUtils {
      * @param request restful request
      * @param type type
      * @return model data
-     * @throws ServiceException when transfer failed
      * @since SDNO 0.5
      */
-    public static <T> T getDataModelFromRspList(String request, TypeReference<T> type) throws ServiceException {
+    public static <T> T getDataModelFromRspList(String request, TypeReference<T> type) {
+        ValidateUtil.assertStringNotNull(request, RESPONSE_CONTENT_MESSAGE);
         return JsonUtil.unMarshal(request, type);
     }
 
@@ -129,11 +130,10 @@ public class ResponseUtils {
      * 
      * @param exception operation exception
      * @param description
-     * @return exception object
      * @since GSO 0.5
      */
     public static ApplicationException getException(ApplicationException exception, String description) {
-        ExceptionArgs args = null;
+        ExceptionArgs args;
         Object exceptionObject = exception.getResponse().getEntity();
         if(exceptionObject instanceof ExceptionArgs) {
             args = (ExceptionArgs)exceptionObject;
@@ -142,9 +142,7 @@ public class ResponseUtils {
             args.setDescription(description);
             args.setReason(exception.getResponse().getEntity());
         }
-        ApplicationException appException = new ApplicationException(exception.getResponse().getStatus(), args);
 
-        return appException;
+        return new ApplicationException(exception.getResponse().getStatus(), args);
     }
-
 }

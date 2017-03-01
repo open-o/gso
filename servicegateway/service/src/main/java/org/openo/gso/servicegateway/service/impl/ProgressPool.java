@@ -23,13 +23,13 @@ import java.util.Map;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.gso.commsvc.common.exception.HttpCode;
+import org.openo.gso.commsvc.common.util.JsonUtil;
 import org.openo.gso.servicegateway.common.CommonUtil;
 import org.openo.gso.servicegateway.constant.FieldConstant;
-import org.openo.gso.servicegateway.exception.HttpCode;
 import org.openo.gso.servicegateway.model.EnumServiceType;
 import org.openo.gso.servicegateway.model.OperationModel;
 import org.openo.gso.servicegateway.util.http.HttpUtil;
-import org.openo.gso.servicegateway.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

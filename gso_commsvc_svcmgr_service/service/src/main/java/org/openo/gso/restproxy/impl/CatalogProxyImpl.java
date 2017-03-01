@@ -26,6 +26,8 @@ import org.codehaus.jackson.type.TypeReference;
 import org.openo.baseservice.roa.util.restclient.RestfulOptions;
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
+import org.openo.gso.commsvc.common.util.JsonUtil;
+import org.openo.gso.commsvc.common.util.ResponseUtils;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.model.catalogmo.CatalogParameterModel;
 import org.openo.gso.model.catalogmo.NodeTemplateModel;
@@ -35,8 +37,6 @@ import org.openo.gso.model.drivermo.ServiceTemplate;
 import org.openo.gso.restproxy.inf.ICatalogProxy;
 import org.openo.gso.util.RestfulUtil;
 import org.openo.gso.util.http.HttpUtil;
-import org.openo.gso.util.http.ResponseUtils;
-import org.openo.gso.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

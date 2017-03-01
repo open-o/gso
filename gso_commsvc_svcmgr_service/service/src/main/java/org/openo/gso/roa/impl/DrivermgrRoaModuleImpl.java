@@ -25,15 +25,15 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.HttpCode;
+import org.openo.gso.commsvc.common.util.ValidateUtil;
+import org.openo.gso.commsvc.common.util.JsonUtil;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.DriverExceptionID;
-import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.drivermo.SegmentInputParameter;
 import org.openo.gso.model.drivermo.ServiceNode;
 import org.openo.gso.roa.inf.IDrivermgrRoaModule;
 import org.openo.gso.service.inf.IDriverManager;
-import org.openo.gso.util.json.JsonUtil;
-import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

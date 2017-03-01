@@ -24,13 +24,15 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.HttpCode;
+import org.openo.gso.commsvc.common.util.ValidateUtil;
+import org.openo.gso.commsvc.common.util.JsonUtil;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.dao.inf.IInventoryDao;
 import org.openo.gso.dao.inf.IServiceModelDao;
 import org.openo.gso.dao.inf.IServicePackageDao;
 import org.openo.gso.dao.inf.IServiceSegmentDao;
-import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.InvServiceModelMapper;
 import org.openo.gso.mapper.InvServicePackageMapper;
 import org.openo.gso.mapper.InvServiceParameterMapper;
@@ -49,8 +51,7 @@ import org.openo.gso.service.inf.IOperationManager;
 import org.openo.gso.service.inf.IServiceManager;
 import org.openo.gso.synchronization.PackageOperationSingleton;
 import org.openo.gso.util.convertor.DataConverter;
-import org.openo.gso.util.json.JsonUtil;
-import org.openo.gso.util.validate.ValidateUtil;
+import org.openo.gso.util.validate.GsoValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -142,7 +143,7 @@ public class ServiceManagerImpl implements IServiceManager {
         ValidateUtil.assertStringNotNull(templateId, Constant.SERVICE_TEMPLATE_ID);
         List<CatalogParameterModel> defineParams = catalogProxy.getParamsByTemplateId(templateId, httpRequest);
         Object instanceParam = service.get(Constant.SERVICE_PARAMETERS);
-        ValidateUtil.validate(defineParams, instanceParam);
+        GsoValidateUtil.validate(defineParams, instanceParam);
 
         // Convert service data for database operation
         Map<String, Object> paramsMap = (Map<String, Object>)instanceParam;

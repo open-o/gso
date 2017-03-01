@@ -14,32 +14,42 @@
  * limitations under the License.
  */
 
-package org.openo.gso.commsvc.common.constant;
+package org.openo.gso.commsvc.common.exception;
 
 /**
- * Restful Request Results <br>
+ * Constant Class.<br/>
+ * <p>
+ * Define constant for recording error.
+ * </p>
  * 
  * @author
- * @since 2016-6-15
- * @version GSO 0.5
+ * @version GSO 0.5 2016/8/4
  */
 public class ErrorCode {
 
     /**
-     * operation fail
+     * Fail to operate database.
      */
-    public static final int FAIL = 3;
+    public static final String OPER_DB_FAIL = "Fail to operate database!";
 
     /**
-     * operation partial success
+     * Data is wrong.
      */
-    public static final int PARTIAL_SUCCESS = 1;
+    public static final String DATA_IS_WRONG = "Data is wrong";
 
     /**
-     * operation success
+     * Json fail to parse
      */
-    public static final int SUCCESS = 0;
+    public static final String JSON_FAIL_UNMARSHAL = "jsonstr unMarshal failed!";
 
+    /**
+     * Constructor<br/>
+     * <p>
+     * </p>
+     * 
+     * @since GSO 0.5
+     */
     private ErrorCode() {
+
     }
 }

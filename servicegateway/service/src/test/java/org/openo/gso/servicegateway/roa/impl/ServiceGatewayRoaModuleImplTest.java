@@ -34,14 +34,14 @@ import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
+import org.openo.gso.commsvc.common.exception.HttpCode;
 import org.openo.gso.commsvc.common.register.RegisterUtil;
+import org.openo.gso.commsvc.common.util.JsonUtil;
 import org.openo.gso.servicegateway.constant.FieldConstant;
-import org.openo.gso.servicegateway.exception.HttpCode;
 import org.openo.gso.servicegateway.model.OperationModel;
 import org.openo.gso.servicegateway.service.impl.ProgressPool;
 import org.openo.gso.servicegateway.service.impl.ServiceGatewayImpl;
 import org.openo.gso.servicegateway.util.http.HttpUtil;
-import org.openo.gso.servicegateway.util.json.JsonUtil;
 
 import mockit.Mock;
 import mockit.MockUp;

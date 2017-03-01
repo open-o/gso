@@ -21,8 +21,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.HttpCode;
 import org.openo.gso.dao.inf.IServicePackageDao;
-import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 import org.openo.gso.restproxy.inf.ICatalogProxy;
 import org.openo.gso.service.inf.IPackageManager;

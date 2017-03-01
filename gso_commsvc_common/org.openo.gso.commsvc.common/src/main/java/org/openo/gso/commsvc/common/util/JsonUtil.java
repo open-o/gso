@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openo.gso.util.json;
+package org.openo.gso.commsvc.common.util;
 
 import java.io.IOException;
 
@@ -22,8 +22,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.codehaus.jackson.type.TypeReference;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
-import org.openo.gso.exception.ErrorCode;
-import org.openo.gso.exception.HttpCode;
+import org.openo.gso.commsvc.common.exception.ErrorCode;
+import org.openo.gso.commsvc.common.exception.HttpCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

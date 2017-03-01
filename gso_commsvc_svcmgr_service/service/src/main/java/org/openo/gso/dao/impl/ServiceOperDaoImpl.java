@@ -20,14 +20,14 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.ErrorCode;
+import org.openo.gso.commsvc.common.exception.HttpCode;
+import org.openo.gso.commsvc.common.util.ValidateUtil;
 import org.openo.gso.dao.inf.IServiceOperDao;
 import org.openo.gso.dao.multi.DatabaseSessionHandler;
-import org.openo.gso.exception.ErrorCode;
-import org.openo.gso.exception.HttpCode;
 import org.openo.gso.mapper.ServiceOperMapper;
 import org.openo.gso.mapper.ServiceSegmentOperMapper;
 import org.openo.gso.model.servicemo.ServiceOperation;
-import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;

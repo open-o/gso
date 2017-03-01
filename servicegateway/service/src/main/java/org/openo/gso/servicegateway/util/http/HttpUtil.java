@@ -22,7 +22,7 @@ import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulFactory;
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.gso.servicegateway.util.json.JsonUtil;
+import org.openo.gso.commsvc.common.util.JsonUtil;
 
 /**
  * Method class that provides interface to do http request.<br/>

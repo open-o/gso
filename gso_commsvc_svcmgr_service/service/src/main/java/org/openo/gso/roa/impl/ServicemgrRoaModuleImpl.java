@@ -25,13 +25,13 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.HttpStatus;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.util.ValidateUtil;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.model.servicemo.ServiceDetailModel;
 import org.openo.gso.model.servicemo.ServiceOperation;
 import org.openo.gso.roa.inf.IServicemgrRoaModule;
 import org.openo.gso.service.inf.IServiceManager;
 import org.openo.gso.util.convertor.DataConverter;
-import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

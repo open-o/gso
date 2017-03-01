@@ -26,8 +26,8 @@ import org.openo.baseservice.roa.util.restclient.RestfulFactory;
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.util.JsonUtil;
 import org.openo.gso.constant.Constant;
-import org.openo.gso.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

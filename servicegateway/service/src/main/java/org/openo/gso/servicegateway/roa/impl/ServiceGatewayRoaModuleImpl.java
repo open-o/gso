@@ -27,6 +27,9 @@ import javax.ws.rs.core.Response.Status;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.util.JsonUtil;
+import org.openo.gso.commsvc.common.util.ResponseUtils;
+import org.openo.gso.commsvc.common.util.ValidateUtil;
 import org.openo.gso.servicegateway.constant.FieldConstant;
 import org.openo.gso.servicegateway.model.CreateParameterRspModel;
 import org.openo.gso.servicegateway.model.DomainModel;
@@ -36,9 +39,6 @@ import org.openo.gso.servicegateway.model.ServiceModel;
 import org.openo.gso.servicegateway.roa.inf.IServiceGatewayRoaModule;
 import org.openo.gso.servicegateway.service.impl.ServiceGatewayImpl;
 import org.openo.gso.servicegateway.service.inf.IServiceGateway;
-import org.openo.gso.servicegateway.util.http.ResponseUtils;
-import org.openo.gso.servicegateway.util.json.JsonUtil;
-import org.openo.gso.servicegateway.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +77,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
         try {
             // 1. Check validation
             String reqContent = RestUtils.getRequestBody(servletReq);
-            ValidateUtil.assertStringNotNull(reqContent);
+            ValidateUtil.assertStringNotNull(reqContent, "reqContent");
             LOGGER.info("create a new service, req:" + reqContent);
             // 2. Create service
             operResult = serviceGateway.createService(reqContent, servletReq);

@@ -36,14 +36,14 @@ import org.junit.Test;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.HttpCode;
+import org.openo.gso.commsvc.common.util.JsonUtil;
 import org.openo.gso.dao.impl.ServicePackageDaoImpl;
-import org.openo.gso.exception.HttpCode;
 import org.openo.gso.model.servicemo.ServicePackageMapping;
 import org.openo.gso.restproxy.impl.CatalogProxyImpl;
 import org.openo.gso.service.impl.PackageManagerImpl;
 import org.openo.gso.synchronization.PackageOperationSingleton;
 import org.openo.gso.util.http.HttpUtil;
-import org.openo.gso.util.json.JsonUtil;
 
 import mockit.Mock;
 import mockit.MockUp;

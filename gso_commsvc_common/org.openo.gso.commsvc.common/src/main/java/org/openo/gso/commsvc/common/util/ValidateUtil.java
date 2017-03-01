@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Huawei Technologies Co., Ltd.
+ * Copyright 2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.openo.gso.servicegateway.util.validate;
+package org.openo.gso.commsvc.common.util;
 
 import org.openo.gso.commsvc.common.exception.ApplicationException;
-import org.openo.gso.servicegateway.exception.ErrorCode;
-import org.openo.gso.servicegateway.exception.HttpCode;
+import org.openo.gso.commsvc.common.exception.HttpCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-/**
- * Validate Util <br/>
- * <p>
- * </p>
- * 
- * @author
- * @version GSO 0.5 2016/8/19
- */
 public class ValidateUtil {
+
 
     /**
      * Log server.
@@ -52,16 +43,17 @@ public class ValidateUtil {
     /**
      * Assert String parameter.<br/>
      * 
-     * @param param parameter data
+     * @param paramValue parameter data
+     * @param name of parameter
      * @since GSO 0.5
      */
-    public static void assertStringNotNull(String param) {
-        if(StringUtils.hasLength(param)) {
+    public static void assertStringNotNull(String paramValue, String paramName) {
+        if(StringUtils.hasLength(paramValue)) {
             return;
         }
 
-        LOGGER.error("Parameter is null or empty.");
-        throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM);
+        LOGGER.error(paramName + ": Parameter is null or empty.");
+        throw new ApplicationException(HttpCode.BAD_REQUEST, paramName + ": Invalid parameter.");
     }
 
     /**
@@ -73,9 +65,8 @@ public class ValidateUtil {
     public static void assertObjectNotNull(Object object) {
         if(null == object) {
             LOGGER.error("Object is null.");
-            throw new ApplicationException(HttpCode.BAD_REQUEST, ErrorCode.SVCMGR_SERVICEMGR_BAD_PARAM);
+            throw new ApplicationException(HttpCode.BAD_REQUEST, "Object is null.");
         }
 
     }
-
 }

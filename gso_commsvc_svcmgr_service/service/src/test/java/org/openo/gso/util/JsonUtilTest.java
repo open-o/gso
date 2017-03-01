@@ -26,7 +26,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
-import org.openo.gso.util.json.JsonUtil;
+import org.openo.gso.commsvc.common.util.JsonUtil;
 
 import mockit.Mock;
 import mockit.MockUp;

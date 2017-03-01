@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.TimerTask;
 
 import org.apache.commons.collections.map.HashedMap;
+import org.openo.gso.commsvc.common.util.ValidateUtil;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.dao.inf.IInventoryDao;
@@ -34,7 +35,6 @@ import org.openo.gso.model.servicemo.ServiceOperation;
 import org.openo.gso.model.servicemo.ServiceSegmentOperation;
 import org.openo.gso.util.convertor.DataConverter;
 import org.openo.gso.util.service.SpringContextUtil;
-import org.openo.gso.util.validate.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;

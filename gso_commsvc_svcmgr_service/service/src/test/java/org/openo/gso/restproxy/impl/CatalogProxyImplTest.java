@@ -33,7 +33,7 @@ import org.openo.baseservice.roa.util.restclient.RestfulOptions;
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
-import org.openo.gso.exception.HttpCode;
+import org.openo.gso.commsvc.common.exception.HttpCode;
 import org.openo.gso.util.RestfulUtil;
 import org.openo.gso.util.http.HttpUtil;
 

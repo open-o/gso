@@ -24,10 +24,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.junit.Test;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
+import org.openo.gso.commsvc.common.exception.HttpCode;
+import org.openo.gso.commsvc.common.util.JsonUtil;
 import org.openo.gso.constant.Constant;
-import org.openo.gso.exception.HttpCode;
 import org.openo.gso.util.http.HttpUtil;
-import org.openo.gso.util.json.JsonUtil;
 
 import mockit.Mock;
 import mockit.MockUp;
