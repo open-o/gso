@@ -103,6 +103,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
     public Response deleteService(String serviceId, HttpServletRequest servletReq) {
         String operationId = null;
         LOGGER.info("delete a service, serviceId:" + serviceId);
+        ValidateUtil.assertStringNotNull(serviceId, "serviceId");
         try {
             // Delete service
             operationId = serviceGateway.deleteService(serviceId, servletReq);
@@ -155,6 +156,7 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
     @Override
     public Response generateCreateParameters(String templateId, HttpServletRequest servletReq) {
         LOGGER.info("generate create parameters, template id:" + templateId);
+        ValidateUtil.assertStringNotNull(templateId, "templateId");
         CreateParameterRspModel result = serviceGateway.generateCreateParameters(templateId, servletReq);
         String jsonStr = JsonUtil.marshal(result);
         LOGGER.info("generate create parameters, rsp:" + jsonStr);

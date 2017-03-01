@@ -102,10 +102,9 @@ public class ProgressPool {
      * delete service
      * <br>
      * 
-     * @param operationId
-     * @param serviceId
-     * @param deleteUri
-     * @param queryJobUri
+     * @param operationId the operation id
+     * @param serviceId the service id
+     * @param queryJobUri the url for query progress
      * @since GSO 0.5
      */
     public void dealCommonProgress(final EnumServiceType serviceType, final String operationId,
@@ -129,10 +128,10 @@ public class ProgressPool {
      * delete service
      * <br>
      * 
-     * @param operationId
-     * @param serviceId
-     * @param deleteUri
-     * @param queryJobUri
+     * @param operationId the operation id
+     * @param serviceId the service id
+     * @param deleteUri the url for delete 
+     * @param queryJobUri the url for query progress
      * @since GSO 0.5
      */
     public void dealDeleteProgress(final EnumServiceType serviceType, final String operationId, final String deleteUri,
@@ -156,10 +155,8 @@ public class ProgressPool {
      * delete gso service in background
      * <br>
      * 
-     * @param operationId
-     * @param serviceId
-     * @param deleteUri
-     * @param queryJobUri
+     * @param operationId the operation id
+     * @param queryJobUri the url for query progress
      * @since GSO 0.5
      */
     private void dealNonGSOCommonProgress(final String operationId, final String queryJobUri) {
@@ -183,7 +180,7 @@ public class ProgressPool {
         } catch(ServiceException e) {
             LOGGER.info("query operation failed", e);
             model.setResult(FieldConstant.QueryOperation.RESULT_ERROR);
-            model.setReason("query operation inner error");
+            model.setReason(e.getMessage());
         }
         model.setFinishedTime(String.valueOf(new Date().getTime()));
     }
@@ -193,7 +190,7 @@ public class ProgressPool {
      * 
      * @param queryJobUri the uri for query job
      * @param model the operation model
-     * @return
+     * @return if need break out the loop
      * @throws ServiceException
      * @since GSO Mercury Release
      */
@@ -235,10 +232,9 @@ public class ProgressPool {
      * delete service in background
      * <br>
      * 
-     * @param operationId
-     * @param serviceId
-     * @param deleteUri
-     * @param queryJobUri
+     * @param operationId the operation id
+     * @param deleteUri the url for delete 
+     * @param queryJobUri the url for query progress
      * @since GSO 0.5
      */
     private void dealNonGSODeleteProgress(final String operationId, final String deleteUri, final String queryJobUri) {
@@ -263,7 +259,7 @@ public class ProgressPool {
         } catch(ServiceException e) {
             LOGGER.info("query the progress infomation service exception", e);
             model.setResult(FieldConstant.QueryJob.STATUS_ERROR);
-            model.setReason("query progress failed");
+            model.setReason(e.getMessage());
         }
         model.setFinishedTime(String.valueOf(new Date().getTime()));
     }
@@ -274,7 +270,7 @@ public class ProgressPool {
      * @param deleteUri the delete Uri for delete the service
      * @param queryJobUri the query job uri
      * @param model the operation model
-     * @return
+     * @return if need to break out the loop
      * @throws ServiceException
      * @since GSO Mercury Release
      */
@@ -320,7 +316,7 @@ public class ProgressPool {
         } else {
             model.setResult(FieldConstant.QueryJob.STATUS_ERROR);
             model.setOperationContent("query progress failed");
-            model.setReason("query progress failed");
+            model.setReason(resp.getResponseContent());
             needBreak = true;
         }
         return needBreak;
@@ -349,10 +345,8 @@ public class ProgressPool {
      * delete gso service in background
      * <br>
      * 
-     * @param operationId
-     * @param serviceId
-     * @param deleteUri
-     * @param queryJobUri
+     * @param operationId the operation id
+     * @param queryJobUri the url for query progress
      * @since GSO 0.5
      */
     private void dealGSOProgress(final String operationId, final String queryJobUri) {
@@ -377,7 +371,7 @@ public class ProgressPool {
             // if exception got , set the result as failed.
             LOGGER.info("query operation failed", e);
             model.setResult(FieldConstant.QueryOperation.RESULT_ERROR);
-            model.setReason("query operation inner error");
+            model.setReason(e.getMessage());
         }
         model.setFinishedTime(String.valueOf(new Date().getTime()));
     }
@@ -429,7 +423,7 @@ public class ProgressPool {
      * add new operation
      * <br>
      * 
-     * @param operationId
+     * @param operationId the operation id
      * @since GSO 0.5
      */
     private synchronized OperationModel addNewOpertaionModel(String operationId) {
@@ -470,7 +464,7 @@ public class ProgressPool {
      * <br>
      * get operation model by operation id
      * 
-     * @param operationId
+     * @param operationId the operation id
      * @return
      * @since GSO 0.5
      */

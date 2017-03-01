@@ -23,7 +23,6 @@ import java.util.Map;
 import org.codehaus.jackson.type.TypeReference;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
-import org.openo.gso.commsvc.common.exception.ExceptionArgs;
 import org.openo.gso.commsvc.common.exception.HttpCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,16 +132,13 @@ public class ResponseUtils {
      * @since GSO 0.5
      */
     public static ApplicationException getException(ApplicationException exception, String description) {
-        ExceptionArgs args;
         Object exceptionObject = exception.getResponse().getEntity();
-        if(exceptionObject instanceof ExceptionArgs) {
-            args = (ExceptionArgs)exceptionObject;
+        String reason;
+        if(exceptionObject instanceof String) {
+            reason = (String)exceptionObject;
         } else {
-            args = new ExceptionArgs();
-            args.setDescription(description);
-            args.setReason(exception.getResponse().getEntity());
-        }
-
-        return new ApplicationException(exception.getResponse().getStatus(), args);
+            reason = description + ", detail:" + exceptionObject.toString();
+        }   
+        return new ApplicationException(exception.getResponse().getStatus(), reason);
     }
 }

@@ -40,7 +40,6 @@ import org.openo.gso.servicegateway.model.ServiceModel;
 import org.openo.gso.servicegateway.model.ServiceParameterModel;
 import org.openo.gso.servicegateway.model.ServiceTemplateModel;
 import org.openo.gso.servicegateway.model.VnfProfileModel;
-import org.openo.gso.servicegateway.service.impl.ServiceGatewayImpl;
 import org.openo.gso.servicegateway.util.http.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +60,7 @@ public class CommonUtil {
     /**
      * Logger
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceGatewayImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommonUtil.class);
 
     /**
      * Constructor<br>
@@ -322,6 +321,9 @@ public class CommonUtil {
                 for(int i = 0, size = array.size(); i < size; i++) {
                     JSONObject obj = array.getJSONObject(i);
                     JSONObject objProperties = obj.getJSONObject(FieldConstant.VnfNodeTemplate.FIELD_PROPERTIES);
+                    if(null == objProperties){
+                        continue;
+                    }
                     vnfName2Ids.add(new VnfProfileModel((String)obj.get(FieldConstant.VnfNodeTemplate.FIELD_NAME),
                             (String)objProperties.get(FieldConstant.VnfNodeTemplate.FIELD_PROPERTIES_ID)));
                 }
@@ -360,9 +362,9 @@ public class CommonUtil {
             }
         } catch(ServiceException e) {
 
-            LOGGER.info("query the vims failed", e);
+            LOGGER.info("query the sdn controllers  failed", e);
         }
-        LOGGER.info("query the vims failed");
+        LOGGER.info("query the sdn controllers  failed");
         return sdncontrollers;
     }
 
@@ -506,7 +508,7 @@ public class CommonUtil {
                     JSONArray arrayTempate = JSONArray.fromObject(nodeTemplatesResp.getResponseContent());
                     for(int i = 0, size = arrayTempate.size(); i < size; i++) {
                         String object = arrayTempate.getString(i);
-                        if(null == object) {
+                        if(null == object || object.isEmpty()) {
                             continue;
                         }
                         Map<String, Object> rspBody = JsonUtil.unMarshal(object, Map.class);

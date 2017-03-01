@@ -24,7 +24,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.openo.baseservice.remoteservice.exception.ExceptionArgs;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.baseservice.util.RestUtils;
@@ -53,6 +52,8 @@ import org.openo.gso.servicegateway.service.inf.IServiceGateway;
 import org.openo.gso.servicegateway.util.http.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
+
 
 /**
  * ServiceGateway service class.<br/>
@@ -91,7 +92,8 @@ public class ServiceGatewayImpl implements IServiceGateway {
         ValidateUtil.assertObjectNotNull(requestBody);
         Map<String, Object> service = (Map<String, Object>)requestBody.get(FieldConstant.Create.FIELD_SERVICE);
         if(null == service) {
-            service = requestBody;
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
+                    "ServiceGatewayImpl createService reqContent is not valid.");
         }
         String templateId = (String)service.get(FieldConstant.Create.FIELD_TEMPLATEID);
         // query the template information
@@ -101,6 +103,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
         switch(templateDetail.getTemplateType()) {
             case GSO:
                 // for GSO， the request body is same as servicegateway.
+                //set csarid, client will not set this
                 String csarId =
                         (String)templateDetail.getTemplateDetail().get(FieldConstant.CatalogTemplate.FIELD_CSARID);
                 service.put(FieldConstant.Create.FIELD_SERVICEDEFID, csarId);
@@ -211,10 +214,10 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 paramsForInstantiate.put(FieldConstant.NSInstantiate.FIELD_NSINSTANCEID, nsInstanceId);
 
                 // sent instantiate msg
-                String instantiateMsg = JsonUtil.marshal(paramsForCreate);
+                String instantiateMsg = JsonUtil.marshal(paramsForInstantiate);
                 LOGGER.info("instantiate ns service, req:" + instantiateMsg);
                 String instantUrl = String.format(instantUri, nsInstanceId);
-                RestfulResponse instantiateRsp = HttpUtil.post(instantUrl, instantiateMsg);
+                RestfulResponse instantiateRsp = HttpUtil.post(instantUrl, paramsForInstantiate);
                 CommonUtil.logTheResponseData("instantiate ns service", instantiateRsp);
                 if(HttpCode.isSucess(instantiateRsp.getStatus())) {
                     Map<String, Object> instantRspBody =
@@ -227,15 +230,13 @@ public class ServiceGatewayImpl implements IServiceGateway {
                     ProgressPool.getInstance().dealCommonProgress(serviceType, jobId, uri);
                     return result;
                 } else {
-                    ExceptionArgs args = new ExceptionArgs();
-                    args.setDescArgs(new String[] {"Fail to instantiate service:" + restfulRsp.getResponseContent()});
-                    throw new ApplicationException(instantiateRsp.getStatus(), args);
+                    throw new ApplicationException(instantiateRsp.getStatus(),
+                            "Fail to instantiate service:" + restfulRsp.getResponseContent());
                 }
 
             } else {
-                ExceptionArgs args = new ExceptionArgs();
-                args.setDescArgs(new String[] {"Fail to create service:" + restfulRsp.getResponseContent()});
-                throw new ApplicationException(restfulRsp.getStatus(), args);
+                throw new ApplicationException(restfulRsp.getStatus(),
+                        "Fail to create service:" + restfulRsp.getResponseContent());
             }
         } catch(ServiceException e) {
             LOGGER.error("service gateway create restful call result:", e);
@@ -258,7 +259,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
         String operationId = "";
         switch(serviceType) {
             case GSO:
-                // for GSO， the request body is same as servicegateway.
+                // for GSO，
                 operationId = deleteGSOService(serviceId);
                 break;
             case SDNO:
@@ -430,7 +431,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
         List<CreateParameterModel> segmentParams = new ArrayList<>();
         String templateId = (String)template.getTemplateDetail().get(FieldConstant.CatalogTemplate.FIELD_TEMPLATEID);
         List<SegmentTemplateModel> segments = CommonUtil.getSegmentTemplatesByGSOTemplateId(templateId);
-        if(null == segments || segments.isEmpty()) {
+        if(CollectionUtils.isEmpty(segments)) {
             throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR,
                     "fail to query the segments of the gso template");
         }
