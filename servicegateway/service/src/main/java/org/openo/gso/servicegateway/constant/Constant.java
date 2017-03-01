@@ -291,6 +291,16 @@ public class Constant {
      * URL for query sdncontrollers
      */
     public static final String EXTSYS_URL_QUERYSDNCONTROLLERS = "/openoapi/extsys/v1/sdncontrollers";
+    
+    /**
+     * salt name as attribute in cache
+     */
+    public static final String SALT_CACHE_NAME = "csrfPreventionSaltCache";
+    
+    /**
+     * salt name as parameter in http request
+     */
+    public static final String SALT_PARAMETER_NAME = "csrfPreventionSalt"; 
 
     /**
      * Constructor<br/>
