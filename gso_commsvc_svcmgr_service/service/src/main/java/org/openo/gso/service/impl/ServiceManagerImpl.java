@@ -153,7 +153,7 @@ public class ServiceManagerImpl implements IServiceManager {
         model.setParameter(instanceParam);
 
         // Set service template name
-        setTemplateName(model, templateId);
+        setTemplateName(model, templateId, httpRequest);
 
         // Cache csar ID. When operating csar, need to check csar status.
         String csarId = (String)service.get(Constant.SERVICE_DEF_ID);
@@ -629,10 +629,11 @@ public class ServiceManagerImpl implements IServiceManager {
      * 
      * @param serviceModel service instance model
      * @param templateId service template ID
+     * @param httpRequest servletRequest
      * @since GSO 0.5
      */
-    private void setTemplateName(ServiceModel serviceModel, String templateId) {
-        ServiceTemplateModel templateModel = catalogProxy.getTemplateById(templateId);
+    private void setTemplateName(ServiceModel serviceModel, String templateId, HttpServletRequest httpRequest) {
+        ServiceTemplateModel templateModel = catalogProxy.getTemplateById(templateId, httpRequest);
         if((null != templateModel) && (null != serviceModel.getServicePackage())) {
             serviceModel.getServicePackage().setTemplateName(templateModel.getTemplateName());
         }

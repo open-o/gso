@@ -107,8 +107,9 @@ public interface ICatalogProxy {
      * Query service template by service template ID.<br/>
      * 
      * @param templateId service template ID
+     * @param httpRequest servlet request
      * @return service template ID
      * @since GSO 0.5
      */
-    ServiceTemplateModel getTemplateById(String templateId);
+    ServiceTemplateModel getTemplateById(String templateId, HttpServletRequest httpRequest);
 }

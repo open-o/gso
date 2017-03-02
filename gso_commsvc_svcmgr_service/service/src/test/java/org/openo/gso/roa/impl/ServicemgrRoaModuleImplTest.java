@@ -263,7 +263,8 @@ public class ServicemgrRoaModuleImplTest {
             }
 
             @Mock
-            public ServiceTemplateModel getTemplateById(String templateId) throws ApplicationException {
+            public ServiceTemplateModel getTemplateById(String templateId, HttpServletRequest httpRequest)
+                    throws ApplicationException {
                 return JsonUtil.unMarshal(getJsonString(FILE_PATH + "getTemplateByTemplateID.json"),
                         ServiceTemplateModel.class);
             }
@@ -304,7 +305,8 @@ public class ServicemgrRoaModuleImplTest {
             }
 
             @Mock
-            public ServiceTemplateModel getTemplateById(String templateId) throws ApplicationException {
+            public ServiceTemplateModel getTemplateById(String templateId, HttpServletRequest httpRequest)
+                    throws ApplicationException {
                 return JsonUtil.unMarshal(getJsonString(FILE_PATH + "getTemplateByTemplateID.json"),
                         ServiceTemplateModel.class);
             }
