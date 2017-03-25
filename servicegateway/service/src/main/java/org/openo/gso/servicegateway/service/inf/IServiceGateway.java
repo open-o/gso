@@ -108,6 +108,17 @@ public interface IServiceGateway {
      */
     ServiceModel getService(String serviceId, HttpServletRequest servletReq);
 
+    
+    /**
+     * add a domain
+     * <br>
+     * 
+     * @param servletReq the http request
+     * @return
+     * @since GSO Mercury Release
+     */
+    boolean addDomain(HttpServletRequest servletReq);
+    
     /**
      * get the domains
      * <br>
@@ -117,4 +128,15 @@ public interface IServiceGateway {
      * @since GSO Mercury Release
      */
     List<DomainModel> getDomains(HttpServletRequest servletReq);
+    
+    /**
+     * delete a domain
+     * <br>
+     * 
+     * @param domainName the domainName 
+     * @param servletReq the Http request
+     * @return
+     * @since  GSO Mercury Release
+     */
+    boolean deleteDomain(String domainName, HttpServletRequest servletReq);
 }

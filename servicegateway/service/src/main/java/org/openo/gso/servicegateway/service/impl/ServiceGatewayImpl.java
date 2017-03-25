@@ -54,7 +54,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-
 /**
  * ServiceGateway service class.<br/>
  * <p>
@@ -103,7 +102,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
         switch(templateDetail.getTemplateType()) {
             case GSO:
                 // for GSO， the request body is same as servicegateway.
-                //set csarid, client will not set this
+                // set csarid, client will not set this
                 String csarId =
                         (String)templateDetail.getTemplateDetail().get(FieldConstant.CatalogTemplate.FIELD_CSARID);
                 service.put(FieldConstant.Create.FIELD_SERVICEDEFID, csarId);
@@ -161,7 +160,8 @@ public class ServiceGatewayImpl implements IServiceGateway {
                 // use progress pool to create a new thread,for query the progress.
                 ProgressPool.getInstance().dealCommonProgress(EnumServiceType.GSO, operationId, uri);
             } else {
-                throw new ApplicationException(restfulRsp.getStatus(), "Fail to create service:" + restfulRsp.getResponseContent());
+                throw new ApplicationException(restfulRsp.getStatus(),
+                        "Fail to create service:" + restfulRsp.getResponseContent());
             }
         } catch(ServiceException e) {
             LOGGER.error("service gateway create restful call result:", e);
@@ -618,4 +618,47 @@ public class ServiceGatewayImpl implements IServiceGateway {
         }
     }
 
+    /**
+     * delete a domain
+     * <br>
+     * 
+     * @param domainName the domain Name
+     * @param servletReq
+     * @return
+     * @since GSO Mercury Release
+     */
+    @Override
+    public boolean deleteDomain(String domainName, HttpServletRequest servletReq) {
+        String err = CommonUtil.deleteDomain(domainName);
+        if(!"".equals(err)){
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, err);
+        }
+        return true;
+    }
+
+    /**
+     * add a domain
+     * <br>
+     * 
+     * @param servletReq
+     * @return
+     * @since GSO Mercury Release
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean addDomain(HttpServletRequest servletReq) {
+        DomainModel domain = new DomainModel();
+        String reqContent = RestUtils.getRequestBody(servletReq);
+        Map<String, Object> requestBody = JsonUtil.unMarshal(reqContent, Map.class);
+        LOGGER.info("add domain req:" + reqContent);
+        String name = (String)requestBody.get(FieldConstant.Domain.FIELD_NAME);
+        String host = (String)requestBody.get(FieldConstant.Domain.FIELD_HOST);
+        domain.setName(name);
+        domain.setHost(host);
+        String err = CommonUtil.addDomain(domain);
+        if(!"".equals(err)) {
+            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, err);
+        }
+        return true;
+    }
 }

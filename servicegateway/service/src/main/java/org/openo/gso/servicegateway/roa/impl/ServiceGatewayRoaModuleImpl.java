@@ -237,4 +237,34 @@ public class ServiceGatewayRoaModuleImpl implements IServiceGatewayRoaModule {
         return Response.status(Status.ACCEPTED).entity(result).build();
     }
 
+    /**
+     * add a domain
+     * <br>
+     * 
+     * @param servletReq
+     * @return
+     * @since GSO Mercury Release
+     */
+    public Response addDomain(HttpServletRequest servletReq) {
+        LOGGER.info("add domain start.");
+        boolean res = serviceGateway.addDomain(servletReq);
+        LOGGER.info("add domains res:" + res);
+        return Response.status(Status.ACCEPTED).build();
+    }
+    /**
+     * delete a domain
+     * <br>
+     * 
+     * @param domainName the domainName to delete
+     * @param servletReq 
+     * @return
+     * @since   GSO Mercury Release
+     */
+    @Override
+    public Response deleteDomain(String domainName, HttpServletRequest servletReq) {
+        LOGGER.info("delete domain start, domain name:" + domainName);
+        boolean res = serviceGateway.deleteDomain(domainName, servletReq);
+        LOGGER.info("delete domains res:" + res);
+        return Response.status(Status.ACCEPTED).build();
+    }
 }
