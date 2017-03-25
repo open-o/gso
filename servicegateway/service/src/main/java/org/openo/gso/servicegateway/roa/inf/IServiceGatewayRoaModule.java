@@ -138,6 +138,20 @@ public interface IServiceGatewayRoaModule {
     Response getService(@PathParam("serviceId") String serviceId, @Context HttpServletRequest servletReq);
 
     /**
+     * add a domain
+     * <br>
+     * 
+     * @param servletReq the http request
+     * @return
+     * @since GSO Mercury Release
+     */
+    @POST
+    @Path("/domains")
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+    Response addDomain(@Context HttpServletRequest servletReq);
+    
+    /**
      * query the domains
      * <br>
      * 
@@ -150,4 +164,18 @@ public interface IServiceGatewayRoaModule {
     @Produces({"application/json"})
     @Consumes({"application/json"})
     Response getDomains(@Context HttpServletRequest servletReq);
+    
+    /**
+     * query the domains
+     * <br>
+     * 
+     * @param servletReq the http request
+     * @return
+     * @since GSO Mercury Release
+     */
+    @DELETE
+    @Path("/domains/{domainName}")
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+    Response deleteDomain(@PathParam("domainName") String domainName, @Context HttpServletRequest servletReq);
 }

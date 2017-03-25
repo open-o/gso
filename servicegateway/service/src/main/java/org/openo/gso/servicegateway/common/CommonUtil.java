@@ -17,6 +17,8 @@
 package org.openo.gso.servicegateway.common;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -463,6 +465,89 @@ public class CommonUtil {
             domains.add(domain);
         }
         return domains;
+    }
+    
+    /**
+     * add a domain
+     * <br>
+     * 
+     * @param domain the domain to add
+     * @return the error description for delete a domain, if success, it is "".
+     * @since GSO Mercury Release
+     */
+    public static String addDomain(DomainModel domain) {
+
+        List<DomainModel> domains = getDomains();
+        int index = -1;
+        for(int i = 0, size = domains.size(); i < size; i++) {
+            if(domains.get(i).getName().equals(domain.getName())) {
+                index = i;
+                break;
+            }
+        }
+        if(-1 != index) {
+            return "the domain already exist";
+        }
+        domains.add(domain);
+        String jsonStr = JsonUtil.marshal(domains);
+        boolean res = writeDomainsToFile(jsonStr);
+        if(!res) {
+            return "write domain information to file failed";
+        }
+        return "";
+    }
+
+    /**
+     * delete a domain
+     * <br>
+     * 
+     * @param domainName the domainName to delete
+     * @return the error description for delete a domain, if success, it is "".
+     * @since GSO Mercury Release
+     */
+    public static String deleteDomain(String domainName) {
+        if("localhost".equals(domainName)) {
+            return "localhost can not be deleted";
+        }
+        List<DomainModel> domains = getDomains();
+        int index = -1;
+        for(int i = 0, size = domains.size(); i < size; i++) {
+            if(domains.get(i).getName().equals(domainName)) {
+                index = i;
+                break;
+            }
+        }
+        if(-1 == index) {
+            return "the domain does not exist";
+        }
+        domains.remove(index);
+        String jsonStr = JsonUtil.marshal(domains);
+        boolean res = writeDomainsToFile(jsonStr);
+        if(!res) {
+            return "write domain information to file failed";
+        }
+        return "";
+    }
+
+    /**
+     * write the string to file
+     * <br>
+     * 
+     * @param domainStr domain information
+     * @return
+     * @since GSO Mercury Release
+     */
+    public static boolean writeDomainsToFile(String domainStr) {
+        String root = SystemEnvVariablesFactory.getInstance().getAppRoot();
+        String filePath = root + File.separator + Constant.FILE_PATH_DOMAINSINFO;
+        try {
+            FileOutputStream out = new FileOutputStream(filePath, false);
+            out.write(domainStr.getBytes("utf-8"));
+            out.close();
+        } catch(IOException e) {
+            return false;
+        }
+        return true;
     }
 
     /**
