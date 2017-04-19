@@ -510,9 +510,7 @@ public class ServiceGatewayImpl implements IServiceGateway {
 
         // query sdncontrollers
         Map<String, String> sdnControllers = CommonUtil.querySDNControllerInfo();
-        if(sdnControllers.isEmpty()) {
-            throw new ApplicationException(HttpCode.INTERNAL_SERVER_ERROR, "failed to query sdn controllers");
-        }
+        //sdncontroller can be null
         ParameterDefineModel sdnControllerModel = CommonUtil.generateSDNControllerParam(sdnControllers);
         param.getNsParameters().getAdditionalParamForNs().add(sdnControllerModel);
         return param;

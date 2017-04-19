@@ -186,7 +186,6 @@ public class CommonUtil {
             reqCon.put("pagination", 1);
             reqCon.put("pagesize", Integer.MAX_VALUE);
             reqCon.put("condition", new HashMap<String, String>());
-            reqCon.put("serviceId", "");
             RestfulResponse resp = HttpUtil.post(Constant.INVENTORY_URL_QUERYSERVICES, reqCon);
             logTheResponseData("query services from inventory", resp);
             if(HttpCode.isSucess(resp.getStatus())) {
@@ -401,7 +400,7 @@ public class CommonUtil {
         sdnController.setName("sdncontroller");
         sdnController.setDescription("sdn controller for the service");
         sdnController.setType("enum");
-        sdnController.setRequired("true");
+        sdnController.setRequired("false");
         sdnController.setRange(sdnControllers);
         return sdnController;
     }
