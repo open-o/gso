@@ -597,6 +597,7 @@
             "post": {
                 "summary": "Create SDNO Service Segment",
                 "description": "it will create a SDN-O segment instance specified in the request",
+				"operationId": "createSdnoNs",
                 "parameters": [
                     {
                         "name": "body",
@@ -628,6 +629,7 @@
             "post": {
                 "summary": "Instantiate SDNO Service Segment",
                 "description": "it will instantiate a SDN-O segment instance specified in the request",
+				"operationId": "instantiateSdnoNs",
                 "parameters": [
                     {
                         "name": "nsInstantiateRequest",
@@ -666,6 +668,7 @@
             "post": {
                 "summary": "Terminate SDNO Service Segment",
                 "description": "it will terminate a SDN-O segment instance specified in the request",
+				"operationId": "terminateSdnoNs",
                 "parameters": [
                     {
                         "name": "nsTerminateRequest",
@@ -697,6 +700,7 @@
             "post": {
                 "summary": "Delete SDNO Service Segment",
                 "description": "it will delete a SDN-O segment instance specified in the request",
+                "operationId": "deleteSdnoNs",
                 "parameters": [
                     {
                         "name": "nsDeleteRequest",
