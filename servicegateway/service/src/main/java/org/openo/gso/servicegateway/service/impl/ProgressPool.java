@@ -205,7 +205,7 @@ public class ProgressPool {
             // set the progress information to model
             Map<String, Object> responseDescriptor =
                     (Map<String, Object>)rspBody.get(FieldConstant.QueryJob.FIELD_RESPONSEDESCRIPTOR);
-            model.setProgress((String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_PROGRESS));
+            model.setProgress(String.valueOf(responseDescriptor.get(FieldConstant.QueryJob.FIELD_PROGRESS)));
             // set the status as processing. only after deleted. it could be finished
             String status = (String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_STATUS);
             model.setResult(status);
