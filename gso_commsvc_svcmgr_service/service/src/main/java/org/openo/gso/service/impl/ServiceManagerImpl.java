@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.commsvc.common.exception.HttpCode;
-import org.openo.gso.commsvc.common.util.ValidateUtil;
 import org.openo.gso.commsvc.common.util.JsonUtil;
+import org.openo.gso.commsvc.common.util.ValidateUtil;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.Constant;
 import org.openo.gso.dao.inf.IInventoryDao;
@@ -410,7 +410,7 @@ public class ServiceManagerImpl implements IServiceManager {
         }
 
         for(OperationModel keyOperation : operations) {
-            if(keyOperation.getName().endsWith(key)) {
+            if(keyOperation.getName().contains(key)) {
                 return keyOperation;
             }
         }

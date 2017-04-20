@@ -127,8 +127,7 @@ public class DataConverter {
         if(null != parameter) {
             Map<String, Object> planInput = new HashMap<>();
             Map<String, String> inputParam = new HashMap<>();
-            inputParam.put("inputParam", JsonUtil.marshal(parameter));
-            planInput.put("planInput", inputParam);
+            planInput.put("planInput", parameter);
             body.put(Constant.WSO_PARAMS, planInput);
         }
         LOGGER.warn(JsonUtil.marshal(body));
