@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import net.sf.json.JSONObject;
+import net.sf.json.util.JSONUtils;
 
 /**
  * Data converter.<br/>
@@ -208,7 +209,7 @@ public class DataConverter {
         }
 
         Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put(Constant.SERVICE_SEGMENTS, workflowParam);
+        paramMap.put(Constant.SERVICE_SEGMENTS, JSONUtils.valueToString(workflowParam));
 
         return paramMap;
     }
