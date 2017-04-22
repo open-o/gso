@@ -207,7 +207,10 @@ public class DataConverter {
             }
         }
 
-        return (new HashMap<>()).put(Constant.SERVICE_SEGMENTS, workflowParam);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put(Constant.SERVICE_SEGMENTS, workflowParam);
+
+        return paramMap;
     }
 
     /**
@@ -231,7 +234,7 @@ public class DataConverter {
             obj.put(Constant.SERVICE_SEGMENT_NAME_DIRVER,
                     model.getName() + "." + obj.getString(Constant.NODE_TEMPLATE_NAME));
             obj.put(Constant.SERVICE_SEGMENT_DES_DIRVER, model.getDescription());
-            workflowParam.add(JSONObject.toBean(obj));
+            workflowParam.add(JSONObject.fromObject(obj));
         }
 
         return workflowParam;

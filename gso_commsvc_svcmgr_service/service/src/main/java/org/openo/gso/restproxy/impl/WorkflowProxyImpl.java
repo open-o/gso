@@ -61,6 +61,7 @@ public class WorkflowProxyImpl implements IWorkflowProxy {
     @Override
     public void startWorkFlow(Object sendBody, HttpServletRequest request) {
         LOGGER.info("Notify workflow to startup bpel workflow.");
+        LOGGER.info("Sendbody is {}", JsonUtil.marshal(sendBody));
 
         RestfulResponse response = HttpUtil.post(WSO_URI, sendBody, request);
 
