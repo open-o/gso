@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 
@@ -209,7 +210,7 @@ public class DataConverter {
         }
 
         Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put(Constant.SERVICE_SEGMENTS, JSONUtils.valueToString(workflowParam));
+        paramMap.put(Constant.SERVICE_SEGMENTS, JSONUtils.valueToString(JSONArray.fromObject(workflowParam)));
 
         return paramMap;
     }
