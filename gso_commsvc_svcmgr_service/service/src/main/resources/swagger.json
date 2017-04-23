@@ -394,12 +394,6 @@
                 "summary": "Get GSO Service Segment Operation Status",
                 "description": "it will get a GS-O segment instance operation status specified in the request",
                 "operationId": "queryGsoNsProgress",
-                "consumes": [
-                    "application/json;charset=UTF-8"
-                ],
-                "produces": [
-                    "application/json;charset=UTF-8"
-                ],
                 "parameters": [
                     {
                         "name": "jobId",
@@ -562,12 +556,6 @@
                 "summary": "Get NFVO Service Segment Operation Status",
                 "description": "it will get a NFV-O segment instance operation status specified in the request",
                 "operationId": "queryNfvoNsProgress",
-                "consumes": [
-                    "application/json;charset=UTF-8"
-                ],
-                "produces": [
-                    "application/json;charset=UTF-8"
-                ],
                 "parameters": [
                     {
                         "name": "jobId",
@@ -730,12 +718,6 @@
                 "summary": "Get SDNO Service Segment Operation Status",
                 "description": "it will get a SDN-O segment instance operation status specified in the request",
                 "operationId": "querySdnoNsProgress",
-                "consumes": [
-                    "application/json;charset=UTF-8"
-                ],
-                "produces": [
-                    "application/json;charset=UTF-8"
-                ],
                 "parameters": [
                     {
                         "name": "jobId",

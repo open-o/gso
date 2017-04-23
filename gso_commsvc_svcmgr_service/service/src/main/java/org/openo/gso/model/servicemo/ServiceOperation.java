@@ -97,6 +97,7 @@ public class ServiceOperation {
         this.operation = operation;
         this.result = CommonConstant.Status.PROCESSING;
         this.userId = userId;
+        this.operationContent = "";
         this.progress = 0;
         this.operateAt = System.currentTimeMillis();
         this.finishedAt = System.currentTimeMillis();

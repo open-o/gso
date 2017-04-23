@@ -139,6 +139,7 @@ public class UpdateStatusJob extends TimerTask {
         for(ServiceModel model : svcModels) {
             svcIds.add(model.getServiceId());
         }
+        LOGGER.info("svcIds is {}", svcIds);
         return svcIds;
     }
 
@@ -173,6 +174,11 @@ public class UpdateStatusJob extends TimerTask {
      * @since GSO 0.5
      */
     private void dealSvcWithoutSegOpers(List<String> svcIds, List<ServiceModel> svcModels) {
+        if(CollectionUtils.isEmpty(svcIds)) {
+            LOGGER.info("There is no svcIds which need to be deal with.");
+            return;
+        }
+
         // Query unnormal service operation
         List<ServiceOperation> unnormalOper =
                 getUnNormalSvcWitoutSegs(serviceOperDao.queryOperByIds(svcIds), SERVICE_WITHOUT_SEG_NOT_UPDATE);
@@ -358,6 +364,8 @@ public class UpdateStatusJob extends TimerTask {
         for(ServiceModel service : services) {
             segOperLst = svcSegmentOpers.get(service.getServiceId());
             serviceOper = svcOperMap.get(service.getServiceId());
+            serviceOper.setOperationContent(getOperContent(segOperLst));
+
             // all service segments finish operation.
             if(isSvcFinished(segOperLst, service.getSegmentNumber())) {
 
@@ -471,5 +479,26 @@ public class UpdateStatusJob extends TimerTask {
             progress += oper.getProgress();
         }
         return progress / allSegNum;
+    }
+
+    /**
+     * Get current operation content.<br/>
+     * 
+     * @param segOperations operations of segments
+     * @return current operation content
+     * @since GSO 0.5
+     */
+    private String getOperContent(List<ServiceSegmentOperation> segOperations) {
+        if(CollectionUtils.isEmpty(segOperations)) {
+            return "";
+        }
+
+        for(ServiceSegmentOperation segOper : segOperations) {
+            if(CommonConstant.Status.PROCESSING.equals(segOper.getStatus())) {
+                return segOper.getStatusDescription();
+            }
+        }
+
+        return "";
     }
 }
