@@ -57,6 +57,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import net.sf.json.JSONArray;
+import net.sf.json.util.JSONUtils;
+
 /**
  * Service management class.<br/>
  * <p>
@@ -214,6 +217,10 @@ public class ServiceManagerImpl implements IServiceManager {
 
         ServiceOperation svcOperation = null;
         try {
+
+            serviceModelDao.updateServiceStatus(serviceId, CommonConstant.Status.PROCESSING);
+            inventoryDao.updateServiceStatus(serviceId, CommonConstant.Status.PROCESSING);
+
             // 1. Create operation record
             svcOperation = operationManager.createOperation(serviceId, Constant.OPERATION_DELETE);
             // 2. Get service segments for workflow
@@ -229,7 +236,7 @@ public class ServiceManagerImpl implements IServiceManager {
                 // 2.2 Fill in input parameters
                 List<Object> segLst = addServiceSegment(serviceSegments);
                 Map<String, Object> inputParam = new HashMap<>();
-                inputParam.put(Constant.SERVICE_SEGMENTS, segLst);
+                inputParam.put(Constant.SERVICE_SEGMENTS, JSONUtils.valueToString(JSONArray.fromObject(segLst)));
 
                 // 2.3 Start delete workflow
                 startWorkFlow(templateId, Constant.WORK_FLOW_PLAN_DELETE, httpRequest, inputParam);
@@ -532,7 +539,7 @@ public class ServiceManagerImpl implements IServiceManager {
         for(ServiceSegmentModel segment : segments) {
             Map<String, String> segMap = new HashMap<>();
             segMap.put(Constant.SERVICE_ID, segment.getServiceId());
-            segMap.put(Constant.SERVICE_SEGMENT_DOMAINHOST, segment.getServiceSegmentId());
+            segMap.put(Constant.SERVICE_SEGMENT_ID_DIRVER, segment.getServiceSegmentId());
             segMap.put(Constant.NODE_TEMPLATE_NAME, segment.getNodeTemplateName());
             segMap.put(Constant.SERVICE_SEGMENT_DOMAINHOST, segment.getDomainHost());
             segLst.add(segMap);
