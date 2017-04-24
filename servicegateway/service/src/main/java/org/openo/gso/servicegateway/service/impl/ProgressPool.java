@@ -130,7 +130,7 @@ public class ProgressPool {
      * 
      * @param operationId the operation id
      * @param serviceId the service id
-     * @param deleteUri the url for delete 
+     * @param deleteUri the url for delete
      * @param queryJobUri the url for query progress
      * @since GSO 0.5
      */
@@ -233,7 +233,7 @@ public class ProgressPool {
      * <br>
      * 
      * @param operationId the operation id
-     * @param deleteUri the url for delete 
+     * @param deleteUri the url for delete
      * @param queryJobUri the url for query progress
      * @since GSO 0.5
      */
@@ -285,7 +285,7 @@ public class ProgressPool {
             Map<String, Object> rspBody = JsonUtil.unMarshal(resp.getResponseContent(), Map.class);
             Map<String, Object> responseDescriptor =
                     (Map<String, Object>)rspBody.get(FieldConstant.QueryJob.FIELD_RESPONSEDESCRIPTOR);
-            model.setProgress((String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_PROGRESS));
+            model.setProgress(String.valueOf(responseDescriptor.get(FieldConstant.QueryJob.FIELD_PROGRESS)));
             // set the status as processing. only after deleted. it could be finished
             String status = (String)responseDescriptor.get(FieldConstant.QueryJob.FIELD_STATUS);
             if(FieldConstant.QueryJob.STATUS_FINISHED.equals(status)) {
