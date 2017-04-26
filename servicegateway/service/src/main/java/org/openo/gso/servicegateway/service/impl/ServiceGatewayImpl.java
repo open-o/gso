@@ -498,6 +498,11 @@ public class ServiceGatewayImpl implements IServiceGateway {
         List<VnfProfileModel> vnfs = CommonUtil.queryVnfProfileIdsByTemplateId(templateId);
         List<CreateLocationConstraintModel> locationConstraints = new ArrayList<>();
         for(VnfProfileModel vnf : vnfs) {
+            //because under ns,there are vl,vnf etc, so only witch contains id ,we need to generate it. checked with fujinhua.
+            if(null == vnf.getVnfProfileId() || "".equals(vnf.getVnfProfileId()))
+            {
+                continue;
+            }
             ParameterDefineModel locationModel = CommonUtil.generateLocationParam(vnf.getVnfProfileId(), vims);
             CreateLocationConstraintModel locationParameter = new CreateLocationConstraintModel();
             locationParameter.setVnfProfileId(vnf.getVnfProfileId());
