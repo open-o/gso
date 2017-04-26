@@ -303,7 +303,7 @@ public class ServiceGatewayRoaModuleImplTest {
                 } else if(url.contains("/openoapi/inventory/v1/services")) {
                     Map reqCon = (Map)sendObj;
                     String serviceId = (String)reqCon.get("serviceId");
-                    if(serviceId.equals("5212b49f-fe70-414f-9519-88bec35b3191")) {
+                    if("5212b49f-fe70-414f-9519-88bec35b3191".equals(serviceId)) {
                         // mock query services
                         return getResponse("queryInvNFVOService.json");
                     } else {

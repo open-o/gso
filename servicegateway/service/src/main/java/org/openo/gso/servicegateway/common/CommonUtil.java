@@ -254,10 +254,15 @@ public class CommonUtil {
         model.setServiceType(serviceType);
         model.setTemplateName((String)obj.get(FieldConstant.InventoryService.FIELD_TEMPLATENAME));
         if(FieldConstant.ServiceType.GSO.equalsIgnoreCase(serviceType)) {
-            ServiceParameterModel parameterModel =
-                    JsonUtil.unMarshal(obj.get(FieldConstant.InventoryService.FIELD_INPUTPARAMETERS).toString(),
-                            ServiceParameterModel.class);
-            model.setInputParameters(parameterModel);
+
+            JSONObject param = obj.getJSONObject(FieldConstant.InventoryService.FIELD_INPUTPARAMETERS);
+            if(param.containsKey("parameters"))
+            {
+                String parameter = param.getString("parameters");
+                ServiceParameterModel parameterModel = JsonUtil.unMarshal(parameter, ServiceParameterModel.class);
+                model.setInputParameters(parameterModel);
+            }
+
         } else {
             Map<String, String> parameters = JsonUtil
                     .unMarshal(obj.get(FieldConstant.InventoryService.FIELD_INPUTPARAMETERS).toString(), Map.class);
