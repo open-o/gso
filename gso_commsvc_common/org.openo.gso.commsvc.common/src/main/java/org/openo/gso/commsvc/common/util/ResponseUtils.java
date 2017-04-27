@@ -47,6 +47,7 @@ public class ResponseUtils {
      * message
      */
     private static final String RESPONSE_CONTENT_MESSAGE = "message";
+
     /**
      * Constructor<br/>
      * <p>
@@ -93,6 +94,7 @@ public class ResponseUtils {
      */
     @SuppressWarnings("unchecked")
     public static <T> List<T> getDataModelFromRsp(String request, String key, Class<T> type) {
+        LOGGER.error("request is: {}", request);
         ValidateUtil.assertStringNotNull(request, RESPONSE_CONTENT_MESSAGE);
         Map<String, Object> requestMap = JsonUtil.unMarshal(request, Map.class);
         Object data = requestMap.get(key);
@@ -104,6 +106,7 @@ public class ResponseUtils {
                     throw new ApplicationException(HttpCode.BAD_REQUEST, "The format of response content is wrong.");
                 }
 
+                LOGGER.error("model is: {}", JsonUtil.marshal(model));
                 dataModelList.add(JsonUtil.unMarshal(JsonUtil.marshal(model), type));
             }
         }
@@ -138,7 +141,7 @@ public class ResponseUtils {
             reason = (String)exceptionObject;
         } else {
             reason = description + ", detail:" + exceptionObject.toString();
-        }   
+        }
         return new ApplicationException(exception.getResponse().getStatus(), reason);
     }
 }

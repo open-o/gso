@@ -26,8 +26,8 @@ import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.gso.commsvc.common.exception.ApplicationException;
 import org.openo.gso.commsvc.common.exception.HttpCode;
-import org.openo.gso.commsvc.common.util.ValidateUtil;
 import org.openo.gso.commsvc.common.util.JsonUtil;
+import org.openo.gso.commsvc.common.util.ValidateUtil;
 import org.openo.gso.constant.CommonConstant;
 import org.openo.gso.constant.CommonConstant.Step;
 import org.openo.gso.constant.Constant;
@@ -397,7 +397,11 @@ public class DriverManagerImpl implements IDriverManager {
         String methodType = CommonConstant.MethodType.POST;
 
         // Step3: prepare restful parameters and options
-        RestfulParametes restfulParametes = RestfulUtil.setRestfulParameters(null, null);
+        Map<String, String> reqBody = new HashMap<>();
+        reqBody.put("nsInstanceId", segmentId);
+        reqBody.put("terminationType", "graceful");
+        reqBody.put("gracefulTerminationTimeout", "60");
+        RestfulParametes restfulParametes = RestfulUtil.setRestfulParameters(JsonUtil.marshal(reqBody), null);
         RestfulOptions options = RestfulUtil.setRestfulOptions(segInput.getDomainHost());
 
         // Step4: Call the NFVO or SDNO service to terminate service
